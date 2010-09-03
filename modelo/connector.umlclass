@@ -88,7 +88,7 @@
     </children>
     <styles xmi:type="notation:CanonicalStyle" xmi:id="_NgY6MbaeEd-g56eOHhzzmw"/>
     <element xmi:type="uml:Class" href="model.uml#_NgPJMLaeEd-g56eOHhzzmw"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_NgY6MraeEd-g56eOHhzzmw" x="212" y="67"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_NgY6MraeEd-g56eOHhzzmw" x="195" y="70"/>
   </children>
   <children xmi:type="notation:Shape" xmi:id="_WTHUELaeEd-g56eOHhzzmw" type="2001" fontName="Sans">
     <children xmi:type="notation:DecorationNode" xmi:id="_WTHUE7aeEd-g56eOHhzzmw" type="5003">
