@@ -1,10 +1,7 @@
 package br.pensario.region;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
 
-public class NCLRegion {
+public class NCLRegion extends NCLRegionContainer {
 
 	private String id;
 	private String title;
@@ -12,23 +9,22 @@ public class NCLRegion {
 	//Quais são as regras de validação?
 	
 	//Pode ser negativo?
-	private int left = 0;
-	private int right = 0;
-	private int top = 0;
-	private int bottom = 0;
-	private int height = 0;	
-	private int width = 0;
-	private int zIndex = 0;
+	private int left = -1;
+	private int right = -1;
+	private int top = -1;
+	private int bottom = -1;
+	private int height = -1;	
+	private int width = -1;
+	private int zIndex = -1;
 	
-	//Pode ser negativo?
+	
+	//Se relativo = true então o atributo correspondente tem que ter de 0 a 100
 	private boolean relativeLeft = false;
 	private boolean relativeRight = false;
 	private boolean relativeTop = false;
 	private boolean relativeBottom = false;
 	private boolean relativeHeight = false;
-	private boolean relativeWidth = false;
-	
-	private Set<NCLRegion> childs = new TreeSet<NCLRegion>();
+	private boolean relativeWidth = false;	
 	
 	public NCLRegion (String id)
 	{
@@ -43,7 +39,6 @@ public class NCLRegion {
 		return id;
 	}
 
-	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -171,58 +166,5 @@ public class NCLRegion {
 	public boolean isRelativeWidth() {
 		return relativeWidth;
 	}
-	
-	public boolean addRegion(NCLRegion r) {
-
-		boolean contains = false;
-		
-		if (!hasChild(r.getId()))		
-			contains = true;		
 			
-		childs.add(r);
-			
-		return contains;
-	}
-
-	public boolean removeRegion(String id) {
-
-		Iterator<NCLRegion> it = childs.iterator();
-
-		while (it.hasNext()) {
-			NCLRegion r = it.next();
-
-			if (r.getId().equals(id)) {
-				it.remove();
-				return true;
-			}
-		}
-
-		return false;
-
-	}
-
-	public boolean hasChild(String id) {
-
-		Iterator<NCLRegion> it = childs.iterator();
-
-		while (it.hasNext()) {
-
-			NCLRegion r = it.next();
-
-			if (r.getId().equals(id))
-				return true;
-
-		}
-
-		return false;
-	}
-	
-	/*public boolean hasChilds() {
-
-		if(childs.size()>0) 
-			return true;
-		else		
-			return false;
-	}*/
-		
 }

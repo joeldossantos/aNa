@@ -6,12 +6,12 @@ import java.util.TreeSet;
 
 public class NCLRegionBase {
 
-	private String id;
-	private String device;
+	private String id; //TODO - "[\i-[:]][\c-[:]]*"
+	private String device; //TODO - verificar domínio de valores
 
 	private Set<NCLRegion> regions = new TreeSet<NCLRegion>();
 
-	// private String region; // TODO - ????
+	private NCLRegion parent_region;
 
 	public NCLRegionBase(String id) {
 		setId(id);
@@ -33,16 +33,17 @@ public class NCLRegionBase {
 		return device;
 	}
 
-	public boolean addRegion(NCLRegion r) {
+	public boolean addRegion(NCLRegion region) {
 
 		boolean contains = false;
 		
-		if (!hasRegion(r.getId()))		
+		if(hasRegion(region.getId()))		
 			contains = true;		
+		
+		//true if this set did not already contain the specified element
+		regions.add(region); 
 			
-		regions.add(r);
-			
-		return contains;
+		return !contains;
 	}
 
 	public boolean removeRegion(String id) {
@@ -78,7 +79,32 @@ public class NCLRegionBase {
 		}
 
 		return false;
+	}	
+	
+	public NCLRegion getRegion(String id) {
+
+		Iterator<NCLRegion> it = regions.iterator();
+
+		while (it.hasNext()) {
+
+			NCLRegion r = it.next();
+
+			if (r.getId().equals(id))
+				return r;
+
+		}
+
+		return null;
+	}
+
+	public void setParentRegion(NCLRegion region) {
+		this.parent_region = region;
+	}
+
+	public NCLRegion getParentRegion() {
+		return parent_region;
 	}
 	
-	//public boolean hasOverlayedRegions();
+	//public boolean hasOverlayedRegions(); 
+	// Camada de validação
 }

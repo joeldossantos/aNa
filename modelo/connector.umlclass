@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmlns:uml2tools.notation="http://www.eclipse.org/mdt/uml2tools/gmf/notation/ext/2008" xmi:id="_88aKgLadEd-g56eOHhzzmw" type="UMLClass" measurementUnit="Pixel">
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmlns:uml2tools.notation="http://www.eclipse.org/mdt/uml2tools/gmf/notation/ext/2008" xmi:id="_88aKgLadEd-g56eOHhzzmw" type="UMLClass" measurementUnit="Pixel">
   <children xmi:type="notation:Shape" xmi:id="_88axkLadEd-g56eOHhzzmw" type="2014" fontName="Sans">
     <children xmi:type="notation:DecorationNode" xmi:id="_88axkradEd-g56eOHhzzmw" type="5020"/>
     <children xmi:type="notation:DecorationNode" xmi:id="_88axk7adEd-g56eOHhzzmw" type="5041"/>
@@ -420,6 +420,18 @@
     <element xmi:type="uml:Class" href="model.uml#_SIrzoLahEd-g56eOHhzzmw"/>
     <layoutConstraint xmi:type="notation:Bounds" xmi:id="_SI4A4rahEd-g56eOHhzzmw" x="816" y="718"/>
   </children>
+  <children xmi:type="notation:Shape" xmi:id="_TY7NELw_Ed-FD9udTqNw3g" type="Note" fontName="Microsoft Sans Serif" description="este cara some" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TY-QYLw_Ed-FD9udTqNw3g" type="DiagramName">
+      <element xsi:nil="true"/>
+    </children>
+    <children xmi:type="notation:BasicDecorationNode" xmi:id="_TY-3cLw_Ed-FD9udTqNw3g" type="Description">
+      <element xsi:nil="true"/>
+    </children>
+    <styles xmi:type="notation:TextStyle" xmi:id="_TY7NEbw_Ed-FD9udTqNw3g"/>
+    <styles xmi:type="notation:LineTypeStyle" xmi:id="_TY7NErw_Ed-FD9udTqNw3g"/>
+    <element xsi:nil="true"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TY7NE7w_Ed-FD9udTqNw3g" x="247" y="-30"/>
+  </children>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_88aKgbadEd-g56eOHhzzmw"/>
   <styles xmi:type="uml2tools.notation:U2TDiagramCanonicalStyle" xmi:id="_88aKgradEd-g56eOHhzzmw" syncNodes="false"/>
   <styles xmi:type="notation:FilteringStyle" xmi:id="_88aKg7adEd-g56eOHhzzmw"/>
@@ -710,5 +722,11 @@
     <element xmi:type="uml:Association" href="model.uml#_upycoLahEd-g56eOHhzzmw"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_up0447ahEd-g56eOHhzzmw" points="[0, 0, 25, -80]$[63, 44, 88, -36]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_uqcj8LahEd-g56eOHhzzmw" id="(0.5060240963855421,0.9333333333333333)"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_TaDOcLw_Ed-FD9udTqNw3g" type="NoteAttachment" source="_TY7NELw_Ed-FD9udTqNw3g" target="_NgY6MLaeEd-g56eOHhzzmw" lineWidth="1">
+    <styles xmi:type="notation:ArrowStyle" xmi:id="_TaDOcbw_Ed-FD9udTqNw3g"/>
+    <styles xmi:type="notation:LineTypeStyle" xmi:id="_TaDOcrw_Ed-FD9udTqNw3g"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_TaDOc7w_Ed-FD9udTqNw3g" points="[0, 0, -247, -106]$[195, 83, -52, -23]"/>
   </edges>
 </notation:Diagram>
