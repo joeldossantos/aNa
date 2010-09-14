@@ -3,12 +3,13 @@ package br.pensario;
 public class NCLDoc {
 
 	private NCLHead head;
-	//private NCLBody body;
+	private NCLBody body;
 		
-	public NCLDoc(NCLHead head /*,NCLBody body*/)
+	public NCLDoc(NCLHead head ,NCLBody body)
 	{
 		setHead(head);
-		//if(head == null) throw new InvalidHeadException(); // quais validações?
+		//if(head == null) throw new InvalidHeadException(); // quais validaï¿½ï¿½es?
+		//if(body == null) ...
 	}
 	
 	public void setHead(NCLHead head) {
@@ -17,6 +18,14 @@ public class NCLDoc {
 
 	public NCLHead getHead() {
 		return head;
+	}
+	
+	public void setBody(NCLBody body) {
+		this.body = body;
+	}
+	
+	public NCLBody getBody() {
+		return body;
 	}
 	
 }

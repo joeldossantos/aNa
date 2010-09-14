@@ -17,27 +17,6 @@
     <ownedLiteral xmi:id="_eozDELaSEd-pKY3wCHr51Q" name="http://www.ncl.org.br/NCL3.0/profiles/NCL30BDTV.xsd"/>
     <ownedLiteral xmi:id="_gaV5MLaSEd-pKY3wCHr51Q" name="http://www.ncl.org.br/NCL3.0/profiles/NCL30CausalConnector.xsd"/>
   </packagedElement>
-  <packagedElement xmi:type="uml:Enumeration" xmi:id="_u1U8ELaSEd-pKY3wCHr51Q" name="NCLMimeType">
-    <ownedLiteral xmi:id="_wWDvALaSEd-pKY3wCHr51Q" name="text/html"/>
-    <ownedLiteral xmi:id="_z8segLaSEd-pKY3wCHr51Q" name="text/plain"/>
-    <ownedLiteral xmi:id="_1CzK8LaSEd-pKY3wCHr51Q" name="text/css"/>
-    <ownedLiteral xmi:id="_2PVPgLaSEd-pKY3wCHr51Q" name="text/xml"/>
-    <ownedLiteral xmi:id="_48kR0LaSEd-pKY3wCHr51Q" name="image/bmp"/>
-    <ownedLiteral xmi:id="_6uZb0LaSEd-pKY3wCHr51Q" name="image/png"/>
-    <ownedLiteral xmi:id="_8SRpYLaSEd-pKY3wCHr51Q" name="image/gif"/>
-    <ownedLiteral xmi:id="_9v-9gLaSEd-pKY3wCHr51Q" name="image/jpeg"/>
-    <ownedLiteral xmi:id="__y-wALaSEd-pKY3wCHr51Q" name="audio/basic"/>
-    <ownedLiteral xmi:id="_BgQxMLaTEd-pKY3wCHr51Q" name="audio/mp3"/>
-    <ownedLiteral xmi:id="_C322QLaTEd-pKY3wCHr51Q" name="audio/mp2"/>
-    <ownedLiteral xmi:id="_Elh5ALaTEd-pKY3wCHr51Q" name="audio/mpeg"/>
-    <ownedLiteral xmi:id="_FwWtYLaTEd-pKY3wCHr51Q" name="audio/mpeg4"/>
-    <ownedLiteral xmi:id="_HxoBkLaTEd-pKY3wCHr51Q" name="video/mpeg"/>
-    <ownedLiteral xmi:id="_Jjj5QLaTEd-pKY3wCHr51Q" name="application/x-ginga-NCL"/>
-    <ownedLiteral xmi:id="_MvuTQLaTEd-pKY3wCHr51Q" name="application/x-ginga-NCLua"/>
-    <ownedLiteral xmi:id="_N-6DMLaTEd-pKY3wCHr51Q" name="application/x-ginga-NCLet"/>
-    <ownedLiteral xmi:id="_P609ULaTEd-pKY3wCHr51Q" name="application/x-ginga-settings"/>
-    <ownedLiteral xmi:id="_R-GcoLaTEd-pKY3wCHr51Q" name="application/x-ginga-time"/>
-  </packagedElement>
   <packagedElement xmi:type="uml:Enumeration" xmi:id="_S9IzkLaaEd-g56eOHhzzmw" name="NCLColor">
     <ownedLiteral xmi:id="_XwLEwLaaEd-g56eOHhzzmw" name="white"/>
     <ownedLiteral xmi:id="_Z_KE0LaaEd-g56eOHhzzmw" name="black"/>
@@ -527,7 +506,6 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_S2fIQLa2Ed-h6ed0_iI5Ww"/>
     </ownedEnd>
   </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_2-8uwLa3Ed-h6ed0_iI5Ww" name="NCLNode" isAbstract="true"/>
   <packagedElement xmi:type="uml:Association" xmi:id="_EIQHULa4Ed-h6ed0_iI5Ww" memberEnd="_EIQHUba4Ed-h6ed0_iI5Ww _EIQHVLa4Ed-h6ed0_iI5Ww">
     <ownedEnd xmi:id="_EIQHUba4Ed-h6ed0_iI5Ww" name="body" type="_96XJELa0Ed-h6ed0_iI5Ww" association="_EIQHULa4Ed-h6ed0_iI5Ww">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_EIQHU7a4Ed-h6ed0_iI5Ww" value="1"/>
@@ -558,28 +536,6 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_VDdENLa4Ed-h6ed0_iI5Ww"/>
     </ownedEnd>
   </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_u0_IkLa4Ed-h6ed0_iI5Ww" name="NCLContext">
-    <generalization xmi:id="_0gtVQLa4Ed-h6ed0_iI5Ww" general="_2-8uwLa3Ed-h6ed0_iI5Ww"/>
-    <ownedAttribute xmi:id="_wXigcLa4Ed-h6ed0_iI5Ww" name="id" aggregation="composite">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedAttribute>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_NiUYkLa5Ed-h6ed0_iI5Ww" name="NCLMedia">
-    <generalization xmi:id="_dk65gLa5Ed-h6ed0_iI5Ww" general="_2-8uwLa3Ed-h6ed0_iI5Ww"/>
-    <ownedAttribute xmi:id="_PI3foLa5Ed-h6ed0_iI5Ww" name="id" aggregation="composite">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_QFYyQLa5Ed-h6ed0_iI5Ww" name="src" isUnique="false" aggregation="composite">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_W3A3ELa5Ed-h6ed0_iI5Ww"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_Q9zA8La5Ed-h6ed0_iI5Ww" name="type" type="_u1U8ELaSEd-pKY3wCHr51Q" isUnique="false" aggregation="composite">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_YqN6ELa5Ed-h6ed0_iI5Ww"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_TZm8ELa5Ed-h6ed0_iI5Ww" name="descriptor" type="_bda8ILamEd-g56eOHhzzmw" isUnique="false" aggregation="composite">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_a8s6ELa5Ed-h6ed0_iI5Ww"/>
-    </ownedAttribute>
-  </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_fq8K0La5Ed-h6ed0_iI5Ww" memberEnd="_fq8K0ba5Ed-h6ed0_iI5Ww _fq8x4La5Ed-h6ed0_iI5Ww">
     <ownedEnd xmi:id="_fq8K0ba5Ed-h6ed0_iI5Ww" name="media" type="_NiUYkLa5Ed-h6ed0_iI5Ww" association="_fq8K0La5Ed-h6ed0_iI5Ww">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fq8K07a5Ed-h6ed0_iI5Ww" value="1"/>
@@ -608,16 +564,6 @@
     <ownedEnd xmi:id="_ydcAhLa5Ed-h6ed0_iI5Ww" name="link" type="_OGgnkLa1Ed-h6ed0_iI5Ww" association="_ydcAgLa5Ed-h6ed0_iI5Ww">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ydcnkba5Ed-h6ed0_iI5Ww" value="*"/>
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ydcnkLa5Ed-h6ed0_iI5Ww"/>
-    </ownedEnd>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Association" xmi:id="_4tPxsLa5Ed-h6ed0_iI5Ww" memberEnd="_4tPxsba5Ed-h6ed0_iI5Ww _4tQYwra5Ed-h6ed0_iI5Ww">
-    <ownedEnd xmi:id="_4tPxsba5Ed-h6ed0_iI5Ww" name="context" type="_u0_IkLa4Ed-h6ed0_iI5Ww" association="_4tPxsLa5Ed-h6ed0_iI5Ww">
-      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tQYwba5Ed-h6ed0_iI5Ww" value="1"/>
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4tQYwLa5Ed-h6ed0_iI5Ww"/>
-    </ownedEnd>
-    <ownedEnd xmi:id="_4tQYwra5Ed-h6ed0_iI5Ww" name="node" type="_2-8uwLa3Ed-h6ed0_iI5Ww" association="_4tPxsLa5Ed-h6ed0_iI5Ww">
-      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tQYxLa5Ed-h6ed0_iI5Ww" value="*"/>
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4tQYw7a5Ed-h6ed0_iI5Ww"/>
     </ownedEnd>
   </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_CM90cLa6Ed-h6ed0_iI5Ww" memberEnd="_CM90cba6Ed-h6ed0_iI5Ww _CM-bgra6Ed-h6ed0_iI5Ww">
@@ -880,6 +826,71 @@
           <ownedLiteral xmi:id="_cB-wcL2mEd-OyrUE85gsSw" name="S"/>
           <ownedLiteral xmi:id="_dBY_AL2mEd-OyrUE85gsSw" name="F"/>
           <ownedLiteral xmi:id="_eDdgAL2mEd-OyrUE85gsSw" name="NPT"/>
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="_cP9zAMAgEd--w8OmwuD8rw" name="node">
+        <packagedElement xmi:type="uml:Enumeration" xmi:id="_u1U8ELaSEd-pKY3wCHr51Q" name="NCLMimeType">
+          <ownedLiteral xmi:id="_wWDvALaSEd-pKY3wCHr51Q" name="TEXT_HTML"/>
+          <ownedLiteral xmi:id="_z8segLaSEd-pKY3wCHr51Q" name="TEXT_PLAIN"/>
+          <ownedLiteral xmi:id="_1CzK8LaSEd-pKY3wCHr51Q" name="TEXT_CSS"/>
+          <ownedLiteral xmi:id="_2PVPgLaSEd-pKY3wCHr51Q" name="TEXT_XML"/>
+          <ownedLiteral xmi:id="_48kR0LaSEd-pKY3wCHr51Q" name="IMAGE_BMP"/>
+          <ownedLiteral xmi:id="_6uZb0LaSEd-pKY3wCHr51Q" name="IMAGE_PNG"/>
+          <ownedLiteral xmi:id="_8SRpYLaSEd-pKY3wCHr51Q" name="IMAGE_GIF"/>
+          <ownedLiteral xmi:id="_9v-9gLaSEd-pKY3wCHr51Q" name="IMAGE_JPEG"/>
+          <ownedLiteral xmi:id="__y-wALaSEd-pKY3wCHr51Q" name="AUDIO_BASIC"/>
+          <ownedLiteral xmi:id="_BgQxMLaTEd-pKY3wCHr51Q" name="AUDIO_MP3"/>
+          <ownedLiteral xmi:id="_C322QLaTEd-pKY3wCHr51Q" name="AUDIO_MP2"/>
+          <ownedLiteral xmi:id="_Elh5ALaTEd-pKY3wCHr51Q" name="AUDIO_MPEG"/>
+          <ownedLiteral xmi:id="_FwWtYLaTEd-pKY3wCHr51Q" name="AUDIO_MPEG4"/>
+          <ownedLiteral xmi:id="_HxoBkLaTEd-pKY3wCHr51Q" name="VIDEO_MPEG"/>
+          <ownedLiteral xmi:id="_Jjj5QLaTEd-pKY3wCHr51Q" name="APPLICATION_X_GINGA_NCL"/>
+          <ownedLiteral xmi:id="_MvuTQLaTEd-pKY3wCHr51Q" name="APPLICATION_X_GINGA_NCLUA"/>
+          <ownedLiteral xmi:id="_N-6DMLaTEd-pKY3wCHr51Q" name="APPLICATION_X_GINGA_NCLET"/>
+          <ownedLiteral xmi:id="_P609ULaTEd-pKY3wCHr51Q" name="APPLICATION_X_GINGA_SETTINGS"/>
+          <ownedLiteral xmi:id="_R-GcoLaTEd-pKY3wCHr51Q" name="APPLICATION_X_GINGA_TIME"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="_2-8uwLa3Ed-h6ed0_iI5Ww" name="NCLNode" isAbstract="true"/>
+        <packagedElement xmi:type="uml:Class" xmi:id="_u0_IkLa4Ed-h6ed0_iI5Ww" name="NCLContext">
+          <generalization xmi:id="_0gtVQLa4Ed-h6ed0_iI5Ww" general="_2-8uwLa3Ed-h6ed0_iI5Ww"/>
+          <ownedAttribute xmi:id="_wXigcLa4Ed-h6ed0_iI5Ww" name="id" aggregation="composite">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+          </ownedAttribute>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="_NiUYkLa5Ed-h6ed0_iI5Ww" name="NCLMedia">
+          <generalization xmi:id="_dk65gLa5Ed-h6ed0_iI5Ww" general="_2-8uwLa3Ed-h6ed0_iI5Ww"/>
+          <ownedAttribute xmi:id="_PI3foLa5Ed-h6ed0_iI5Ww" name="id" aggregation="composite">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_QFYyQLa5Ed-h6ed0_iI5Ww" name="src" isUnique="false" aggregation="composite">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_W3A3ELa5Ed-h6ed0_iI5Ww"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_Q9zA8La5Ed-h6ed0_iI5Ww" name="type" type="_u1U8ELaSEd-pKY3wCHr51Q" isUnique="false" aggregation="composite">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_YqN6ELa5Ed-h6ed0_iI5Ww"/>
+          </ownedAttribute>
+          <ownedAttribute xmi:id="_TZm8ELa5Ed-h6ed0_iI5Ww" name="descriptor" type="_bda8ILamEd-g56eOHhzzmw" isUnique="false" aggregation="composite">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_a8s6ELa5Ed-h6ed0_iI5Ww"/>
+          </ownedAttribute>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Association" xmi:id="_4tPxsLa5Ed-h6ed0_iI5Ww" memberEnd="_4tPxsba5Ed-h6ed0_iI5Ww _4tQYwra5Ed-h6ed0_iI5Ww">
+          <ownedEnd xmi:id="_4tPxsba5Ed-h6ed0_iI5Ww" name="context" type="_u0_IkLa4Ed-h6ed0_iI5Ww" association="_4tPxsLa5Ed-h6ed0_iI5Ww">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tQYwba5Ed-h6ed0_iI5Ww" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4tQYwLa5Ed-h6ed0_iI5Ww"/>
+          </ownedEnd>
+          <ownedEnd xmi:id="_4tQYwra5Ed-h6ed0_iI5Ww" name="node" type="_2-8uwLa3Ed-h6ed0_iI5Ww" association="_4tPxsLa5Ed-h6ed0_iI5Ww">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tQYxLa5Ed-h6ed0_iI5Ww" value="*"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4tQYw7a5Ed-h6ed0_iI5Ww"/>
+          </ownedEnd>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Enumeration" xmi:id="_-5o8wMAgEd--w8OmwuD8rw" name="NCLUriType">
+          <ownedLiteral xmi:id="_BXWVUMAhEd--w8OmwuD8rw" name="FILE"/>
+          <ownedLiteral xmi:id="_CahpkMAhEd--w8OmwuD8rw" name="HTTP"/>
+          <ownedLiteral xmi:id="_DepZAMAhEd--w8OmwuD8rw" name="HTTPS"/>
+          <ownedLiteral xmi:id="_E5N5kMAhEd--w8OmwuD8rw" name="NCLMIRROR"/>
+          <ownedLiteral xmi:id="_GBnFAMAhEd--w8OmwuD8rw" name="RSTP"/>
+          <ownedLiteral xmi:id="_HEQ00MAhEd--w8OmwuD8rw" name="RTP"/>
+          <ownedLiteral xmi:id="_H6pqQMAhEd--w8OmwuD8rw" name="SBTVD_TS"/>
         </packagedElement>
       </packagedElement>
     </packagedElement>
