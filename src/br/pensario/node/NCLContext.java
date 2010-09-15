@@ -6,12 +6,14 @@ import java.util.TreeSet;
 
 import br.pensario.interfaces.NCLPort;
 import br.pensario.interfaces.NCLProperty;
+import br.pensario.link.NCLLink;
 
 public class NCLContext extends NCLNode {
 
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
-	private Set<NCLNode> childs = new TreeSet<NCLNode>();
+	private Set<NCLNode> nodes = new TreeSet<NCLNode>();
+	private Set<NCLLink> links = new TreeSet<NCLLink>();
 	
 	
 	public NCLContext(String id) throws Exception {
@@ -118,13 +120,13 @@ public class NCLContext extends NCLNode {
 		if (!hasNode(node.getId()))
 			contains = true;
 
-		childs.add(node);
+		nodes.add(node);
 
 		return contains;
 	}
 
 	public boolean removeNode(String id) {
-		Iterator<NCLNode> it = childs.iterator();
+		Iterator<NCLNode> it = nodes.iterator();
 
 		while (it.hasNext()) {
 			NCLNode n = it.next();
@@ -138,7 +140,7 @@ public class NCLContext extends NCLNode {
 	}
 
 	public boolean hasNode(String id) {
-		Iterator<NCLNode> it = childs.iterator();
+		Iterator<NCLNode> it = nodes.iterator();
 
 		while (it.hasNext()) {
 			NCLNode n = it.next();
@@ -150,7 +152,51 @@ public class NCLContext extends NCLNode {
 	}
 	
 	public boolean hasNode() {
-		return(!childs.isEmpty());
+		return(!nodes.isEmpty());
+	}
+	
+	/**
+	 * retorna true se o link foi substituido e falso se nao
+	 */
+	public boolean addLink(NCLLink link) {
+		boolean contains = false;
+
+		if (!hasLink(link))
+			contains = true;
+
+		links.add(link);
+
+		return contains;
+	}
+
+	public boolean removeLink(NCLLink link) {//TODO: receber link ou algum identificador??
+		Iterator<NCLLink> it = links.iterator();
+
+		while (it.hasNext()) {
+			NCLLink l = it.next();
+
+			if (l.equals(link)) {
+				it.remove();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasLink(NCLLink link) {//TODO: receber link ou algum identificador??
+		Iterator<NCLLink> it = links.iterator();
+
+		while (it.hasNext()) {
+			NCLLink l = it.next();
+
+			if (l.equals(link))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean hasLink() {
+		return(!links.isEmpty());
 	}
 	
 	public String parse(int ident) {

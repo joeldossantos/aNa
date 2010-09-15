@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.connector.NCLCausalConnector;
-import br.pensario.interfaces.NCLProperty;
 
 public class NCLLink {
 
