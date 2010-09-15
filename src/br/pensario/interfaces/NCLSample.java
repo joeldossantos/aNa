@@ -44,6 +44,8 @@
 //TODO: now é um valor válido??????
 package br.pensario.interfaces;
 
+import br.pensario.NCLValues.NCLSampleType;
+
 public class NCLSample {
 
 	private String value;

@@ -1,5 +1,7 @@
 package br.pensario.node;
 
+import br.pensario.NCLValues.NCLMimeType;
+import br.pensario.NCLValues.NCLUriType;
 import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.*;
 

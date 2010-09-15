@@ -1,12 +1,12 @@
 package br.pensario.descriptor;
 
 import br.pensario.NCLIdentifiable;
-import br.pensario.enums.NCLValues;
+import br.pensario.NCLValues;
 import br.pensario.region.NCLRegion;
 
 public class NCLDescriptor extends NCLIdentifiable {
 
-	//pegar valores padrão
+	//pegar valores padrï¿½o
 	
 	private String player;
 	private String explicitDur;

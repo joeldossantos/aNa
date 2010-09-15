@@ -1,5 +1,7 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLValues.NCLSystemVariable;
+
 public class NCLProperty extends NCLInterface {
 
 	private String name;
