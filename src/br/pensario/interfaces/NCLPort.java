@@ -8,8 +8,6 @@ public class NCLPort extends NCLInterface {
 	private NCLNode component;
 	private NCLInterface interfac;
 	
-	private Boolean hasInterface = false;
-	
 	
 	public NCLPort(String id, NCLNode component) throws Exception {
 		if (!setId(id) || !setComponent(component)){
@@ -18,7 +16,7 @@ public class NCLPort extends NCLInterface {
 		}
 	}
 	
-	public Boolean setId(String id) {
+	public boolean setId(String id) {
 		//TODO: validar entrada de id
 		this.id = id;
 		return true;
@@ -33,7 +31,7 @@ public class NCLPort extends NCLInterface {
 	 * @param component componente relacionado pela porta
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setComponent(NCLNode component) {
+	public boolean setComponent(NCLNode component) {
 		if (component != null){
 			this.component = component;
 			return true;
@@ -51,10 +49,9 @@ public class NCLPort extends NCLInterface {
 	 * @param interfac interface do componente
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setInterface(NCLInterface interfac) {
+	public boolean setInterface(NCLInterface interfac) {
 		if (interfac != null){
 			this.interfac = interfac;
-			hasInterface = true;
 			return true;
 		}
 		else
@@ -65,7 +62,15 @@ public class NCLPort extends NCLInterface {
 		return interfac;
 	}
 	
-	public Boolean hasInterface() {
-		return hasInterface;
+	public boolean hasInterface() {
+		if (interfac != null)
+			return true;
+		else
+			return false;
+	}
+	
+	public String parse(int ident) {
+		//a cada filho que entra adiciona 1 em ident
+		return "";
 	}
 }

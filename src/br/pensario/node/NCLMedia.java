@@ -11,7 +11,6 @@ import java.util.TreeSet;
 
 public class NCLMedia extends NCLNode {
 
-	private String id;
 	private String src;
 	private NCLMimeType type;
 	private NCLDescriptor descriptor;
@@ -27,21 +26,11 @@ public class NCLMedia extends NCLNode {
 		}
 	}
 	
-	public Boolean setId(String id) {
-		//TODO: colocar a validacao do id
-		this.id = id;
-		return true;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
 	/**
 	 * define a URI nao padrao de src da media.
 	 * @param src
 	 */
-	public Boolean setSrc(String src) {
+	public boolean setSrc(String src) {
 		//TODO: validacao do src??
 		this.src = src;
 		return true;
@@ -51,7 +40,7 @@ public class NCLMedia extends NCLNode {
 	 * define a URI nao padrao de src da media. Tem que ser uma URI padrao
 	 * @param src
 	 */
-	public Boolean setSrc(NCLUriType type, String src) {
+	public boolean setSrc(NCLUriType type, String src) {
 		//TODO: validacao do src com relacao ao tipo??
 		if (type != null){
 			this.src = type.toString() + src;
@@ -64,12 +53,19 @@ public class NCLMedia extends NCLNode {
 		return src;
 	}
 	
+	public boolean hasSrc() {
+		if (src != null)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 * define o tipo da media, sera um dos tipos padroes
 	 * @param type
 	 * @return true se valido false contrario
 	 */
-	public Boolean setType(NCLMimeType type) {
+	public boolean setType(NCLMimeType type) {
 		if (type != null){
 			this.type = type;
 			return true;
@@ -82,12 +78,19 @@ public class NCLMedia extends NCLNode {
 		return type;
 	}
 	
+	public boolean hasType() {
+		if (type != null)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 * define o descritor da media
 	 * @param descriptor
 	 * @return true se valido false contrario
 	 */
-	public Boolean setDescriptor(NCLDescriptor descriptor) {
+	public boolean setDescriptor(NCLDescriptor descriptor) {
 		if (descriptor != null){
 			this.descriptor = descriptor;
 			return true;
@@ -98,6 +101,13 @@ public class NCLMedia extends NCLNode {
 	
 	public NCLDescriptor getDescriptor() {
 		return descriptor;
+	}
+	
+	public boolean hasDescriptor() {
+		if (descriptor != null)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -141,6 +151,10 @@ public class NCLMedia extends NCLNode {
 		return false;
 	}
 	
+	public boolean hasArea() {
+		return(!areas.isEmpty());
+	}
+	
 	/**
 	 * retorna true se a propriedade foi substituida e falso se nao
 	 */
@@ -179,5 +193,14 @@ public class NCLMedia extends NCLNode {
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean hasProperty() {
+		return(!properties.isEmpty());
+	}
+	
+	public String parse(int ident) {
+		//a cada filho que entra adiciona 1 em ident
+		return "";
 	}
 }

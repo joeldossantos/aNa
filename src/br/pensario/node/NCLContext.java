@@ -4,12 +4,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.pensario.interfaces.*;
+import br.pensario.interfaces.NCLPort;
+import br.pensario.interfaces.NCLProperty;
 
 public class NCLContext extends NCLNode {
 
-	private String id;
-	
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
 	private Set<NCLNode> childs = new TreeSet<NCLNode>();
@@ -20,16 +19,6 @@ public class NCLContext extends NCLNode {
 			Exception ex = new Exception("Invalid id");
 			throw ex;
 		}
-	}
-	
-	public Boolean setId(String id) {
-		//TODO: colocar a validacao do id
-		this.id = id;
-		return true;
-	}
-	
-	public String getId() {
-		return id;
 	}
 	
 	/**
@@ -72,6 +61,10 @@ public class NCLContext extends NCLNode {
 		return false;
 	}
 	
+	public boolean hasPort() {
+		return(!ports.isEmpty());
+	}
+	
 	/**
 	 * retorna true se a propriedade foi substituida e falso se nao
 	 */
@@ -112,6 +105,10 @@ public class NCLContext extends NCLNode {
 		return false;
 	}
 	
+	public boolean hasProperty() {
+		return(!properties.isEmpty());
+	}
+	
 	/**
 	 * retorna true se o no foi substituido e falso se nao
 	 */
@@ -150,5 +147,14 @@ public class NCLContext extends NCLNode {
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean hasNode() {
+		return(!childs.isEmpty());
+	}
+	
+	public String parse(int ident) {
+		//a cada filho que entra adiciona 1 em ident
+		return "";
 	}
 }

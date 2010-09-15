@@ -16,7 +16,7 @@ public class NCLTime {
 	private int second = -1;
 	private int fraction = -1;
 	
-	private Boolean absoluteSecond = false;
+	private boolean absoluteSecond = false;
 	
 	
 	public NCLTime(int year, int month, int day, int hour, int minute, int second, int fraction) throws Exception {
@@ -49,7 +49,7 @@ public class NCLTime {
 		}
 	}
 	
-	public Boolean setYear(int year) {
+	public boolean setYear(int year) {
 		if (year >= 0){
 			this.year = year;
 			return true;
@@ -62,14 +62,14 @@ public class NCLTime {
 		return year;
 	}
 	
-	public Boolean hasYear() {
+	public boolean hasYear() {
 		if (year != -1)
 			return true;
 		else
 			return false;
 	}
 	
-	public Boolean setMonth(int month) {
+	public boolean setMonth(int month) {
 		if (month >= 1 && month <= 12){
 			this.month = month;
 			return true;
@@ -82,14 +82,14 @@ public class NCLTime {
 		return month;
 	}
 	
-	public Boolean hasMonth() {
+	public boolean hasMonth() {
 		if (month != -1)
 			return true;
 		else
 			return false;
 	}
 	
-	public Boolean setDay(int day) {
+	public boolean setDay(int day) {
 		if (day >= 1 && day <= 31){
 			this.day = day;
 			return true;
@@ -102,14 +102,14 @@ public class NCLTime {
 		return day;
 	}
 	
-	public Boolean hasDay() {
+	public boolean hasDay() {
 		if (day != -1)
 			return true;
 		else
 			return false;
 	}
 	
-	public Boolean setHour(int hour) {
+	public boolean setHour(int hour) {
 		if (hour >= 0 && hour <= 23){
 			this.hour = hour;
 			return true;
@@ -122,14 +122,14 @@ public class NCLTime {
 		return hour;
 	}
 	
-	public Boolean hasHour() {
+	public boolean hasHour() {
 		if (hour != -1)
 			return true;
 		else
 			return false;
 	}
 	
-	public Boolean setMinute(int minute) {
+	public boolean setMinute(int minute) {
 		if (minute >= 0 && minute <= 59){
 			this.minute = minute;
 			return true;
@@ -142,14 +142,14 @@ public class NCLTime {
 		return minute;
 	}
 	
-	public Boolean hasMinute() {
+	public boolean hasMinute() {
 		if (minute != -1)
 			return true;
 		else
 			return false;
 	}
 	
-	public Boolean setSecond(int second) {
+	public boolean setSecond(int second) {
 		if (second >= 0 && (absoluteSecond || second <= 59)){
 			this.second = second;
 			return true;
@@ -162,14 +162,14 @@ public class NCLTime {
 		return second;
 	}
 	
-	public Boolean hasSecond() {
+	public boolean hasSecond() {
 		if (second != -1)
 			return true;
 		else
 			return false;
 	}
 	
-	public Boolean setFraction(int fraction) {
+	public boolean setFraction(int fraction) {
 		if (fraction >= 0){
 			this.fraction = fraction;
 			return true;
@@ -182,7 +182,7 @@ public class NCLTime {
 		return fraction;
 	}
 	
-	public Boolean hasFraction() {
+	public boolean hasFraction() {
 		if (fraction != -1)
 			return true;
 		else

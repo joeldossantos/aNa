@@ -3,7 +3,7 @@ package br.pensario.interfaces;
 public class NCLArea extends NCLInterface {
 
 	private String id;
-	private NCLCoords coords;
+	private int[] coords;
 	private NCLTime begin;
 	private NCLTime end;
 	private String text;
@@ -11,15 +11,6 @@ public class NCLArea extends NCLInterface {
 	private NCLSample first;
 	private NCLSample last;
 	private String label;
-	
-	private Boolean hasCoords = false;
-	private Boolean hasBegin = false;
-	private Boolean hasEnd = false;
-	private Boolean hasText = false;
-	private Boolean hasPosition = false;
-	private Boolean hasFirst = false;
-	private Boolean hasLast = false;
-	private Boolean hasLabel = false;
 	
 	
 	public NCLArea(String id) throws Exception {
@@ -29,7 +20,7 @@ public class NCLArea extends NCLInterface {
 		}
 	}
 	
-	public Boolean setId(String id) {
+	public boolean setId(String id) {
 		//TODO: validar entrada de id
 		this.id = id;
 		return true;
@@ -39,27 +30,39 @@ public class NCLArea extends NCLInterface {
 		return id;
 	}
 	
+	/*
+	 * Assim, ele permite a definição de âncoras de conteúdo representando
+	 * porções espaciais, através de atributo coords (como em XHTML);
+	 * 
+	 * The position and shape of an image map element on the screen.
+	 * 
+	 * x1,y1,x2,y2,...,xN,yN
+	 *
+	 */
 	/**
 	 * define ancora de conteudo representando porcoes espaciais.
 	 * @param coords uma coordenada ver: NCLCoords
 	 * @return true se cordenada existe falso contrario
 	 */
-	public Boolean setCoords(NCLCoords coords) {
-		if (coords != null){
-			this.coords = coords;
-			hasCoords = true;
-			return true;
+	public boolean setCoords(int[] coords) {
+		for (int i = 0; i < coords.length; i++){
+			if (coords[i] < 0){
+				return false;
+			}
 		}
-		else
-			return false;
+		this.coords = coords;
+		return true;
 	}
 	
-	public NCLCoords getCoords() {
+	public int[] getCoords() {
 		return coords;
 	}
 	
-	public Boolean hasCoords() {
-		return hasCoords;
+	public boolean hasCoords() {
+		if (coords.length != 0)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -68,11 +71,10 @@ public class NCLArea extends NCLInterface {
 	 * @param begin um tempo de inicio ver:NCLTime
 	 * @return true se tempo existe falso contrario
 	 */
-	public Boolean setBegin(NCLTime begin) {
+	public boolean setBegin(NCLTime begin) {
 		//TODO: validar quanto ao tipo de media
 		if (begin != null){
 			this.begin = begin;
-			hasBegin = true;
 			return true;
 		}
 		else
@@ -83,8 +85,11 @@ public class NCLArea extends NCLInterface {
 		return begin;
 	}
 	
-	public Boolean hasBegin() {
-		return hasBegin;
+	public boolean hasBegin() {
+		if (begin != null)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -93,11 +98,10 @@ public class NCLArea extends NCLInterface {
 	 * @param end um tempo de fim ver:NCLTime
 	 * @return true se tempo existe falso contrario
 	 */
-	public Boolean setEnd(NCLTime end) {
+	public boolean setEnd(NCLTime end) {
 		//TODO: validar quanto ao tipo de media
 		if (end != null){
 			this.end = end;
-			hasEnd = true;
 			return true;
 		}
 		else
@@ -108,8 +112,11 @@ public class NCLArea extends NCLInterface {
 		return end;
 	}
 	
-	public Boolean hasEnd() {
-		return hasEnd;
+	public boolean hasEnd() {
+		if (end != null)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -118,15 +125,17 @@ public class NCLArea extends NCLInterface {
 	 */
 	public void setText(String text) {
 		this.text = text;
-		hasText = true;
 	}
 	
 	public String getText() {
 		return text;
 	}
 	
-	public Boolean hasText() {
-		return hasText;
+	public boolean hasText() {
+		if (text != null)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -134,10 +143,9 @@ public class NCLArea extends NCLInterface {
 	 * @param position posicao do texto
 	 * @return true se posicao valida falso contrario
 	 */
-	public Boolean setPosition(int position) {
+	public boolean setPosition(int position) {
 		if (position >= 0){
 			this.position = position;
-			hasPosition = true;
 			return true;
 		}
 		else
@@ -148,8 +156,11 @@ public class NCLArea extends NCLInterface {
 		return position;
 	}
 	
-	public Boolean hasPosition() {
-		return hasPosition;
+	public boolean hasPosition() {
+		if (position != -1)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -157,10 +168,9 @@ public class NCLArea extends NCLInterface {
 	 * @param first inicio da ancora ver:NCLSample
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setFirst(NCLSample first) {
+	public boolean setFirst(NCLSample first) {
 		if (first != null){
 			this.first = first;
-			hasFirst = true;
 			return true;
 		}
 		else
@@ -171,8 +181,11 @@ public class NCLArea extends NCLInterface {
 		return first;
 	}
 	
-	public Boolean hasFirst() {
-		return hasFirst;
+	public boolean hasFirst() {
+		if (first != null)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -180,10 +193,9 @@ public class NCLArea extends NCLInterface {
 	 * @param last fim da ancora var:NCLSample
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setLast(NCLSample last) {
+	public boolean setLast(NCLSample last) {
 		if (last != null){
 			this.last = last;
-			hasLast = true;
 			return true;
 		}
 		else
@@ -194,8 +206,11 @@ public class NCLArea extends NCLInterface {
 		return last;
 	}
 	
-	public Boolean hasLast() {
-		return hasLast;
+	public boolean hasLast() {
+		if (last != null)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -206,14 +221,33 @@ public class NCLArea extends NCLInterface {
 	 */
 	public void setLabel(String label) {
 		this.label = label;
-		hasLabel = true;
 	}
 	
 	public String getLabel() {
 		return label;
 	}
 	
-	public Boolean hasLabel() {
-		return hasLabel;
+	public boolean hasLabel() {
+		if (label != null)
+			return true;
+		else
+			return false;
 	}
+	
+	public String parse(int ident) {
+		//a cada filho que entra adiciona 1 em ident
+		return "";
+	}
+	
+	/*
+	metodo to string do coords
+	public String toString() {
+		String result = "";
+		for (int i = 0; i < coords.length; i++){
+			result += coords[i];
+			if (i < coords.length - 1)
+				result += ",";
+		}
+		return result;
+	}*/
 }

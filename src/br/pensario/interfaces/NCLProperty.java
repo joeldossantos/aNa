@@ -7,8 +7,6 @@ public class NCLProperty extends NCLInterface {
 	private String name;
 	private String value;
 	
-	private Boolean hasValue = false;
-	
 	
 	public NCLProperty(String name) throws Exception {
 		if (!setName(name)){
@@ -30,7 +28,7 @@ public class NCLProperty extends NCLInterface {
 	 * @param name nome da propriedade
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setName(String name) {
+	public boolean setName(String name) {
 		//TODO: validar entrada de nome pelo menos ver se eh nulo
 		this.name = name;
 		return true;
@@ -41,7 +39,7 @@ public class NCLProperty extends NCLInterface {
 	 * @param name nome da propriedade
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setName(NCLSystemVariable name) {
+	public boolean setName(NCLSystemVariable name) {
 		if (name != null){
 			return setName(name.toString());
 		}
@@ -58,10 +56,9 @@ public class NCLProperty extends NCLInterface {
 	 * @param value valor da propriedade
 	 * @return true se valido falso contrario
 	 */
-	public Boolean setValue(String value) {
+	public boolean setValue(String value) {
 		if (value != null){
 			this.value = value;
-			hasValue = true;
 			return true;
 		}
 		else
@@ -72,7 +69,15 @@ public class NCLProperty extends NCLInterface {
 		return value;
 	}
 	
-	public Boolean hasValue() {
-		return hasValue;
+	public boolean hasValue() {
+		if (value != null)
+			return true;
+		else
+			return false;
+	}
+	
+	public String parse(int ident) {
+		//a cada filho que entra adiciona 1 em ident
+		return "";
 	}
 }
