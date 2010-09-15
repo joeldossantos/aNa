@@ -284,7 +284,7 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lk_wcLajEd-g56eOHhzzmw"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_mc1-cLajEd-g56eOHhzzmw" name="xmlns" type="_eecpsLaREd-pKY3wCHr51Q" aggregation="composite">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_osH5cLajEd-g56eOHhzzmw"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_osH5cLajEd-g56eOHhzzmw" value="1"/>
     </ownedAttribute>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_t1_9ULajEd-g56eOHhzzmw" name="NCLHead"/>

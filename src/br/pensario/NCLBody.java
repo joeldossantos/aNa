@@ -12,6 +12,7 @@ import java.util.TreeSet;
 public class NCLBody {
 
 	private String id;
+	
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
 	private Set<NCLNode> nodes = new TreeSet<NCLNode>();
@@ -216,7 +217,66 @@ public class NCLBody {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <body> element and attributes declaration
+		content = space + "<body";
+		if (hasId())
+			content += " id='" + getId() + "'";
+		content += ">\n";
+		
+		
+		// <body> element content
+		if (hasPort()){
+			content += "<!-- Body element ports -->\n";
+			
+			Iterator<NCLPort> it = ports.iterator();
+			while (it.hasNext()) {
+				NCLPort p = it.next();
+				content += p.parse(ident+1);
+			}
+		}
+		
+		if (hasProperty()){
+			content += "<!-- Body element properties -->\n";
+			
+			Iterator<NCLProperty> it = properties.iterator();
+			while (it.hasNext()) {
+				NCLProperty p = it.next();
+				content += p.parse(ident+1);
+			}
+		}
+		
+		if (hasNode()){
+			content += "<!-- Body element nodes -->\n";
+			
+			Iterator<NCLNode> it = nodes.iterator();
+			while (it.hasNext()) {
+				NCLNode n = (NCLNode) it.next();
+				content += n.parse(ident+1);
+			}
+		}
+		
+		if (hasLink()){
+			content += "<!-- Body element links -->\n";
+			
+			Iterator<NCLLink> it = links.iterator();
+			while (it.hasNext()) {
+				NCLLink l = (NCLLink) it.next();
+				content += l.parse(ident+1);
+			}
+		}
+		
+		
+		// <body> element end declaration
+		content += space + "</body>\n";
+		
+		return content;
 	}
 }

@@ -1,6 +1,11 @@
 package br.pensario;
 
 public abstract class NCLValues {
+	
+	public enum NCLNamespace {
+		//colocar os namespaces
+	}
+	
 	public enum NCLColor {
 		gray, white, black, silver, red, maroon, fuchsia, purple, lime, green, yellow, olive, blue, navy, aqua, teal
 	}
