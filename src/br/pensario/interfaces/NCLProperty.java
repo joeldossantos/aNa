@@ -1,10 +1,11 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLIdentification;
 import br.pensario.NCLValues.NCLSystemVariable;
 
 public class NCLProperty extends NCLInterface {
 
-	private String name;
+	private NCLIdentification name;
 	private String value;
 	
 	
@@ -29,9 +30,14 @@ public class NCLProperty extends NCLInterface {
 	 * @return true se valido falso contrario
 	 */
 	public boolean setName(String name) {
-		//TODO: validar entrada de nome pelo menos ver se eh nulo
-		this.name = name;
-		return true;
+		try{
+			this.name = new NCLIdentification(name);
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	/**
@@ -48,7 +54,11 @@ public class NCLProperty extends NCLInterface {
 	}
 	
 	public String getName() {
-		return name;
+		return name.toString();
+	}
+	
+	public String getIdentifier(){
+		return getName();
 	}
 	
 	/**
@@ -77,7 +87,22 @@ public class NCLProperty extends NCLInterface {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <property> element and attributes declaration
+		content = space + "<property";
+		content += " name='" + getName() + "'";
+		if (hasValue())
+			content += " value='" + getValue() + "'";
+		content += "/>\n";
+		
+		
+		return content;
 	}
 }

@@ -5,6 +5,7 @@ import br.pensario.NCLValues.NCLUriType;
 import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.*;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,19 +32,39 @@ public class NCLMedia extends NCLNode {
 	 * @param src
 	 */
 	public boolean setSrc(String src) {
-		//TODO: validacao do src??
-		this.src = src;
-		return true;
+		try{
+			URI uri = new URI(src);
+			this.src = uri.toString();
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	/**
 	 * define a URI nao padrao de src da media. Tem que ser uma URI padrao
+	 * 
+	 * media do tipo settings nao tem src
 	 * @param src
 	 */
 	public boolean setSrc(NCLUriType type, String src) {
-		//TODO: validacao do src com relacao ao tipo??
-		if (type != null){
-			this.src = type.toString() + src;
+		if (type != null && getType() != NCLMimeType.APPLICATION_X_GINGA_SETTINGS){
+			return setSrc(type.toString() + src);
+		}
+		return false;
+	}
+	
+	/**
+	 * define o src para a media do tipo time
+	 * @param time
+	 * @return
+	 */
+	public boolean setSrc(NCLTime time) {
+		// So aceita NCLTime completo
+		if (time != null && time.isUTC() && getType() == NCLMimeType.APPLICATION_X_GINGA_TIME){
+			this.src = time.toString();
 			return true;
 		}
 		return false;
@@ -113,8 +134,22 @@ public class NCLMedia extends NCLNode {
 	/**
 	 * retorna true se a area foi substituida e falso se nao
 	 */
-	public boolean addArea(NCLArea area) {
-		//TODO: validar o begin com relacao ao tipo da midia???????
+	public boolean addArea(NCLArea area) throws Exception {
+		if (getType() == NCLMimeType.APPLICATION_X_GINGA_TIME){
+			// Test if area begin or end is not in UTC format. Media of type Time must have a begin in UTC format
+			if((area.hasBegin() && !area.getBegin().isUTC()) || (area.hasEnd() && !area.getEnd().isUTC())){
+				Exception ex = new Exception("Areas of media with type application.x-ginga-time must have begin or end attribute in UTC format.");
+				throw ex;
+			}
+		}
+		else{
+			// Test if area begin or end is in UTC format. UTC format is reserved to medias of type Time.
+			if((area.hasBegin() && area.getBegin().isUTC()) || (area.hasEnd() && area.getEnd().isUTC())){
+				Exception ex = new Exception("Areas of media without type application.x-ginga-time can not have begin or end attribute in UTC format.");
+				throw ex;
+			}
+		}
+		
 		boolean contains = false;
 
 		if (!hasArea(area.getId()))
@@ -200,7 +235,57 @@ public class NCLMedia extends NCLNode {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <media> element and attributes declaration
+		content = space + "<media";
+		content += " id='" + getId() + "'";
+		if (hasSrc())
+			content += " src='" + getSrc() + "'";
+		if (hasType())
+			content += " type='" + getType().toString() + "'";
+		if (hasDescriptor())
+			content += " descriptor='" + getDescriptor().getId() + "'";
+		
+		// Test if the media has content
+		if (hasArea() || hasProperty()){
+			content += ">\n";
+			
+			
+			// <media> element content
+			if (hasArea()){
+				content += "<!-- Media element anchors -->\n";
+				
+				Iterator<NCLArea> it = areas.iterator();
+				while (it.hasNext()) {
+					NCLArea a = it.next();
+					content += a.parse(ident+1);
+				}
+			}
+			
+			if (hasProperty()){
+				content += "<!-- Media element properties -->\n";
+				
+				Iterator<NCLProperty> it = properties.iterator();
+				while (it.hasNext()) {
+					NCLProperty p = it.next();
+					content += p.parse(ident+1);
+				}
+			}
+			
+			
+			// <media> element end declaration
+			content += space + "</media>\n";
+		}
+		else
+			content += "/>\n";
+		
+		return content;
 	}
 }

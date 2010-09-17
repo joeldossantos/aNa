@@ -4,11 +4,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import br.pensario.NCLIdentification;
 import br.pensario.connector.NCLCausalConnector;
+import br.pensario.connector.NCLConnectorParam;
 
 public class NCLLink {
 
-	private String id;
+	private NCLIdentification id;
 	private NCLCausalConnector xconnector;
 	
 	private Set<NCLLinkParam> linkParams = new TreeSet<NCLLinkParam>();
@@ -23,13 +25,18 @@ public class NCLLink {
 	}
 	
 	public boolean setId(String id) {
-		//TODO: colocar a validacao do id
-		this.id = id;
-		return true;
+		try{
+			this.id = new NCLIdentification(id);
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	public String getId() {
-		return id;
+		return id.toString();
 	}
 	
 	public boolean hasId() {
@@ -80,7 +87,7 @@ public class NCLLink {
 		return false;
 	}
 
-	public boolean hasLinkParam(String name) {
+	public boolean hasLinkParam(NCLConnectorParam name) {
 		Iterator<NCLLinkParam> it = linkParams.iterator();
 
 		while (it.hasNext()) {
@@ -141,7 +148,45 @@ public class NCLLink {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <link> element and attributes declaration
+		content = space + "<link";
+		if (hasId())
+			content += " id='" + getId() + "'";
+		content += " xconnector='" + getXconnector().getId() + "'";
+		content += ">\n";
+		
+		
+		// <link> element content
+		if (hasLinkParam()){
+			content += "<!-- Link element parameters -->\n";
+			
+			Iterator<NCLLinkParam> it = linkParams.iterator();
+			while (it.hasNext()) {
+				NCLLinkParam p = it.next();
+				content += p.parse(ident+1);
+			}
+		}
+		
+		content += "<!-- Link element binds -->\n";
+		
+		Iterator<NCLBind> it = binds.iterator();
+		while (it.hasNext()) {
+			NCLBind b = it.next();
+			content += b.parse(ident+1);
+		}
+		
+		
+		// <link> element end declaration
+		content += space + "</link>\n";
+		
+		return content;
 	}
 }

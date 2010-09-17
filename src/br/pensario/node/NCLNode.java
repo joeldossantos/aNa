@@ -1,18 +1,25 @@
 package br.pensario.node;
 
+import br.pensario.NCLIdentification;
+
 public abstract class NCLNode {
 	
-	private String id;
+	private NCLIdentification id;
 	
 	
 	public boolean setId(String id) {
-		//TODO: colocar a validacao do id
-		this.id = id;
-		return true;
+		try{
+			this.id = new NCLIdentification(id);
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	public String getId() {
-		return id;
+		return id.toString();
 	}
 	
 	public abstract String parse(int ident);

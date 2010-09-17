@@ -200,7 +200,71 @@ public class NCLContext extends NCLNode {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <context> element and attributes declaration
+		content = space + "<context";
+		content += " id='" + getId() + "'";
+		
+		// Test if the media has content
+		if (hasPort() || hasProperty() || hasNode() || hasLink()){
+			content += ">\n";
+			
+			
+			// <context> element content
+			if (hasPort()){
+				content += "<!-- Context element ports -->\n";
+				
+				Iterator<NCLPort> it = ports.iterator();
+				while (it.hasNext()) {
+					NCLPort p = it.next();
+					content += p.parse(ident+1);
+				}
+			}
+			
+			if (hasProperty()){
+				content += "<!-- Context element properties -->\n";
+				
+				Iterator<NCLProperty> it = properties.iterator();
+				while (it.hasNext()) {
+					NCLProperty p = it.next();
+					content += p.parse(ident+1);
+				}
+			}
+			
+			if (hasNode()){
+				content += "<!-- Context element nodes -->\n";
+				
+				Iterator<NCLNode> it = nodes.iterator();
+				while (it.hasNext()) {
+					NCLNode n = (NCLNode) it.next();
+					content += n.parse(ident+1);
+				}
+			}
+			
+			if (hasLink()){
+				content += "<!-- Context element links -->\n";
+				
+				Iterator<NCLLink> it = links.iterator();
+				while (it.hasNext()) {
+					NCLLink l = (NCLLink) it.next();
+					content += l.parse(ident+1);
+				}
+			}
+			
+			
+			// <context> element end declaration
+			content += space + "</context>\n";
+		}
+		else
+			content += "/>\n";
+		
+		return content;
 	}
 }

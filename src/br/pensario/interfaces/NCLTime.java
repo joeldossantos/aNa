@@ -52,6 +52,7 @@ public class NCLTime {
 	public boolean setYear(int year) {
 		if (year >= 0){
 			this.year = year;
+			absoluteSecond = false;
 			return true;
 		}
 		else
@@ -72,6 +73,7 @@ public class NCLTime {
 	public boolean setMonth(int month) {
 		if (month >= 1 && month <= 12){
 			this.month = month;
+			absoluteSecond = false;
 			return true;
 		}
 		else
@@ -92,6 +94,7 @@ public class NCLTime {
 	public boolean setDay(int day) {
 		if (day >= 1 && day <= 31){
 			this.day = day;
+			absoluteSecond = false;
 			return true;
 		}
 		else
@@ -110,8 +113,9 @@ public class NCLTime {
 	}
 	
 	public boolean setHour(int hour) {
-		if (hour >= 0 && hour <= 23){
+		if (hour >= 0 && (!hasDay() || hour <= 23)){
 			this.hour = hour;
+			absoluteSecond = false;
 			return true;
 		}
 		else
@@ -132,6 +136,7 @@ public class NCLTime {
 	public boolean setMinute(int minute) {
 		if (minute >= 0 && minute <= 59){
 			this.minute = minute;
+			absoluteSecond = false;
 			return true;
 		}
 		else
@@ -184,6 +189,13 @@ public class NCLTime {
 	
 	public boolean hasFraction() {
 		if (fraction != -1)
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean isUTC() {
+		if (hasYear() && hasMonth() && hasDay() && hasHour() && hasMinute() && hasSecond() && hasFraction())
 			return true;
 		else
 			return false;

@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 public class NCLBody {
 
-	private String id;
+	private NCLIdentification id;
 	
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
@@ -24,13 +24,18 @@ public class NCLBody {
 	}
 	
 	public boolean setId(String id) {
-		//TODO: colocar a validacao do id
-		this.id = id;
-		return true;
+		try{
+			this.id = new NCLIdentification(id);
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	public String getId() {
-		return id;
+		return id.toString();
 	}
 	
 	public boolean hasId() {

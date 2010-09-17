@@ -1,8 +1,10 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLIdentification;
+
 public class NCLArea extends NCLInterface {
 
-	private String id;
+	private NCLIdentification id;
 	private int[] coords;
 	private NCLTime begin;
 	private NCLTime end;
@@ -21,13 +23,22 @@ public class NCLArea extends NCLInterface {
 	}
 	
 	public boolean setId(String id) {
-		//TODO: validar entrada de id
-		this.id = id;
-		return true;
+		try{
+			this.id = new NCLIdentification(id);
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	public String getId() {
-		return id;
+		return id.toString();
+	}
+	
+	public String getIdentifier(){
+		return getId();
 	}
 	
 	/*
@@ -72,7 +83,6 @@ public class NCLArea extends NCLInterface {
 	 * @return true se tempo existe falso contrario
 	 */
 	public boolean setBegin(NCLTime begin) {
-		//TODO: validar quanto ao tipo de media
 		if (begin != null){
 			this.begin = begin;
 			return true;
@@ -99,7 +109,6 @@ public class NCLArea extends NCLInterface {
 	 * @return true se tempo existe falso contrario
 	 */
 	public boolean setEnd(NCLTime end) {
-		//TODO: validar quanto ao tipo de media
 		if (end != null){
 			this.end = end;
 			return true;
@@ -235,13 +244,40 @@ public class NCLArea extends NCLInterface {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		//TODO: Verificar os atributos que a ancora tem para fazer algum tipo de validacao?
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <area> element and attributes declaration
+		content = space + "<area";
+		content += " id='" + getId() + "'";
+		if (hasCoords())
+			content += " coords='" + coordsToString() + "'";
+		if (hasBegin())
+			content += " begin='" + getBegin().toString() + "'";
+		if (hasEnd())
+			content += " end='" + getEnd().toString() + "'";
+		if (hasText())
+			content += " text='" + getText() + "'";
+		if (hasPosition())
+			content += " position='" + getPosition() + "'";
+		if (hasFirst())
+			content += " first='" + getFirst().toString() + "'";
+		if (hasLast())
+			content += " last='" + getLast().toString() + "'";
+		if (hasLabel())
+			content += " label='" + getLabel() + "'";
+		content += "/>\n";
+		
+		return content;
 	}
 	
-	/*
-	metodo to string do coords
-	public String toString() {
+	private String coordsToString() {
 		String result = "";
 		for (int i = 0; i < coords.length; i++){
 			result += coords[i];
@@ -249,5 +285,5 @@ public class NCLArea extends NCLInterface {
 				result += ",";
 		}
 		return result;
-	}*/
+	}
 }

@@ -1,10 +1,11 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLIdentification;
 import br.pensario.node.NCLNode;
 
 public class NCLPort extends NCLInterface {
 
-	private String id;
+	private NCLIdentification id;
 	private NCLNode component;
 	private NCLInterface interfac;
 	
@@ -17,13 +18,22 @@ public class NCLPort extends NCLInterface {
 	}
 	
 	public boolean setId(String id) {
-		//TODO: validar entrada de id
-		this.id = id;
-		return true;
+		try{
+			this.id = new NCLIdentification(id);
+			return true;
+		}
+		catch(Exception ex){
+			System.err.println(ex);
+			return false;
+		}
 	}
 	
 	public String getId() {
-		return id;
+		return id.toString();
+	}
+	
+	public String getIdentifier(){
+		return getId();
 	}
 	
 	/**
@@ -70,7 +80,22 @@ public class NCLPort extends NCLInterface {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <port> element and attributes declaration
+		content = space + "<body";
+		content += " id='" + getId() + "'";
+		content += " component='" + getComponent().getId() + "'";
+		if (hasInterface())
+			content += " interface='" + getInterface().getIdentifier() + "'";
+		content += "/>\n";
+		
+		return content;
 	}
 }

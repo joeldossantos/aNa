@@ -1,28 +1,43 @@
 package br.pensario.link;
 
+import br.pensario.connector.NCLConnectorParam;
+
 public class NCLBindParam {
 
-	private String name;
+	private NCLConnectorParam name;
 	private String value;
 	
 	
-	public NCLBindParam(String name, String value) throws Exception {
-		if (!setName(name) || !setValue(value)){
-			Exception ex = new Exception("Invalid name or value");
+	/**
+	 * recebe o <connectorParam> ao qual se refere.
+	 * 
+	 * @param connectorParam
+	 * @param value
+	 * @throws Exception
+	 */
+	public NCLBindParam(NCLConnectorParam connectorParam, String value) throws Exception {
+		if (!setName(connectorParam) || !setValue(value)){
+			Exception ex = new Exception("Invalid connectorParam or value");
 			throw ex;
 		}
 	}
 	
-	public boolean setName(String name) {
-		if (name != null){
-			this.name = name;
+	/**
+	 * Gets the connectorParam element related to the bindParam.
+	 * 
+	 * @param connectorParam
+	 * @return
+	 */
+	public boolean setName(NCLConnectorParam connectorParam) {
+		if (connectorParam != null){
+			this.name = connectorParam;
 			return true;
 		}
 		else
 			return false;
 	}
 	
-	public String getName() {
+	public NCLConnectorParam getName() {
 		return name;
 	}
 	
@@ -40,7 +55,20 @@ public class NCLBindParam {
 	}
 	
 	public String parse(int ident) {
-		//a cada filho que entra adiciona 1 em ident
-		return "";
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		// <bindParam> element and attributes declaration
+		content = space + "<bindParam";
+		content += " name='" + getName().getName() + "'";
+		content += " value='" + getValue() + "'";
+		content += "/>\n";
+		
+		return content;
 	}
 }
