@@ -275,19 +275,6 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_upzDs7ahEd-g56eOHhzzmw" value="1"/>
     </ownedEnd>
   </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_dVVnYLajEd-g56eOHhzzmw" name="NCLDoc">
-    <ownedAttribute xmi:id="_fFsxwLajEd-g56eOHhzzmw" name="id" aggregation="composite">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_jHXQYLajEd-g56eOHhzzmw" name="title" aggregation="composite">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lk_wcLajEd-g56eOHhzzmw"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_mc1-cLajEd-g56eOHhzzmw" name="xmlns" type="_eecpsLaREd-pKY3wCHr51Q" aggregation="composite">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_osH5cLajEd-g56eOHhzzmw" value="1"/>
-    </ownedAttribute>
-  </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_t1_9ULajEd-g56eOHhzzmw" name="NCLHead"/>
   <packagedElement xmi:type="uml:Association" xmi:id="_w_bzcLajEd-g56eOHhzzmw" memberEnd="_w_bzcbajEd-g56eOHhzzmw _w_bzdLajEd-g56eOHhzzmw">
     <ownedEnd xmi:id="_w_bzcbajEd-g56eOHhzzmw" name="doc" type="_dVVnYLajEd-g56eOHhzzmw" association="_w_bzcLajEd-g56eOHhzzmw">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_w_bzc7ajEd-g56eOHhzzmw" value="1"/>
@@ -415,12 +402,6 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_vpcUEranEd-g56eOHhzzmw"/>
     </ownedEnd>
   </packagedElement>
-  <packagedElement xmi:type="uml:Class" xmi:id="_96XJELa0Ed-h6ed0_iI5Ww" name="NCLBody">
-    <ownedAttribute xmi:id="__AiG8La0Ed-h6ed0_iI5Ww" name="id" aggregation="composite">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ArvrkLa1Ed-h6ed0_iI5Ww"/>
-    </ownedAttribute>
-  </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_DRPuMLa1Ed-h6ed0_iI5Ww" memberEnd="_DRQ8ULa1Ed-h6ed0_iI5Ww _DRQ8U7a1Ed-h6ed0_iI5Ww">
     <ownedEnd xmi:id="_DRQ8ULa1Ed-h6ed0_iI5Ww" name="doc" type="_dVVnYLajEd-g56eOHhzzmw" association="_DRPuMLa1Ed-h6ed0_iI5Ww">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_DRQ8Ura1Ed-h6ed0_iI5Ww" value="1"/>
@@ -536,6 +517,7 @@
           <ownedAttribute xmi:id="_KHjHYLakEd-g56eOHhzzmw" name="region" isUnique="false" aggregation="composite">
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LtpigLakEd-g56eOHhzzmw"/>
           </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Port" xmi:id="_-YcdUMWIEd-j_suDca9tPA" name="port" aggregation="composite"/>
         </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_a54cILakEd-g56eOHhzzmw" name="NCLRegion">
           <ownedAttribute xmi:id="_e9rBsLakEd-g56eOHhzzmw" name="id" aggregation="composite">
@@ -832,6 +814,10 @@
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_bVrXkLa1Ed-h6ed0_iI5Ww"/>
           </ownedAttribute>
           <ownedAttribute xmi:id="_cksIYLa1Ed-h6ed0_iI5Ww" name="xconnector" type="_F-LtALaeEd-g56eOHhzzmw" isUnique="false" aggregation="composite"/>
+          <ownedAttribute xmi:id="__Vv8pMWUEd-j_suDca9tPA" name="dst" type="_VRiD0La1Ed-h6ed0_iI5Ww">
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__Vv8psWUEd-j_suDca9tPA" value="1"/>
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__Vv8pcWUEd-j_suDca9tPA" value="1"/>
+          </ownedAttribute>
         </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_RuBg0La1Ed-h6ed0_iI5Ww" name="NCLLinkParam">
           <generalization xmi:id="_Nyyk4La2Ed-h6ed0_iI5Ww"/>
@@ -891,6 +877,25 @@
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_IOB71La2Ed-h6ed0_iI5Ww"/>
           </ownedEnd>
         </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_dVVnYLajEd-g56eOHhzzmw" name="NCLDoc">
+        <ownedAttribute xmi:id="_fFsxwLajEd-g56eOHhzzmw" name="id" aggregation="composite">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_jHXQYLajEd-g56eOHhzzmw" name="title" aggregation="composite">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lk_wcLajEd-g56eOHhzzmw"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="_mc1-cLajEd-g56eOHhzzmw" name="xmlns" type="_eecpsLaREd-pKY3wCHr51Q" aggregation="composite">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_osH5cLajEd-g56eOHhzzmw" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_t1_9ULajEd-g56eOHhzzmw" name="NCLHead"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_96XJELa0Ed-h6ed0_iI5Ww" name="NCLBody">
+        <ownedAttribute xmi:id="__AiG8La0Ed-h6ed0_iI5Ww" name="id" aggregation="composite">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ArvrkLa1Ed-h6ed0_iI5Ww"/>
+        </ownedAttribute>
       </packagedElement>
     </packagedElement>
   </packagedElement>
