@@ -3,7 +3,10 @@ package br.pensario;
 public abstract class NCLValues {
 	
 	public enum NCLNamespace {
-		//colocar os namespaces
+		EDTV {public String toString(){return "http://www.ncl.org.br/NCL3.0/profiles/NCL30EDTV.xsd";}},
+		BDTV {public String toString(){return "http://www.ncl.org.br/NCL3.0/profiles/NCL30BDTV.xsd";}},
+		CAUSAL_CONNECTOR {public String toString(){return "http://www.ncl.org.br/NCL3.0/profiles/NCL30CausalConnector.xsd";}}		
+		
 	}
 	
 	public enum NCLColor {
@@ -298,6 +301,28 @@ public abstract class NCLValues {
 	public enum NCLSampleType {
 
 		S, F, NPT
+	}
+	
+	public enum NCLDefaultConditionRole
+	{
+		ONBEGIN {public String toString(){return"onBegin";}}, 
+		ONEND {public String toString(){return"onEnd";}}
+		/*ONBEGIN {public String toString(){return"onAbort";}},
+		ONBEGIN {public String toString(){return"onPause";}},
+		ONBEGIN {public String toString(){return"onResume";}},		
+		onEnd, 
+		onAbort, 
+		onPause, 
+		onResume, 
+		onSelection, 
+		onBeginAttribution, 
+		onEndAttribution, 
+		start, 
+		stop, 
+		abort, 
+		pause, 
+		resume, 
+		set		*/
 	}
 	
 	/**

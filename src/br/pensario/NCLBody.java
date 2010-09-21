@@ -227,8 +227,7 @@ public class NCLBody {
 		// Element indentation
 		space = "";
 		for (int i = 0; i < ident; i++)
-			space += "\t";
-		
+			space += "\t";		
 		
 		// <body> element and attributes declaration
 		content = space + "<body";

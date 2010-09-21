@@ -1,7 +1,7 @@
 package br.pensario.connector;
 
-public class NCLRole {
-public String getId(){
-	return "";
-}
+public abstract class NCLRole {
+
+	public abstract String getId();	
+	
 }

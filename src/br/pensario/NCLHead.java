@@ -1,16 +1,17 @@
 package br.pensario;
 
 import br.pensario.connector.NCLConnectorBase;
+import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.descriptor.NCLDescriptorBase;
+import br.pensario.region.NCLRegion;
 import br.pensario.region.NCLRegionBase;
 
 public class NCLHead {
 	
 	private NCLRegionBase rbase;
 	private NCLDescriptorBase dbase;
-	private NCLConnectorBase cbase;
+	private NCLConnectorBase cbase; 
 
-	
 	public NCLHead(NCLRegionBase region_base, NCLDescriptorBase descriptor_base, NCLConnectorBase connector_base)
 	{
 		setRegionBase(region_base);
@@ -41,6 +42,42 @@ public class NCLHead {
 	public NCLConnectorBase getConnectorBase() {
 		return cbase;
 	}	
+	
+		
+	public String parse(int ident) {
+		
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+		
+		
+		content = space + "<head>\n";				
+		
+		if (rbase.hasRegion())			
+			content += "<!-- Regioes -->\n";
+			
+		for(NCLRegion region : rbase.getRegions())
+		{				
+			content += region.parse(ident+1);				
+		}
+		
+		for(NCLDescriptor descriptor : dbase.getDescriptors())
+		{				
+			content += descriptor.parse(ident+1);				
+		}
+		
+	/*	for(NCLCausalConnector connector : cbase.getConnectors())
+		{				
+			content += connector.parse(ident+1);				
+		}*/	
+		
+		content += space + "</head>\n";
+		
+		return content;
+	}
 	
 	
 }

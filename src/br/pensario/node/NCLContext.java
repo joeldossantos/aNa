@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.pensario.interfaces.NCLPort;
 import br.pensario.interfaces.NCLProperty;
+import br.pensario.interfaces.NCLPort;
 import br.pensario.link.NCLLink;
 
 public class NCLContext extends NCLNode {

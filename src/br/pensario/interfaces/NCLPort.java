@@ -89,7 +89,7 @@ public class NCLPort extends NCLInterface {
 		
 		
 		// <port> element and attributes declaration
-		content = space + "<body";
+		content = space + "<port";
 		content += " id='" + getId() + "'";
 		content += " component='" + getComponent().getId() + "'";
 		if (hasInterface())

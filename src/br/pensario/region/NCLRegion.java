@@ -1,35 +1,53 @@
 package br.pensario.region;
 
-import br.pensario.NCLContainer;
-import br.pensario.NCLIdentifiableException;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class NCLRegion extends NCLContainer {
+public class NCLRegion implements Comparable {
+
+	private String id;
 
 	private String title;
 
 	// Quais são as regras de validação?
 
 	// Pode ser negativo?
-	private int left = -1;
-	private int right = -1;
-	private int top = -1;
-	private int bottom = -1;
-	private int height = -1;
-	private int width = -1;
-	private int zIndex = -1;
+	private Integer left;
+	private Integer right;
+	private Integer top;
+	private Integer bottom;
+	private Integer height;
+	private Integer width;
+	private Integer zIndex;
 
 	// Se relativo = true então o atributo correspondente tem que ter de 0 a 100
-	private boolean relativeLeft = false;
-	private boolean relativeRight = false;
-	private boolean relativeTop = false;
-	private boolean relativeBottom = false;
-	private boolean relativeHeight = false;
-	private boolean relativeWidth = false;
+	private Boolean relativeLeft;
+	private Boolean relativeRight;
+	private Boolean relativeTop;
+	private Boolean relativeBottom;
+	private Boolean relativeHeight;
+	private Boolean relativeWidth;
 
-	public NCLRegion(String id) throws NCLIdentifiableException {
+	private Set<NCLRegion> regions = new TreeSet<NCLRegion>();
+
+	// TODO - //Container separado em cada classe/ Implementar container por id
+	// único em cada classe
+	// TODO - Id setid getid por cada classe sem valdação
+	// TODO - métodos parse
+	// TODO - método has para todos os atributos que não são obrigatórios
+
+	public NCLRegion(String id) {
 		setId(id);
 	}
-	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -54,18 +72,19 @@ public class NCLRegion extends NCLContainer {
 		return title;
 	}
 
-	public void setLeft(Integer left, boolean relative)
-			throws RegionSetException {
+	public void setLeft(Integer left, boolean relative) throws Exception {
 
 		setRelativeLeft(relative);
 
 		if (isRelativeLeft() && (left < 0 || left > 100)) {
-			throw new RegionSetException(
+			Exception ex = new Exception(
 					"Valor não porcentual para atributo relativo de posicionamento ( %left = "
 							+ left + ")");
+
+			throw ex;
 		}
 
-		// else existe alguma restrição para valores não relativos?
+		// DUVIDA - else existe alguma restrição para valores não relativos?
 
 		this.left = left;
 
@@ -75,62 +94,75 @@ public class NCLRegion extends NCLContainer {
 		return left;
 	}
 
-	public void setRight(int right, boolean relative) throws RegionSetException {
+	public void setRight(int right, boolean relative) throws Exception {
 
 		setRelativeRight(relative);
 
 		if (isRelativeRight() && (right < 0 || right > 100)) {
-			throw new RegionSetException(
+			Exception ex = new Exception(
 					"Valor não porcentual para atributo relativo de posicionamento ( %right = "
 							+ right + ")");
+
+			throw ex;
 		}
+
+		// DUVIDA - else existe alguma restrição para valores não relativos?
 
 		this.right = right;
 	}
 
-	public int getRight() {
+	public Integer getRight() {
 		return right;
 	}
 
-	public void setTop(int top, boolean relative) throws RegionSetException {
+	public void setTop(int top, boolean relative) throws Exception {
 		setRelativeTop(relative);
 
-		if (isRelativeTop() && (top < 0 || top > 100)) {
-			throw new RegionSetException(
+		// TODO - Inverter valor de porcentagem
+		if (isRelativeTop() && top >= 0 && top <= 100) {
+
+			// TODO - Passar para todos os sets
+			Exception ex = new Exception(
 					"Valor não porcentual para atributo relativo de posicionamento ( %top = "
 							+ top + ")");
+
+			throw ex;
 		}
+
+		// DUVIDA - else existe alguma restrição para valores não relativos?
 
 		this.top = top;
 	}
 
-	public int getTop() {
+	public Integer getTop() {
 		return top;
 	}
 
-	public void setBottom(int bottom, boolean relative)
-			throws RegionSetException {
+	public void setBottom(int bottom, boolean relative) throws Exception {
 		setRelativeBottom(relative);
 
 		if (isRelativeBottom() && (bottom < 0 || bottom > 100)) {
-			throw new RegionSetException(
+			Exception ex = new Exception(
 					"Valor não porcentual para atributo relativo de posicionamento ( %bottom = "
 							+ bottom + ")");
+
+			throw ex;
 		}
+
+		// DUVIDA - else existe alguma restrição para valores não relativos?
 
 		this.bottom = bottom;
 	}
 
-	public int getBottom() {
+	public Integer getBottom() {
 		return bottom;
 	}
 
-	public void setHeight(int height, boolean relative)
-			throws RegionSetException {
+	public void setHeight(int height, boolean relative) throws Exception {
 		setRelativeHeight(relative);
 
 		if (isRelativeHeight() && (height < 0 || height > 100)) {
-			throw new RegionSetException(
+			throw new Exception(
 					"Valor não porcentual para atributo relativo de posicionamento ( %height = "
 							+ height + ")");
 		}
@@ -140,17 +172,19 @@ public class NCLRegion extends NCLContainer {
 		this.height = height;
 	}
 
-	public int getHeight() {
+	public Integer getHeight() {
 		return height;
 	}
 
-	public void setWidth(int width, boolean relative) throws RegionSetException {
+	public void setWidth(int width, boolean relative) throws Exception {
 		setRelativeWidth(relative);
 
 		if (isRelativeWidth() && (width < 0 || width > 100)) {
-			throw new RegionSetException(
+
+			Exception ex = new Exception(
 					"Valor não porcentual para atributo relativo de posicionamento ( %width = "
 							+ width + ")");
+			throw ex;
 		}
 
 		// else existe alguma restrição para valores não relativos?
@@ -158,7 +192,7 @@ public class NCLRegion extends NCLContainer {
 		this.width = width;
 	}
 
-	public int getWidth() {
+	public Integer getWidth() {
 		return width;
 	}
 
@@ -168,7 +202,7 @@ public class NCLRegion extends NCLContainer {
 		this.zIndex = zIndex;
 	}
 
-	public int getzIndex() {
+	public Integer getzIndex() {
 		return zIndex;
 	}
 
@@ -218,6 +252,110 @@ public class NCLRegion extends NCLContainer {
 
 	private boolean isRelativeWidth() {
 		return relativeWidth;
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		return getId().compareTo(((NCLRegion) arg0).getId());
+	}
+
+	public String toString() {		
+		return parse(0);
+	}
+
+	public String parse(int ident) {
+
+		String space, content;
+
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+
+		content = space + "<region";
+		content += " id='" + getId() + "'";
+
+		if (getLeft() != null) {
+			String percent = "";
+			if (isRelativeLeft())
+				percent = "%";
+			content += " left='" + getLeft() + percent + "'";
+		}
+
+		if (getRight() != null) {
+			String percent = "";
+			if (isRelativeRight())
+				percent = "%";
+			content += " right='" + getRight() + percent + "'";
+		}
+
+		if (getTop() != null) {
+			String percent = "";
+			if (isRelativeTop())
+				percent = "%";
+			content += " top='" + getTop() + percent + "'";
+		}
+
+		if (getBottom() != null) {
+			String percent = "";
+			if (isRelativeBottom())
+				percent = "%";
+			content += " bottom='" + getBottom() + percent + "'";
+		}
+
+		if (getHeight() != null) {
+			String percent = "";
+			if (isRelativeHeight())
+				percent = "%";
+			content += " height='" + getHeight() + percent + "'";
+		}
+
+		if (getWidth() != null) {
+			String percent = "";
+			if (isRelativeWidth())
+				percent = "%";
+			content += " width='" + getWidth() + percent + "'";
+		}
+
+		if (getzIndex() != null)
+			content += " zIndex='" + getzIndex() + "'";
+
+		if (getTitle() != null)
+			content += " title='" + getTitle() + "'";
+
+		if (hasRegion()) {
+			
+			content += ">\n";
+			for (NCLRegion region : getRegions()) {
+				content += region.parse(ident + 1);
+			}
+			content += "</region>\n";
+		}
+		else
+			content += "/>\n";
+
+		return content;
+	}
+
+	public boolean addRegion(NCLRegion region) {
+		return regions.add(region);
+
+	}
+
+	public boolean removeRegion(NCLRegion region) {
+		return regions.remove(region);
+	}
+
+	public boolean hasRegion(NCLRegion region) {
+		return regions.contains(region);
+	}
+
+	public boolean hasRegion() {
+		return regions.size() > 0;
+	}
+
+	public Iterable<NCLRegion> getRegions() {
+		return regions;
 	}
 
 }

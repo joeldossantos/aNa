@@ -1,21 +1,24 @@
 package br.pensario.descriptor;
 
-import br.pensario.NCLIdentifiable;
+
 import br.pensario.NCLValues;
 import br.pensario.region.NCLRegion;
 
-public class NCLDescriptor extends NCLIdentifiable {
+public class NCLDescriptor {
 
 	//pegar valores padrï¿½o
 	
+	private String id;
+	
 	private String player;
-	private String explicitDur;
-	private boolean freeze = false;
-	private NCLDescriptor moveLeft;
+	private String explicitDur; // TODO -se nao estiver setado ele adquire um valor default
+	private boolean freeze = false; // DUVIDA - o valor padrao é false?
+	
+	private NCLDescriptor moveLeft; //ao escrever no XML, pegar o focusIndex do descritor moveLeft
 	private NCLDescriptor moveRight;
-
 	private NCLDescriptor moveUp;
 	private NCLDescriptor moveDown;
+	
 	private int focusIndex;
 	private NCLValues.NCLColor focusBorderColor;
 	private int focusBorderWidth;
@@ -26,6 +29,8 @@ public class NCLDescriptor extends NCLIdentifiable {
 	private NCLValues.NCLColor selBorderColor;
 	
 	private NCLRegion region;
+	
+	//TODO - descriptorParam?
 
 	public void setPlayer(String player) {
 		this.player = player;
@@ -145,6 +150,38 @@ public class NCLDescriptor extends NCLIdentifiable {
 
 	public NCLRegion getRegion() {
 		return region;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String parse(int ident) {
+		
+		String space, content;
+		
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";	
+				
+		content = space + "<descriptor";
+		content += " id='" + getId() + "'";
+
+		//TODO - Region é obrigatorio para descritor, como e qdo verificar?
+		 
+		content += " region='" + getRegion().getId() + "'";
+		content += " explicitDur='" + getExplicitDur() + "'";
+		content += " freeze='" + isFreeze() + "'";
+		content += " player='" + getPlayer() + "'";
+
+		//DUVIDA os outros parametros retornam da mesma forma?
+					
+		return content;
 	}
 
 }

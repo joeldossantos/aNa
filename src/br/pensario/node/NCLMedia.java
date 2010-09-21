@@ -21,10 +21,10 @@ public class NCLMedia extends NCLNode {
 	
 	
 	public NCLMedia(String id) throws Exception {
-		if (!setId(id)){
+		setId(id);/*{
 			Exception ex = new Exception("Invalid id");
 			throw ex;
-		}
+		}*/
 	}
 	
 	/**

@@ -12,6 +12,7 @@ public class NCLDoc {
 	private NCLBody body;
 	
 	
+	//TODO - colocar um construtor com NCLNamespace padrao
 	public NCLDoc(String id, NCLNamespace xmlns, NCLHead head ,NCLBody body) throws Exception {
 		if (!setId(id) || !setXmlns(xmlns) || !setHead(head) || !setBody(body)){
 			Exception ex = new Exception("Invalid doc formation");
@@ -111,5 +112,10 @@ public class NCLDoc {
 		content += "</ncl>\n";
 		
 		return content;
+	}
+	
+	public String toString()
+	{
+		return parse();
 	}
 }
