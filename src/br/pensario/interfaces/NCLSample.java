@@ -9,36 +9,45 @@ public class NCLSample {
 	
 	
 	public NCLSample(int value, NCLSampleType type) throws Exception {
-		if (!setType(type) || !setValue(value)){
-			Exception ex = new Exception("Invalid sample value");
-			throw ex;
-		}
+		setType(type);
+		setValue(value);
 	}
 	
-	public boolean setValue(int value) {
+	public void setValue(int value) throws Exception {
 		if (value >= 0){
 			this.value = value;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid value");
+			throw ex;
+		}
 	}
 	
 	public int getValue() {
 		return value;
 	}
 	
-	public boolean setType(NCLSampleType type) {
+	public void setType(NCLSampleType type) throws Exception {
 		if (type != null){
 			this.type = type;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid type");
+			throw ex;
+		}
 	}
 	
 	public NCLSampleType getType() {
 		return type;
+	}
+	
+	public boolean equals(NCLSample sample) {
+		if (getValue() != sample.getValue())
+			return false;
+		if (!getType().equals(sample.getType()))
+			return false;
+		else
+			return true;
 	}
 	
 	public String toString() {

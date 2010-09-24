@@ -5,22 +5,16 @@ import br.pensario.NCLValues.NCLSystemVariable;
 
 public class NCLProperty extends NCLInterface {
 
-	private NCLIdentification name;
+	private String name;
 	private String value;
 	
 	
 	public NCLProperty(String name) throws Exception {
-		if (!setName(name)){
-			Exception ex = new Exception("Invalid name format");
-			throw ex;
-		}
+		setName(name);
 	}
 	
 	public NCLProperty(NCLSystemVariable name) throws Exception {
-		if (!setName(name)){
-			Exception ex = new Exception("Invalid name format");
-			throw ex;
-		}
+		setName(name);
 	}
 	
 	/**
@@ -29,15 +23,9 @@ public class NCLProperty extends NCLInterface {
 	 * @param name nome da propriedade
 	 * @return true se valido falso contrario
 	 */
-	public boolean setName(String name) {
-		try{
-			this.name = new NCLIdentification(name);
-			return true;
-		}
-		catch(Exception ex){
-			System.err.println(ex);
-			return false;
-		}
+	public void setName(String name) throws Exception {
+		NCLIdentification.validate(name);
+		this.name = name;
 	}
 	
 	/**
@@ -45,16 +33,18 @@ public class NCLProperty extends NCLInterface {
 	 * @param name nome da propriedade
 	 * @return true se valido falso contrario
 	 */
-	public boolean setName(NCLSystemVariable name) {
+	public void setName(NCLSystemVariable name) throws Exception {
 		if (name != null){
-			return setName(name.toString());
+			setName(name.toString());
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null name");
+			throw ex;
+		}
 	}
 	
 	public String getName() {
-		return name.toString();
+		return name;
 	}
 	
 	public String getIdentifier(){
@@ -66,13 +56,14 @@ public class NCLProperty extends NCLInterface {
 	 * @param value valor da propriedade
 	 * @return true se valido falso contrario
 	 */
-	public boolean setValue(String value) {
+	public void setValue(String value) throws Exception {
 		if (value != null){
 			this.value = value;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null value");
+			throw ex;
+		}
 	}
 	
 	public String getValue() {
@@ -84,6 +75,13 @@ public class NCLProperty extends NCLInterface {
 			return true;
 		else
 			return false;
+	}
+	
+	public boolean equals(NCLProperty property) {
+		if (!getName().equals(property.getName()))
+			return false;
+		else
+			return true;
 	}
 	
 	public String parse(int ident) {
@@ -104,5 +102,9 @@ public class NCLProperty extends NCLInterface {
 		
 		
 		return content;
+	}
+	
+	public String toString() {
+		return parse(0);
 	}
 }

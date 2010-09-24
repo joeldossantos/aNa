@@ -20,43 +20,42 @@ public class NCLTime {
 	
 	
 	public NCLTime(int year, int month, int day, int hour, int minute, int second, int fraction) throws Exception {
-		if (!setYear(year) || !setMonth(month) || !setDay(day) || !setHour(hour) || !setMinute(minute) || !setSecond(second) || !setFraction(fraction)){
-			Exception ex = new Exception("Invalid date format");
-			throw ex;
-		}
+		setYear(year);
+		setMonth(month);
+		setDay(day);
+		setHour(hour);
+		setMinute(minute);
+		setSecond(second);
+		setFraction(fraction);
 	}
 	
 	public NCLTime(int hour, int minute, int second, int fraction) throws Exception {
-		if (!setHour(hour) || !setMinute(minute) || !setSecond(second) || !setFraction(fraction)){
-			Exception ex = new Exception("Invalid time format");
-			throw ex;
-		}
+		setHour(hour);
+		setMinute(minute);
+		setSecond(second);
+		setFraction(fraction);
 	}
 	
 	public NCLTime(int second, int fraction) throws Exception {
 		absoluteSecond = true;
-		if (!setSecond(second) || !setFraction(fraction)){
-			Exception ex = new Exception("Invalid second format");
-			throw ex;
-		}
+		setSecond(second);
+		setFraction(fraction);
 	}
 	
 	public NCLTime(int second) throws Exception {
 		absoluteSecond = true;
-		if (!setSecond(second)){
-			Exception ex = new Exception("Invalid second format");
-			throw ex;
-		}
+		setSecond(second);
 	}
 	
-	public boolean setYear(int year) {
+	public void setYear(int year) throws Exception {
 		if (year >= 0){
 			this.year = year;
 			absoluteSecond = false;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid year");
+			throw ex;
+		}
 	}
 	
 	public int getYear() {
@@ -70,14 +69,15 @@ public class NCLTime {
 			return false;
 	}
 	
-	public boolean setMonth(int month) {
+	public void setMonth(int month) throws Exception {
 		if (month >= 1 && month <= 12){
 			this.month = month;
 			absoluteSecond = false;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid month");
+			throw ex;
+		}
 	}
 	
 	public int getMonth() {
@@ -91,14 +91,15 @@ public class NCLTime {
 			return false;
 	}
 	
-	public boolean setDay(int day) {
+	public void setDay(int day) throws Exception {
 		if (day >= 1 && day <= 31){
 			this.day = day;
 			absoluteSecond = false;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid day");
+			throw ex;
+		}
 	}
 	
 	public int getDay() {
@@ -112,14 +113,15 @@ public class NCLTime {
 			return false;
 	}
 	
-	public boolean setHour(int hour) {
+	public void setHour(int hour) throws Exception {
 		if (hour >= 0 && (!hasDay() || hour <= 23)){
 			this.hour = hour;
 			absoluteSecond = false;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid hour");
+			throw ex;
+		}
 	}
 	
 	public int getHour() {
@@ -133,14 +135,15 @@ public class NCLTime {
 			return false;
 	}
 	
-	public boolean setMinute(int minute) {
+	public void setMinute(int minute) throws Exception {
 		if (minute >= 0 && minute <= 59){
 			this.minute = minute;
 			absoluteSecond = false;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid minute");
+			throw ex;
+		}
 	}
 	
 	public int getMinute() {
@@ -154,13 +157,14 @@ public class NCLTime {
 			return false;
 	}
 	
-	public boolean setSecond(int second) {
+	public void setSecond(int second) throws Exception {
 		if (second >= 0 && (absoluteSecond || second <= 59)){
 			this.second = second;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid second");
+			throw ex;
+		}
 	}
 	
 	public int getSecond() {
@@ -174,13 +178,14 @@ public class NCLTime {
 			return false;
 	}
 	
-	public boolean setFraction(int fraction) {
+	public void setFraction(int fraction) throws Exception {
 		if (fraction >= 0){
 			this.fraction = fraction;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid fraction");
+			throw ex;
+		}
 	}
 	
 	public int getFraction() {
@@ -199,6 +204,25 @@ public class NCLTime {
 			return true;
 		else
 			return false;
+	}
+	
+	public boolean equals(NCLTime time) {
+		if (!hasYear() || !time.hasYear() || getYear() != time.getYear())
+			return false;
+		if (!hasMonth() || !time.hasMonth() || getMonth() != time.getMonth())
+			return false;
+		if (!hasDay() || !time.hasDay() || getDay() != time.getDay())
+			return false;
+		if (!hasHour() || !time.hasHour() || getHour() != time.getHour())
+			return false;
+		if (!hasMinute() || !time.hasMinute() || getMinute() != time.getMinute())
+			return false;
+		if (!hasSecond() || !time.hasSecond() || getSecond() != time.getSecond())
+			return false;
+		if (!hasFraction() || !time.hasFraction() || getFraction() != time.getFraction())
+			return false;
+		else
+			return true;
 	}
 	
 	public String toString() {

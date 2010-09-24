@@ -17,14 +17,12 @@ public class NCLBind {
 	private NCLInterface interfac;
 	private NCLDescriptor descriptor;
 	
-	private Set<NCLBindParam> bindParams = new TreeSet<NCLBindParam>();
+	private Set<NCLParam> bindParams = new TreeSet<NCLParam>();
 	
 	
 	public NCLBind(NCLRole role, NCLNode component) throws Exception {
-		if (!setRole(role) || !setComponent(component)){
-			Exception ex = new Exception("invalid role or component");
-			throw ex;
-		}
+		setRole(role);
+		setComponent(component);
 	}
 	
 	public boolean setRole(NCLRole role) {
@@ -40,26 +38,28 @@ public class NCLBind {
 		return role;
 	}
 	
-	public boolean setComponent(NCLNode component) {
+	public void setComponent(NCLNode component) throws Exception {
 		if (component != null){
 			this.component = component;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null descriptor");
+			throw ex;
+		}
 	}
 	
 	public NCLNode getComponent() {
 		return component;
 	}
 	
-	public boolean setInterface(NCLInterface interfac) {
+	public void setInterface(NCLInterface interfac) throws Exception {
 		if (interfac != null){
 			this.interfac = interfac;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null descriptor");
+			throw ex;
+		}
 	}
 	
 	public NCLInterface getInterface() {
@@ -73,13 +73,14 @@ public class NCLBind {
 			return false;
 	}
 	
-	public boolean setDescriptor(NCLDescriptor descriptor) {
+	public void setDescriptor(NCLDescriptor descriptor) throws Exception {
 		if (descriptor != null){
 			this.descriptor = descriptor;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null descriptor");
+			throw ex;
+		}
 	}
 	
 	public NCLDescriptor getDescriptor() {
@@ -96,22 +97,23 @@ public class NCLBind {
 	/**
 	 * retorna true se o parametro foi substituido e falso se nao
 	 */
-	public boolean addBindParam(NCLBindParam bindParam) {
+	public boolean addBindParam(NCLConnectorParam name, String value) throws Exception {
 		boolean contains = false;
+		NCLParam param = new NCLParam(name, value);
 
-		if (!hasBindParam(bindParam.getName()))
+		if (!hasBindParam(name))
 			contains = true;
 
-		bindParams.add(bindParam);
+		bindParams.add(param);
 
 		return contains;
 	}
 
-	public boolean removeBindParam(String name) {
-		Iterator<NCLBindParam> it = bindParams.iterator();
+	public boolean removeBindParam(NCLConnectorParam name) {
+		Iterator<NCLParam> it = bindParams.iterator();
 
 		while (it.hasNext()) {
-			NCLBindParam p = it.next();
+			NCLParam p = it.next();
 
 			if (p.getName().equals(name)) {
 				it.remove();
@@ -122,10 +124,10 @@ public class NCLBind {
 	}
 
 	public boolean hasBindParam(NCLConnectorParam name) {
-		Iterator<NCLBindParam> it = bindParams.iterator();
+		Iterator<NCLParam> it = bindParams.iterator();
 
 		while (it.hasNext()) {
-			NCLBindParam p = it.next();
+			NCLParam p = it.next();
 
 			if (p.getName().equals(name))
 				return true;
@@ -142,10 +144,13 @@ public class NCLBind {
 		if (!bind.getRole().equals(getRole()))
 			return false;
 		//bind tem componente diferente?
-		else if (!bind.getComponent().equals(getComponent()))
+		if (!bind.getComponent().equals(getComponent()))
 			return false;
 		//bind ou this não tem interface ou são diferentes
-		else if (!hasInterface() || !bind.hasInterface() || !bind.getInterface().equals(getInterface()))
+		if (!hasInterface() || !bind.hasInterface() || !bind.getInterface().equals(getInterface()))
+			return false;
+		//bind ou this não tem descriptor ou são diferentes
+		if (!hasDescriptor() || !bind.hasDescriptor() || !bind.getDescriptor().equals(getDescriptor()))
 			return false;
 		else
 			return true;
@@ -174,10 +179,10 @@ public class NCLBind {
 			content += ">\n";
 			content += "<!-- Bind element parameters -->\n";
 			
-			Iterator<NCLBindParam> it = bindParams.iterator();
+			Iterator<NCLParam> it = bindParams.iterator();
 			while (it.hasNext()) {
-				NCLBindParam b = it.next();
-				content += b.parse(ident+1);
+				NCLParam b = it.next();
+				content += b.parse(ident+1, "bindParam");
 			}
 			
 			// <bind> element end declaration
@@ -187,5 +192,9 @@ public class NCLBind {
 			content += "/>\n";
 		
 		return content;
+	}
+	
+	public String toString(){
+		return parse(0);
 	}
 }

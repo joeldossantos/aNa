@@ -2,7 +2,7 @@ package br.pensario.link;
 
 import br.pensario.connector.NCLConnectorParam;
 
-public class NCLLinkParam {
+public class NCLParam {
 
 	private NCLConnectorParam name;
 	private String value;
@@ -15,40 +15,40 @@ public class NCLLinkParam {
 	 * @param value
 	 * @throws Exception
 	 */
-	public NCLLinkParam(NCLConnectorParam connectorParam, String value) throws Exception {
-		if (!setName(connectorParam) || !setValue(value)){
-			Exception ex = new Exception("Invalid connectorParam or value");
+	protected NCLParam(NCLConnectorParam connectorParam, String value) throws Exception {
+		setName(connectorParam);
+		setValue(value);
+	}
+	
+	private void setName(NCLConnectorParam connectorParam) throws Exception {
+		if (connectorParam != null){
+			this.name = connectorParam;
+		}
+		else{
+			Exception ex = new NullPointerException("Null name");
 			throw ex;
 		}
 	}
 	
-	public boolean setName(NCLConnectorParam connectorParam) {
-		if (connectorParam != null){
-			this.name = connectorParam;
-			return true;
-		}
-		else
-			return false;
-	}
-	
-	public NCLConnectorParam getName() {
+	protected NCLConnectorParam getName() {
 		return name;
 	}
 	
-	public boolean setValue(String value) {
+	private void setValue(String value) throws Exception {
 		if (value != null){
 			this.value = value;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null value");
+			throw ex;
+		}
 	}
 	
-	public String getValue() {
+	protected String getValue() {
 		return value;
 	}
 	
-	public String parse(int ident) {
+	protected String parse(int ident, String type) {
 		String space, content;
 		
 		// Element indentation
@@ -58,7 +58,7 @@ public class NCLLinkParam {
 		
 		
 		// <linkParam> element and attributes declaration
-		content = space + "<linkParam";
+		content = space + "<" + type;
 		content += " name='" + getName().getName() + "'";
 		content += " value='" + getValue() + "'";
 		content += "/>\n";

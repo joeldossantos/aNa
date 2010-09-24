@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 public class NCLBody {
 
-	private NCLIdentification id;
+	private String id;
 	
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
@@ -23,15 +23,9 @@ public class NCLBody {
 		
 	}
 	
-	public boolean setId(String id) {
-		try{
-			this.id = new NCLIdentification(id);
-			return true;
-		}
-		catch(Exception ex){
-			System.err.println(ex);
-			return false;
-		}
+	public void setId(String id) throws Exception {
+		NCLIdentification.validate(id);
+		this.id = id;
 	}
 	
 	public String getId() {
@@ -221,6 +215,13 @@ public class NCLBody {
 		return(!links.isEmpty());
 	}
 	
+	public boolean equals(NCLBody body) {
+		if (getId().equals(body.getId()))
+			return true;
+		else
+			return false;
+	}
+	
 	public String parse(int ident) {
 		String space, content;
 		
@@ -282,5 +283,9 @@ public class NCLBody {
 		content += space + "</body>\n";
 		
 		return content;
+	}
+	
+	public String toString() {
+		return parse(0);
 	}
 }

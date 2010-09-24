@@ -9,9 +9,6 @@ import java.util.regex.Pattern;
  */
 public class NCLIdentification {
 
-	protected String identification;
-	
-	
 	/**
 	 * NCLIdentification class constructor
 	 * Sets the identification and test if its format is a valid format.
@@ -19,25 +16,16 @@ public class NCLIdentification {
 	 * @param identification identification to be tested and used.
 	 * @return True if the identification is valid and false otherwise.
 	 */
-	public NCLIdentification(String identification) throws Exception {
+	public static void validate(String identification) throws Exception {
 		Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
 		
 		Matcher matcher = pattern.matcher(identification);
 
 		if (!matcher.matches()){
-			Exception ex = new Exception("Invalid identifier.");
+			Exception ex = new IllegalArgumentException("Invalid identifier.");
 			throw ex;
 		}
-		this.identification = identification;
-	}
-	
-	/**
-	 * Gets the identification.
-	 * 
-	 * @return String with the identification
-	 */
-	public String toString() {
-		return identification;
+		
 	}
 
 }

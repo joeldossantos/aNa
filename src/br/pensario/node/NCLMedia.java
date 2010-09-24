@@ -21,26 +21,16 @@ public class NCLMedia extends NCLNode {
 	
 	
 	public NCLMedia(String id) throws Exception {
-		setId(id);/*{
-			Exception ex = new Exception("Invalid id");
-			throw ex;
-		}*/
+		setId(id);
 	}
 	
 	/**
 	 * define a URI nao padrao de src da media.
 	 * @param src
 	 */
-	public boolean setSrc(String src) {
-		try{
-			URI uri = new URI(src);
-			this.src = uri.toString();
-			return true;
-		}
-		catch(Exception ex){
-			System.err.println(ex);
-			return false;
-		}
+	public void setSrc(String src) throws Exception {
+		URI uri = new URI(src);
+		this.src = uri.toString();
 	}
 	
 	/**
@@ -49,11 +39,18 @@ public class NCLMedia extends NCLNode {
 	 * media do tipo settings nao tem src
 	 * @param src
 	 */
-	public boolean setSrc(NCLUriType type, String src) {
-		if (type != null && getType() != NCLMimeType.APPLICATION_X_GINGA_SETTINGS){
-			return setSrc(type.toString() + src);
+	public void setSrc(NCLUriType type, String src) throws Exception {
+		if (type == null){
+			Exception ex = new NullPointerException("Null src type");
+			throw ex;
 		}
-		return false;
+		if (getType() != NCLMimeType.APPLICATION_X_GINGA_SETTINGS){
+			setSrc(type.toString() + src);
+		}
+		else{
+			Exception ex = new IllegalArgumentException("Invalid src");
+			throw ex;
+		}
 	}
 	
 	/**
@@ -61,13 +58,19 @@ public class NCLMedia extends NCLNode {
 	 * @param time
 	 * @return
 	 */
-	public boolean setSrc(NCLTime time) {
-		// So aceita NCLTime completo
-		if (time != null && time.isUTC() && getType() == NCLMimeType.APPLICATION_X_GINGA_TIME){
-			this.src = time.toString();
-			return true;
+	public void setSrc(NCLTime time) throws Exception {
+		if (time == null){
+			Exception ex = new NullPointerException("Null time");
+			throw ex;
 		}
-		return false;
+		// So aceita NCLTime completo
+		if (time.isUTC() && getType() == NCLMimeType.APPLICATION_X_GINGA_TIME){
+			this.src = time.toString();
+		}
+		else{
+			Exception ex = new IllegalArgumentException("Invalid src");
+			throw ex;
+		}
 	}
 	
 	public String getSrc() {
@@ -86,13 +89,14 @@ public class NCLMedia extends NCLNode {
 	 * @param type
 	 * @return true se valido false contrario
 	 */
-	public boolean setType(NCLMimeType type) {
+	public void setType(NCLMimeType type) throws Exception {
 		if (type != null){
 			this.type = type;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null type");
+			throw ex;
+		}
 	}
 	
 	public NCLMimeType getType() {
@@ -111,13 +115,14 @@ public class NCLMedia extends NCLNode {
 	 * @param descriptor
 	 * @return true se valido false contrario
 	 */
-	public boolean setDescriptor(NCLDescriptor descriptor) {
+	public void setDescriptor(NCLDescriptor descriptor) throws Exception {
 		if (descriptor != null){
 			this.descriptor = descriptor;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null descriptor");
+			throw ex;
+		}
 	}
 	
 	public NCLDescriptor getDescriptor() {
@@ -135,6 +140,8 @@ public class NCLMedia extends NCLNode {
 	 * retorna true se a area foi substituida e falso se nao
 	 */
 	public boolean addArea(NCLArea area) throws Exception {
+		/* TODO - isso deve ser implementado na camada de validacao
+		 * 
 		if (getType() == NCLMimeType.APPLICATION_X_GINGA_TIME){
 			// Test if area begin or end is not in UTC format. Media of type Time must have a begin in UTC format
 			if((area.hasBegin() && !area.getBegin().isUTC()) || (area.hasEnd() && !area.getEnd().isUTC())){
@@ -149,7 +156,7 @@ public class NCLMedia extends NCLNode {
 				throw ex;
 			}
 		}
-		
+		*/
 		boolean contains = false;
 
 		if (!hasArea(area.getId()))
@@ -234,6 +241,13 @@ public class NCLMedia extends NCLNode {
 		return(!properties.isEmpty());
 	}
 	
+	public boolean equals(NCLMedia media) {
+		if (getId().equals(media.getId()))
+			return true;
+		else
+			return false;
+	}
+	
 	public String parse(int ident) {
 		String space, content;
 		
@@ -287,5 +301,9 @@ public class NCLMedia extends NCLNode {
 			content += "/>\n";
 		
 		return content;
+	}
+	
+	public String toString() {
+		return parse(0);
 	}
 }

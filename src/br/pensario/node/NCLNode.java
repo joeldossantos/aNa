@@ -4,22 +4,16 @@ import br.pensario.NCLIdentification;
 
 public abstract class NCLNode {
 	
-	private NCLIdentification id;
+	private String id;
 	
 	
-	public boolean setId(String id) {
-		try{
-			this.id = new NCLIdentification(id);
-			return true;
-		}
-		catch(Exception ex){
-			System.err.println(ex);
-			return false;
-		}
+	public void setId(String id) throws Exception {
+		NCLIdentification.validate(id);
+		this.id = id;
 	}
 	
 	public String getId() {
-		return id.toString();
+		return id;
 	}
 	
 	public abstract String parse(int ident);

@@ -17,10 +17,7 @@ public class NCLContext extends NCLNode {
 	
 	
 	public NCLContext(String id) throws Exception {
-		if (!setId(id)){
-			Exception ex = new Exception("Invalid id");
-			throw ex;
-		}
+		setId(id);
 	}
 	
 	/**
@@ -199,6 +196,13 @@ public class NCLContext extends NCLNode {
 		return(!links.isEmpty());
 	}
 	
+	public boolean equals(NCLContext context) {
+		if (getId().equals(context.getId()))
+			return true;
+		else
+			return false;
+	}
+	
 	public String parse(int ident) {
 		String space, content;
 		
@@ -266,5 +270,9 @@ public class NCLContext extends NCLNode {
 			content += "/>\n";
 		
 		return content;
+	}
+	
+	public String toString() {
+		return parse(0);
 	}
 }

@@ -4,7 +4,7 @@ import br.pensario.NCLIdentification;
 
 public class NCLArea extends NCLInterface {
 
-	private NCLIdentification id;
+	private String id;
 	private int[] coords;
 	private NCLTime begin;
 	private NCLTime end;
@@ -16,21 +16,12 @@ public class NCLArea extends NCLInterface {
 	
 	
 	public NCLArea(String id) throws Exception {
-		if (!setId(id)){
-			Exception ex = new Exception("Invalid id");
-			throw ex;
-		}
+		setId(id);
 	}
 	
-	public boolean setId(String id) {
-		try{
-			this.id = new NCLIdentification(id);
-			return true;
-		}
-		catch(Exception ex){
-			System.err.println(ex);
-			return false;
-		}
+	public void setId(String id) throws Exception {
+		NCLIdentification.validate(id);
+		this.id = id;
 	}
 	
 	public String getId() {
@@ -55,14 +46,14 @@ public class NCLArea extends NCLInterface {
 	 * @param coords uma coordenada ver: NCLCoords
 	 * @return true se cordenada existe falso contrario
 	 */
-	public boolean setCoords(int[] coords) {
+	public void setCoords(int[] coords) throws Exception {
 		for (int i = 0; i < coords.length; i++){
 			if (coords[i] < 0){
-				return false;
+				Exception ex = new IllegalArgumentException("Invalid coordenate: " + coords[i]);
+				throw ex;
 			}
 		}
 		this.coords = coords;
-		return true;
 	}
 	
 	public int[] getCoords() {
@@ -82,13 +73,14 @@ public class NCLArea extends NCLInterface {
 	 * @param begin um tempo de inicio ver:NCLTime
 	 * @return true se tempo existe falso contrario
 	 */
-	public boolean setBegin(NCLTime begin) {
+	public void setBegin(NCLTime begin) throws Exception {
 		if (begin != null){
 			this.begin = begin;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null begin");
+			throw ex;
+		}
 	}
 	
 	public NCLTime getBegin() {
@@ -108,13 +100,14 @@ public class NCLArea extends NCLInterface {
 	 * @param end um tempo de fim ver:NCLTime
 	 * @return true se tempo existe falso contrario
 	 */
-	public boolean setEnd(NCLTime end) {
+	public void setEnd(NCLTime end) throws Exception {
 		if (end != null){
 			this.end = end;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null end");
+			throw ex;
+		}
 	}
 	
 	public NCLTime getEnd() {
@@ -132,8 +125,14 @@ public class NCLArea extends NCLInterface {
 	 * definicao de ancora textual
 	 * @param text padrao de texto usado como ancora
 	 */
-	public void setText(String text) {
-		this.text = text;
+	public void setText(String text) throws Exception {
+		if (text != null){
+			this.text = text;
+		}
+		else{
+			Exception ex = new NullPointerException("Null text");
+			throw ex;
+		}
 	}
 	
 	public String getText() {
@@ -152,13 +151,14 @@ public class NCLArea extends NCLInterface {
 	 * @param position posicao do texto
 	 * @return true se posicao valida falso contrario
 	 */
-	public boolean setPosition(int position) {
+	public void setPosition(int position) throws Exception {
 		if (position >= 0){
 			this.position = position;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new IllegalArgumentException("Invalid position");
+			throw ex;
+		}
 	}
 	
 	public int getPosition() {
@@ -177,13 +177,14 @@ public class NCLArea extends NCLInterface {
 	 * @param first inicio da ancora ver:NCLSample
 	 * @return true se valido falso contrario
 	 */
-	public boolean setFirst(NCLSample first) {
+	public void setFirst(NCLSample first) throws Exception {
 		if (first != null){
 			this.first = first;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null first");
+			throw ex;
+		}
 	}
 	
 	public NCLSample getFirst() {
@@ -202,13 +203,14 @@ public class NCLArea extends NCLInterface {
 	 * @param last fim da ancora var:NCLSample
 	 * @return true se valido falso contrario
 	 */
-	public boolean setLast(NCLSample last) {
+	public void setLast(NCLSample last) throws Exception {
 		if (last != null){
 			this.last = last;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null last");
+			throw ex;
+		}
 	}
 	
 	public NCLSample getLast() {
@@ -228,8 +230,14 @@ public class NCLArea extends NCLInterface {
 	 * pelo exibidor de midias para identificar uma regiao de conteudo
 	 * @param label string de identificacao
 	 */
-	public void setLabel(String label) {
-		this.label = label;
+	public void setLabel(String label) throws Exception {
+		if (label != null){
+			this.label = label;
+		}
+		else{
+			Exception ex = new NullPointerException("Null label");
+			throw ex;
+		}
 	}
 	
 	public String getLabel() {
@@ -238,6 +246,13 @@ public class NCLArea extends NCLInterface {
 	
 	public boolean hasLabel() {
 		if (label != null)
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean equals(NCLArea area) {
+		if (getId().equals(area.getId()))
 			return true;
 		else
 			return false;
@@ -285,5 +300,9 @@ public class NCLArea extends NCLInterface {
 				result += ",";
 		}
 		return result;
+	}
+	
+	public String toString() {
+		return parse(0);
 	}
 }

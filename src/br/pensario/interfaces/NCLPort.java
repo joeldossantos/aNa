@@ -5,27 +5,19 @@ import br.pensario.node.NCLNode;
 
 public class NCLPort extends NCLInterface {
 
-	private NCLIdentification id;
+	private String id;
 	private NCLNode component;
 	private NCLInterface interfac;
 	
 	
 	public NCLPort(String id, NCLNode component) throws Exception {
-		if (!setId(id) || !setComponent(component)){
-			Exception ex = new Exception("Invalid id or component");
-			throw ex;
-		}
+		setId(id);
+		setComponent(component);
 	}
 	
-	public boolean setId(String id) {
-		try{
-			this.id = new NCLIdentification(id);
-			return true;
-		}
-		catch(Exception ex){
-			System.err.println(ex);
-			return false;
-		}
+	public void setId(String id) throws Exception {
+		NCLIdentification.validate(id);
+		this.id = id;
 	}
 	
 	public String getId() {
@@ -41,13 +33,14 @@ public class NCLPort extends NCLInterface {
 	 * @param component componente relacionado pela porta
 	 * @return true se valido falso contrario
 	 */
-	public boolean setComponent(NCLNode component) {
+	public void setComponent(NCLNode component) throws Exception {
 		if (component != null){
 			this.component = component;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null component");
+			throw ex;
+		}
 	}
 	
 	public NCLNode getComponent() {
@@ -59,13 +52,14 @@ public class NCLPort extends NCLInterface {
 	 * @param interfac interface do componente
 	 * @return true se valido falso contrario
 	 */
-	public boolean setInterface(NCLInterface interfac) {
+	public void setInterface(NCLInterface interfac) throws Exception {
 		if (interfac != null){
 			this.interfac = interfac;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null component");
+			throw ex;
+		}
 	}
 	
 	public NCLInterface getInterface() {
@@ -74,6 +68,13 @@ public class NCLPort extends NCLInterface {
 	
 	public boolean hasInterface() {
 		if (interfac != null)
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean equals(NCLPort port) {
+		if (getId().equals(port.getId()))
 			return true;
 		else
 			return false;
@@ -97,5 +98,9 @@ public class NCLPort extends NCLInterface {
 		content += "/>\n";
 		
 		return content;
+	}
+	
+	public String toString() {
+		return parse(0);
 	}
 }
