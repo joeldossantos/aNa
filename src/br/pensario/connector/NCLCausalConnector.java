@@ -1,5 +1,7 @@
 package br.pensario.connector;
 
+import br.pensario.region.NCLRegion;
+
 public class NCLCausalConnector {
 
 	private String id;
@@ -47,6 +49,30 @@ public class NCLCausalConnector {
 		this.param = param;
 	}
 	
+	
+	public String toString() {		
+		return parse(0);
+	}
+
+	public String parse(int ident) {
+
+		String space, content;
+
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+
+		content = space + "<causalConnector";
+		content += " id='" + getId() + "'>";
+
+		content += getCondition().parse(ident + 1);
+		content += getAction().parse(ident + 1);
+		
+		content += space + "<causalConnector/>\n";
+
+		return content;
+	}	
 	
 
 }

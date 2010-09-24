@@ -2,9 +2,10 @@ package br.pensario.connector;
 
 import java.util.List;
 
-public class NCLCompoundAction {
+import br.pensario.NCLValues.NCLActionOperator;
 
-	//DUVIDA - Verificar o caminho de navegação;
+public class NCLCompoundAction {//extends NCLAction{
+
 	private List<NCLAction> actions; 
 	
 	private NCLActionOperator operator;

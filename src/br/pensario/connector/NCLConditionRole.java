@@ -1,11 +1,12 @@
 package br.pensario.connector;
 
+import br.pensario.NCLValues.NCLDefaultConditionRole;
+
 public class NCLConditionRole extends NCLRole {
 
 	private NCLDefaultConditionRole id;
 
-	public String getId() {
-		//DUVIDA - como sobrescrever Role.getId?
+	public String getId() {		
 		return id.toString();
 	}
 

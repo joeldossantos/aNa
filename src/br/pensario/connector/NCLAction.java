@@ -11,4 +11,7 @@ public abstract class NCLAction {
 		this.delay = delay;
 	}
 	
+	public abstract String parse(int ident);
+	public abstract String toString();
+	
 }

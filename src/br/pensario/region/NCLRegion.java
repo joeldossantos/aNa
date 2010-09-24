@@ -9,9 +9,7 @@ public class NCLRegion implements Comparable {
 
 	private String title;
 
-	// Quais são as regras de validação?
-
-	// Pode ser negativo?
+	// Pode ser negativo? (a priori, sim)
 	private Integer left;
 	private Integer right;
 	private Integer top;
@@ -29,12 +27,6 @@ public class NCLRegion implements Comparable {
 	private Boolean relativeWidth;
 
 	private Set<NCLRegion> regions = new TreeSet<NCLRegion>();
-
-	// TODO - //Container separado em cada classe/ Implementar container por id
-	// único em cada classe
-	// TODO - Id setid getid por cada classe sem valdação
-	// TODO - métodos parse
-	// TODO - método has para todos os atributos que não são obrigatórios
 
 	public NCLRegion(String id) {
 		setId(id);
@@ -329,7 +321,7 @@ public class NCLRegion implements Comparable {
 			for (NCLRegion region : getRegions()) {
 				content += region.parse(ident + 1);
 			}
-			content += "</region>\n";
+			content += space + "</region>\n";
 		}
 		else
 			content += "/>\n";

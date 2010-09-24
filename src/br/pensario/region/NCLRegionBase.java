@@ -6,11 +6,17 @@ import java.util.TreeSet;
 public class NCLRegionBase {
 
 	private String id;
-	private String device; //TODO - verificar domínio de valores
+	private String device;
 	private NCLRegion parent_region;
 	
 	Set<NCLRegion> regions= new TreeSet<NCLRegion>();
 	
+	public NCLRegionBase(String id) {
+		setId(id);
+	}
+	
+	public NCLRegionBase(){}
+
 	public String getId() {
 		return id;
 	}
@@ -59,6 +65,40 @@ public class NCLRegionBase {
 	public Iterable<NCLRegion> getRegions()
 	{
 		return regions;		
+	}
+
+	public String parse(int ident) {
+
+		String space, content;
+
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+
+		content = space + "<regionBase ";
+		
+		if(getId()!=null)
+			content += " id='" + getId() + "'";
+
+		if (getDevice() != null) 						
+			content += " device='" + getDevice() + "'";
+		
+		if (getParentRegion() != null) 						
+			content += " region='" + getParentRegion().getId() + "'";
+		
+		if (hasRegion()) {
+			
+			content += ">\n";
+			for (NCLRegion region : getRegions()) {
+				content += region.parse(ident + 1);
+			}
+			content += space + "</regionBase>\n";
+		}
+		else
+			content += "/>\n";
+
+		return content;
 	}
 	
 	//public boolean hasOverlayedRegions(); 

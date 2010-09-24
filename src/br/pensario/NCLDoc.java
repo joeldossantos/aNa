@@ -91,7 +91,7 @@ public class NCLDoc {
 		
 		// XML document start declaration
 		content = "<?xml version='1.0' encoding='ISO-8859-1'?>\n"; //TODO: ou UTF8??
-		content += "<!-- Created with NCL API -->\n\n";
+		content += "<!-- Generated with NCL API -->\n\n";
 		
 		
 		// <ncl> element and attributes declaration

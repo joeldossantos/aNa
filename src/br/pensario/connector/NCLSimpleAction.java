@@ -1,12 +1,14 @@
 package br.pensario.connector;
 
+import br.pensario.NCLValues.NCLActionOperator;
+
 public class NCLSimpleAction extends NCLAction {
 
 	
 	private String value;	
 
-	private int min = -1;
-	private int max = -1;
+	private Integer min;
+	private Integer max;
 	
 	private NCLActionOperator qualifier;
 	
@@ -20,19 +22,19 @@ public class NCLSimpleAction extends NCLAction {
 		this.value = value;
 	}
 
-	public int getMin() {
+	public Integer getMin() {
 		return min;
 	}
 
-	public void setMin(int min) {
+	public void setMin(Integer min) {
 		this.min = min;
 	}
 
-	public int getMax() {
+	public Integer getMax() {
 		return max;
 	}
 
-	public void setMax(int max) {
+	public void setMax(Integer max) {
 		this.max = max;
 	}
 
@@ -50,6 +52,41 @@ public class NCLSimpleAction extends NCLAction {
 
 	public void setRole(NCLActionRole role) {
 		this.role = role;
-	}	
+	}
+	
+	public String parse(int ident) {
+
+		String space, content;
+
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+
+		content = space + "<simpleAction";
+
+		content += " role='" + getValue() + "'";
+
+		if(getDelay()!=null)
+			content += " delay='" + getDelay() + "'";
+		
+		if(getMax()!=null)
+			content += " max='" + getMax() + "'";
+		
+		if(getMin()!=null)
+			content += " min='" + getMin() + "'";
+		
+		if(getQualifier()!=null)
+			content += " qualifier='" + getQualifier() + "'";
+		
+		content += " />\n";
+
+		return content;
+	}
+
+	@Override
+	public String toString() {
+		return parse(0);
+	}
 	
 }

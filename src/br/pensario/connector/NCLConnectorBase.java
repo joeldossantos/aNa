@@ -3,6 +3,8 @@ package br.pensario.connector;
 import java.util.Set;
 import java.util.TreeSet;
 
+import br.pensario.descriptor.NCLDescriptor;
+
 public class NCLConnectorBase {
 
 	Set<NCLCausalConnector> connectors = new TreeSet<NCLCausalConnector>();
@@ -41,6 +43,36 @@ public class NCLConnectorBase {
 	public Iterable<NCLCausalConnector> getConnectors()
 	{
 		return connectors;		
+	}
+	
+	public String parse(int ident) {
+
+		String space, content;
+
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+
+		content = space + "<connectorBase ";
+
+		if (getId() != null)
+			content += " id='" + getId();
+
+		content += "'>\n";
+
+		if (hasConnector())
+
+			for (NCLCausalConnector connector: getConnectors())
+				content += connector.parse(ident + 1);
+
+		content += space + "<connectorBase/>\n";
+
+		return content;
+	}
+
+	public String toString() {
+		return parse(0);
 	}
 	
 }

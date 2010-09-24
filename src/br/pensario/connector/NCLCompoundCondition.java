@@ -1,10 +1,11 @@
 package br.pensario.connector;
 
-public class NCLCompoundCondition extends NCLCondition {
+import br.pensario.NCLValues.NCLConditionOperator;
+
+public class NCLCompoundCondition {//extends NCLCondition {
 	
 	private NCLConditionOperator operator;
 	
-	//TODO - verificar navegabilidade
 	private NCLCondition condition;
 
 	public NCLConditionOperator getOperator() {

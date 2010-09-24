@@ -11,6 +11,9 @@ public abstract class NCLCondition {
 	public void setDelay(String delay) {
 		this.delay = delay;
 	}
+	
+	public abstract String parse(int ident);
+	public abstract String toString();
 
 	
 	

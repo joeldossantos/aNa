@@ -54,20 +54,10 @@ public class NCLHead {
 			space += "\t";
 		
 		
-		content = space + "<head>\n";				
+		content = space + "<head>\n";	
 		
-		if (rbase.hasRegion())			
-			content += "<!-- Regioes -->\n";
-			
-		for(NCLRegion region : rbase.getRegions())
-		{				
-			content += region.parse(ident+1);				
-		}
-		
-		for(NCLDescriptor descriptor : dbase.getDescriptors())
-		{				
-			content += descriptor.parse(ident+1);				
-		}
+		content += rbase.parse(ident + 1);		
+		content += dbase.parse(ident + 1);
 		
 	/*	for(NCLCausalConnector connector : cbase.getConnectors())
 		{				

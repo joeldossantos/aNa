@@ -1,36 +1,42 @@
 package br.pensario.descriptor;
 
-
 import br.pensario.NCLValues;
 import br.pensario.region.NCLRegion;
 
-public class NCLDescriptor {
+public class NCLDescriptor implements Comparable{
 
-	//pegar valores padrï¿½o
-	
+	// pegar valores padrï¿½o
+
 	private String id;
-	
+
 	private String player;
-	private String explicitDur; // TODO -se nao estiver setado ele adquire um valor default
-	private boolean freeze = false; // DUVIDA - o valor padrao é false?
-	
-	private NCLDescriptor moveLeft; //ao escrever no XML, pegar o focusIndex do descritor moveLeft
+	private String explicitDur; // TODO -se nao estiver setado ele adquire um
+								// valor default
+	private Boolean freeze;
+
+	private NCLDescriptor moveLeft; // ao escrever no XML, pegar o focusIndex do
+									// descritor moveLeft
 	private NCLDescriptor moveRight;
 	private NCLDescriptor moveUp;
 	private NCLDescriptor moveDown;
-	
-	private int focusIndex;
+
+	private Integer focusIndex;
 	private NCLValues.NCLColor focusBorderColor;
-	private int focusBorderWidth;
-	private int focusBorderTransparency;
+	private Integer focusBorderWidth;
+	private Integer focusBorderTransparency;
 	private String focusSrc;
 	private String focusSelSrc;
-	
+
 	private NCLValues.NCLColor selBorderColor;
-	
+
 	private NCLRegion region;
+
 	
-	//TODO - descriptorParam?
+	public NCLDescriptor(String id)
+	{
+		setId(id);		
+	}
+	
 
 	public void setPlayer(String player) {
 		this.player = player;
@@ -48,11 +54,11 @@ public class NCLDescriptor {
 		return explicitDur;
 	}
 
-	public void setFreeze(boolean freeze) {
+	public void setFreeze(Boolean freeze) {
 		this.freeze = freeze;
 	}
 
-	public boolean isFreeze() {
+	public Boolean isFreeze() {
 		return freeze;
 	}
 
@@ -88,11 +94,11 @@ public class NCLDescriptor {
 		this.moveDown = moveDown;
 	}
 
-	public int getFocusIndex() {
+	public Integer getFocusIndex() {
 		return focusIndex;
 	}
 
-	public void setFocusIndex(int focusIndex) {
+	public void setFocusIndex(Integer focusIndex) {
 		this.focusIndex = focusIndex;
 	}
 
@@ -104,19 +110,19 @@ public class NCLDescriptor {
 		this.focusBorderColor = focusBorderColor;
 	}
 
-	public int getFocusBorderWidth() {
+	public Integer getFocusBorderWidth() {
 		return focusBorderWidth;
 	}
 
-	public void setFocusBorderWidth(int focusBorderWidth) {
+	public void setFocusBorderWidth(Integer focusBorderWidth) {
 		this.focusBorderWidth = focusBorderWidth;
 	}
 
-	public int getFocusBorderTransparency() {
+	public Integer getFocusBorderTransparency() {
 		return focusBorderTransparency;
 	}
 
-	public void setFocusBorderTransparency(int focusBorderTransparency) {
+	public void setFocusBorderTransparency(Integer focusBorderTransparency) {
 		this.focusBorderTransparency = focusBorderTransparency;
 	}
 
@@ -159,29 +165,74 @@ public class NCLDescriptor {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public String parse(int ident) {
-		
+
 		String space, content;
-		
+
 		// Element indentation
 		space = "";
 		for (int i = 0; i < ident; i++)
-			space += "\t";	
-				
+			space += "\t";
+
 		content = space + "<descriptor";
 		content += " id='" + getId() + "'";
 
-		//TODO - Region é obrigatorio para descritor, como e qdo verificar?
-		 
-		content += " region='" + getRegion().getId() + "'";
-		content += " explicitDur='" + getExplicitDur() + "'";
-		content += " freeze='" + isFreeze() + "'";
-		content += " player='" + getPlayer() + "'";
+		// TODO - Region é obrigatorio para descritor, como e qdo verificar?
 
-		//DUVIDA os outros parametros retornam da mesma forma?
-					
+		if (getRegion() != null)
+			content += " region='" + getRegion().getId() + "'";
+
+		if (getExplicitDur() != null)
+			content += " explicitDur='" + getExplicitDur() + "'";
+
+		if (isFreeze() != null)
+			content += " freeze='" + isFreeze() + "'";
+
+		if (getPlayer() != null)
+			content += " player='" + getPlayer() + "'";
+
+		if (getMoveLeft() != null)
+			content += " moveLeft='" + getMoveLeft().getId() + "'";
+
+		if (getMoveRight() != null)
+			content += " moveRight='" + getMoveRight().getId() + "'";
+		
+		if (getMoveDown() != null)
+			content += " moveDown='" + getMoveDown().getId() + "'";
+		
+		if (getMoveUp() != null)
+			content += " moveUp='" + getMoveUp().getId() + "'";
+		
+		if (getFocusIndex() != null)
+			content += " focusIndex='" + getFocusIndex() + "'";
+
+		if (getFocusBorderColor() != null)
+			content += " focusBorderColor='" + getFocusBorderColor() + "'";
+
+		if (getFocusBorderWidth() != null)
+			content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
+
+		if (getFocusBorderTransparency() != null)
+			content += " focusBorderTransparency='" + getFocusBorderTransparency() + "'";
+
+		if (getFocusSrc() != null)
+			content += " focusSrc='" + getFocusSrc() + "'";
+		
+		if (getFocusSelSrc() != null)
+			content += " focusSelSrc='" + getFocusSelSrc() + "'";
+
+		if (getSelBorderColor() != null)
+			content += " focusSelBorderColor='" + getSelBorderColor() + "'";
+
+		
+		content += " />\n";
+
 		return content;
+	}
+	
+	public int compareTo(Object arg0) {
+		return getId().compareTo(((NCLDescriptor) arg0).getId());
 	}
 
 }

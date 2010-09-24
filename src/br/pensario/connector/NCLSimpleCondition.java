@@ -1,32 +1,33 @@
 package br.pensario.connector;
 
+import br.pensario.NCLValues.NCLConditionOperator;
+
 public class NCLSimpleCondition extends NCLCondition {
 
 	private String key;	
 
-	private int min = -1;
-	private int max = -1;
+	private Integer min;
+	private Integer max;
 	
-	//DUVIDA - Onde fica este cara na modelagem?
 	private NCLConditionOperator qualifier;
 	
 	private NCLConditionRole role;
 	
+	//public NCLSimpleCondition(NCLDefault)
 	
-
-	public int getMin() {
+	public Integer getMin() {
 		return min;
 	}
 
-	public void setMin(int min) {
+	public void setMin(Integer min) {
 		this.min = min;
 	}
 
-	public int getMax() {
+	public Integer getMax() {
 		return max;
 	}
 
-	public void setMax(int max) {
+	public void setMax(Integer max) {
 		this.max = max;
 	}
 
@@ -53,5 +54,40 @@ public class NCLSimpleCondition extends NCLCondition {
 	public void setKey(String key) {
 		this.key = key;
 	}	
+	
+	public String parse(int ident) {
+
+		String space, content;
+
+		// Element indentation
+		space = "";
+		for (int i = 0; i < ident; i++)
+			space += "\t";
+
+		content = space + "<simpleCondition";
+
+		content += " role='" + getKey() + "'";
+
+		if(getDelay()!=null)
+			content += " delay='" + getDelay() + "'";
+		
+		if(getMax()!=null)
+			content += " max='" + getMax() + "'";
+		
+		if(getMin()!=null)
+			content += " min='" + getMin() + "'";
+		
+		if(getQualifier()!=null)
+			content += " qualifier='" + getQualifier() + "'";
+		
+		content += " />\n";
+
+		return content;
+	}
+
+	@Override
+	public String toString() {
+		return parse(0);
+	}
 	
 }

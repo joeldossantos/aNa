@@ -13,6 +13,8 @@ public abstract class NCLValues {
 		gray, white, black, silver, red, maroon, fuchsia, purple, lime, green, yellow, olive, blue, navy, aqua, teal
 	}
 	
+	//DUVIDA - este cara some?
+	
 	public enum NCLQualifiers {
 		PAR {
 			public String toString() {
@@ -32,6 +34,32 @@ public abstract class NCLValues {
 		OR {
 			public String toString() {
 				return("or");
+			}
+		}
+	}
+	
+	public enum NCLConditionOperator {
+		AND {
+			public String toString() {
+				return("and");
+			}
+		},
+		OR {
+			public String toString() {
+				return("or");
+			}
+		}
+	}
+	
+	public enum NCLActionOperator {
+		PAR {
+			public String toString() {
+				return("par");
+			}
+		},
+		SEQ {
+			public String toString() {
+				return("seq");
 			}
 		}
 	}
@@ -306,23 +334,24 @@ public abstract class NCLValues {
 	public enum NCLDefaultConditionRole
 	{
 		ONBEGIN {public String toString(){return"onBegin";}}, 
-		ONEND {public String toString(){return"onEnd";}}
-		/*ONBEGIN {public String toString(){return"onAbort";}},
-		ONBEGIN {public String toString(){return"onPause";}},
-		ONBEGIN {public String toString(){return"onResume";}},		
-		onEnd, 
-		onAbort, 
-		onPause, 
-		onResume, 
-		onSelection, 
-		onBeginAttribution, 
-		onEndAttribution, 
-		start, 
-		stop, 
-		abort, 
-		pause, 
-		resume, 
-		set		*/
+		ONEND {public String toString(){return"onEnd";}},
+		ONABORT {public String toString(){return"onAbort";}},
+		ONPAUSE {public String toString(){return"onPause";}},
+		ONRESUME {public String toString(){return"onResume";}},		
+		ONSELECTION {public String toString(){return"onSelection";}},
+		ONBEGINATTRIBUTION {public String toString(){return"onBeginAttribution";}},
+		ONENDATTRIBUTION {public String toString(){return"onEndAttribution";}},	
+				
+	}
+	
+	public enum NCLDefaultActionRole
+	{	
+		START {public String toString(){return"start";}},
+		STOP {public String toString(){return"stop";}},
+		ABORT {public String toString(){return"abort";}},
+		PAUSE {public String toString(){return"pause";}},
+		RESUME {public String toString(){return"resume";}},
+		SET {public String toString(){return"set";}}		
 	}
 	
 	/**
