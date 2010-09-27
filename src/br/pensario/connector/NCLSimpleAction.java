@@ -4,7 +4,7 @@ import br.pensario.NCLValues.NCLActionOperator;
 
 public class NCLSimpleAction extends NCLAction {
 
-	
+//REV: falta has e set gerar excecao	
 	private String value;	
 
 	private Integer min;

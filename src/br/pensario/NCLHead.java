@@ -19,6 +19,7 @@ public class NCLHead {
 		setConnectorBase(connector_base);
 	}
 	
+	//REV: gerar excecao?
 	public void setRegionBase(NCLRegionBase rbase) {
 		this.rbase = rbase;
 	}
@@ -27,6 +28,7 @@ public class NCLHead {
 		return rbase;
 	}
 
+	//REV: gerar excecao?
 	public void setDescriptorBase(NCLDescriptorBase dbase) {
 		this.dbase = dbase;
 	}
@@ -35,6 +37,7 @@ public class NCLHead {
 		return dbase;
 	}
 
+	//REV: gerar excecao?
 	public void setConnectorBase(NCLConnectorBase cbase) {
 		this.cbase = cbase;
 	}
@@ -43,7 +46,7 @@ public class NCLHead {
 		return cbase;
 	}	
 	
-		
+	//REV: connector base fora do parse
 	public String parse(int ident) {
 		
 		String space, content;

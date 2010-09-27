@@ -11,6 +11,7 @@ public class NCLRegionBase {
 	
 	Set<NCLRegion> regions= new TreeSet<NCLRegion>();
 	
+	//REV: falta gerar excecoes nos metodos de set
 	public NCLRegionBase(String id) {
 		setId(id);
 	}
@@ -102,5 +103,5 @@ public class NCLRegionBase {
 	}
 	
 	//public boolean hasOverlayedRegions(); 
-	// Camada de validação
+	// Camada de validacao
 }

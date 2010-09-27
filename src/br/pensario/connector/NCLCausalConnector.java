@@ -9,6 +9,7 @@ public class NCLCausalConnector {
 	private NCLAction action;
 	private NCLConnectorParam param;
 
+	//REV: param nao eh necessario, nao deveria estar no construtor
 	public NCLCausalConnector (NCLCondition condition, NCLAction action, NCLConnectorParam param)
 	{
 		
@@ -21,6 +22,7 @@ public class NCLCausalConnector {
 		return condition;
 	}
 
+	//REV: gerar excecao nos metodos set
 	public void setCondition(NCLCondition condition) {
 		this.condition = condition;
 	}

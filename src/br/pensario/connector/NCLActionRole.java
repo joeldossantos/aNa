@@ -6,6 +6,8 @@ public class NCLActionRole extends NCLRole {
 
 	private NCLDefaultActionRole id;
 
+	//REV: nao tem construtor?
+	
 	public String getId() {	
 		return id.toString();
 	}

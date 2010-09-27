@@ -6,6 +6,7 @@ public class NCLCompoundCondition {//extends NCLCondition {
 	
 	private NCLConditionOperator operator;
 	
+	//REV condition deve ser um List tambem
 	private NCLCondition condition;
 
 	public NCLConditionOperator getOperator() {

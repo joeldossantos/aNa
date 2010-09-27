@@ -5,7 +5,9 @@ import br.pensario.region.NCLRegion;
 
 public class NCLDescriptor implements Comparable{
 
-	// pegar valores padrï¿½o
+	// pegar valores padrao
+	//REV: o que nao existe nao aparece no codigo XML, nao precisa setar um valor padrao para os atributos
+	// falta gerar excecao nos metodos de set
 
 	private String id;
 
@@ -46,6 +48,7 @@ public class NCLDescriptor implements Comparable{
 		return player;
 	}
 
+	//REV: usar o NCLTime??
 	public void setExplicitDur(String explicitDur) {
 		this.explicitDur = explicitDur;
 	}
@@ -54,10 +57,12 @@ public class NCLDescriptor implements Comparable{
 		return explicitDur;
 	}
 
+	//REV: mudar para b minusculo
 	public void setFreeze(Boolean freeze) {
 		this.freeze = freeze;
 	}
 
+	//REV: mudar para b minusculo e criar metodos hasFreeze
 	public Boolean isFreeze() {
 		return freeze;
 	}
@@ -166,6 +171,7 @@ public class NCLDescriptor implements Comparable{
 		this.id = id;
 	}
 
+	//REV: nao usar o get pra testar se eh nulo, criar metodos hasAlgumacoisa
 	public String parse(int ident) {
 
 		String space, content;
@@ -178,7 +184,7 @@ public class NCLDescriptor implements Comparable{
 		content = space + "<descriptor";
 		content += " id='" + getId() + "'";
 
-		// TODO - Region é obrigatorio para descritor, como e qdo verificar?
+		// TODO - Region eh obrigatorio para descritor, como e qdo verificar?
 
 		if (getRegion() != null)
 			content += " region='" + getRegion().getId() + "'";

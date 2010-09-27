@@ -18,7 +18,7 @@ public class NCLRegion implements Comparable {
 	private Integer width;
 	private Integer zIndex;
 
-	// Se relativo = true então o atributo correspondente tem que ter de 0 a 100
+	// Se relativo = true entao o atributo correspondente tem que ter de 0 a 100
 	private Boolean relativeLeft;
 	private Boolean relativeRight;
 	private Boolean relativeTop;
@@ -40,6 +40,7 @@ public class NCLRegion implements Comparable {
 		this.id = id;
 	}
 
+	//REV: pq nao recebe uma NCLRegion?
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -70,13 +71,13 @@ public class NCLRegion implements Comparable {
 
 		if (isRelativeLeft() && (left < 0 || left > 100)) {
 			Exception ex = new Exception(
-					"Valor não porcentual para atributo relativo de posicionamento ( %left = "
+					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %left = "
 							+ left + ")");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restrição para valores não relativos?
+		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
 
 		this.left = left;
 
@@ -92,13 +93,13 @@ public class NCLRegion implements Comparable {
 
 		if (isRelativeRight() && (right < 0 || right > 100)) {
 			Exception ex = new Exception(
-					"Valor não porcentual para atributo relativo de posicionamento ( %right = "
+					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %right = "
 							+ right + ")");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restrição para valores não relativos?
+		// DUVIDA - else existe alguma restricao para valores nao relativos?
 
 		this.right = right;
 	}
@@ -115,13 +116,13 @@ public class NCLRegion implements Comparable {
 
 			// TODO - Passar para todos os sets
 			Exception ex = new Exception(
-					"Valor não porcentual para atributo relativo de posicionamento ( %top = "
+					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %top = "
 							+ top + ")");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restrição para valores não relativos?
+		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
 
 		this.top = top;
 	}
@@ -135,13 +136,13 @@ public class NCLRegion implements Comparable {
 
 		if (isRelativeBottom() && (bottom < 0 || bottom > 100)) {
 			Exception ex = new Exception(
-					"Valor não porcentual para atributo relativo de posicionamento ( %bottom = "
+					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %bottom = "
 							+ bottom + ")");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restrição para valores não relativos?
+		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
 
 		this.bottom = bottom;
 	}
@@ -155,11 +156,11 @@ public class NCLRegion implements Comparable {
 
 		if (isRelativeHeight() && (height < 0 || height > 100)) {
 			throw new Exception(
-					"Valor não porcentual para atributo relativo de posicionamento ( %height = "
+					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %height = "
 							+ height + ")");
 		}
 
-		// else existe alguma restrição para valores não relativos?
+		// else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
 
 		this.height = height;
 	}
@@ -174,12 +175,12 @@ public class NCLRegion implements Comparable {
 		if (isRelativeWidth() && (width < 0 || width > 100)) {
 
 			Exception ex = new Exception(
-					"Valor não porcentual para atributo relativo de posicionamento ( %width = "
+					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %width = "
 							+ width + ")");
 			throw ex;
 		}
 
-		// else existe alguma restrição para valores não relativos?
+		// else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
 
 		this.width = width;
 	}
@@ -190,7 +191,7 @@ public class NCLRegion implements Comparable {
 
 	public void setzIndex(int zIndex) {
 
-		// TODO - qual a validação para zIndex?
+		// TODO - qual a validaï¿½ï¿½o para zIndex?
 		this.zIndex = zIndex;
 	}
 
@@ -246,6 +247,7 @@ public class NCLRegion implements Comparable {
 		return relativeWidth;
 	}
 
+	//REV: qual a diferenca para o metodo equals?
 	@Override
 	public int compareTo(Object arg0) {
 		return getId().compareTo(((NCLRegion) arg0).getId());

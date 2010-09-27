@@ -4,6 +4,8 @@ import br.pensario.NCLValues.NCLConditionOperator;
 
 public class NCLSimpleCondition extends NCLCondition {
 
+	//REV: key tem um enum com os valores possiveis
+	// falta has e set gerar excecao
 	private String key;	
 
 	private Integer min;

@@ -11,6 +11,7 @@ public class NCLConnectorParam {
 	}
 	private String type;
 	
-	
+	//REV: falta o get e set do type
+	// gerar excecao os metodos set
 
 }

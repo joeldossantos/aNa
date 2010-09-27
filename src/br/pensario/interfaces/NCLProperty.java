@@ -3,25 +3,46 @@ package br.pensario.interfaces;
 import br.pensario.NCLIdentification;
 import br.pensario.NCLValues.NCLSystemVariable;
 
+/**
+ * This class implements the NCL property element.
+ * @author joel
+ *
+ */
 public class NCLProperty extends NCLInterface {
 
+	/**
+	 * property name
+	 */
 	private String name;
+	/**
+	 * property value
+	 */
 	private String value;
 	
 	
+	/**
+	 * class constructor. Receives the required property name
+	 * @param name - String with the name of the property
+	 * @throws Exception - if the name is a invalid name
+	 */
 	public NCLProperty(String name) throws Exception {
 		setName(name);
 	}
 	
+	/**
+	 * class constructor. Receives the required property name
+	 * @param name - NCLSystemVariable a standard property name
+	 * @throws Exception - if the name is null
+	 */
 	public NCLProperty(NCLSystemVariable name) throws Exception {
 		setName(name);
 	}
 	
 	/**
-	 * define uma nome de propriedade que nao eh padrao
-	 * pode ser no formato shared.xxx
-	 * @param name nome da propriedade
-	 * @return true se valido falso contrario
+	 * define the name of the propriedade. It may not be a standard name
+	 * It may be in the format shared.xxx
+	 * @param name - String with the name of the property
+	 * @throws Exception - if the name is a invalid name
 	 */
 	public void setName(String name) throws Exception {
 		NCLIdentification.validate(name);
@@ -43,10 +64,18 @@ public class NCLProperty extends NCLInterface {
 		}
 	}
 	
+	/**
+	 * Gets the property name
+	 * @return String with the property name.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Gets the attribute tha identifies the property, in this case the property name.
+	 * @return String with the property name.
+	 */
 	public String getIdentifier(){
 		return getName();
 	}
@@ -66,10 +95,18 @@ public class NCLProperty extends NCLInterface {
 		}
 	}
 	
+	/**
+	 * Gets the property value
+	 * @return String with the value.
+	 */
 	public String getValue() {
 		return value;
 	}
 	
+	/**
+	 * 
+	 * @return True if the property has a value and false otherwise
+	 */
 	public boolean hasValue() {
 		if (value != null)
 			return true;
@@ -77,6 +114,11 @@ public class NCLProperty extends NCLInterface {
 			return false;
 	}
 	
+	/**
+	 * Compares two properties.
+	 * @param property - property to each compare
+	 * @return true if the properties are equals and false otherwise
+	 */
 	public boolean equals(NCLProperty property) {
 		if (!getName().equals(property.getName()))
 			return false;
@@ -84,6 +126,11 @@ public class NCLProperty extends NCLInterface {
 			return true;
 	}
 	
+	/**
+	 * Creates the XML code of the property.
+	 * @param ident - indentation level
+	 * @return String with the XML code.
+	 */
 	public String parse(int ident) {
 		String space, content;
 		
@@ -104,6 +151,10 @@ public class NCLProperty extends NCLInterface {
 		return content;
 	}
 	
+	/**
+	 * Creates the XML code of the property without indentation.
+	 * @return String with the XML code.
+	 */
 	public String toString() {
 		return parse(0);
 	}
