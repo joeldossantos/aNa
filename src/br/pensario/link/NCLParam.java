@@ -2,7 +2,7 @@ package br.pensario.link;
 
 import br.pensario.connector.NCLConnectorParam;
 
-public class NCLParam {
+public class NCLParam implements Comparable<NCLParam>{
 
 	private NCLConnectorParam name;
 	private String value;
@@ -64,5 +64,9 @@ public class NCLParam {
 		content += "/>\n";
 		
 		return content;
+	}
+	
+	public int compareTo(NCLParam param) {
+		return getName().getName().compareTo(param.getName().getName());
 	}
 }

@@ -239,7 +239,7 @@ public class NCLBody {
 		
 		// <body> element content
 		if (hasPort()){
-			content += "<!-- Body element ports -->\n";
+//			content += "<!-- Body element ports -->\n";
 			
 			Iterator<NCLPort> it = ports.iterator();
 			while (it.hasNext()) {
@@ -249,7 +249,7 @@ public class NCLBody {
 		}
 		
 		if (hasProperty()){
-			content += "<!-- Body element properties -->\n";
+//			content += "<!-- Body element properties -->\n";
 			
 			Iterator<NCLProperty> it = properties.iterator();
 			while (it.hasNext()) {
@@ -259,7 +259,7 @@ public class NCLBody {
 		}
 		
 		if (hasNode()){
-			content += "<!-- Body element nodes -->\n";
+//			content += "<!-- Body element nodes -->\n";
 			
 			Iterator<NCLNode> it = nodes.iterator();
 			while (it.hasNext()) {
@@ -269,7 +269,7 @@ public class NCLBody {
 		}
 		
 		if (hasLink()){
-			content += "<!-- Body element links -->\n";
+//			content += "<!-- Body element links -->\n";
 			
 			Iterator<NCLLink> it = links.iterator();
 			while (it.hasNext()) {

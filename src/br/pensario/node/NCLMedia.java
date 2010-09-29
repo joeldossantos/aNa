@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class NCLMedia extends NCLNode {
+public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 
 	private String src;
 	private NCLMimeType type;
@@ -73,6 +73,10 @@ public class NCLMedia extends NCLNode {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getSrc() {
 		return src;
 	}
@@ -139,7 +143,7 @@ public class NCLMedia extends NCLNode {
 	/**
 	 * retorna true se a area foi substituida e falso se nao
 	 */
-	public boolean addArea(NCLArea area) throws Exception {
+	public void addArea(NCLArea area) throws Exception {
 		/* TODO - isso deve ser implementado na camada de validacao
 		 * 
 		if (getType() == NCLMimeType.APPLICATION_X_GINGA_TIME){
@@ -157,89 +161,69 @@ public class NCLMedia extends NCLNode {
 			}
 		}
 		*/
-		boolean contains = false;
-
-		if (!hasArea(area.getId()))
-			contains = true;
-
-		areas.add(area);
-
-		return contains;
+		if (!areas.add(area)){
+			Exception ex = new Exception("Area already exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
 	}
 
-	public boolean removeArea(String id) {
-		Iterator<NCLArea> it = areas.iterator();
-
-		while (it.hasNext()) {
-			NCLArea a = it.next();
-
-			if (a.getId().equals(id)) {
-				it.remove();
-				return true;
-			}
+	public void removeArea(String id) throws Exception {
+		NCLArea a = new NCLArea(id);
+		
+		if (!areas.remove(a)){
+			Exception ex = new Exception("Area does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
 		}
-		return false;
 	}
 
-	public boolean hasArea(String id) {
-		Iterator<NCLArea> it = areas.iterator();
-
-		while (it.hasNext()) {
-			NCLArea a = it.next();
-
-			if (a.getId().equals(id))
-				return true;
-		}
-		return false;
+	public boolean hasArea(String id) throws Exception {
+		NCLArea a = new NCLArea(id);
+		
+		return areas.contains(a);
 	}
 	
 	public boolean hasArea() {
-		return(!areas.isEmpty());
+		return !areas.isEmpty();
 	}
+	
+	public Iterable<NCLArea> getAreas() {
+		return areas;
+	}
+	
 	
 	/**
 	 * retorna true se a propriedade foi substituida e falso se nao
 	 */
-	public boolean addProperty(NCLProperty property) {
-		boolean contains = false;
-
-		if (!hasProperty(property.getName()))
-			contains = true;
-
-		properties.add(property);
-
-		return contains;
+	public void addProperty(NCLProperty property) throws Exception {
+		if (!properties.add(property)){
+			Exception ex = new Exception("Property already exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
 	}
 
-	public boolean removeProperty(String name) {
-		Iterator<NCLProperty> it = properties.iterator();
-
-		while (it.hasNext()) {
-			NCLProperty p = it.next();
-
-			if (p.getName().equals(name)) {
-				it.remove();
-				return true;
-			}
+	public void removeProperty(String name) throws Exception {
+		NCLProperty p = new NCLProperty(name);
+		
+		if (!properties.remove(p)){
+			Exception ex = new Exception("Property does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
 		}
-		return false;
 	}
 
-	public boolean hasProperty(String name) {
-		Iterator<NCLProperty> it = properties.iterator();
-
-		while (it.hasNext()) {
-			NCLProperty p = it.next();
-
-			if (p.getName().equals(name))
-				return true;
-		}
-		return false;
+	public boolean hasProperty(String name) throws Exception {
+		NCLProperty p = new NCLProperty(name);
+		
+		return properties.contains(p);
 	}
 	
 	public boolean hasProperty() {
-		return(!properties.isEmpty());
+		return !properties.isEmpty();
 	}
+	
+	public Iterable<NCLProperty> getProperties() {
+		return properties;
+	}
+	
 	
 	public boolean equals(NCLMedia media) {
 		if (getId().equals(media.getId()))
@@ -274,7 +258,7 @@ public class NCLMedia extends NCLNode {
 			
 			// <media> element content
 			if (hasArea()){
-				content += "<!-- Media element anchors -->\n";
+//				content += "<!-- Media element anchors -->\n";
 				
 				Iterator<NCLArea> it = areas.iterator();
 				while (it.hasNext()) {
@@ -284,7 +268,7 @@ public class NCLMedia extends NCLNode {
 			}
 			
 			if (hasProperty()){
-				content += "<!-- Media element properties -->\n";
+//				content += "<!-- Media element properties -->\n";
 				
 				Iterator<NCLProperty> it = properties.iterator();
 				while (it.hasNext()) {
@@ -305,5 +289,9 @@ public class NCLMedia extends NCLNode {
 	
 	public String toString() {
 		return parse(0);
+	}
+	
+	public int compareTo(NCLMedia media) {
+		return getId().compareTo(media.getId());
 	}
 }

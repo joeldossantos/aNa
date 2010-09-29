@@ -12,7 +12,7 @@ import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.NCLInterface;
 import br.pensario.node.NCLNode;
 
-public class NCLLink {
+public class NCLLink implements Comparable<NCLLink>{
 
 	private String id;
 	private NCLCausalConnector xconnector;
@@ -103,6 +103,10 @@ public class NCLLink {
 		return(!linkParams.isEmpty());
 	}
 	
+	public Iterable<NCLParam> getLinkParams() {
+		return linkParams;
+	}
+	
 	public int numLinkParams() {
 		return(linkParams.size());
 	}
@@ -178,6 +182,10 @@ public class NCLLink {
 		}
 	}
 	
+	public Iterable<NCLBind> getBinds() {
+		return binds;
+	}
+	
 	public int numBinds() {
 		return(binds.size());
 	}
@@ -244,7 +252,7 @@ public class NCLLink {
 		
 		// <link> element content
 		if (hasLinkParam()){
-			content += "<!-- Link element parameters -->\n";
+//			content += "<!-- Link element parameters -->\n";
 			
 			Iterator<NCLParam> it = linkParams.iterator();
 			while (it.hasNext()) {
@@ -253,7 +261,7 @@ public class NCLLink {
 			}
 		}
 		
-		content += "<!-- Link element binds -->\n";
+//		content += "<!-- Link element binds -->\n";
 		
 		Iterator<NCLBind> it = binds.iterator();
 		while (it.hasNext()) {
@@ -270,5 +278,12 @@ public class NCLLink {
 	
 	public String toString() {
 		return parse(0);
+	}
+
+	public int compareTo(NCLLink link) {
+		if (equals(link))
+			return 0;
+		else
+			return 1;
 	}
 }

@@ -2,7 +2,7 @@ package br.pensario.interfaces;
 
 import br.pensario.NCLIdentification;
 
-public class NCLArea extends NCLInterface {
+public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 
 	private String id;
 	private int[] coords;
@@ -61,7 +61,7 @@ public class NCLArea extends NCLInterface {
 	}
 	
 	public boolean hasCoords() {
-		if (coords.length != 0)
+		if (coords != null && coords.length != 0)
 			return true;
 		else
 			return false;
@@ -304,5 +304,9 @@ public class NCLArea extends NCLInterface {
 	
 	public String toString() {
 		return parse(0);
+	}
+
+	public int compareTo(NCLArea area) {
+		return getId().compareTo(area.getId());
 	}
 }

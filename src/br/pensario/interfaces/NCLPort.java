@@ -3,7 +3,7 @@ package br.pensario.interfaces;
 import br.pensario.NCLIdentification;
 import br.pensario.node.NCLNode;
 
-public class NCLPort extends NCLInterface {
+public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 
 	private String id;
 	private NCLNode component;
@@ -102,5 +102,9 @@ public class NCLPort extends NCLInterface {
 	
 	public String toString() {
 		return parse(0);
+	}
+
+	public int compareTo(NCLPort port) {
+		return getId().compareTo(port.getId());
 	}
 }

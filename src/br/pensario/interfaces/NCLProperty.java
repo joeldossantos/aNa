@@ -8,7 +8,7 @@ import br.pensario.NCLValues.NCLSystemVariable;
  * @author joel
  *
  */
-public class NCLProperty extends NCLInterface {
+public class NCLProperty extends NCLInterface implements Comparable<NCLProperty> {
 
 	/**
 	 * property name
@@ -157,5 +157,9 @@ public class NCLProperty extends NCLInterface {
 	 */
 	public String toString() {
 		return parse(0);
+	}
+
+	public int compareTo(NCLProperty property) {
+		return getName().compareTo(property.getName());
 	}
 }

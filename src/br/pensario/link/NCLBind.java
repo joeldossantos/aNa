@@ -10,10 +10,7 @@ import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.NCLInterface;
 import br.pensario.node.NCLNode;
 
-
-//REV: NCLBind tem que implementar comparable
-
-public class NCLBind {
+public class NCLBind implements Comparable<NCLBind>{
 
 	private NCLRole role;
 	private NCLNode component;
@@ -142,6 +139,10 @@ public class NCLBind {
 		return(!bindParams.isEmpty());
 	}
 	
+	public Iterable<NCLParam> getBindParams() {
+		return bindParams;
+	}
+	
 	public boolean equals(NCLBind bind) {
 		//bind tem role diferente?
 		if (!bind.getRole().equals(getRole()))
@@ -180,7 +181,7 @@ public class NCLBind {
 		// <bind> element content
 		if (hasBindParam()){
 			content += ">\n";
-			content += "<!-- Bind element parameters -->\n";
+//			content += "<!-- Bind element parameters -->\n";
 			
 			Iterator<NCLParam> it = bindParams.iterator();
 			while (it.hasNext()) {
@@ -199,5 +200,12 @@ public class NCLBind {
 	
 	public String toString(){
 		return parse(0);
+	}
+	
+	public int compareTo(NCLBind bind) {
+		if (equals(bind))
+			return 0;
+		else
+			return 1;
 	}
 }

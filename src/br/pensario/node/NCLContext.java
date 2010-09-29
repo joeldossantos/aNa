@@ -8,7 +8,7 @@ import br.pensario.interfaces.NCLProperty;
 import br.pensario.interfaces.NCLPort;
 import br.pensario.link.NCLLink;
 
-public class NCLContext extends NCLNode {
+public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
@@ -23,15 +23,11 @@ public class NCLContext extends NCLNode {
 	/**
 	 * retorna true se a porta foi substituida e falso se nao
 	 */
-	public boolean addPort(NCLPort port) {
-		boolean contains = false;
-
-		if (!hasPort(port.getId()))
-			contains = true;
-
-		ports.add(port);
-
-		return contains;
+	public void addPort(NCLPort port) throws Exception {
+		if (!ports.add(port)){
+			Exception ex = new Exception("Port already existis");
+			throw ex;
+		}
 	}
 
 	public boolean removePort(String id) {
@@ -64,65 +60,55 @@ public class NCLContext extends NCLNode {
 		return(!ports.isEmpty());
 	}
 	
+	public Iterable<NCLPort> getPorts() {
+		return ports;
+	}
+	
 	/**
 	 * retorna true se a propriedade foi substituida e falso se nao
 	 */
-	public boolean addProperty(NCLProperty property) {
-		boolean contains = false;
-
-		if (!hasProperty(property.getName()))
-			contains = true;
-
-		properties.add(property);
-
-		return contains;
+	public void addProperty(NCLProperty property) throws Exception {
+		if (!properties.add(property)){
+			Exception ex = new Exception("Property already exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
 	}
 
-	public boolean removeProperty(String name) {
-		Iterator<NCLProperty> it = properties.iterator();
-
-		while (it.hasNext()) {
-			NCLProperty p = it.next();
-
-			if (p.getName().equals(name)) {
-				it.remove();
-				return true;
-			}
+	public void removeProperty(String name) throws Exception {
+		NCLProperty p = new NCLProperty(name);
+		
+		if (!properties.remove(p)){
+			Exception ex = new Exception("Property does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
 		}
-		return false;
 	}
 
-	public boolean hasProperty(String name) {
-		Iterator<NCLProperty> it = properties.iterator();
-
-		while (it.hasNext()) {
-			NCLProperty p = it.next();
-
-			if (p.getName().equals(name))
-				return true;
-		}
-		return false;
+	public boolean hasProperty(String name) throws Exception {
+		NCLProperty p = new NCLProperty(name);
+		
+		return properties.contains(p);
 	}
 	
 	public boolean hasProperty() {
-		return(!properties.isEmpty());
+		return !properties.isEmpty();
+	}
+	
+	public Iterable<NCLProperty> getProperties() {
+		return properties;
 	}
 	
 	/**
 	 * retorna true se o no foi substituido e falso se nao
 	 */
-	public boolean addNode(NCLNode node) {
-		boolean contains = false;
-
-		if (!hasNode(node.getId()))
-			contains = true;
-
-		nodes.add(node);
-
-		return contains;
+	public void addNode(NCLNode node) throws Exception {
+		if (!nodes.add(node)){
+			Exception ex = new Exception("node already exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
 	}
 
 	public boolean removeNode(String id) {
+		
 		Iterator<NCLNode> it = nodes.iterator();
 
 		while (it.hasNext()) {
@@ -150,6 +136,10 @@ public class NCLContext extends NCLNode {
 	
 	public boolean hasNode() {
 		return(!nodes.isEmpty());
+	}
+	
+	public Iterable<NCLNode> getNodes() {
+		return nodes;
 	}
 	
 	/**
@@ -196,6 +186,10 @@ public class NCLContext extends NCLNode {
 		return(!links.isEmpty());
 	}
 	
+	public Iterable<NCLLink> getLinks() {
+		return links;
+	}
+	
 	public boolean equals(NCLContext context) {
 		if (getId().equals(context.getId()))
 			return true;
@@ -223,7 +217,7 @@ public class NCLContext extends NCLNode {
 			
 			// <context> element content
 			if (hasPort()){
-				content += "<!-- Context element ports -->\n";
+//				content += "<!-- Context element ports -->\n";
 				
 				Iterator<NCLPort> it = ports.iterator();
 				while (it.hasNext()) {
@@ -233,7 +227,7 @@ public class NCLContext extends NCLNode {
 			}
 			
 			if (hasProperty()){
-				content += "<!-- Context element properties -->\n";
+//				content += "<!-- Context element properties -->\n";
 				
 				Iterator<NCLProperty> it = properties.iterator();
 				while (it.hasNext()) {
@@ -243,7 +237,7 @@ public class NCLContext extends NCLNode {
 			}
 			
 			if (hasNode()){
-				content += "<!-- Context element nodes -->\n";
+//				content += "<!-- Context element nodes -->\n";
 				
 				Iterator<NCLNode> it = nodes.iterator();
 				while (it.hasNext()) {
@@ -253,7 +247,7 @@ public class NCLContext extends NCLNode {
 			}
 			
 			if (hasLink()){
-				content += "<!-- Context element links -->\n";
+//				content += "<!-- Context element links -->\n";
 				
 				Iterator<NCLLink> it = links.iterator();
 				while (it.hasNext()) {
@@ -274,5 +268,9 @@ public class NCLContext extends NCLNode {
 	
 	public String toString() {
 		return parse(0);
+	}
+	
+	public int compareTo(NCLContext context) {
+		return getId().compareTo(context.getId());
 	}
 }
