@@ -40,7 +40,8 @@ public class NCLRegion implements Comparable {
 		this.id = id;
 	}
 
-	//REV: pq nao recebe uma NCLRegion?
+	// pq nao recebe uma NCLRegion?
+	//RES:Por que a assinatura deste metodo em Object é estes
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -247,7 +248,8 @@ public class NCLRegion implements Comparable {
 		return relativeWidth;
 	}
 
-	//REV: qual a diferenca para o metodo equals?
+	//: qual a diferenca para o metodo equals?
+	//RES: Este metodo ordena, o equals, não
 	@Override
 	public int compareTo(Object arg0) {
 		return getId().compareTo(((NCLRegion) arg0).getId());

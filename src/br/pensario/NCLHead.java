@@ -46,7 +46,6 @@ public class NCLHead {
 		return cbase;
 	}	
 	
-	//REV: connector base fora do parse
 	public String parse(int ident) {
 		
 		String space, content;
@@ -61,11 +60,7 @@ public class NCLHead {
 		
 		content += rbase.parse(ident + 1);		
 		content += dbase.parse(ident + 1);
-		
-	/*	for(NCLCausalConnector connector : cbase.getConnectors())
-		{				
-			content += connector.parse(ident+1);				
-		}*/	
+		content += cbase.parse(ident + 1);		
 		
 		content += space + "</head>\n";
 		

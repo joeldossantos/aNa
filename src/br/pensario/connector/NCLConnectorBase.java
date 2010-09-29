@@ -19,30 +19,40 @@ public class NCLConnectorBase {
 		this.id = id;
 	}
 	
-	public boolean addConnector(NCLCausalConnector connector)
+	public boolean addCausalConnector(NCLCausalConnector connector)
 	{
 		return connectors.add(connector);
 		
 	}
 	
-	public boolean removeConnector(NCLCausalConnector connector)
+	public boolean removeCausalConnector(NCLCausalConnector connector)
 	{
 		return connectors.remove(connector);		
 	}
 	
-	public boolean hasConnector(NCLCausalConnector connector)
+	public boolean hasCausalConnector(NCLCausalConnector connector)
 	{
 		return connectors.contains(connector);		
 	}
 	
-	public boolean hasConnector()
+	public boolean hasCausalConnector()
 	{
 		return connectors.size() > 0;		
 	}
 	
-	public Iterable<NCLCausalConnector> getConnectors()
+	public Iterable<NCLCausalConnector> getCausalConnectors()
 	{
 		return connectors;		
+	}
+	
+	public NCLCausalConnector getCausalConnector(String conn_id)
+	{
+		NCLCausalConnector rconn = null;
+		
+		for(NCLCausalConnector cconn : connectors)
+			if(cconn.getId().equals(conn_id)) rconn = cconn;
+		
+		return rconn;
 	}
 	
 	public String parse(int ident) {
@@ -57,13 +67,13 @@ public class NCLConnectorBase {
 		content = space + "<connectorBase ";
 
 		if (getId() != null)
-			content += " id='" + getId();
+			content += " id='" + getId() + "'";
 
-		content += "'>\n";
+		content += ">\n";
 
-		if (hasConnector())
+		if (hasCausalConnector())
 
-			for (NCLCausalConnector connector: getConnectors())
+			for (NCLCausalConnector connector: getCausalConnectors())
 				content += connector.parse(ident + 1);
 
 		content += space + "<connectorBase/>\n";

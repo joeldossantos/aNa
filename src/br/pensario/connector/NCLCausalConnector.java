@@ -1,32 +1,33 @@
 package br.pensario.connector;
 
-import br.pensario.region.NCLRegion;
 
-public class NCLCausalConnector {
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
+public class NCLCausalConnector implements Comparable<NCLCausalConnector> {
 
 	private String id;
 	private NCLCondition condition;
 	private NCLAction action;
-	private NCLConnectorParam param;
+	private Set<NCLConnectorParam> conn_params = new TreeSet<NCLConnectorParam>();
 
-	//REV: param nao eh necessario, nao deveria estar no construtor
-	public NCLCausalConnector (NCLCondition condition, NCLAction action, NCLConnectorParam param)
-	{
-		
+	public NCLCausalConnector(String id, NCLCondition condition,
+			NCLAction action) {
+		this.setId(id);
 		this.setCondition(condition);
 		this.setAction(action);
-		this.setParam(param);
 	}
-	
+
 	public NCLCondition getCondition() {
 		return condition;
 	}
 
-	//REV: gerar excecao nos metodos set
+	// REV: gerar excecao nos metodos set
 	public void setCondition(NCLCondition condition) {
 		this.condition = condition;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -43,16 +44,33 @@ public class NCLCausalConnector {
 		this.action = action;
 	}
 
-	public NCLConnectorParam getParam() {
-		return param;
+	public NCLConnectorParam getConnectorParam(String name) {
+
+		for (NCLConnectorParam connp : conn_params)
+			if (connp.getName().equals(name))
+				return connp;
+
+		return null;
 	}
 
-	public void setParam(NCLConnectorParam param) {
-		this.param = param;
+	public void removeConnectorParam(String name) {
+
+		Iterator<NCLConnectorParam> it = conn_params.iterator();
+
+		while (it.hasNext()) {
+			NCLConnectorParam connp = it.next();
+			if (connp.getName().equals(name))
+				it.remove();
+		}
+		
 	}
-	
-	
-	public String toString() {		
+
+	public void addConnectorParam(NCLConnectorParam param) {
+
+		conn_params.add(param);
+	}
+
+	public String toString() {
 		return parse(0);
 	}
 
@@ -66,15 +84,28 @@ public class NCLCausalConnector {
 			space += "\t";
 
 		content = space + "<causalConnector";
-		content += " id='" + getId() + "'>";
 
+		if (getId() != null)
+			content += " id='" + getId() + "'";
+
+		content += ">\n";
+
+		for(NCLConnectorParam connp : conn_params)
+			content += connp.parse(ident + 1);
+		
 		content += getCondition().parse(ident + 1);
 		content += getAction().parse(ident + 1);
-		
+
 		content += space + "<causalConnector/>\n";
 
 		return content;
-	}	
-	
+	}
+
+	@Override
+	public int compareTo(NCLCausalConnector cconn) {
+
+		return cconn.getId().compareTo(this.getId());
+
+	}
 
 }

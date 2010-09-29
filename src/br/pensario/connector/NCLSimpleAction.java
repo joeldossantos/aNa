@@ -4,7 +4,7 @@ import br.pensario.NCLValues.NCLActionOperator;
 
 public class NCLSimpleAction extends NCLAction {
 
-//REV: falta has e set gerar excecao	
+	//REV: falta has e set gerar excecao	
 	private String value;	
 
 	private Integer min;
@@ -14,6 +14,10 @@ public class NCLSimpleAction extends NCLAction {
 	
 	private NCLActionRole role;
 	
+	public NCLSimpleAction(NCLActionRole role) {
+		this.setRole(role);
+	}
+
 	public String getValue() {
 		return value;
 	}
@@ -70,11 +74,11 @@ public class NCLSimpleAction extends NCLAction {
 		if(getDelay()!=null)
 			content += " delay='" + getDelay() + "'";
 		
-		if(getMax()!=null)
-			content += " max='" + getMax() + "'";
-		
 		if(getMin()!=null)
 			content += " min='" + getMin() + "'";
+		
+		if(getMax()!=null)
+			content += " max='" + getMax() + "'";		
 		
 		if(getQualifier()!=null)
 			content += " qualifier='" + getQualifier() + "'";

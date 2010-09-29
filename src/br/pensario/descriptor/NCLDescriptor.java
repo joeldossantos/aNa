@@ -6,18 +6,20 @@ import br.pensario.region.NCLRegion;
 public class NCLDescriptor implements Comparable{
 
 	// pegar valores padrao
-	//REV: o que nao existe nao aparece no codigo XML, nao precisa setar um valor padrao para os atributos
-	// falta gerar excecao nos metodos de set
+	//: o que nao existe nao aparece no codigo XML, nao precisa setar um valor padrao para os atributos
+	//RES: ok, então isto dependerá da implementação da máquina de execução, né?
+	
+	//REV: falta gerar excecao nos metodos de set
 
 	private String id;
 
 	private String player;
-	private String explicitDur; // TODO -se nao estiver setado ele adquire um
-								// valor default
+	private String explicitDur; 
+	
 	private Boolean freeze;
 
-	private NCLDescriptor moveLeft; // ao escrever no XML, pegar o focusIndex do
-									// descritor moveLeft
+	private NCLDescriptor moveLeft; 
+									
 	private NCLDescriptor moveRight;
 	private NCLDescriptor moveUp;
 	private NCLDescriptor moveDown;
@@ -57,12 +59,14 @@ public class NCLDescriptor implements Comparable{
 		return explicitDur;
 	}
 
-	//REV: mudar para b minusculo
+	//: mudar para b minusculo
+	//RES: não pois pode ser nulo
 	public void setFreeze(Boolean freeze) {
 		this.freeze = freeze;
 	}
 
-	//REV: mudar para b minusculo e criar metodos hasFreeze
+	//: mudar para b minusculo e criar metodos hasFreeze
+	//RES: não pois pode ser nulo
 	public Boolean isFreeze() {
 		return freeze;
 	}
@@ -171,7 +175,9 @@ public class NCLDescriptor implements Comparable{
 		this.id = id;
 	}
 
-	//REV: nao usar o get pra testar se eh nulo, criar metodos hasAlgumacoisa
+	//: nao usar o get pra testar se eh nulo, criar metodos hasAlgumacoisa
+	//RES: Será que esta é a melhor alternativa? 
+	//pois pode ser documentado que o atributo fica null caso nao tenha sido setado (por isso o Boolean com B maiusculo)
 	public String parse(int ident) {
 
 		String space, content;
@@ -183,9 +189,7 @@ public class NCLDescriptor implements Comparable{
 
 		content = space + "<descriptor";
 		content += " id='" + getId() + "'";
-
-		// TODO - Region eh obrigatorio para descritor, como e qdo verificar?
-
+	
 		if (getRegion() != null)
 			content += " region='" + getRegion().getId() + "'";
 

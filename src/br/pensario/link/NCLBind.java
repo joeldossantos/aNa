@@ -10,6 +10,9 @@ import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.NCLInterface;
 import br.pensario.node.NCLNode;
 
+
+//REV: NCLBind tem que implementar comparable
+
 public class NCLBind {
 
 	private NCLRole role;

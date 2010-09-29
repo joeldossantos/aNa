@@ -1,12 +1,13 @@
 package br.pensario.connector;
 
 import br.pensario.NCLValues.NCLConditionOperator;
+import br.pensario.NCLValues.NCLKey;
 
-public class NCLSimpleCondition extends NCLCondition {
+public class NCLSimpleCondition extends NCLCondition{
 
-	//REV: key tem um enum com os valores possiveis
 	// falta has e set gerar excecao
-	private String key;	
+
+	private NCLKey key;	
 
 	private Integer min;
 	private Integer max;
@@ -15,7 +16,10 @@ public class NCLSimpleCondition extends NCLCondition {
 	
 	private NCLConditionRole role;
 	
-	//public NCLSimpleCondition(NCLDefault)
+	public NCLSimpleCondition(NCLConditionRole role)
+	{
+		setRole(role);
+	}
 	
 	public Integer getMin() {
 		return min;
@@ -50,10 +54,10 @@ public class NCLSimpleCondition extends NCLCondition {
 	}
 
 	public String getKey() {
-		return key;
+		return key.toString();
 	}
 
-	public void setKey(String key) {
+	public void setKey(NCLKey key) {
 		this.key = key;
 	}	
 	
@@ -68,17 +72,20 @@ public class NCLSimpleCondition extends NCLCondition {
 
 		content = space + "<simpleCondition";
 
-		content += " role='" + getKey() + "'";
+		content += " role='" + getRole().getId() + "'";
+		
+		if(getKey()!=null)
+			content += " key='" + getKey() + "'";
 
 		if(getDelay()!=null)
 			content += " delay='" + getDelay() + "'";
+
+		if(getMin()!=null)
+			content += " min='" + getMin() + "'";		
 		
 		if(getMax()!=null)
 			content += " max='" + getMax() + "'";
-		
-		if(getMin()!=null)
-			content += " min='" + getMin() + "'";
-		
+			
 		if(getQualifier()!=null)
 			content += " qualifier='" + getQualifier() + "'";
 		
@@ -90,6 +97,20 @@ public class NCLSimpleCondition extends NCLCondition {
 	@Override
 	public String toString() {
 		return parse(0);
+	}
+	
+	@Override
+	public int compareTo(NCLCondition arg0) {		
+				
+		if(!(arg0 instanceof NCLSimpleCondition))
+			return -1;		
+		
+		NCLSimpleCondition scond = (NCLSimpleCondition) arg0;		
+		
+		if(!scond.getRole().toString().equals(this.getRole().toString()))
+			return -1;	
+		
+		return 0;
 	}
 	
 }

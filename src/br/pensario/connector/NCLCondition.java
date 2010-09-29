@@ -1,6 +1,6 @@
 package br.pensario.connector;
 
-public abstract class NCLCondition {
+public abstract class NCLCondition implements Comparable<NCLCondition> {
 
 	private String delay;	
 	
