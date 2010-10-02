@@ -15,7 +15,7 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 	private String src;
 	private NCLMimeType type;
 	private NCLDescriptor descriptor;
-	
+	//REV: Eu nao encontrei estes relacionamentos no modelo
 	private Set<NCLArea> areas = new TreeSet<NCLArea>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
 	

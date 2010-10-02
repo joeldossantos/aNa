@@ -24,6 +24,8 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 		return id.toString();
 	}
 	
+	
+	//REV: para que este metodo? nao basta o getId()
 	public String getIdentifier(){
 		return getId();
 	}
