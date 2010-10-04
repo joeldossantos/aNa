@@ -74,18 +74,12 @@ public class testBody {
 		NCLCausalConnector c3 = new NCLCausalConnector(null, null, null);
 		c3.setId("onKeySelectionSet");
 		
-		NCLConditionRole r1 = new NCLConditionRole();
-		r1.setId(NCLValues.NCLDefaultConditionRole.ONBEGIN);
-		NCLActionRole r2 = new NCLActionRole();
-		r2.setId(NCLValues.NCLDefaultActionRole.START);
-		NCLConditionRole r3 = new NCLConditionRole();
-		r3.setId(NCLValues.NCLDefaultConditionRole.ONEND);
-		NCLActionRole r4 = new NCLActionRole();
-		r4.setId(NCLValues.NCLDefaultActionRole.STOP);
-		NCLActionRole r5 = new NCLActionRole();
-		r5.setId(NCLValues.NCLDefaultActionRole.SET);
-		NCLConditionRole r6 = new NCLConditionRole();
-		r6.setId(NCLValues.NCLDefaultConditionRole.ONSELECTION);
+		NCLConditionRole r1 = new NCLConditionRole(NCLValues.NCLDefaultConditionRole.ONBEGIN);
+		NCLActionRole r2 = new NCLActionRole(NCLValues.NCLDefaultActionRole.START);
+		NCLConditionRole r3 = new NCLConditionRole(NCLValues.NCLDefaultConditionRole.ONEND);
+		NCLActionRole r4 = new NCLActionRole(NCLValues.NCLDefaultActionRole.STOP);
+		NCLActionRole r5 = new NCLActionRole(NCLValues.NCLDefaultActionRole.SET);
+		NCLConditionRole r6 = new NCLConditionRole(NCLValues.NCLDefaultConditionRole.ONSELECTION);
 		
 		
 		NCLBind b1 = new NCLBind(r1, m1);
@@ -109,13 +103,11 @@ public class testBody {
 		
 		
 		NCLBind b10 = new NCLBind(r6, m3);//onSelection
-			NCLConnectorParam pa = new NCLConnectorParam();
-			pa.setName("vKey");
+			NCLConnectorParam pa = new NCLConnectorParam("vKey");
 			b10.addBindParam(pa, "RED");
 		NCLBind b11 = new NCLBind(r5, m2);//set
 			b11.setInterface(prop1);
-			NCLConnectorParam p = new NCLConnectorParam();
-			p.setName("var");
+			NCLConnectorParam p = new NCLConnectorParam("var");
 			b11.addBindParam(p, "sim");
 		NCLBind b12 = new NCLBind(r4, m3);//stop
 		NCLLink l5 = new NCLLink(c3, b10, b11);

@@ -10,34 +10,49 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Classe representando o elemento media da linguagem NCL.
+ */
 public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 
 	private String src;
 	private NCLMimeType type;
 	private NCLDescriptor descriptor;
-	//REV: Eu nao encontrei estes relacionamentos no modelo
+	
 	private Set<NCLArea> areas = new TreeSet<NCLArea>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
 	
 	
+	/**
+	 * Construtor da media.
+	 * 
+	 * @param id String com o id da media.
+	 * @throws IllegalArgumentException se o id for inválido.
+	 */
 	public NCLMedia(String id) throws Exception {
 		setId(id);
 	}
 	
+	
 	/**
-	 * define a URI nao padrao de src da media.
-	 * @param src
+	 * Determina a URI do atributo src da mídia.
+	 * 
+	 * @param src String com a src da mídia.
+	 * @throws Exception se a src for inválida.
 	 */
 	public void setSrc(String src) throws Exception {
 		URI uri = new URI(src);
 		this.src = uri.toString();
 	}
 	
+	
 	/**
-	 * define a URI nao padrao de src da media. Tem que ser uma URI padrao
+	 * Determina a URI do atributo src da mídia. Tem que ser uma URI padrao.
+	 * Mídias do tipo settings não tem src.
 	 * 
-	 * media do tipo settings nao tem src
-	 * @param src
+	 * @param type tipo da src.
+	 * @param src URI da mídia.
+	 * @throws Exception se o tipo ou src forem inválidos.
 	 */
 	public void setSrc(NCLUriType type, String src) throws Exception {
 		if (type == null){
@@ -53,10 +68,13 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 		}
 	}
 	
+	
 	/**
-	 * define o src para a media do tipo time
-	 * @param time
-	 * @return
+	 * Determina o atributo src para mídias do tipo Time.
+	 * 
+	 * @param time NCLTime indicador de tempo.
+	 * @throws NullPointerException se o indicador for nulo;
+	 *         IllegalArgumentException se o argumento for definido para mídias que não são do tipo Time.
 	 */
 	public void setSrc(NCLTime time) throws Exception {
 		if (time == null){
@@ -73,25 +91,32 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 		}
 	}
 	
+	
 	/**
+	 * Obtém o valor do atributo src da mídia.
 	 * 
-	 * @return
+	 * @return String com o valor do atributo.
 	 */
 	public String getSrc() {
 		return src;
 	}
 	
-	public boolean hasSrc() {
-		if (src != null)
-			return true;
-		else
-			return false;
-	}
 	
 	/**
-	 * define o tipo da media, sera um dos tipos padroes
-	 * @param type
-	 * @return true se valido false contrario
+	 * Verifica se a mídia possui um src.
+	 * 
+	 * @return True se a mídia possuir o atributo.
+	 */
+	public boolean hasSrc() {
+		return (src != null);
+	}
+	
+	
+	/**
+	 * Determina valor do atributo type da mídia. O valor desse atributo será um dos tipos padrões.
+	 * 
+	 * @param type tipo da mídia.
+	 * @throws NullPointerException se o tipo for nulo.
 	 */
 	public void setType(NCLMimeType type) throws Exception {
 		if (type != null){
@@ -103,21 +128,32 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 		}
 	}
 	
+	
+	/**
+	 * Obtém o tipo da mídia.
+	 * 
+	 * @return NCLMimeType representando o tipo da mídia.
+	 */
 	public NCLMimeType getType() {
 		return type;
 	}
 	
-	public boolean hasType() {
-		if (type != null)
-			return true;
-		else
-			return false;
-	}
 	
 	/**
-	 * define o descritor da media
-	 * @param descriptor
-	 * @return true se valido false contrario
+	 * Verifica se a mídia tem um tipo.
+	 * 
+	 * @return True se a mídia possuir um tipo.
+	 */
+	public boolean hasType() {
+		return (type != null);
+	}
+	
+	
+	/**
+	 * Determina o descritor da mídia.
+	 * 
+	 * @param descriptor descritor da mídia.
+	 * @throws NullPointerException se o descritor for nulo.
 	 */
 	public void setDescriptor(NCLDescriptor descriptor) throws Exception {
 		if (descriptor != null){
@@ -129,19 +165,31 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 		}
 	}
 	
+	
+	/**
+	 * Obtém o descritor da mídia.
+	 * 
+	 * @return NCLDescriptor representando o descritor.
+	 */
 	public NCLDescriptor getDescriptor() {
 		return descriptor;
 	}
 	
-	public boolean hasDescriptor() {
-		if (descriptor != null)
-			return true;
-		else
-			return false;
-	}
 	
 	/**
-	 * retorna true se a area foi substituida e falso se nao
+	 * Verifica se a mídia possui um descritor.
+	 * 
+	 * @return True se a mídia possui um descritor.
+	 */
+	public boolean hasDescriptor() {
+		return (descriptor != null);
+	}
+	
+	
+	/**
+	 * Adiciona uma âncora a uma mídia.
+	 * 
+	 * @throws Exception se a mídia já possuir a âncora sendo adicionada.
 	 */
 	public void addArea(NCLArea area) throws Exception {
 		/* TODO - isso deve ser implementado na camada de validacao
@@ -166,7 +214,14 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * Remove uma âncora da mídia.
+	 * 
+	 * @param id id da âncora a ser removida.
+	 * @throws Exception se não existir âncora com o id indicado.
+	 */
 	public void removeArea(String id) throws Exception {
 		NCLArea a = new NCLArea(id);
 		
@@ -175,24 +230,46 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * Verifica se a mídia possui uma âncora.
+	 * 
+	 * @param id id da âncora sendo verificada.
+	 * @return True se a âncora for uma âncora da mídia.
+	 * @throws Exception se o id for inválido.
+	 */
 	public boolean hasArea(String id) throws Exception {
 		NCLArea a = new NCLArea(id);
 		
 		return areas.contains(a);
 	}
 	
+	
+	/**
+	 * Verifica se a mídia possui alguma âncora.
+	 * 
+	 * @return True se a mídia possuir alguma âncora.
+	 */
 	public boolean hasArea() {
 		return !areas.isEmpty();
 	}
 	
+	
+	/**
+	 * Obtém as âncoras da mídia.
+	 * 
+	 * @return Iterable com as âncoras da mídia.
+	 */
 	public Iterable<NCLArea> getAreas() {
 		return areas;
 	}
 	
 	
 	/**
-	 * retorna true se a propriedade foi substituida e falso se nao
+	 * Adiciona uma propriedade a uma mídia.
+	 * 
+	 * @throws Exception se a mídia já possuir a propriedade sendo adicionada.
 	 */
 	public void addProperty(NCLProperty property) throws Exception {
 		if (!properties.add(property)){
@@ -200,7 +277,14 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * Remove uma propriedade da mídia.
+	 * 
+	 * @param name nome da propriedade a ser removida.
+	 * @throws Exception se não existir propriedade com o nome indicado.
+	 */
 	public void removeProperty(String name) throws Exception {
 		NCLProperty p = new NCLProperty(name);
 		
@@ -209,22 +293,48 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * Verifica se a mídia possui uma propriedade.
+	 * 
+	 * @param name nome da propriedade sendo verificada.
+	 * @return True se a propriedade for uma propriedade da mídia.
+	 * @throws Exception se o nome for inválido.
+	 */
 	public boolean hasProperty(String name) throws Exception {
 		NCLProperty p = new NCLProperty(name);
 		
 		return properties.contains(p);
 	}
 	
+	
+	/**
+	 * Verifica se a mídia possui alguma propriedade.
+	 * 
+	 * @return True se a mídia possuir alguma propriedade.
+	 */
 	public boolean hasProperty() {
 		return !properties.isEmpty();
 	}
 	
+	
+	/**
+	 * Obtém as propriedades da mídia.
+	 * 
+	 * @return Iterable com as propriedades da mídia.
+	 */
 	public Iterable<NCLProperty> getProperties() {
 		return properties;
 	}
 	
 	
+	/**
+	 * Determina se duas mídias são iguais.
+	 * 
+	 * @param media mídia com a qual comparar.
+	 * @return True se as mídias forem iguais.
+	 */
 	public boolean equals(NCLMedia media) {
 		if (getId().equals(media.getId()))
 			return true;
@@ -232,6 +342,13 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 			return false;
 	}
 	
+	
+	/**
+	 * Cria o código XML de uma mídia.
+	 * 
+	 * @param ident Inteiro indicando o nível de indentação.
+	 * @return String com o código XML da mídia.
+	 */
 	public String parse(int ident) {
 		String space, content;
 		
@@ -287,10 +404,23 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 		return content;
 	}
 	
+	
+	/**
+	 * Cria o código XML de uma mídia desconsiderando a indentação.
+	 * 
+	 * @return String com o código XML da mídia.
+	 */
 	public String toString() {
 		return parse(0);
 	}
 	
+	
+	/**
+	 * Determina se duas mídias são iguais.
+	 * 
+	 * @param media mídia com a qual comparar.
+	 * @return Inteiro indicando se as mídias são iguais. O valor será 0 se as mídias forem iguais.
+	 */
 	public int compareTo(NCLMedia media) {
 		return getId().compareTo(media.getId());
 	}

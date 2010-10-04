@@ -4,55 +4,54 @@ import br.pensario.NCLIdentification;
 import br.pensario.NCLValues.NCLSystemVariable;
 
 /**
- * This class implements the NCL property element.
- * @author joel
- *
+ * Propriedade (elemento property) da linguagem NCL.
  */
 public class NCLProperty extends NCLInterface implements Comparable<NCLProperty> {
 
-	/**
-	 * property name
-	 */
 	private String name;
-	/**
-	 * property value
-	 */
 	private String value;
 	
 	
 	/**
-	 * class constructor. Receives the required property name
-	 * @param name - String with the name of the property
-	 * @throws Exception - if the name is a invalid name
+	 * Construtor da propriedade sem seguir os nomes padrão.
+	 * 
+	 * @param name String com o nome da propriedade.
+	 * @throws Exception se o nome não for válido.
 	 */
 	public NCLProperty(String name) throws Exception {
 		setName(name);
 	}
 	
+	
 	/**
-	 * class constructor. Receives the required property name
-	 * @param name - NCLSystemVariable a standard property name
-	 * @throws Exception - if the name is null
+	 * Construtor da propriedade seguindo os nomes padrão.
+	 * 
+	 * @param name NCLSystemVariable com o nome da propriedade.
+	 * @throws NullPointerException se o nome for nulo.
 	 */
 	public NCLProperty(NCLSystemVariable name) throws Exception {
 		setName(name);
 	}
 	
+	
 	/**
-	 * define the name of the propriedade. It may not be a standard name
-	 * It may be in the format shared.xxx
-	 * @param name - String with the name of the property
-	 * @throws Exception - if the name is a invalid name
+	 * Determina o nome da propriedade sem seguir os valores padrão especificados na norma.
+	 * O nome, entretando pode estar na forma shared.xxx
+	 * 
+	 * @param name String com o nome da propriedade
+	 * @throws Exception se o nome não for válido.
 	 */
 	public void setName(String name) throws Exception {
 		NCLIdentification.validate(name);
 		this.name = name;
 	}
 	
+	
 	/**
-	 * define uma nome de propriedade da tabela de padrao
+	 * Determina o nome de uma propriedade seguindo os valore padrão especificados na norma.
+	 * 
 	 * @param name nome da propriedade
-	 * @return true se valido falso contrario
+	 * @throws NullPointerException se o nome for nulo.
 	 */
 	public void setName(NCLSystemVariable name) throws Exception {
 		if (name != null){
@@ -64,26 +63,32 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 		}
 	}
 	
+	
 	/**
-	 * Gets the property name
-	 * @return String with the property name.
+	 * Obtém o nome da propriedade.
+	 * 
+	 * @return String com o nome da propriedade.
 	 */
 	public String getName() {
 		return name;
 	}
 	
+	
 	/**
-	 * Gets the attribute tha identifies the property, in this case the property name.
-	 * @return String with the property name.
+	 * Obtém o atributo que identifica uma propriedade, neste caso o nome da propriedade.
+	 * 
+	 * @return String com o nome da propriedade.
 	 */
 	public String getIdentifier(){
 		return getName();
 	}
 	
+	
 	/**
-	 * define um valor para a propriedade
-	 * @param value valor da propriedade
-	 * @return true se valido falso contrario
+	 * Determina o valor do atributo value de uma propriedade.
+	 * 
+	 * @param value valor do atributo
+	 * @throws NullPointerException se o valor for nulo.
 	 */
 	public void setValue(String value) throws Exception {
 		if (value != null){
@@ -95,29 +100,32 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 		}
 	}
 	
+	
 	/**
-	 * Gets the property value
-	 * @return String with the value.
+	 * Obtém o valor do atributo value da propriedade.
+	 * 
+	 * @return String com o valor do atributo.
 	 */
 	public String getValue() {
 		return value;
 	}
 	
-	/**
-	 * 
-	 * @return True if the property has a value and false otherwise
-	 */
-	public boolean hasValue() {
-		if (value != null)
-			return true;
-		else
-			return false;
-	}
 	
 	/**
-	 * Compares two properties.
-	 * @param property - property to each compare
-	 * @return true if the properties are equals and false otherwise
+	 * Verifica se a propriedade possui o atributo value.
+	 * 
+	 * @return True se a propriedade possuir o atributo value.
+	 */
+	public boolean hasValue() {
+		return (value != null);
+	}
+	
+	
+	/**
+	 * Compara uma propriedade com outra propriedade.
+	 * 
+	 * @param property propriedade com a qual comparar.
+	 * @return True se as propriedades forem iguais.
 	 */
 	public boolean equals(NCLProperty property) {
 		if (!getName().equals(property.getName()))
@@ -126,10 +134,12 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 			return true;
 	}
 	
+	
 	/**
-	 * Creates the XML code of the property.
-	 * @param ident - indentation level
-	 * @return String with the XML code.
+	 * Cria o código XML de uma propriedade.
+	 * 
+	 * @param ident Inteiro indicando o nível de indentação.
+	 * @return String com o código XML da propriedade.
 	 */
 	public String parse(int ident) {
 		String space, content;
@@ -151,14 +161,23 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 		return content;
 	}
 	
+	
 	/**
-	 * Creates the XML code of the property without indentation.
-	 * @return String with the XML code.
+	 * Cria o código XML da propriedade sem indentação.
+	 * 
+	 * @return String com o código XML.
 	 */
 	public String toString() {
 		return parse(0);
 	}
-
+	
+	
+	/**
+	 * Compara uma propriedade com outra propriedade.
+	 * 
+	 * @param property propriedade com a qual comparar.
+	 * @return Inteiro indicando se as propriedades são iguais. O valor será 0 se as propriedades forem iguais.
+	 */
 	public int compareTo(NCLProperty property) {
 		return getName().compareTo(property.getName());
 	}
