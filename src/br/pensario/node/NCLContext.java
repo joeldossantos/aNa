@@ -8,7 +8,10 @@ import br.pensario.interfaces.NCLProperty;
 import br.pensario.interfaces.NCLPort;
 import br.pensario.link.NCLLink;
 
-public class NCLContext extends NCLNode implements Comparable<NCLContext> {
+/**
+ * Classe representando o elemento context da linguagem NCL.
+ */
+public class NCLContext extends NCLNode {
 
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
@@ -16,12 +19,22 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 	private Set<NCLLink> links = new TreeSet<NCLLink>();
 	
 	
+	/**
+	 * Construtor do contexto.
+	 * 
+	 * @param id id do contexto.
+	 * @throws IllegalArgumentException se o id for inválido.
+	 */
 	public NCLContext(String id) throws Exception {
 		setId(id);
 	}
 	
+	
 	/**
-	 * retorna true se a porta foi substituida e falso se nao
+	 * Adiciona uma porta ao contexto.
+	 * 
+	 * @param port porta a ser adicionada.
+	 * @throws Exception se a porta já existir.
 	 */
 	public void addPort(NCLPort port) throws Exception {
 		if (!ports.add(port)){
@@ -29,43 +42,62 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 			throw ex;
 		}
 	}
-
-	public boolean removePort(String id) {
-		Iterator<NCLPort> it = ports.iterator();
-
-		while (it.hasNext()) {
-			NCLPort p = it.next();
-
-			if (p.getId().equals(id)) {
-				it.remove();
-				return true;
-			}
+	
+	
+	/**
+	 * Remove uma porta do contexto.
+	 * 
+	 * @param id id da porta a ser removida.
+	 * @throws IllegalArgumentException se o id for inválido ou Exception se a porta não existir.
+	 */
+	public void removePort(String id) throws Exception {
+		NCLPort port = new NCLPort(id, this); //this passado como componente para poder criar a porta.
+		
+		if (!ports.remove(port)){
+			Exception ex = new Exception("Port does not existis");
+			throw ex;
 		}
-		return false;
-	}
-
-	public boolean hasPort(String id) {
-		Iterator<NCLPort> it = ports.iterator();
-
-		while (it.hasNext()) {
-			NCLPort p = it.next();
-
-			if (p.getId().equals(id))
-				return true;
-		}
-		return false;
 	}
 	
+	
+	/**
+	 * Verifica se o contexto possui uma porta.
+	 * 
+	 * @param id da porta a ser verificada.
+	 * @return True se a porta existir.
+	 * @throws IllegalArgumentException se o id for inválido.
+	 */
+	public boolean hasPort(String id) throws Exception {
+		NCLPort port = new NCLPort(id, this); //this passado como componente para poder criar a porta.
+		
+		return ports.contains(port);
+	}
+	
+	
+	/**
+	 * Verifica se o contexto possui alguma porta.
+	 * 
+	 * @return True se o contexto possui alguma porta.
+	 */
 	public boolean hasPort() {
-		return(!ports.isEmpty());
+		return !ports.isEmpty();
 	}
 	
+	
+	/**
+	 * Obtém as portas do contexto.
+	 * 
+	 * @return Iterable com as portas do contexto.
+	 */
 	public Iterable<NCLPort> getPorts() {
 		return ports;
 	}
 	
+	
 	/**
-	 * retorna true se a propriedade foi substituida e falso se nao
+	 * Adiciona uma propriedade a um contexto.
+	 * 
+	 * @throws Exception se o contexto já possuir a propriedade sendo adicionada.
 	 */
 	public void addProperty(NCLProperty property) throws Exception {
 		if (!properties.add(property)){
@@ -73,7 +105,14 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * Remove uma propriedade do contexto.
+	 * 
+	 * @param name nome da propriedade a ser removida.
+	 * @throws Exception se não existir propriedade com o nome indicado.
+	 */
 	public void removeProperty(String name) throws Exception {
 		NCLProperty p = new NCLProperty(name);
 		
@@ -82,23 +121,47 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * Verifica se o contexto possui uma propriedade.
+	 * 
+	 * @param name nome da propriedade sendo verificada.
+	 * @return True se a propriedade for uma propriedade do contexto.
+	 * @throws Exception se o nome for inválido.
+	 */
 	public boolean hasProperty(String name) throws Exception {
 		NCLProperty p = new NCLProperty(name);
 		
 		return properties.contains(p);
 	}
 	
+	
+	/**
+	 * Verifica se o contexto possui alguma propriedade.
+	 * 
+	 * @return True se o contexto possuir alguma propriedade.
+	 */
 	public boolean hasProperty() {
 		return !properties.isEmpty();
 	}
 	
+	
+	/**
+	 * Obtém as propriedades do contexto.
+	 * 
+	 * @return Iterable com as propriedades do contexto.
+	 */
 	public Iterable<NCLProperty> getProperties() {
 		return properties;
 	}
 	
+	
 	/**
-	 * retorna true se o no foi substituido e falso se nao
+	 * Adiciona um nó ao contexto.
+	 * 
+	 * @param node nó a ser adicionado.
+	 * @throws Exception se o nó já existir.
 	 */
 	public void addNode(NCLNode node) throws Exception {
 		if (!nodes.add(node)){
@@ -106,8 +169,15 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 			throw ex;
 		}
 	}
-
-	public boolean removeNode(String id) {
+	
+	
+	/**
+	 * Remove um nó do contexto.
+	 * 
+	 * @param id id do nó a ser removido.
+	 * @throws Exception se o nó não existir.
+	 */
+	public void removeNode(String id) throws Exception {
 		
 		Iterator<NCLNode> it = nodes.iterator();
 
@@ -116,12 +186,21 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 
 			if (n.getId().equals(id)) {
 				it.remove();
-				return true;
+				return;
 			}
 		}
-		return false;
+		
+		Exception ex = new Exception("Node does not exists.");
+		throw ex;
 	}
-
+	
+	
+	/**
+	 * Verifica se o contexto possui um nó.
+	 * 
+	 * @param id id do nó a ser verificado.
+	 * @return True se o nó existir.
+	 */
 	public boolean hasNode(String id) {
 		Iterator<NCLNode> it = nodes.iterator();
 
@@ -134,62 +213,92 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 		return false;
 	}
 	
+	
+	/**
+	 * Verifica se o contexto possui algum nó.
+	 * 
+	 * @return True se o contexto possuir algum nó.
+	 */
 	public boolean hasNode() {
 		return(!nodes.isEmpty());
 	}
 	
+	
+	/**
+	 * Obtém os nós do contexto.
+	 * 
+	 * @return Iterable com os nós do contexto.
+	 */
 	public Iterable<NCLNode> getNodes() {
 		return nodes;
 	}
 	
+	
 	/**
-	 * retorna true se o link foi substituido e falso se nao
+	 * Adiciona um link ao contexto.
+	 * 
+	 * @param link link a ser adicionado.
+	 * @throws Exception se o link já existir.
 	 */
-	public boolean addLink(NCLLink link) {
-		boolean contains = false;
-
-		if (!hasLink(link))
-			contains = true;
-
-		links.add(link);
-
-		return contains;
-	}
-
-	public boolean removeLink(NCLLink link) {//TODO: receber link ou algum identificador??
-		Iterator<NCLLink> it = links.iterator();
-
-		while (it.hasNext()) {
-			NCLLink l = it.next();
-
-			if (l.equals(link)) {
-				it.remove();
-				return true;
-			}
+	public void addLink(NCLLink link) throws Exception {
+		if (!links.add(link)){
+			Exception ex = new Exception("Link already exists"); //TODO: Criar tipo de excecao
+			throw ex;
 		}
-		return false;
 	}
-
+	
+	
+	/**
+	 * Remove um link do contexto.
+	 * 
+	 * @param link link a ser removido.
+	 * @throws Exception se o link não existir.
+	 */
+	public void removeLink(NCLLink link) throws Exception {//TODO: receber link ou algum identificador??
+		if (!links.remove(link)){
+			Exception ex = new Exception("link does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
+	}
+	
+	
+	/**
+	 * Verifica se o contexto contém um link.
+	 * 
+	 * @param link link a ser verificado.
+	 * @return True se o link estiver no contexto.
+	 */
 	public boolean hasLink(NCLLink link) {//TODO: receber link ou algum identificador??
-		Iterator<NCLLink> it = links.iterator();
-
-		while (it.hasNext()) {
-			NCLLink l = it.next();
-
-			if (l.equals(link))
-				return true;
-		}
-		return false;
+		return links.contains(link);
 	}
 	
+	
+	/**
+	 * Verifica se o contexto possui algum link.
+	 * 
+	 * @return True se o contexto possuir algum link.
+	 */
 	public boolean hasLink() {
-		return(!links.isEmpty());
+		return !links.isEmpty();
 	}
 	
+	
+	/**
+	 * Obtém os links de um contexto.
+	 * 
+	 * @return Iterable com os links do contexto.
+	 */
 	public Iterable<NCLLink> getLinks() {
 		return links;
 	}
 	
+	
+	/**
+	 * Determina se dois contextos são iguais.
+	 * 
+	 * @param context contextos com a qual comparar.
+	 * @return True se os contextos forem iguais.
+	 */
 	public boolean equals(NCLContext context) {
 		if (getId().equals(context.getId()))
 			return true;
@@ -197,6 +306,13 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 			return false;
 	}
 	
+	
+	/**
+	 * Cria o código XML de um contexto.
+	 * 
+	 * @param ident Inteiro indicando o nível de indentação.
+	 * @return String com o código XML do contexto.
+	 */
 	public String parse(int ident) {
 		String space, content;
 		
@@ -266,11 +382,13 @@ public class NCLContext extends NCLNode implements Comparable<NCLContext> {
 		return content;
 	}
 	
+	
+	/**
+	 * Cria o código XML de um contexto desconsiderando a indentação.
+	 * 
+	 * @return String com o código XML do contexto.
+	 */
 	public String toString() {
 		return parse(0);
-	}
-	
-	public int compareTo(NCLContext context) {
-		return getId().compareTo(context.getId());
 	}
 }

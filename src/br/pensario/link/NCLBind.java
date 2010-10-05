@@ -10,6 +10,9 @@ import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.NCLInterface;
 import br.pensario.node.NCLNode;
 
+/**
+ * Classe representando o elemento bind da linguagem NCL.
+ */
 public class NCLBind implements Comparable<NCLBind>{
 
 	private NCLRole role;
@@ -20,24 +23,52 @@ public class NCLBind implements Comparable<NCLBind>{
 	private Set<NCLParam> bindParams = new TreeSet<NCLParam>();
 	
 	
+	/**
+	 * Construtor do bind.
+	 * 
+	 * @param role papel ao qual o bind está associada.
+	 * @param component componente mapeado pelo bind.
+	 * @throws NullPointerException se o papel ou o componente forem nulos.
+	 */
 	public NCLBind(NCLRole role, NCLNode component) throws Exception {
 		setRole(role);
 		setComponent(component);
 	}
 	
-	public boolean setRole(NCLRole role) {
+	
+	/**
+	 * Determina o papel ao qual o bind está relacionado.
+	 * 
+	 * @param role papel associado.
+	 * @throws NullPointerException se o papel for nulos.
+	 */
+	public void setRole(NCLRole role) throws Exception {
 		if (role != null){
 			this.role = role;
-			return true;
 		}
-		else
-			return false;
+		else{
+			Exception ex = new NullPointerException("Null role");
+			throw ex;
+		}
 	}
 	
+	
+	/**
+	 * Obtém o papel relacionado ao bind.
+	 * 
+	 * @return NCLRole representando o papel.
+	 */
 	public NCLRole getRole() {
 		return role;
 	}
 	
+	
+	/**
+	 * Determina o componente ao qual o bind está relacionado.
+	 * 
+	 * @param component componente associado.
+	 * @throws NullPointerException se o componente for nulos.
+	 */
 	public void setComponent(NCLNode component) throws Exception {
 		if (component != null){
 			this.component = component;
@@ -48,10 +79,23 @@ public class NCLBind implements Comparable<NCLBind>{
 		}
 	}
 	
+	
+	/**
+	 * Obtém o componente ralcionado ao bind.
+	 * 
+	 * @return NCLNode representando o componente.
+	 */
 	public NCLNode getComponent() {
 		return component;
 	}
 	
+	
+	/**
+	 * Determina a interface do componente relacionado ao bind.
+	 * 
+	 * @param interfac interface do componente.
+	 * @throws NullPointerException se a interface for nulos.
+	 */
 	public void setInterface(NCLInterface interfac) throws Exception {
 		if (interfac != null){
 			this.interfac = interfac;
@@ -62,17 +106,33 @@ public class NCLBind implements Comparable<NCLBind>{
 		}
 	}
 	
+	
+	/**
+	 * Obtém a interface do componente relacionado ao bind.
+	 * 
+	 * @return NCLInterface representando a interface.
+	 */
 	public NCLInterface getInterface() {
 		return interfac;
 	}
 	
+	
+	/**
+	 * Verifica se o bind tem o atributo interface.
+	 * 
+	 * @return True se o atributo existir.
+	 */
 	public boolean hasInterface() {
-		if (interfac != null)
-			return true;
-		else
-			return false;
+		return (interfac != null);
 	}
 	
+	
+	/**
+	 * Determina o o valor do atributo descriptor do bind.
+	 * 
+	 * @param descriptor descritor associado ao bind.
+	 * @throws NullPointerException se o descritor for nulo.
+	 */
 	public void setDescriptor(NCLDescriptor descriptor) throws Exception {
 		if (descriptor != null){
 			this.descriptor = descriptor;
@@ -83,66 +143,100 @@ public class NCLBind implements Comparable<NCLBind>{
 		}
 	}
 	
+	
+	/**
+	 * Obtém o conteúdo do atributo descritor de um bind.
+	 * 
+	 * @return NCLDescriptor descritor associado ao bind.
+	 */
 	public NCLDescriptor getDescriptor() {
 		return descriptor;
 	}
 	
-	public boolean hasDescriptor() {
-		if (descriptor != null)
-			return true;
-		else
-			return false;
-	}
 	
 	/**
-	 * retorna true se o parametro foi substituido e falso se nao
+	 * Verifica se o bind possui um descritor.
+	 * 
+	 * @return True se o atributo descriptor tiver valor.
 	 */
-	public boolean addBindParam(NCLConnectorParam name, String value) throws Exception {
-		boolean contains = false;
+	public boolean hasDescriptor() {
+		return (descriptor != null);
+	}
+	
+	
+	/**
+	 * Adiciona um bindParam ao bind.
+	 * 
+	 * @param name nome do parâmetro.
+	 * @param value valor do parâmetro.
+	 * @throws Exception se o parâmetro já existir.
+	 */
+	public void addBindParam(NCLConnectorParam name, String value) throws Exception {
 		NCLParam param = new NCLParam(name, value);
 
-		if (!hasBindParam(name))
-			contains = true;
-
-		bindParams.add(param);
-
-		return contains;
-	}
-
-	public boolean removeBindParam(NCLConnectorParam name) {
-		Iterator<NCLParam> it = bindParams.iterator();
-
-		while (it.hasNext()) {
-			NCLParam p = it.next();
-
-			if (p.getName().equals(name)) {
-				it.remove();
-				return true;
-			}
+		if (!bindParams.add(param)){
+			Exception ex = new Exception("BindParam already exists.");
+			throw ex;
 		}
-		return false;
-	}
-
-	public boolean hasBindParam(NCLConnectorParam name) {
-		Iterator<NCLParam> it = bindParams.iterator();
-
-		while (it.hasNext()) {
-			NCLParam p = it.next();
-
-			if (p.getName().equals(name))
-				return true;
-		}
-		return false;
 	}
 	
+	
+	/**
+	 * Remove um bindParam do bind.
+	 * 
+	 * @param name Nome do parâmetro a ser removido.
+	 * @throws Exception se o bind com o nome passado não existir.
+	 */
+	public void removeBindParam(NCLConnectorParam name) throws Exception {
+		NCLParam param = new NCLParam(name, "any"); // o valor foi criado apenas para ter um valor.
+
+		if (!bindParams.remove(param)){
+			Exception ex = new Exception("There is no BindParam with this name.");
+			throw ex;
+		}
+	}
+	
+	
+	/**
+	 * Verifica se o bind possui um bindParam.
+	 * 
+	 * @param name nome do bindParam a ser verificado.
+	 * @return True se o bindParam existir.
+	 * @throws NullPointerException se o nome for nulo.
+	 */
+	public boolean hasBindParam(NCLConnectorParam name) throws Exception {
+		NCLParam param = new NCLParam(name, "any"); // o valor foi criado apenas para ter um valor.
+		
+		return bindParams.contains(param);
+	}
+	
+	
+	/**
+	 * Verifica se o bind possui algum bindParam.
+	 * 
+	 * @return True se o bind possui alguma âncora.
+	 */
 	public boolean hasBindParam() {
-		return(!bindParams.isEmpty());
+		return !bindParams.isEmpty();
 	}
 	
+	
+	/**
+	 * Obtém os bindParams de um bind.
+	 * 
+	 * @return Iterable com os bindParams.
+	 */
 	public Iterable<NCLParam> getBindParams() {
 		return bindParams;
 	}
 	
+	
+	/**
+	 * Verifica se dois binds são iguais.
+	 * 
+	 * @param bind bind com o qual comparar.
+	 * @return True se os binds forem iguais.
+	 */
 	public boolean equals(NCLBind bind) {
 		//bind tem role diferente?
 		if (!bind.getRole().equals(getRole()))
@@ -160,6 +254,13 @@ public class NCLBind implements Comparable<NCLBind>{
 			return true;
 	}
 	
+	
+	/**
+	 * Cria o código XML de um bind.
+	 * 
+	 * @param ident Inteiro indicando o nível de indentação.
+	 * @return String com o código XML do bind.
+	 */
 	public String parse(int ident) {
 		String space, content;
 		
@@ -198,10 +299,23 @@ public class NCLBind implements Comparable<NCLBind>{
 		return content;
 	}
 	
+	
+	/**
+	 * Cria o código XML de um bind desconsiderando a indentação.
+	 * 
+	 * @return String com o código XML do bind.
+	 */
 	public String toString(){
 		return parse(0);
 	}
 	
+	
+	/**
+	 * Determina se dois binds são iguais.
+	 * 
+	 * @param bind bind com o qual comparar.
+	 * @return Inteiro indicando se os binds são iguais. O valor será 0 se os binds forem iguais.
+	 */
 	public int compareTo(NCLBind bind) {
 		if (equals(bind))
 			return 0;

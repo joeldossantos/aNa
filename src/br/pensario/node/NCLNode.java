@@ -2,7 +2,7 @@ package br.pensario.node;
 
 import br.pensario.NCLIdentification;
 
-public abstract class NCLNode {
+public abstract class NCLNode implements Comparable<NCLNode> {
 	
 	private String id;
 	
@@ -36,4 +36,15 @@ public abstract class NCLNode {
 	 * @return String com o código XML do nó.
 	 */
 	public abstract String parse(int ident);
+	
+	
+	/**
+	 * Determina se dois nós são iguais.
+	 * 
+	 * @param node nó com a qual comparar.
+	 * @return Inteiro indicando se os nós são iguais. O valor será 0 se os nós forem iguais.
+	 */
+	public int compareTo(NCLNode node) {
+		return getId().compareTo(node.getId());
+	}
 }

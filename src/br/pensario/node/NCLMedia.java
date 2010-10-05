@@ -13,7 +13,7 @@ import java.util.TreeSet;
 /**
  * Classe representando o elemento media da linguagem NCL.
  */
-public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
+public class NCLMedia extends NCLNode {
 
 	private String src;
 	private NCLMimeType type;
@@ -412,16 +412,5 @@ public class NCLMedia extends NCLNode implements Comparable<NCLMedia> {
 	 */
 	public String toString() {
 		return parse(0);
-	}
-	
-	
-	/**
-	 * Determina se duas mídias são iguais.
-	 * 
-	 * @param media mídia com a qual comparar.
-	 * @return Inteiro indicando se as mídias são iguais. O valor será 0 se as mídias forem iguais.
-	 */
-	public int compareTo(NCLMedia media) {
-		return getId().compareTo(media.getId());
 	}
 }
