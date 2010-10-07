@@ -1,4 +1,4 @@
-package test.br.pensario.interfaces;
+package br.pensario.test.interfaces;
 
 import static org.junit.Assert.*;
 
