@@ -413,7 +413,7 @@
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_DFzdw7a2Ed-h6ed0_iI5Ww" value="1"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_DFzdwra2Ed-h6ed0_iI5Ww" value="1"/>
           </ownedEnd>
-          <ownedEnd xmi:id="_DF0E0La2Ed-h6ed0_iI5Ww" name="linkParam" type="_RuBg0La1Ed-h6ed0_iI5Ww" association="_DFzdwLa2Ed-h6ed0_iI5Ww">
+          <ownedEnd xmi:id="_DF0E0La2Ed-h6ed0_iI5Ww" name="linkParam" type="_RuBg0La1Ed-h6ed0_iI5Ww" aggregation="composite" association="_DFzdwLa2Ed-h6ed0_iI5Ww">
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_DF0E0ra2Ed-h6ed0_iI5Ww" value="*"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_DF0E0ba2Ed-h6ed0_iI5Ww"/>
           </ownedEnd>
