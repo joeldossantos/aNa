@@ -3,7 +3,23 @@ package br.pensario.region;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class NCLRegion implements Comparable {
+import br.pensario.NCLIdentification;
+
+/**
+ * This class defines a region of the screen for media playback. This class
+ * refers to <i>region</i> element in Nested Context Language (NCL).<br>
+ * 
+ * @author Wagner Schau
+ * @author Joel Santos
+ * @version 1.0
+ * 
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ * 
+ */
+
+public class NCLRegion implements Comparable<NCLRegion> {
 
 	private String id;
 
@@ -28,20 +44,53 @@ public class NCLRegion implements Comparable {
 
 	private Set<NCLRegion> regions = new TreeSet<NCLRegion>();
 
-	public NCLRegion(String id) {
-		setId(id);
+	/**
+	 * NCLRegion class constructor. Create a new region with default parameters.
+	 * 
+	 * @param identification
+	 *            Region identification.
+	 * 
+	 * @exception Exception
+	 *                Invalid identification format.
+	 */
+	public NCLRegion(String identification) throws Exception {
+		setId(identification);
 	}
 
+	/**
+	 * Return region identification string.
+	 * 
+	 * @return region identification string.
+	 * 
+	 * @see NCLIdentification
+	 */
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	/**
+	 * Set a new identification for the region.
+	 * 
+	 * @param identification
+	 *            Element new identification.
+	 * 
+	 * @see NCLIdentification
+	 * 
+	 * @exception Exception
+	 *                Invalid identification format.
+	 */
+	public void setId(String identification) throws Exception {
+		NCLIdentification.validate(id);
 		this.id = id;
 	}
 
-	// pq nao recebe uma NCLRegion?
-	//RES:Por que a assinatura deste metodo em Object é estes
+	/**
+	 * Two regions are considered equal based only on their identification
+	 * strings.
+	 * 
+	 * @return True if the region and obj identifications strings are the same.
+	 *         False otherwise.
+	 */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -58,44 +107,84 @@ public class NCLRegion implements Comparable {
 		return true;
 	}
 
+	/**
+	 * Sets the region a new title.
+	 * 
+	 * @param title
+	 *            New title.
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * Return region title.
+	 * 
+	 * @return Region title
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Sets region left position.
+	 * 
+	 * @param left
+	 *            Left position. Based on pixels or percentage (see below)	
+	 * @param relative
+	 *            Set the position as a percentage value relative to the size of
+	 *            the device screen or parent region.	            
+	 *           
+	 */
 	public void setLeft(Integer left, boolean relative) throws Exception {
 
 		setRelativeLeft(relative);
 
 		if (isRelativeLeft() && (left < 0 || left > 100)) {
 			Exception ex = new Exception(
-					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %left = "
-							+ left + ")");
+					"Invalid percentage position value ( %left = " + left
+							+ "). It must be between 0 and 100.");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
+		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o
+		// relativos?
 
 		this.left = left;
 
 	}
 
+	/**
+	 * Return left position value.
+	 * 
+	 * @return Left position value, based in pixels or percentage depending on
+	 *         relative specification.
+	 * 
+	 * @see NCLRegion#setLeft
+	 * @see NCLRegion#isRelativeLeft
+	 */
 	public Integer getLeft() {
 		return left;
 	}
 
+	/**
+	 * Sets region right position.
+	 * 
+	 * @param right
+	 *            Right position. Based on pixels or percentage (see below)
+	 * @param relative
+	 *            Set the position as a percentage value relative to the size of
+	 *            the device screen.
+	 */
 	public void setRight(int right, boolean relative) throws Exception {
 
 		setRelativeRight(relative);
 
 		if (isRelativeRight() && (right < 0 || right > 100)) {
 			Exception ex = new Exception(
-					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %right = "
-							+ right + ")");
+					"Invalid percentage position value ( %right = " + right
+							+ "). It must be between 0 and 100.");
 
 			throw ex;
 		}
@@ -105,10 +194,28 @@ public class NCLRegion implements Comparable {
 		this.right = right;
 	}
 
+	/**
+	 * Return right position value.
+	 * 
+	 * @return Right position value, based in pixels or percentage depending on
+	 *         relative specification.
+	 * 
+	 * @see NCLRegion#setRight
+	 * @see NCLRegion#isRelativeRight
+	 */
 	public Integer getRight() {
 		return right;
 	}
 
+	/**
+	 * Sets region top position.
+	 * 
+	 * @param top
+	 *            Top position, in pixels or percentage (see below)
+	 * @param relative
+	 *            Set the position as a percentage value relative to the size of
+	 *            the device screen.
+	 */
 	public void setTop(int top, boolean relative) throws Exception {
 		setRelativeTop(relative);
 
@@ -117,17 +224,27 @@ public class NCLRegion implements Comparable {
 
 			// TODO - Passar para todos os sets
 			Exception ex = new Exception(
-					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %top = "
-							+ top + ")");
+					"Invalid percentage position value ( %top = " + top
+					+ "). It must be between 0 and 100.");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
+		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o
+		// relativos?
 
 		this.top = top;
 	}
 
+	/**
+	 * Return top position value.
+	 * 
+	 * @return Top position value, in pixels or percentage depending on relative
+	 *         specification.
+	 * 
+	 * @see NCLRegion#setRight
+	 * @see NCLRegion#isRelativeRight
+	 */
 	public Integer getTop() {
 		return top;
 	}
@@ -137,13 +254,14 @@ public class NCLRegion implements Comparable {
 
 		if (isRelativeBottom() && (bottom < 0 || bottom > 100)) {
 			Exception ex = new Exception(
-					"Valor nï¿½o porcentual para atributo relativo de posicionamento ( %bottom = "
-							+ bottom + ")");
+					"Invalid percentage position value ( %bottom = " + bottom
+					+ "). It must be between 0 and 100.");
 
 			throw ex;
 		}
 
-		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o relativos?
+		// DUVIDA - else existe alguma restriï¿½ï¿½o para valores nï¿½o
+		// relativos?
 
 		this.bottom = bottom;
 	}
@@ -151,6 +269,16 @@ public class NCLRegion implements Comparable {
 	public Integer getBottom() {
 		return bottom;
 	}
+
+	/**
+	 * Sets region height position.
+	 * 
+	 * @param height
+	 *            Height position. Based on pixels or percentage (see below)
+	 * @param relative
+	 *            Set the position as a percentage value relative to the size of
+	 *            the device screen.
+	 */
 
 	public void setHeight(int height, boolean relative) throws Exception {
 		setRelativeHeight(relative);
@@ -170,6 +298,15 @@ public class NCLRegion implements Comparable {
 		return height;
 	}
 
+	/**
+	 * Sets region width position.
+	 * 
+	 * @param width
+	 *            Width position. Based on pixels or percentage (see below)
+	 * @param relative
+	 *            Set the position as a percentage value relative to the size of
+	 *            the device screen.
+	 */
 	public void setWidth(int width, boolean relative) throws Exception {
 		setRelativeWidth(relative);
 
@@ -248,14 +385,12 @@ public class NCLRegion implements Comparable {
 		return relativeWidth;
 	}
 
-	//: qual a diferenca para o metodo equals?
-	//RES: Este metodo ordena, o equals, não
 	@Override
-	public int compareTo(Object arg0) {
-		return getId().compareTo(((NCLRegion) arg0).getId());
+	public int compareTo(NCLRegion arg0) {
+		return getId().compareTo(arg0.getId());
 	}
 
-	public String toString() {		
+	public String toString() {
 		return parse(0);
 	}
 
@@ -320,32 +455,79 @@ public class NCLRegion implements Comparable {
 			content += " title='" + getTitle() + "'";
 
 		if (hasRegion()) {
-			
+
 			content += ">\n";
 			for (NCLRegion region : getRegions()) {
 				content += region.parse(ident + 1);
 			}
 			content += space + "</region>\n";
-		}
-		else
+		} else
 			content += "/>\n";
 
 		return content;
 	}
 
-	public boolean addRegion(NCLRegion region) {
-		return regions.add(region);
+	/**
+	 * Adds a child to the parent region. The child is considered an inner region, has size and position relative
+	 * to the parent region properties.
+	 * 
+	 * @param child
+	 *            New child to be set as an inner region.
+	 * 
+	 * @return True if the new region replaces an old one with the same
+	 *         identification string. False otherwise.
+	 * 
+	 * @exception Exception
+	 *                The region cannot be added as a child of its own.
+	 * 
+	 */
+	public boolean addRegion(NCLRegion child) throws Exception {
+
+		if (equals(child))
+			throw new Exception(
+					"The region cannot be used as a child of its own.");
+
+		return regions.add(child);
 
 	}
 
+	/**
+	 * Remove the child region.
+	 * 
+	 * @param region
+	 *            New region to be added.
+	 * 
+	 * @return True if the new region replaces an old one with the same
+	 *         identification string. False otherwise.
+	 * 
+	 */
 	public boolean removeRegion(NCLRegion region) {
 		return regions.remove(region);
 	}
 
-	public boolean hasRegion(NCLRegion region) {
-		return regions.contains(region);
+	/**
+	 * Used to indicate if a given region is a child of the parent region. 
+	 * 
+	 * @param child
+	 *            Child region.
+	 * 
+	 * @return True if the region has the child as an inner region. False otherwise.
+	 *	
+	 * 
+	 */
+	
+	public boolean hasRegion(NCLRegion child) {
+		return regions.contains(child);
 	}
 
+	
+	/**
+	 * Indicates if the region has at least one child. 
+	 * 
+	 * @return True if the region has child. False otherwise.
+	 *	 
+	 * 
+	 */
 	public boolean hasRegion() {
 		return regions.size() > 0;
 	}

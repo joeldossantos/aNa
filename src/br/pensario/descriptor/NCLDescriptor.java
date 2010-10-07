@@ -7,7 +7,7 @@ public class NCLDescriptor implements Comparable{
 
 	// pegar valores padrao
 	//: o que nao existe nao aparece no codigo XML, nao precisa setar um valor padrao para os atributos
-	//RES: ok, então isto dependerá da implementação da máquina de execução, né?
+	//RES: ok, entÃ£o isto dependerÃ¡ da implementaÃ§Ã£o da mÃ¡quina de execuÃ§Ã£o, nÃ©?
 	
 	//REV: falta gerar excecao nos metodos de set
 
@@ -60,13 +60,13 @@ public class NCLDescriptor implements Comparable{
 	}
 
 	//: mudar para b minusculo
-	//RES: não pois pode ser nulo
+	//RES: nï¿½o pois pode ser nulo
 	public void setFreeze(Boolean freeze) {
 		this.freeze = freeze;
 	}
 
 	//: mudar para b minusculo e criar metodos hasFreeze
-	//RES: não pois pode ser nulo
+	//RES: nï¿½o pois pode ser nulo
 	public Boolean isFreeze() {
 		return freeze;
 	}
@@ -176,7 +176,7 @@ public class NCLDescriptor implements Comparable{
 	}
 
 	//: nao usar o get pra testar se eh nulo, criar metodos hasAlgumacoisa
-	//RES: Será que esta é a melhor alternativa? 
+	//RES: Serï¿½ que esta ï¿½ a melhor alternativa? 
 	//pois pode ser documentado que o atributo fica null caso nao tenha sido setado (por isso o Boolean com B maiusculo)
 	public String parse(int ident) {
 

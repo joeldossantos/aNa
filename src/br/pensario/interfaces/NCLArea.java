@@ -4,10 +4,6 @@ import br.pensario.NCLIdentification;
 
 public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 
-	//REV: quando ocorre isto (propriedades referenciando outras classes do pacote) e não está modelado como
-	//relacionamento (mas como propriedade) deve-se gerar uma relação de dependência (seta tracejada) entre
-	//NCLArea -> NCLTime e NCLArea-> NCLSample
-	
 	private String id;
 	private int[] coords;
 	private NCLTime begin;

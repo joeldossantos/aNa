@@ -9,7 +9,7 @@ public class NCLCompoundCondition extends NCLCondition {
 	
 	private NCLConditionOperator operator;
 	
-	//DUVIDA - na especificacao est· 1 ou mais (simpleCondition | compoundCompound)+
+	//DUVIDA - na especificacao est√° 1 ou mais (simpleCondition | compoundCompound)+
 	private Set<NCLCondition> conditions = new TreeSet<NCLCondition>();	
 	
 	public NCLConditionOperator getOperator() {

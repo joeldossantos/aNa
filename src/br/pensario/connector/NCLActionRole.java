@@ -2,9 +2,9 @@ package br.pensario.connector;
 
 import br.pensario.NCLValues.NCLDefaultActionRole;
 
-//DUVIDA - NCLActionRole e NCLDefaultActionRole est„o competindo em responsabilidades.
-//DUVIDA - NCLConditionRole e NCLDefaultConditionRole est„o competindo em responsabilidades.
-
+//DUVIDA - NCLActionRole e NCLDefaultActionRole est√£o competindo em responsabilidades.
+//DUVIDA - NCLConditionRole e NCLDefaultConditionRole est√£o competindo em responsabilidades.
+ 
 public class NCLActionRole extends NCLRole {
 
 	private NCLDefaultActionRole id;
