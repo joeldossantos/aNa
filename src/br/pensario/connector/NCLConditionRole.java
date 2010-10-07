@@ -4,7 +4,7 @@ import br.pensario.NCLValues.NCLDefaultConditionRole;
 
 public class NCLConditionRole extends NCLRole {
 
-	//DUVIDA - vai ser livre ou de um domínio especifico? String ou enum?
+	//DUVIDA - vai ser livre ou de um domÃ­nio especifico? String ou enum?
 	private NCLDefaultConditionRole id;
 	
 	public NCLConditionRole(NCLDefaultConditionRole condition_role)
