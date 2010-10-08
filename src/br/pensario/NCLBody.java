@@ -89,6 +89,20 @@ public class NCLBody {
 	
 	
 	/**
+	 * Remove uma porta do body.
+	 * 
+	 * @param port porta a ser removida.
+	 * @throws Exception se a porta não existir.
+	 */
+	public void removePort(NCLPort port) throws Exception {
+		if (!ports.remove(port)){
+			Exception ex = new Exception("Port does not existis");
+			throw ex;
+		}
+	}
+	
+	
+	/**
 	 * Verifica se o body possui uma porta.
 	 * 
 	 * @param id da porta a ser verificada.
@@ -99,6 +113,18 @@ public class NCLBody {
 		NCLMedia node = new NCLMedia("any");//node passado como componente para poder criar a porta.
 		NCLPort port = new NCLPort(id, node);
 		
+		return ports.contains(port);
+	}
+	
+	
+	/**
+	 * Verifica se o contexto possui uma porta.
+	 * 
+	 * @param port porta a ser verificada.
+	 * @return True se a porta existir.
+	 * @throws NullPointerException se a porta for inválida.
+	 */
+	public boolean hasPort(NCLPort port) throws Exception {
 		return ports.contains(port);
 	}
 	
@@ -153,6 +179,20 @@ public class NCLBody {
 	
 	
 	/**
+	 * Remove uma propriedade do contexto.
+	 * 
+	 * @param property propriedade a ser removida.
+	 * @throws Exception se não existir a propriedade.
+	 */
+	public void removeProperty(NCLProperty property) throws Exception {
+		if (!properties.remove(property)){
+			Exception ex = new Exception("Property does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
+	}
+	
+	
+	/**
 	 * Verifica se o body possui uma propriedade.
 	 * 
 	 * @param name nome da propriedade sendo verificada.
@@ -163,6 +203,18 @@ public class NCLBody {
 		NCLProperty p = new NCLProperty(name);
 		
 		return properties.contains(p);
+	}
+	
+	
+	/**
+	 * Verifica se o contexto possui uma propriedade.
+	 * 
+	 * @param property propriedade sendo verificada.
+	 * @return True se a propriedade for uma propriedade do contexto.
+	 * @throws Exception se a propriedade for inválida.
+	 */
+	public boolean hasProperty(NCLProperty property) throws Exception {
+		return properties.contains(property);
 	}
 	
 	
@@ -225,6 +277,20 @@ public class NCLBody {
 	
 	
 	/**
+	 * Remove um nó do contexto.
+	 * 
+	 * @param node nó a ser removido.
+	 * @throws Exception se o nó não existir.
+	 */
+	public void removeNode(NCLNode node) throws Exception {
+		if (!nodes.remove(node)){
+			Exception ex = new Exception("Node does not exists."); //TODO: Criar tipo de excecao
+			throw ex;
+		}
+	}
+	
+	
+	/**
 	 * Verifica se o body possui um nó.
 	 * 
 	 * @param id id do nó a ser verificado.
@@ -240,6 +306,17 @@ public class NCLBody {
 				return true;
 		}
 		return false;
+	}
+	
+	
+	/**
+	 * Verifica se o contexto possui um nó.
+	 * 
+	 * @param node nó a ser verificado.
+	 * @return True se o nó existir.
+	 */
+	public boolean hasNode(NCLNode node) {
+		return nodes.contains(node);
 	}
 	
 	

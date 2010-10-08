@@ -233,6 +233,20 @@ public class NCLMedia extends NCLNode {
 	
 	
 	/**
+	 * Remove uma âncora da mídia.
+	 * 
+	 * @param area âncora a ser removida.
+	 * @throws Exception se não existir âncora com o id indicado.
+	 */
+	public void removeArea(NCLArea area) throws Exception {
+		if (!areas.remove(area)){
+			Exception ex = new Exception("Area does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
+	}
+	
+	
+	/**
 	 * Verifica se a mídia possui uma âncora.
 	 * 
 	 * @param id id da âncora sendo verificada.
@@ -243,6 +257,18 @@ public class NCLMedia extends NCLNode {
 		NCLArea a = new NCLArea(id);
 		
 		return areas.contains(a);
+	}
+	
+	
+	/**
+	 * Verifica se a mídia possui uma âncora.
+	 * 
+	 * @param area âncora sendo verificada.
+	 * @return True se a âncora for uma âncora da mídia.
+	 * @throws NullPointerException se area for nulo.
+	 */
+	public boolean hasArea(NCLArea area) throws Exception {
+		return areas.contains(area);
 	}
 	
 	
@@ -296,6 +322,20 @@ public class NCLMedia extends NCLNode {
 	
 	
 	/**
+	 * Remove uma propriedade da mídia.
+	 * 
+	 * @param property propriedade a ser removida.
+	 * @throws Exception se não existir propriedade com o nome indicado.
+	 */
+	public void removeProperty(NCLProperty property) throws Exception {
+		if (!properties.remove(property)){
+			Exception ex = new Exception("Property does not exists"); //TODO: Criar tipo de excecao
+			throw ex;
+		}
+	}
+	
+	
+	/**
 	 * Verifica se a mídia possui uma propriedade.
 	 * 
 	 * @param name nome da propriedade sendo verificada.
@@ -306,6 +346,18 @@ public class NCLMedia extends NCLNode {
 		NCLProperty p = new NCLProperty(name);
 		
 		return properties.contains(p);
+	}
+	
+	
+	/**
+	 * Verifica se a mídia possui uma propriedade.
+	 * 
+	 * @param property propriedade sendo verificada.
+	 * @return True se a propriedade for uma propriedade da mídia.
+	 * @throws Exception se o nome for inválido.
+	 */
+	public boolean hasProperty(NCLProperty property) throws Exception {
+		return properties.contains(property);
 	}
 	
 	
