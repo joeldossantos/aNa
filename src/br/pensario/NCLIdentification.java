@@ -18,6 +18,8 @@ public class NCLIdentification {
 	 //REV: faltou o @exception
 	 * @return True if the identification is valid and false otherwise.
 	 */
+	
+	//TODO - retornar excecao para InvalidIdentifierException
 	public static void validate(String identification) throws Exception {
 		Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
 		

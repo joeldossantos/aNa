@@ -8,16 +8,29 @@ import br.pensario.NCLValues.NCLDefaultActionRole;
 public class NCLActionRole extends NCLRole {
 
 	private NCLDefaultActionRole id;
-
+	
+	/**
+	 * Construtor padrão.
+	 * @param action_role NCLDefaultActionRole Papel
+	 */
 	public NCLActionRole(NCLDefaultActionRole action_role)	
 	{		
 		setId(action_role);		
 	}
 	
+	/**
+	 * Retorna o nome do papel.
+	 * @return Papel
+	 */
 	public String getId() {	
 		return id.toString();
 	}
-
+	
+	/**
+	 * Atribui um papel à ação.
+	 * 
+	 * @param id NCLDefaultActionRole Papel da ação.
+	 */
 	public void setId(NCLDefaultActionRole id) {
 		this.id = id;
 	}

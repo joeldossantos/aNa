@@ -5,8 +5,6 @@ import br.pensario.NCLValues.NCLKey;
 
 public class NCLSimpleCondition extends NCLCondition{
 
-	// falta has e set gerar excecao
-
 	private NCLKey key;	
 
 	private Integer min;
@@ -16,51 +14,101 @@ public class NCLSimpleCondition extends NCLCondition{
 	
 	private NCLConditionRole role;
 	
-	public NCLSimpleCondition(NCLConditionRole role)
+	/**
+	 * Construtor padrão.
+	 * @param role NCLConditionRole Papel utilizado pela condição
+	 */	
+	public NCLSimpleCondition(NCLConditionRole role)	
 	{
 		setRole(role);
 	}
 	
+	/**
+	 * Retorna o valor mínimo utilizado na condição.
+	 * @return Valor mínimo
+	 */	
 	public Integer getMin() {
 		return min;
 	}
 
+	/**
+	 * Atribui um valor mínimo à condição.
+	 * @param min Valor mínimo
+	 */
+	
 	public void setMin(Integer min) {
 		this.min = min;
 	}
 
+	
+	/**
+	 * Retorna o valor máximo esperado para a condição.
+	 * @return Valor máximo
+	 */
 	public Integer getMax() {
 		return max;
 	}
 
+	/**
+	 * Atribui um novo valor máximo à condição.
+	 * @param max Integer Valor máximo
+	 */
 	public void setMax(Integer max) {
 		this.max = max;
 	}
 
+	/**
+	 * Retorna o operador da condição.
+	 * @return Operador da condição
+	 */
 	public NCLConditionOperator getQualifier() {
 		return qualifier;
 	}
-
+	
+	/**
+	 * Atribui um novo operador à condição (seealso NCLConditionOperator).
+	 * @param qualifier Operador
+	 */
 	public void setQualifier(NCLConditionOperator qualifier) {
 		this.qualifier = qualifier;
 	}
 
+	/**
+	 * Retorna o papel utilizado na condição.
+	 * @return Papel
+	 */
 	public NCLConditionRole getRole() {
 		return role;
 	}
 
+	/**
+	 * Atribui um novo papel à condição.
+	 * @param role Papel
+	 */
 	public void setRole(NCLConditionRole role) {
 		this.role = role;
 	}
 
+	/**
+	 * Retorna chave utilizado na condição.
+	 * @return Chave
+	 */
 	public String getKey() {
 		return key.toString();
 	}
 
+	/**
+	 * Atribui uma nova chave à ação.
+	 * @param key NCLKey Nova chave
+	 */
 	public void setKey(NCLKey key) {
 		this.key = key;
 	}	
 	
+	/**
+	 * Retorna a representação do elemento em XML.
+	 * @return Trecho XML referente ao elemento
+	 */
 	public String parse(int ident) {
 
 		String space, content;

@@ -1,9 +1,7 @@
 package br.pensario;
 
 import br.pensario.connector.NCLConnectorBase;
-import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.descriptor.NCLDescriptorBase;
-import br.pensario.region.NCLRegion;
 import br.pensario.region.NCLRegionBase;
 
 public class NCLHead {
@@ -12,40 +10,96 @@ public class NCLHead {
 	private NCLDescriptorBase dbase;
 	private NCLConnectorBase cbase; 
 
-	public NCLHead(NCLRegionBase region_base, NCLDescriptorBase descriptor_base, NCLConnectorBase connector_base)
+	/**
+	 * Construtor padrão
+	 */
+	
+	public NCLHead()
+	{	
+	}
+	
+	/**
+	 * Construtor iniciado com as bases de regiões, descritores e conectores.
+	 * @param id String com o id do body.
+	 * @throws IllegalArgumentException se algum argumento for inválido.	 
+	 */
+	
+	public NCLHead(NCLRegionBase region_base, NCLDescriptorBase descriptor_base, NCLConnectorBase connector_base) throws IllegalArgumentException
 	{
 		setRegionBase(region_base);
 		setDescriptorBase(descriptor_base);
 		setConnectorBase(connector_base);
 	}
 	
-	//REV: gerar excecao?
-	public void setRegionBase(NCLRegionBase rbase) {
-		this.rbase = rbase;
+	/**
+	 * Atribui uma base de regiões para o cabeçalho.
+	 * @param rbase NCLRegionBase Base de regiões.
+	 * @throws IllegalArgumentException se o argumento for inválido.	 
+	 */
+	public void setRegionBase(NCLRegionBase rbase) throws IllegalArgumentException{
+		if(rbase!=null)
+			this.rbase = rbase;
+		else
+			throw new IllegalArgumentException("A base região utilizada no cabeçalho é nula.");
 	}
 
+	/**
+	 * Retorna a base de regiões utilizada pelo cabeçalho.
+	 * @return Base de regiões
+	 */
+	
 	public NCLRegionBase getRegionBase() {
 		return rbase;
 	}
 
-	//REV: gerar excecao?
-	public void setDescriptorBase(NCLDescriptorBase dbase) {
-		this.dbase = dbase;
+	/**
+	 * Atribui uma base de descritores para o cabeçalho.
+	 * @param dbase NCLDescriptoBase Base de descritores.
+	 * @throws IllegalArgumentException Se o argumento for inválido.	 
+	 */	
+	public void setDescriptorBase(NCLDescriptorBase dbase) throws IllegalArgumentException {
+		if(dbase!=null)
+			this.dbase = dbase;
+		else
+			throw new IllegalArgumentException("A base descritores utilizada no cabeçalho é nula.");		
 	}
 
+	
+	/**
+	 * Retorna a base de descritores utilizada pelo cabeçalho
+	 * @return Base de descritores
+	 */
 	public NCLDescriptorBase getDescriptorBase() {
 		return dbase;
 	}
 
-	//REV: gerar excecao?
+	/**
+	 * Atribui uma base de conectores para o cabeçalho.
+	 * @param cbase NCLConnectorBase Base de conectores.
+	 * @throws IllegalArgumentException Se o argumento for inválido.	 
+	 */
 	public void setConnectorBase(NCLConnectorBase cbase) {
-		this.cbase = cbase;
+		if(cbase!=null)
+			this.cbase = cbase;
+		else
+			throw new IllegalArgumentException("A base conectores utilizada no cabeçalho é nula.");
 	}
 
+	
+	/**
+	 * Retorna a base de conectores utilizada pelo cabeçalho
+	 * @return Base de conectores
+	 */
 	public NCLConnectorBase getConnectorBase() {
 		return cbase;
 	}	
+
 	
+	
+	/**
+	 * Retorna a representação do elemento em XML.
+	 * @return Trecho XML referente ao elemento
+	 */
 	public String parse(int ident) {
 		
 		String space, content;
@@ -54,13 +108,17 @@ public class NCLHead {
 		space = "";
 		for (int i = 0; i < ident; i++)
 			space += "\t";
-		
-		
+				
 		content = space + "<head>\n";	
 		
-		content += rbase.parse(ident + 1);		
-		content += dbase.parse(ident + 1);
-		content += cbase.parse(ident + 1);		
+		if(rbase != null)
+			content += rbase.parse(ident + 1);		
+		
+		if(dbase != null)
+			content += dbase.parse(ident + 1);
+		
+		if(cbase != null)
+			content += cbase.parse(ident + 1);		
 		
 		content += space + "</head>\n";
 		

@@ -9,44 +9,80 @@ public class NCLDoc {
 	private NCLNamespace xmlns;
 	
 	private NCLHead head;
-	private NCLBody body;
-	
+	private NCLBody body;	
 	
 	//TODO - colocar um construtor com NCLNamespace padrao
 	public NCLDoc(String id, NCLNamespace xmlns, NCLHead head ,NCLBody body) throws Exception {
-		if (!setId(id) || !setXmlns(xmlns) || !setHead(head) || !setBody(body)){
+		
+		setId(id);
+		setXmlns(xmlns);
+		setHead(head);
+		setBody(body);
+		
+		/*{
 			Exception ex = new Exception("Invalid doc formation");
 			throw ex;
-		}
-	}
-	
-	public boolean setId(String id) {
-		//TODO: colocar a validacao do id
+		}*/
+	}	
+
+	/**
+	 * Atribui um id ao documento.
+	 * 
+	 * @param id String Identificador (compatível com NCLIdentification).
+	 * @throws IllegalArgumentException Se o id for inválido.
+	 */
+	public void setId(String id)  throws Exception{
+		NCLIdentification.validate(id);
 		this.id = id;
-		return true;
 	}
 	
+	
+	/**
+	 * Retorna o identificador do documento.
+	 * @return Identificador
+	 */
 	public String getId() {
 		return id;
 	}
 	
-	public boolean setTitle(String title) {
-		//TODO: colocar a validacao do id
+	//Obs.: Nao gera excecao pois o titulo pode ser nulo
+	/**
+	 * Atribui um título ao documento.
+	 * 
+	 * @param title String Título.
+	 */
+	public boolean setTitle(String title) {	
 		this.title = title;
 		return true;
 	}
-	
+		
+	/**
+	 * Retorna o título do documento NCL.
+	 * @return Título
+	 */
 	public String getTitle() {
 		return title;
 	}
 	
+	
+	/**
+	 * Indica se o documento possui um título.
+	 * @return Verdadeiro caso possua um título.
+	 */
+	//REV: Método desnecessário, pois é suplementar ao getTitle
 	public boolean hasTitle() {
-		if (title != null)
+		if (title != null && !"".equals(title.trim()))
 			return true;
 		else
 			return false;
 	}
 	
+	/**
+	 * Atribui um namespace ao documento NCL.
+	 * 
+	 * @param xmlsns String Namespace.
+	 */	
+	//REV: deve ser definido se uma exceção será gerada.
 	public boolean setXmlns(NCLNamespace xmlns) {
 		if (xmlns != null){
 			this.xmlns = xmlns;
@@ -56,10 +92,20 @@ public class NCLDoc {
 			return false;
 	}
 	
+	
+	/**
+	 * Retorna o namespace do documento NCL.
+	 * @return Namespace
+	 */
 	public NCLNamespace getXmlns() {
 		return xmlns;
 	}
 	
+	/**
+	 * Atribui um cabeçalho ao documento.
+	 * 
+	 * @param head String Cabeçalho NCL.
+	 */		
 	public boolean setHead(NCLHead head) {
 		if (head != null){
 			this.head = head;
@@ -69,10 +115,19 @@ public class NCLDoc {
 			return false;
 	}
 
+	/**
+	 * Retorna o cabeçalho do documento NCL.
+	 * @return Cabeçalho NCL.
+	 */
 	public NCLHead getHead() {
 		return head;
 	}
 	
+	/**
+	 * Atribui um corpo ao documento.
+	 * 
+	 * @param body String Corpo NCL.
+	 */		
 	public boolean setBody(NCLBody body) {
 		if (body != null){
 			this.body = body;
@@ -86,6 +141,10 @@ public class NCLDoc {
 		return body;
 	}
 	
+	/**
+	 * Retorna a representação do elemento em XML.
+	 * @return Trecho XML referente ao elemento
+	 */
 	public String parse() {
 		String content;
 		

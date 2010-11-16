@@ -3,6 +3,8 @@ package br.pensario.region;
 import java.util.Set;
 import java.util.TreeSet;
 
+import br.pensario.NCLIdentification;
+
 public class NCLRegionBase {
 
 	private String id;
@@ -12,7 +14,7 @@ public class NCLRegionBase {
 	Set<NCLRegion> regions= new TreeSet<NCLRegion>();
 	
 	//REV: falta gerar excecoes nos metodos de set
-	public NCLRegionBase(String id) {
+	public NCLRegionBase(String id) throws Exception {
 		setId(id);
 	}
 	
@@ -22,7 +24,8 @@ public class NCLRegionBase {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id) throws Exception{
+		NCLIdentification.validate(id);
 		this.id = id;
 	}
 
