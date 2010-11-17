@@ -400,9 +400,9 @@ public class NCLBody {
 	
 	
 	/**
-	 * Determina se dois bodys são iguais.
+	 * Determina se dois corpos NCL são iguais.
 	 * 
-	 * @param context bodys com a qual comparar.
+	 * @param body Corpo NCL com o qual comparar.
 	 * @return True se os bodys forem iguais.
 	 */
 	public boolean equals(NCLBody body) {

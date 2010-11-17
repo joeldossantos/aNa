@@ -80,7 +80,7 @@ public class NCLDoc {
 	/**
 	 * Atribui um namespace ao documento NCL.
 	 * 
-	 * @param xmlsns String Namespace.
+	 * @param xmlns String Namespace.
 	 */	
 	//REV: deve ser definido se uma exceção será gerada.
 	public boolean setXmlns(NCLNamespace xmlns) {

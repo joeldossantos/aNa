@@ -67,8 +67,9 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 	 * 
 	 * @param coords coordenadas da âncora
 	 * @throws Exception se a coordenada for inválida.
-	 * @see NCLCoords
+	 * 
 	 */
+	//TODO - @see NCLCoords -- colocar quando gerar a classe
 	public void setCoords(int[] coords) throws Exception {
 		for (int i = 0; i < coords.length; i++){
 			if (coords[i] < 0){
@@ -208,7 +209,7 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 	/**
 	 * Verifica se a âncora possui o atributo text.
 	 * 
-	 * @return 
+	 * @return Verdadeiro caso a âncora possua algum texto
 	 */
 	public boolean hasText() {
 		return (text != null);

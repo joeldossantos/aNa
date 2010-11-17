@@ -84,7 +84,6 @@ public class NCLDescriptor implements Comparable{
 
 	/**
 	 * Indica se ???
-	 * @param freeze
 	 */
 	public Boolean isFreeze() {
 		return freeze;
@@ -175,7 +174,7 @@ public class NCLDescriptor implements Comparable{
 
 	/**
 	 * Atribui um novo índice de foco para o descritor.
-	 * @param focusIndex Índice de foco
+	 * @param focusIndex Indice de foco
 	 */
 	public void setFocusIndex(Integer focusIndex) {
 		this.focusIndex = focusIndex;

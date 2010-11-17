@@ -20,12 +20,13 @@ public class NCLHead {
 	
 	/**
 	 * Construtor iniciado com as bases de regiões, descritores e conectores.
-	 * @param id String com o id do body.
-	 * @throws IllegalArgumentException se algum argumento for inválido.	 
+	 * 
+	 * @param region_base Base de regiões NCL a ser utilizada pelo cabeçalho
+	 * @param descriptor_base Base de descritores NCL a ser utilizada pelo cabeçalho
+	 * @param connector_base Base de conectores NCL a ser utilizada pelo cabeçalho
 	 */
 	
-	public NCLHead(NCLRegionBase region_base, NCLDescriptorBase descriptor_base, NCLConnectorBase connector_base) throws IllegalArgumentException
-	{
+	public NCLHead(NCLRegionBase region_base, NCLDescriptorBase descriptor_base, NCLConnectorBase connector_base)	{
 		setRegionBase(region_base);
 		setDescriptorBase(descriptor_base);
 		setConnectorBase(connector_base);

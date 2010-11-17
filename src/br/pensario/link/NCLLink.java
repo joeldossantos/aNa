@@ -240,7 +240,7 @@ public class NCLLink implements Comparable<NCLLink>{
 	/**
 	 * Verifica se o link possui um bind.
 	 * 
-	 * @@param role role do bind.
+	 * @param role role do bind.
 	 * @param component componente do bind.
 	 * @param interfac interface do bind.
 	 * @param descriptor descritor do bind.

@@ -14,9 +14,6 @@ public class NCLIdentification {
 	 * Sets the identification and test if its format is a valid format.
 	 * 
 	 * @param identification identification to be tested and used.
-	 //REV: o contrutor nao retorna booleano
-	 //REV: faltou o @exception
-	 * @return True if the identification is valid and false otherwise.
 	 */
 	
 	//TODO - retornar excecao para InvalidIdentifierException

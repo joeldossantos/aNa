@@ -53,7 +53,7 @@ public class NCLCompoundCondition extends NCLCondition {
 	/**
 	 * Indica se a condição NCL passada como parâmetro está presente na condição composta (em um único nível da hierarquia).
 	 * 
-	 * @param Condition NCLCondition Condição a ser buscada
+	 * @param condition NCLCondition Condição a ser buscada
 	 * @return Se a condição está presente na condição composta
 	 */
 	public boolean hasCondition(NCLCondition condition) {

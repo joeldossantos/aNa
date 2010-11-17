@@ -2,8 +2,16 @@ package br.pensario.region;
 
 import java.util.Set;
 import java.util.TreeSet;
-
 import br.pensario.NCLIdentification;
+
+/**
+ * Classe referente a base de regiões NCL.
+ * 
+ * @author Wagner Schau
+ * @author Joel Santos
+ * @since 24/09/2010
+ * @version 1.0
+ */
 
 public class NCLRegionBase {
 
@@ -13,64 +21,127 @@ public class NCLRegionBase {
 	
 	Set<NCLRegion> regions= new TreeSet<NCLRegion>();
 	
-	//REV: falta gerar excecoes nos metodos de set
-	public NCLRegionBase(String id) throws Exception {
+	/**
+	 * Contrutor padrão
+	 * 
+	 * @param id
+	 */
+	public NCLRegionBase(String id) throws Exception{		
 		setId(id);
-	}
+	}	
 	
-	public NCLRegionBase(){}
-
+	/**
+	 * Retorna o identificador do elemento NCL
+	 * 
+	 * @return Identificador
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Atribui um novo identificador ao elemento NCL
+	 * 
+	 * @param id Identificador
+	 */
 	public void setId(String id) throws Exception{
 		NCLIdentification.validate(id);
 		this.id = id;
 	}
 
+	/**
+	 * Atribui o dispositivo de exibição para as regiões presentes na base
+	 * 
+	 * @param device Dispositivo de exibição
+	 */
 	public void setDevice(String device) {
 		this.device = device;
 	}
 
+	/**
+	 * Retorna qual o dispositivo de exibição utilizado para as regiões presentes na base
+	 * 
+	 * @return Dispositivo de exibição
+	 */
 	public String getDevice() {
 		return device;
 	}	
 
+	/**
+	 * Atribui um novo pai a base de regiões.
+	 * 
+	 * @param region Região-pai
+	 */
 	public void setParentRegion(NCLRegion region) {
 		this.parent_region = region;
 	}
 
+	/**
+	 * Retorna qual a região pai da base de regiões.
+	 * 
+	 * @return Região-pai da base
+	 */
 	public NCLRegion getParentRegion() {
 		return parent_region;
 	}
 	
+	/**
+	 * Adiciona uma nova região NCL à base de regiões
+	 * 
+	 * @param region Região NCL a ser adicionada
+	 */
 	public boolean addRegion(NCLRegion region)
 	{
 		return regions.add(region);
 		
 	}
 	
+	/**
+	 * Remove uma região NCL da base de regiões
+	 * 
+	 * @param region Região NCL a ser removida
+	 */
 	public boolean removeRegion(NCLRegion region)
 	{
 		return regions.remove(region);		
 	}
 	
+	/**
+	 * Indica se a base de regiões contém uma determinada região NCL
+	 * 
+	 * @param region Região NCL a ser buscada
+	 */	
 	public boolean hasRegion(NCLRegion region)
 	{
 		return regions.contains(region);		
 	}
+	
+	/**
+	 * Indica se a base possui alguma Região NCL
+	 * 
+	 * @return Verdadeiro caso a base possua ao menos uma Região NCL
+	 */
 	
 	public boolean hasRegion()
 	{
 		return regions.size() > 0;		
 	}
 	
+	/**
+	 * Retorna uma coleção iterável contendo as Regiões NCL da base
+	 * 
+	 * @return Iterável
+	 */
 	public Iterable<NCLRegion> getRegions()
 	{
 		return regions;		
 	}
 
+	/**
+	 * Retorna a representação do elemento em XML.
+	 * 
+	 * @return Trecho XML referente ao elemento
+	 */
 	public String parse(int ident) {
 
 		String space, content;

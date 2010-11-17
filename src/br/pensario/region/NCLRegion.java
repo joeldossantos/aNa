@@ -6,8 +6,8 @@ import java.util.TreeSet;
 import br.pensario.NCLIdentification;
 
 /**
- * This class defines a region of the screen for media playback. This class
- * refers to <i>region</i> element in Nested Context Language (NCL).<br>
+ * Esta classe define uma região do dispositivo para a exibição de conteúdo. 
+ * Esta classe é referente ao elemento <i>region</i> da <i>Nested Context Language</i> (NCL).<br>
  * 
  * @author Wagner Schau
  * @author Joel Santos
