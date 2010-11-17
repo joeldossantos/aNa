@@ -838,9 +838,7 @@
         </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_bda8ILamEd-g56eOHhzzmw" name="NCLDescriptor">
           <generalization xmi:id="_hnDysOdgEd-_GOOrPpEdgA" general="_NzBngOdgEd-_GOOrPpEdgA"/>
-          <ownedAttribute xmi:id="_jsAHILamEd-g56eOHhzzmw" name="id" aggregation="composite">
-            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-          </ownedAttribute>
+          <generalization xmi:id="_1ik64PJhEd-tJoyQEnF_ew" general="_X2xBAPJbEd-tJoyQEnF_ew"/>
           <ownedAttribute xmi:id="_ooSa8LamEd-g56eOHhzzmw" name="player" isUnique="false" aggregation="composite">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_qEbo0LamEd-g56eOHhzzmw"/>
@@ -1385,6 +1383,24 @@
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lyxBU-dkEd-_GOOrPpEdgA"/>
         </ownedEnd>
       </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_X2xBAPJbEd-tJoyQEnF_ew" name="NCLIdentifiableElement" clientDependency="_0X5QcPJhEd-tJoyQEnF_ew">
+        <generalization xmi:id="_Rq4boPJdEd-tJoyQEnF_ew" general="_3GZ3YPJcEd-tJoyQEnF_ew"/>
+        <ownedAttribute xmi:id="_aKhPgPJfEd-tJoyQEnF_ew" name="id" aggregation="composite">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+        <ownedOperation xmi:id="_kMcncPJfEd-tJoyQEnF_ew" name="getId">
+          <ownedParameter xmi:id="_mnsh4PJfEd-tJoyQEnF_ew" direction="return">
+            <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:id="_oMmqMPJfEd-tJoyQEnF_ew" name="setId" raisedException="_KK9mEPJgEd-tJoyQEnF_ew"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_3GZ3YPJcEd-tJoyQEnF_ew" name="NCLElement"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_KK9mEPJgEd-tJoyQEnF_ew" name="NCLIllegalIdentifierException">
+        <generalization xmi:id="_x3izkPJhEd-tJoyQEnF_ew" general="_qjIx0PJhEd-tJoyQEnF_ew"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_qjIx0PJhEd-tJoyQEnF_ew" name="Exception"/>
+      <packagedElement xmi:type="uml:Dependency" xmi:id="_0X5QcPJhEd-tJoyQEnF_ew" supplier="_KK9mEPJgEd-tJoyQEnF_ew" client="_X2xBAPJbEd-tJoyQEnF_ew"/>
     </packagedElement>
   </packagedElement>
   <packagedElement xmi:type="uml:Enumeration" xmi:id="_uiTjIOdKEd-_GOOrPpEdgA" name="NCLMimeType"/>
