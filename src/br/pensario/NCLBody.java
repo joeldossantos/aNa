@@ -10,10 +10,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class NCLBody {
+public class NCLBody extends NCLIdentifiable {
 
-	private String id;
-	
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
 	private Set<NCLNode> nodes = new TreeSet<NCLNode>();
@@ -32,8 +30,7 @@ public class NCLBody {
 	 * @throws IllegalArgumentException se o id for inválido.
 	 */
 	public void setId(String id) throws Exception {
-		NCLIdentification.validate(id);
-		this.id = id;
+		setId(id);
 	}
 	
 	
@@ -43,7 +40,7 @@ public class NCLBody {
 	 * @return String com o id do body.
 	 */
 	public String getId() {
-		return id;
+		return getIdentification();
 	}
 	
 	
@@ -53,7 +50,7 @@ public class NCLBody {
 	 * @return True se o body possuir um id.
 	 */
 	public boolean hasId() {
-		return (id != null);
+		return (getIdentification() != null);
 	}
 	
 	

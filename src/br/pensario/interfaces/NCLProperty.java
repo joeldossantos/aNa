@@ -1,6 +1,5 @@
 package br.pensario.interfaces;
 
-import br.pensario.NCLIdentification;
 import br.pensario.NCLValues.NCLSystemVariable;
 
 /**
@@ -8,7 +7,6 @@ import br.pensario.NCLValues.NCLSystemVariable;
  */
 public class NCLProperty extends NCLInterface implements Comparable<NCLProperty> {
 
-	private String name;
 	private String value;
 	
 	
@@ -42,8 +40,7 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 	 * @throws Exception se o nome não for válido.
 	 */
 	public void setName(String name) throws Exception {
-		NCLIdentification.validate(name);
-		this.name = name;
+		setIdentification(name);
 	}
 	
 	
@@ -70,7 +67,7 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 	 * @return String com o nome da propriedade.
 	 */
 	public String getName() {
-		return name;
+		return getIdentification();
 	}
 	
 	

@@ -2,773 +2,564 @@ package br.pensario;
 
 public abstract class NCLValues {
 
-	public enum NCLNamespace {
-		EDTV {
-			public String toString() {
-				return "http://www.ncl.org.br/NCL3.0/profiles/NCL30EDTV.xsd";
-			}
-		},
-		BDTV {
-			public String toString() {
-				return "http://www.ncl.org.br/NCL3.0/profiles/NCL30BDTV.xsd";
-			}
-		},
-		CAUSAL_CONNECTOR {
-			public String toString() {
-				return "http://www.ncl.org.br/NCL3.0/profiles/NCL30CausalConnector.xsd";
-			}
-		}
 
-	}
+    /**
+     * NCL Namespace Values
+     */
+    public enum NCLNamespace {
+        
+        EDTV("http://www.ncl.org.br/NCL3.0/profiles/NCL30EDTV.xsd"),
+        BDTV("http://www.ncl.org.br/NCL3.0/profiles/NCL30BDTV.xsd"),
+        CAUSAL_CONNECTOR("http://www.ncl.org.br/NCL3.0/profiles/NCL30CausalConnector.xsd");
 
-	public enum NCLColor {
-		gray, white, black, silver, red, maroon, fuchsia, purple, lime, green, yellow, olive, blue, navy, aqua, teal
-	}
 
-	// DUVIDA - este cara some?
+        private String name;
+        private NCLNamespace(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-	public enum NCLQualifiers {
-		PAR {
-			public String toString() {
-				return ("par");
-			}
-		},
-		SEQ {
-			public String toString() {
-				return ("seq");
-			}
-		},
-		AND {
-			public String toString() {
-				return ("and");
-			}
-		},
-		OR {
-			public String toString() {
-				return ("or");
-			}
-		}
-	}
+    
+    /**
+     * NCL Logical operators
+     */
+    public enum NCLOperator {
+        
+        AND("and"),
+        OR("or");
+        
+        
+        private String name;
+        private NCLOperator(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-	public enum NCLConditionOperator {
-		AND {
-			public String toString() {
-				return ("and");
-			}
-		},
-		OR {
-			public String toString() {
-				return ("or");
-			}
-		}
-	}
 
-	public enum NCLActionOperator {
-		PAR {
-			public String toString() {
-				return ("par");
-			}
-		},
-		SEQ {
-			public String toString() {
-				return ("seq");
-			}
-		}
-	}
+    /**
+     * NCL logical comparators
+     */
+    public enum NCLComparator {
+        
+        EQ("eq"),
+        NE("ne"),
+        GT("gt"),
+        LT("lt"),
+        GTE("gte"),
+        LTE("lte");
+        
+        
+        private String name;
+        private NCLComparator(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-	public enum NCLMimeType {
-		TEXT_HTML {
-			public String toString() {
-				return ("text/html");
-			}
-		},
-		TEXT_PLAIN {
-			public String toString() {
-				return ("text/plain");
-			}
-		},
-		TEXT_CSS {
-			public String toString() {
-				return ("text/css");
-			}
-		},
-		TEXT_XML {
-			public String toString() {
-				return ("text/xml");
-			}
-		},
-		IMAGE_BMP {
-			public String toString() {
-				return ("image/bmp");
-			}
-		},
-		IMAGE_PNG {
-			public String toString() {
-				return ("image/png");
-			}
-		},
-		IMAGE_GIF {
-			public String toString() {
-				return ("image/gif");
-			}
-		},
-		IMAGE_JPEG {
-			public String toString() {
-				return ("image/jpeg");
-			}
-		},
-		AUDIO_BASIC {
-			public String toString() {
-				return ("audio/basic");
-			}
-		},
-		AUDIO_MP3 {
-			public String toString() {
-				return ("audio/mp3");
-			}
-		},
-		AUDIO_MP2 {
-			public String toString() {
-				return ("audio/mp2");
-			}
-		},
-		AUDIO_MPEG {
-			public String toString() {
-				return ("audio/mpeg");
-			}
-		},
-		AUDIO_MPEG4 {
-			public String toString() {
-				return ("audio/mpeg4");
-			}
-		},
-		VIDEO_MPEG {
-			public String toString() {
-				return ("video/mpeg");
-			}
-		},
-		APPLICATION_X_GINGA_NCL {
-			public String toString() {
-				return ("application/x-ginga-NCL");
-			}
-		},
-		APPLICATION_X_GINGA_NCLUA {
-			public String toString() {
-				return ("application/x-ginga-NCLua");
-			}
-		},
-		APPLICATION_X_GINGA_NCLET {
-			public String toString() {
-				return ("application/x-ginga-NCLet");
-			}
-		},
-		APPLICATION_X_GINGA_SETTINGS {
-			public String toString() {
-				return ("application/x-ginga-settings");
-			}
-		},
-		APPLICATION_X_GINGA_TIME {
-			public String toString() {
-				return ("application/x-ginga-time");
-			}
-		}
-	}
+    
+    /**
+     * NCL Colors
+     */
+    public enum NCLColor {
+        
+        GRAY("gray"),
+        WHITE("white"),
+        BLACK("black"),
+        SILVER("silver"),
+        RED("red"),
+        MAROON("maroon"),
+        FUCHSIA("fuchsia"),
+        PURPLE("purple"),
+        LIME("lime"),
+        GREEN("green"),
+        YELLOW("yellow"),
+        OLIVE("olive"),
+        BLUE("blue"),
+        NAVY("navy"),
+        AQUA("aqua"),
+        TEAL("teal");
+        
+        
+        private String name;
+        private NCLColor(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-	public enum NCLSystemVariable {
+    
+    /**
+     * NCL CompoundCondition Operator
+     */
+    public enum NCLConditionOperator {
+        
+        AND("and"),
+        OR("or");
+        
+        
+        private String name;
+        private NCLConditionOperator(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-		SYSTEM_LANGUAGE {
-			public String toString() {
-				return ("system.language");
-			}
-		},
-		SYSTEM_CAPTION {
-			public String toString() {
-				return ("system.caption");
-			}
-		},
-		SYSTEM_SUBTITLE {
-			public String toString() {
-				return ("system.subtitle");
-			}
-		},
-		/*
-		 * SYSTEM_RETURNBITRATE(i) { public String toString() {
-		 * return("system.returnBitRate(i)"); } },
-		 */
-		SYSTEM_SCREENSIZE {
-			public String toString() {
-				return ("system.screenSize");
-			}
-		},
-		SYSTEM_SCREENGRAPHICSIZE {
-			public String toString() {
-				return ("system.screenGraphicSize");
-			}
-		},
-		SYSTEM_AUDIOTYPE {
-			public String toString() {
-				return ("system.audioType");
-			}
-		},
-		/*
-		 * SYSTEM_SCREENSIZE(i) { public String toString() {
-		 * return("system.screenSize(i)"); } }, SYSTEM_SCREENGRAPHICSIZE(i) {
-		 * public String toString() { return("system.screenGraphicSize(i)"); }
-		 * }, SYSTEM_AUDIOTYPE(i) { public String toString() {
-		 * return("system.audioType(i)"); } }, SYSTEM_DEVNUMBER(i) { public
-		 * String toString() { return("system.devNumber(i)"); } },
-		 * SYSTEM_CLASSTYPE(i) { public String toString() {
-		 * return("system.classType(i)"); } }, SYSTEM_INFO(i) { public String
-		 * toString() { return("system.info(i)"); } },
-		 */
-		SYSTEM_CLASSNUMBER {
-			public String toString() {
-				return ("system.classNumber");
-			}
-		},
-		SYSTEM_CPU {
-			public String toString() {
-				return ("system.CPU");
-			}
-		},
-		SYSTEM_MEMORY {
-			public String toString() {
-				return ("system.memory");
-			}
-		},
-		SYSTEM_OPERATINGSYSTEM {
-			public String toString() {
-				return ("system.operatingSystem");
-			}
-		},
-		SYSTEM_JAVACONFIGURATION {
-			public String toString() {
-				return ("system.javaConfiguration");
-			}
-		},
-		SYSTEM_JAVAPROFILE {
-			public String toString() {
-				return ("system.javaProfile");
-			}
-		},
-		SYSTEM_LUAVERSION {
-			public String toString() {
-				return ("system.luaVersion");
-			}
-		},
-		DEFAULT_FOCUSBORDERCOLOR {
-			public String toString() {
-				return ("default.focusBorderColor");
-			}
-		},
-		DEFAULT_SELBORDERCOLOR {
-			public String toString() {
-				return ("default.selBorderColor");
-			}
-		},
-		DEFAULT_FOCUSBORDERWIDTH {
-			public String toString() {
-				return ("default.focusBorderWidth");
-			}
-		},
-		DEFAULT_FOCUSBORDERTRANSPARENCY {
-			public String toString() {
-				return ("default.focusBorderTransparency");
-			}
-		},
-		SERVICE_CURRENTFOCUS {
-			public String toString() {
-				return ("service.currentFocus");
-			}
-		},
-		SERVICE_CURRENTKEYMASTER {
-			public String toString() {
-				return ("service.currentKeyMaster");
-			}
-		},
-		SI_NUMBEROFSERVICES {
-			public String toString() {
-				return ("si.numberOfServices");
-			}
-		},
-		SI_NUMBEROFPARTIALSERVICES {
-			public String toString() {
-				return ("si.numberOfPartialServices");
-			}
-		},
-		SI_CHANNELNUMBER {
-			public String toString() {
-				return ("si.channelNumber");
-			}
-		},
-		CHANNEL_KEYCAPTURE {
-			public String toString() {
-				return ("channel.keyCapture");
-			}
-		},
-		CHANNEL_VIRTUALKEYBOARD {
-			public String toString() {
-				return ("channel.virtualKeyboard");
-			}
-		},
-		CHANNEL_KEYBOARDBOUNDS {
-			public String toString() {
-				return ("channel.keyboardBounds");
-			}
-		}
-	}
+    
+    /**
+     * NCL CompoundAction Operator
+     */
+    public enum NCLActionOperator {
+        
+        PAR("par"),
+        SEQ("seq");
+        
+        
+        private String name;
+        private NCLActionOperator(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-	public enum NCLSampleType {
+    
+    /**
+     * NCL media Mime Type
+     */
+    public enum NCLMimeType {
+        
+        TEXT_HTML("text/html"),
+        TEXT_PLAIN("text/plain"),
+        TEXT_CSS("text/css"),
+        TEXT_XML("text/xml"),
+        IMAGE_BMP("image/bmp"),
+        IMAGE_PNG("image/png"),
+        IMAGE_GIF("image/gif"),
+        IMAGE_JPEG("image/jpeg"),
+        AUDIO_BASIC("audio/basic"),
+        AUDIO_MP3("audio/mp3"),
+        AUDIO_MP2("audio/mp2"),
+        AUDIO_MPEG("audio/mpeg"),
+        AUDIO_MPEG4("audio/mpeg4"),
+        VIDEO_MPEG("video/mpeg"),
+        APPLICATION_X_GINGA_NCL("application/x-ginga-NCL"),
+        APPLICATION_X_GINGA_NCLUA("application/x-ginga-NCLua"),
+        APPLICATION_X_GINGA_NCLET("application/x-ginga-NCLet"),
+        APPLICATION_X_GINGA_SETTINGS("application/x-ginga-settings"),
+        APPLICATION_X_GINGA_TIME("application/x-ginga-time");
+        
+        
+        private String name;
+        private NCLMimeType(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-		S, F, NPT
-	}
+    
+    /**
+     * NCL System Variables name. Simple variables only
+     */
+    public enum NCLSystemVariable {
 
-	public enum NCLDefaultConditionRole {
-		ONBEGIN {
-			public String toString() {
-				return "onBegin";
-			}
-		},
-		ONEND {
-			public String toString() {
-				return "onEnd";
-			}
-		},
-		ONABORT {
-			public String toString() {
-				return "onAbort";
-			}
-		},
-		ONPAUSE {
-			public String toString() {
-				return "onPause";
-			}
-		},
-		ONRESUME {
-			public String toString() {
-				return "onResume";
-			}
-		},
-		ONSELECTION {
-			public String toString() {
-				return "onSelection";
-			}
-		},
-		ONBEGINATTRIBUTION {
-			public String toString() {
-				return "onBeginAttribution";
-			}
-		},
-		ONENDATTRIBUTION {
-			public String toString() {
-				return "onEndAttribution";
-			}
-		},
+        SYSTEM_LANGUAGE("system.language"),
+        SYSTEM_CAPTION("system.caption"),
+        SYSTEM_SUBTITLE("system.subtitle"),
+        SYSTEM_SCREENSIZE("system.screenSize"),
+        SYSTEM_SCREENGRAPHICSIZE("system.screenGraphicSize"),
+        SYSTEM_AUDIOTYPE("system.audioType"),
+        SYSTEM_CLASSNUMBER("system.classNumber"),
+        SYSTEM_CPU("system.CPU"),
+        SYSTEM_MEMORY("system.memory"),
+        SYSTEM_OPERATINGSYSTEM("system.operatingSystem"),
+        SYSTEM_JAVACONFIGURATION("system.javaConfiguration"),
+        SYSTEM_JAVAPROFILE("system.javaProfile"),
+        SYSTEM_LUAVERSION("system.luaVersion"),
+        
+        
+        DEFAULT_FOCUSBORDERCOLOR("default.focusBorderColor"),
+        DEFAULT_SELBORDERCOLOR("default.selBorderColor"),
+        DEFAULT_FOCUSBORDERWIDTH("default.focusBorderWidth"),
+        DEFAULT_FOCUSBORDERTRANSPARENCY("default.focusBorderTransparency"),
+        
+        
+        SERVICE_CURRENTFOCUS("service.currentFocus"),
+        SERVICE_CURRENTKEYMASTER("service.currentKeyMaster"),
+        
+        
+        SI_NUMBEROFSERVICES("si.numberOfServices"),
+        SI_NUMBEROFPARTIALSERVICES("si.numberOfPartialServices"),
+        SI_CHANNELNUMBER("si.channelNumber"),
+        
+        
+        CHANNEL_KEYCAPTURE("channel.keyCapture"),
+        CHANNEL_VIRTUALKEYBOARD("channel.virtualKeyboard"),
+        CHANNEL_KEYBOARDBOUNDS("channel.keyboardBounds");
 
-	}
+        
+        private String name;
+        private NCLSystemVariable(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL System Variables name
+     */
+    public enum NCLArgSystemVariable {
 
-	public enum NCLDefaultActionRole {
-		START {
-			public String toString() {
-				return "start";
-			}
-		},
-		STOP {
-			public String toString() {
-				return "stop";
-			}
-		},
-		ABORT {
-			public String toString() {
-				return "abort";
-			}
-		},
-		PAUSE {
-			public String toString() {
-				return "pause";
-			}
-		},
-		RESUME {
-			public String toString() {
-				return "resume";
-			}
-		},
-		SET {
-			public String toString() {
-				return "set";
-			}
-		}
-	}
+        SYSTEM_RETURNBITRATE_i("system.returnBitRate(i)"),
+        SYSTEM_SCREENSIZE_i("system.screenSize(i)"),
+        SYSTEM_SCREENGRAPHICSIZE_i("system.screenGraphicSize(i)"),
+        SYSTEM_AUDIOTYPE_i("system.audioType(i)"),
+        SYSTEM_DEVNUMBER_i("system.devNumber(i)"),
+        SYSTEM_CLASSTYPE_i("system.classType(i)"),
+        SYSTEM_INFO_i("system.info(i)");
 
-	/**
-	 * file: ///file_path/#fragment_identifier
-	 * http://server_identifier/file_path/#fragment_identifier
-	 * https://server_identifier/file_path/#fragment_identifier
-	 * rstp://server_identifier/file_path/#fragment_identifier
-	 * rtp://server_identifier/file_path/#fragment_identifier
-	 * nclmirror://media_element_identifier
-	 * sbtvd-ts://program_number.component_tag
-	 */
-	public enum NCLUriType {
+        
+        private String name;
+        private NCLArgSystemVariable(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-		FILE {
-			public String toString() {
-				return ("file://");
-			}
-		},
-		HTTP {
-			public String toString() {
-				return ("http://");
-			}
-		},
-		HTTPS {
-			public String toString() {
-				return ("https://");
-			}
-		},
-		RSTP {
-			public String toString() {
-				return ("rstp://");
-			}
-		},
-		RTP {
-			public String toString() {
-				return ("rtp://");
-			}
-		},
-		NCLMIRROR {
-			public String toString() {
-				return ("nclmirror://");
-			}
-		},
-		SBTVD_TS {
-			public String toString() {
-				return ("sbtvd-ts://");
-			}
-		}
-	}
+    
+    /**
+     * NCL Area Sample type
+     */
+    public enum NCLSampleType {
 
-	public enum NCLKey {
+    S, F, NPT
+    }
 
-		KEY_0 {
-			public String toString() {
-				return ("0");
-			}
-		},
-		KEY_1 {
-			public String toString() {
-				return ("1");
-			}
-		},
-		KEY_2 {
-			public String toString() {
-				return ("2");
-			}
-		},
-		KEY_3 {
-			public String toString() {
-				return ("3");
-			}
-		},
-		KEY_4 {
-			public String toString() {
-				return ("4");
-			}
-		},
-		KEY_5 {
-			public String toString() {
-				return ("5");
-			}
-		},
-		KEY_6 {
-			public String toString() {
-				return ("6");
-			}
-		},
-		KEY_7 {
-			public String toString() {
-				return ("7");
-			}
-		},
-		KEY_8 {
-			public String toString() {
-				return ("8");
-			}
-		},
-		KEY_9 {
-			public String toString() {
-				return ("9");
-			}
-		},
-		KEY_A {
-			public String toString() {
-				return ("A");
-			}
-		},
-		KEY_B {
-			public String toString() {
-				return ("B");
-			}
-		},
-		KEY_C {
-			public String toString() {
-				return ("C");
-			}
-		},
-		KEY_D {
-			public String toString() {
-				return ("D");
-			}
-		},
-		KEY_E {
-			public String toString() {
-				return ("E");
-			}
-		},
-		KEY_F {
-			public String toString() {
-				return ("F");
-			}
-		},
-		KEY_G {
-			public String toString() {
-				return ("G");
-			}
-		},
-		KEY_H {
-			public String toString() {
-				return ("H");
-			}
-		},
-		KEY_I {
-			public String toString() {
-				return ("I");
-			}
-		},
-		KEY_J {
-			public String toString() {
-				return ("J");
-			}
-		},
-		KEY_K {
-			public String toString() {
-				return ("K");
-			}
-		},
-		KEY_L {
-			public String toString() {
-				return ("L");
-			}
-		},
-		KEY_M {
-			public String toString() {
-				return ("M");
-			}
-		},
-		KEY_N {
-			public String toString() {
-				return ("N");
-			}
-		},
-		KEY_O {
-			public String toString() {
-				return ("O");
-			}
-		},
-		KEY_P {
-			public String toString() {
-				return ("P");
-			}
-		},
-		KEY_Q {
-			public String toString() {
-				return ("Q");
-			}
-		},
-		KEY_R {
-			public String toString() {
-				return ("R");
-			}
-		},
-		KEY_S {
-			public String toString() {
-				return ("S");
-			}
-		},
-		KEY_T {
-			public String toString() {
-				return ("T");
-			}
-		},
-		KEY_U {
-			public String toString() {
-				return ("U");
-			}
-		},
-		KEY_V {
-			public String toString() {
-				return ("V");
-			}
-		},
-		KEY_W {
-			public String toString() {
-				return ("W");
-			}
-		},
-		KEY_X {
-			public String toString() {
-				return ("X");
-			}
-		},
-		KEY_Y {
-			public String toString() {
-				return ("Y");
-			}
-		},
-		KEY_Z {
-			public String toString() {
-				return ("Z");
-			}
-		},
+    
+    /**
+     * NCL Default roles for simple conditions
+     */
+    public enum NCLDefaultConditionRole {
+        
+        ONBEGIN("onBegin"),
+        ONEND("onEnd"),
+        ONABORT("onAbort"),
+        ONPAUSE("onPause"),
+        ONRESUME("onResume"),
+        ONSELECTION("onSelection"),
+        ONBEGINATTRIBUTION("onBeginAttribution"),
+        ONENDATTRIBUTION("onEndAttribution");
+        
+        
+        private String name;
+        private NCLDefaultConditionRole(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-		// TODO - colocar nome em ingles
-		KEY_AST {
-			public String toString() {
-				return ("*");
-			}
-		},
+    
+    /**
+     * NCL Default roles for simple actions
+     */
+    public enum NCLDefaultActionRole {
+        
+        START("start"),
+        STOP("stop"),
+        ABORT("abort"),
+        PAUSE("pause"),
+        RESUME("resume"),
+        SET("set");
+        
+        
+        private String name;
+        private NCLDefaultActionRole(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 
-		// TODO - colocar nome em ingles
-		KEY_TRALHA {
-			public String toString() {
-				return ("#");
-			}
-		},
-		MENU {
-			public String toString() {
-				return ("MENU");
-			}
-		},
-		INFO {
-			public String toString() {
-				return ("INFO");
-			}
-		},
-		GUIDE {
-			public String toString() {
-				return ("GUIDE");
-			}
-		},
-		DOWN {
-			public String toString() {
-				return ("CURSOR_DOWN");
-			}
-		},
-		UP {
-			public String toString() {
-				return ("CURSOR_UP");
-			}
-		},
-		LEFT {
-			public String toString() {
-				return ("CURSOR_LEFT");
-			}
-		},
-		RIGHT {
-			public String toString() {
-				return ("CURSOR_RIGHT");
-			}
-		},
-		CHANNEL_DOWN {
-			public String toString() {
-				return ("CHANNEL_DOWN");
-			}
-		},
-		CHANNEL_UP {
-			public String toString() {
-				return ("CHANNEL_UP");
-			}
-		},
-		VOLUME_DOWN {
-			public String toString() {
-				return ("VOLUME_DOWN");
-			}
-		},
-		VOLUME_UP {
-			public String toString() {
-				return ("VOLUME_UP");
-			}
-		},
-		ENTER {
-			public String toString() {
-				return ("ENTER");
-			}
-		},
-		BLUE {
-			public String toString() {
-				return ("BLUE");
-			}
-		},
-		RED {
-			public String toString() {
-				return ("RED");
-			}
-		},
-		GREEN {
-			public String toString() {
-				return ("GREEN");
-			}
-		},
-		YELLOW {
-			public String toString() {
-				return ("YELLOW");
-			}
-		},
-		BACK {
-			public String toString() {
-				return ("BACK");
-			}
-		},
-		EXIT {
-			public String toString() {
-				return ("EXIT");
-			}
-		},
-		POWER {
-			public String toString() {
-				return ("POWER");
-			}
-		},
-		REWIND {
-			public String toString() {
-				return ("REWIND");
-			}
-		},
-		STOP {
-			public String toString() {
-				return ("STOP");
-			}
-		},
-		EJECT {
-			public String toString() {
-				return ("EJECT");
-			}
-		},
-		PLAY {
-			public String toString() {
-				return ("PLAY");
-			}
-		},
-		RECORD {
-			public String toString() {
-				return ("RECORD");
-			}
-		},
-		PAUSE {
-			public String toString() {
-				return ("PAUSE");
-			}
-		}
-	}
+    
+    /**
+    * NCL URIs
+    */
+    public enum NCLUriType {
 
+        FILE("file://"),
+        HTTP("http://"),
+        HTTPS("https://"),
+        RSTP("rstp://"),
+        RTP("rtp://"),
+        NCLMIRROR("nclmirror://"),
+        SBTVD_TS("sbtvd-ts://");
+        
+        
+        private String name;
+        private NCLUriType(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+
+    
+    /**
+     * NCL Keys
+     */
+    public enum NCLKey {
+
+        KEY_0("0"),
+        KEY_1("1"),
+        KEY_2("2"),
+        KEY_3("3"),
+        KEY_4("4"),
+        KEY_5("5"),
+        KEY_6("6"),
+        KEY_7("7"),
+        KEY_8("8"),
+        KEY_9("9"),
+        KEY_A("A"),
+        KEY_B("B"),
+        KEY_C("C"),
+        KEY_D("D"),
+        KEY_E("E"),
+        KEY_F("F"),
+        KEY_G("G"),
+        KEY_H("H"),
+        KEY_I("I"),
+        KEY_J("J"),
+        KEY_K("K"),
+        KEY_L("L"),
+        KEY_M("M"),
+        KEY_N("N"),
+        KEY_O("O"),
+        KEY_P("P"),
+        KEY_Q("Q"),
+        KEY_R("R"),
+        KEY_S("S"),
+        KEY_T("T"),
+        KEY_U("U"),
+        KEY_V("V"),
+        KEY_W("W"),
+        KEY_X("X"),
+        KEY_Y("Y"),
+        KEY_Z("Z"),
+        KEY_AST("*"),
+        KEY_TRALHA("#"),
+        MENU("MENU"),
+        INFO("INFO"),
+        GUIDE("GUIDE"),
+        DOWN("CURSOR_DOWN"),
+        UP("CURSOR_UP"),
+        LEFT("CURSOR_LEFT"),
+        RIGHT("CURSOR_RIGHT"),
+        CHANNEL_DOWN("CHANNEL_DOWN"),
+        CHANNEL_UP("CHANNEL_UP"),
+        VOLUME_DOWN("VOLUME_DOWN"),
+        VOLUME_UP("VOLUME_UP"),
+        ENTER("ENTER"),
+        BLUE("BLUE"),
+        RED("RED"),
+        GREEN("GREEN"),
+        YELLOW("YELLOW"),
+        BACK("BACK"),
+        EXIT("EXIT"),
+        POWER("POWER"),
+        REWIND("REWIND"),
+        STOP("STOP"),
+        EJECT("EJECT"),
+        PLAY("PLAY"),
+        RECORD("RECORD"),
+        PAUSE("PAUSE");
+        
+        
+        private String name;
+        private NCLKey(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+
+
+    /**
+     * NCL Event types used in connectors
+     */
+    public enum NCLEventType {
+
+        PRESENTATION("presentation"),
+        SELECTION("selection"),
+        ATTRIBUTION("attribution");
+
+
+        private String name;
+        private NCLEventType(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL Event transitions used in connectors
+     */
+    public enum NCLEventTransition {
+
+        STARTS("starts"),
+        STOPS("stops"),
+        ABORTS("aborts"),
+        PAUSES("pauses"),
+        RESUMES("resumes");
+
+
+        private String name;
+        private NCLEventTransition(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL Event actions used in connectors
+     */
+    public enum NCLEventAction {
+
+        START("start"),
+        STOP("stop"),
+        ABORT("abort"),
+        PAUSE("pause"),
+        RESUME("resume");
+
+
+        private String name;
+        private NCLEventAction(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+
+    
+    /**
+     * NCL Assessment Statement Attribute values
+     */
+    public enum NCLAttributeType {
+
+        STATE("state"),
+        OCCURRENCES("occurrences"),
+        REPETITIONS("repetitions"),
+        NODE_PROPERTY("nodeProperty");
+
+
+        private String name;
+        private NCLAttributeType(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL Value Assessment default values
+     */
+    public enum NCLDefaultValueAssessment {
+
+        SLEEPING("sleeping"),
+        OCCURRING("occurring"),
+        PAUSED("paused");
+
+
+        private String name;
+        private NCLDefaultValueAssessment(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL reuse feature instance type.
+     */
+    public enum NCLInstanceType {
+        
+        NEW("new"),
+        INST_SAME("instSame"),
+        GRAD_SAME("gradSame");
+
+
+        private String name;
+        private NCLInstanceType(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL transition type.
+     */
+    public enum NCLTransitionType {
+        
+        BAR("barWipe"),
+        IRIS("irisWipe"),
+        CLOCK("clockWipe"),
+        SNAKE("snakeWipe"),
+        FADE("fade");
+
+
+        private String name;
+        private NCLTransitionType(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL transition subtype.
+     */
+    public enum NCLTransitionSubtype {
+        
+        LEFT_TO_RIGHT("leftToRight"),
+        TOP_TO_BOTTOM("topToBottom"),
+        
+        RECTANGLE("rectangle"),
+        DIAMOND("diamond"),
+        
+        CLOCKWISE_TWELVE("clockwiseTwelve"),
+        CLOCKWISE_THREE("clockwiseThree"),
+        CLOCKWISE_SIX("clockwiseSix"),
+        CLOCKWISE_NINE("clockwiseNine"),
+        
+        TOP_LEFT_HORIZONTAL("topLeftHorizontal"),
+        TOP_LEFT_VERTICAL("topLeftVertical"),
+        TOP_LEFT_DIAGONAL("topLeftDiagonal"),
+        TOP_RIGHT_DIAGONAL("topRightDiagonal"),
+        BOTTOM_RIGHT_DIAGONAL("bottomRightDiagonal"),
+        BOTTOM_LEFT_DIAGONAL("bottomLeftDiagonal"),
+        
+        CROSSFADE("crossfade"),
+        FADE_TO_COLOR("fadeToColor"),
+        FADE_FROM_COLOR("fadeFromColor");
+
+
+        private String name;
+        private NCLTransitionSubtype(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL transition type.
+     */
+    public enum NCLTransitionDirection {
+        
+        FORWARD("forward"),
+        REVERSE("reverse");
+
+
+        private String name;
+        private NCLTransitionDirection(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
+    
+    
+    /**
+     * NCL Attributes used in the descriptor parameters
+     */
+    public enum NCLAttributes {
+
+        TOP("top"),
+        LEFT("left"),
+        BOTTOM("bottom"),
+        RIGHT("right"),
+        WIDTH("width"),
+        HEIGHT("height"),
+        LOCATION("location"),
+        SIZE("size"),
+        BOUNDS("bounds"),
+        BACKGROUND("background"),
+        VISIBLE("visible"),
+        TRANSPARENCY("transparency"),
+        FIT("fit"),
+        SCROLL("scroll"),
+        STYLE("style"),
+        SOUND_LEVEL("soundLevel"),
+        BALANCE_LEVEL("balanceLevel"),
+        TREBLE_LEVEL("trebleLevel"),
+        BASS_LEVEL("bassLevel"),
+        ZINDEX("zIndex"),
+        FONT_FAMILY("fontFamily"),
+        FONT_STYLE("fontStyle"),
+        FONT_SIZE("fontSize"),
+        FONT_VARIANT("fontVariant"),
+        FONT_WEIGHT("fontWeight"),
+        FONT_COLOR("fontColor"),
+        REUSE_PLAYER("reusePlayer"),
+        PLAYER_LIFE("playerLife");
+
+
+        private String name;
+        private NCLAttributes(String name) { this.name = name;}
+        public String toString() { return name; }
+    }
 }

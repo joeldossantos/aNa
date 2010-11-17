@@ -1,6 +1,5 @@
 package br.pensario.interfaces;
 
-import br.pensario.NCLIdentification;
 import br.pensario.node.NCLNode;
 
 /**
@@ -8,7 +7,6 @@ import br.pensario.node.NCLNode;
  */
 public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 
-	private String id;
 	private NCLNode component;
 	private NCLInterface interfac;
 	
@@ -33,8 +31,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 	 * @throws IllegalArgumentException se o id for inválido.
 	 */
 	public void setId(String id) throws Exception {
-		NCLIdentification.validate(id);
-		this.id = id;
+		setIdentification(id);
 	}
 	
 	
@@ -44,17 +41,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 	 * @return String com o id da porta.
 	 */
 	public String getId() {
-		return id.toString();
-	}
-	
-	
-	/**
-	 * Obtém o atributo que identifica uma porta, neste caso o id da porta.
-	 * 
-	 * @return String com o id da porta.
-	 */
-	public String getIdentifier(){
-		return getId();
+		return getIdentification();
 	}
 	
 	
@@ -156,7 +143,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 		content += " id='" + getId() + "'";
 		content += " component='" + getComponent().getId() + "'";
 		if (hasInterface())
-			content += " interface='" + getInterface().getIdentifier() + "'";
+			content += " interface='" + getInterface().getIdentification() + "'";
 		content += "/>\n";
 		
 		return content;

@@ -1,10 +1,10 @@
 package br.pensario.link;
 
+import br.pensario.NCLIdentifiable;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.pensario.NCLIdentification;
 import br.pensario.connector.NCLCausalConnector;
 import br.pensario.connector.NCLConnectorParam;
 import br.pensario.connector.NCLRole;
@@ -15,9 +15,8 @@ import br.pensario.node.NCLNode;
 /**
  * Classe representando o elemento link da linguagem NCL.
  */
-public class NCLLink implements Comparable<NCLLink>{
+public class NCLLink extends NCLIdentifiable implements Comparable<NCLLink>{
 
-	private String id;
 	private NCLCausalConnector xconnector;
 	
 	private Set<NCLParam> linkParams = new TreeSet<NCLParam>();
@@ -46,8 +45,7 @@ public class NCLLink implements Comparable<NCLLink>{
 	 * @throws IllegalArgumentException se o id for inválido.
 	 */
 	public void setId(String id) throws Exception {
-		NCLIdentification.validate(id);
-		this.id = id;
+		setIdentification(id);
 	}
 	
 	
@@ -57,7 +55,7 @@ public class NCLLink implements Comparable<NCLLink>{
 	 * @return String com o id do link.
 	 */
 	public String getId() {
-		return id;
+		return getIdentification();
 	}
 	
 	
@@ -67,7 +65,7 @@ public class NCLLink implements Comparable<NCLLink>{
 	 * @return True se o link possuir um id.
 	 */
 	public boolean hasId() {
-		return (id != null);
+		return (getIdentification() != null);
 	}
 	
 	

@@ -1,13 +1,11 @@
 package br.pensario.interfaces;
 
-import br.pensario.NCLIdentification;
 
 /**
  * Classe representando o elemento area de NCL.
  */
 public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 
-	private String id;
 	private int[] coords;
 	private NCLTime begin;
 	private NCLTime end;
@@ -36,8 +34,7 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 	 * @throws IllegalArgumentException se o id for inválido.
 	 */
 	public void setId(String id) throws Exception {
-		NCLIdentification.validate(id);
-		this.id = id;
+		setIdentification(id);
 	}
 	
 	
@@ -47,17 +44,7 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 	 * @return String com o id da âncora.
 	 */
 	public String getId() {
-		return id.toString();
-	}
-	
-	
-	/**
-	 * Obtém o identificador da âncora, nesse caso seu id.
-	 * 
-	 * @return String com o id da âncora.
-	 */
-	public String getIdentifier(){
-		return getId();
+		return getIdentification();
 	}
 	
 	

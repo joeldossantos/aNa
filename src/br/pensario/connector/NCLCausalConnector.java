@@ -1,183 +1,186 @@
 package br.pensario.connector;
 
 
+import br.pensario.ExistentElementException;
+import br.pensario.InvalidIdentifierException;
+import br.pensario.NCLIdentifiable;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.pensario.NCLIdentification;
+public class NCLCausalConnector extends NCLIdentifiable implements Comparable<NCLCausalConnector> {
 
-public class NCLCausalConnector implements Comparable<NCLCausalConnector> {
+    private NCLCondition condition;
+    private NCLAction action;
+    private Set<NCLConnectorParam> conn_params = new TreeSet<NCLConnectorParam>();
 
-	private String id;
-	private NCLCondition condition;
-	private NCLAction action;
-	private Set<NCLConnectorParam> conn_params = new TreeSet<NCLConnectorParam>();
+    /**
+     * Construtor padrão de um conector causal.
+     * 
+     * @param id String Identificador do conector
+     * @throws Exception Caso o identificador seja inválido
+     */    
+    public NCLCausalConnector(String id) throws Exception {
+        this.setId(id);
+    }
+    
+    
+    /**
+     * Atribui um id ao conector causal NCL.
+     * 
+     * @param id String Identificador (compatível com NCLIdentification).
+     * @throws IllegalArgumentException Se o id for inválido.
+     */    
+    public void setId(String id) throws Exception{
+        setIdentification(id);
+    }
+    
+    
+    /**
+     * Retorna o identificador do elemento NCL.
+     * 
+     * @return Identificador
+     */    
+    public String getId() {
+        return getIdentification();
+    }
 
-	/**
-	 * Construtor padrão de um conector causal.
-	 * @param id String Identificador do conector
-	 * @param condition NCLCondition Condição NCL utilizada pelo conector causal.
-	 * @param action NCLAction Ação NCL utilizada pelo conector causal.
-	 * @throws Exception Caso o identificador seja inválido
-	 */	
-	public NCLCausalConnector(String id, NCLCondition condition,
-			NCLAction action) throws Exception {
-		this.setId(id);
-		this.setCondition(condition);
-		this.setAction(action);
-	}
+    
+    /**
+     * Atribui uma condição ao conector causal NCL.
+     * 
+     * @param condition NCLCondition Condição NCL.
+     * @throws IllegalArgumentException Se a condição for nula.
+     */    
+    public void setCondition(NCLCondition condition) throws IllegalArgumentException{
+        if(condition!=null)
+            this.condition = condition;
+        else
+            throw new IllegalArgumentException("O conector causal não pode conter condição nula");
+    }
+    
+    
+    /**
+     * Retorna condição NCL utilizada pelo conector causal NCL.
+     * 
+     * @return Condição NCL
+     */    
+    public NCLCondition getCondition() {
+        return condition;
+    }
 
 
-	/**
-	 * Retorna condição NCL utilizada pelo conector causal NCL.
-	 * @return Condição NCL
-	 */	
-	public NCLCondition getCondition() {
-		return condition;
-	}
+    /**
+     * Atribui uma ação ao conector causal NCL.
+     * 
+     * @param action NCLAction Ação NCL.
+     * @throws IllegalArgumentException Se a ação for nula.
+     */    
+    public void setAction(NCLAction action) {
+        if(action != null)
+            this.action = action;
+        else
+            throw new IllegalArgumentException("O conector causal não pode conter ação nula");
+    }
+    
+    
+    /**
+     * Retorna ação NCL utilizada pelo conector causal NCL.
+     * 
+     * @return Ação NCL
+     */
+    public NCLAction getAction() {
+        return action;
+    }
 
+    
+    /**
+     * Adiciona um novo parâmetro NCL ao conector causal NCL.     
+     * 
+     * @param param NCLConnectorParam Parâmetro a ser adicionado.
+     */    
+    public void addConnectorParam(String name) throws InvalidIdentifierException, ExistentElementException {
+        NCLConnectorParam param = new NCLConnectorParam(name);
+        
+        if(!conn_params.add(param))
+            throw new ExistentElementException("Param already exists");
+    }
+    
+    
+    /**
+     * Retorna o parâmetro do conector NCL de acordo com o nome.     
+     * 
+     * @param nome String Nome do parâmetro a ser buscado.
+     * @return Parâmetro do conector
+     */    
+    public NCLConnectorParam getConnectorParam(String nome) {
 
-	/**
-	 * Atribui uma condição ao conector causal NCL.
-	 * 
-	 * @param condition NCLCondition Condição NCL.
-	 * @throws IllegalArgumentException Se a condição for nula.
-	 */	
-	public void setCondition(NCLCondition condition) throws IllegalArgumentException{
-		if(condition!=null)
-			this.condition = condition;
-		else
-			throw new IllegalArgumentException("O conector causal não pode conter condição nula");
-	}
+        for (NCLConnectorParam connp : conn_params)
+            if (connp.getName().equals(nome))
+                return connp;
 
-	/**
-	 * Retorna o identificador do elemento NCL.
-	 * @return Identificador
-	 */	
-	public String getId() {
-		return id;
-	}	
-	
-	/**
-	 * Atribui um id ao conector causal NCL.
-	 * 
-	 * @param id String Identificador (compatível com NCLIdentification).
-	 * @throws IllegalArgumentException Se o id for inválido.
-	 */	
-	public void setId(String id) throws Exception{
-		
-		NCLIdentification.validate(id);
-		this.id = id;		
-	}
+        return null;
+    }
 
-	
-	/**
-	 * Retorna ação NCL utilizada pelo conector causal NCL.
-	 * @return Ação NCL
-	 */
-	public NCLAction getAction() {
-		return action;
-	}
+    
+    /**
+     * Remove um parâmetro do conector NCL de acordo com o nome.     
+     * 
+     * @param nome String Nome do parâmetro a ser removido.
+     */    
+    public void removeConnectorParam(String nome) {
 
-	
-	/**
-	 * Atribui uma ação ao conector causal NCL.
-	 * 
-	 * @param action NCLAction Ação NCL.
-	 * @throws IllegalArgumentException Se a ação for nula.
-	 */	
-	public void setAction(NCLAction action) {
-		if(action != null)
-			this.action = action;
-		else
-			throw new IllegalArgumentException("O conector causal não pode conter ação nula");
-	}
+        Iterator<NCLConnectorParam> it = conn_params.iterator();
 
-	/**
-	 * Retorna o parâmetro do conector NCL de acordo com o nome.	 
-	 * 
-	 * @param nome String Nome do parâmetro a ser buscado.
-	 * @return Parâmetro do conector
-	 */	
-	public NCLConnectorParam getConnectorParam(String nome) {
+        while (it.hasNext()) {
+            NCLConnectorParam connp = it.next();
+            if (connp.getName().equals(nome))
+                it.remove();
+        }
+        
+    }
 
-		for (NCLConnectorParam connp : conn_params)
-			if (connp.getName().equals(nome))
-				return connp;
+    
+    public String toString() {
+        return parse(0);
+    }
 
-		return null;
-	}
+    
+    /**
+     * Retorna a representação do elemento em XML.
+     * 
+     * @return Trecho XML referente ao elemento
+     */
+    public String parse(int ident) {
 
-	
-	/**
-	 * Remove um parâmetro do conector NCL de acordo com o nome.	 
-	 * 
-	 * @param nome String Nome do parâmetro a ser removido.
-	 */	
-	public void removeConnectorParam(String nome) {
+        String space, content;
 
-		Iterator<NCLConnectorParam> it = conn_params.iterator();
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
 
-		while (it.hasNext()) {
-			NCLConnectorParam connp = it.next();
-			if (connp.getName().equals(nome))
-				it.remove();
-		}
-		
-	}
+        content = space + "<causalConnector";
 
-	/**
-	 * Adiciona um novo parâmetro NCL ao conector causal NCL.	 
-	 * 
-	 * @param param NCLConnectorParam Parâmetro a ser adicionado.
-	 */	
-	public void addConnectorParam(NCLConnectorParam param) {
+        if (getId() != null)
+            content += " id='" + getId() + "'";
 
-		conn_params.add(param);
-	}
+        content += ">\n";
 
-	public String toString() {
-		return parse(0);
-	}
+        for(NCLConnectorParam connp : conn_params)
+            content += connp.parse(ident + 1);
+        
+        content += getCondition().parse(ident + 1);
+        content += getAction().parse(ident + 1);
 
-	
-	/**
-	 * Retorna a representação do elemento em XML.
-	 * @return Trecho XML referente ao elemento
-	 */
-	public String parse(int ident) {
+        content += space + "<causalConnector/>\n";
 
-		String space, content;
+        return content;
+    }
 
-		// Element indentation
-		space = "";
-		for (int i = 0; i < ident; i++)
-			space += "\t";
-
-		content = space + "<causalConnector";
-
-		if (getId() != null)
-			content += " id='" + getId() + "'";
-
-		content += ">\n";
-
-		for(NCLConnectorParam connp : conn_params)
-			content += connp.parse(ident + 1);
-		
-		content += getCondition().parse(ident + 1);
-		content += getAction().parse(ident + 1);
-
-		content += space + "<causalConnector/>\n";
-
-		return content;
-	}
-
-	@Override
-	public int compareTo(NCLCausalConnector cconn) {
-
-		return cconn.getId().compareTo(this.getId());
-
-	}
+    
+    public int compareTo(NCLCausalConnector cconn) {
+        return cconn.getId().compareTo(this.getId());
+    }
 
 }

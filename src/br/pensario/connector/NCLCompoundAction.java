@@ -1,108 +1,115 @@
 package br.pensario.connector;
 
+import br.pensario.ExistentElementException;
 import java.util.Set;
 
 import br.pensario.NCLValues.NCLActionOperator;
 
 public class NCLCompoundAction extends NCLAction{
 
-	private Set<NCLAction> actions; 
-	
-	private NCLActionOperator operator;
+    private NCLActionOperator operator;
+    
+    private Set<NCLAction> actions; 
+    
+    
+    /**
+     * Atribui um operador para a ação composta NCL.
+     * @param operator Operador NCL
+     */
+    public void setOperator(NCLActionOperator operator) throws IllegalArgumentException{
+        if(operator!=null)
+            this.operator = operator;
+        else
+            throw new IllegalArgumentException("A ação composta não pode conter operador nulo");
+    }
+    
+    
+    /**
+     * Retorna o operador utilizado pela ação composta NCL    
+     * @return Operador utilizado pela ação
+     */
+    public NCLActionOperator getOperator() {
+        return operator;
+    }
 
-	/**
-	 * Retorna o operador utilizado pela ação composta NCL	
-	 * @return Operador utilizado pela ação
-	 */
-	public NCLActionOperator getOperator() {
-		return operator;
-	}
+    
+    /**
+     * Adiciona uma a ação NCL na ação composta.
+     * 
+     * @param action NCLAction Ação a ser adicionada 
+     * @return Se a adição foi realizada
+     */
+    public void addAction(NCLAction action) throws ExistentElementException {
+        if (!actions.add(action))
+            throw new ExistentElementException("action already exists");
+    }
 
-	/**
-	 * Atribui um operador para a ação composta NCL.
-	 * @param operator Operador NCL
-	 */
-	public void setOperator(NCLActionOperator operator) throws IllegalArgumentException{
-		if(operator!=null)
-			this.operator = operator;
-		else
-			throw new IllegalArgumentException("A ação composta não pode conter operador nulo");
-	}
-	
-	/**
-	 * Adiciona uma a ação NCL na ação composta.
-	 * 
-	 * @param action NCLAction Ação a ser adicionada 
-	 * @return Se a adição foi realizada
-	 */
-	public boolean addAction(NCLAction action) {
-		return actions.add(action);
-	}
+    
+    /**
+     * Remove uma ação NCL da ação composta.
+     * 
+     * @param action NCLAction Ação a ser removida
+     * @return Se a remoção foi realizada
+     */
+    public boolean removeAction(NCLAction action) {
+        return actions.remove(action);
+    }
 
-	/**
-	 * Remove uma ação NCL da ação composta.
-	 * 
-	 * @param action NCLAction Ação a ser removida
-	 * @return Se a remoção foi realizada
-	 */
-	public boolean removeAction(NCLAction action) {
-		return actions.remove(action);
-	}
+    
+    /**
+     * Indica se a ação NCL está presente na ação composta (em um único nível da hierarquia).
+     * 
+     * @param action NCLAction Ação a ser buscada
+     * @return Se a ação está presente na ação composta
+     */
+    public boolean hasAction(NCLAction action) {
+        return actions.contains(action);
+    }
 
-	
-	/**
-	 * Indica se a ação NCL está presente na ação composta (em um único nível da hierarquia).
-	 * 
-	 * @param action NCLAction Ação a ser buscada
-	 * @return Se a ação está presente na ação composta
-	 */
-	public boolean hasAction(NCLAction action) {
-		return actions.contains(action);
-	}
+    
+    /**
+     * Indica se a ação composta NCL possui ao menos uma ação.
+     * 
+     * @return Se a ação composta possui ações
+     */
+    //REV: suplementar ao getActions
+    public boolean hasActions() {
+        return actions.size() > 0;
+    }
+    
+    
+    /**
+     * Retorna a representação do elemento em XML.
+     * @return Trecho XML referente ao elemento
+     */
+    public String parse(int ident) {
 
-	/**
-	 * Indica se a ação composta NCL possui ao menos uma ação.
-	 * 
-	 * @return Se a ação composta possui ações
-	 */
-	//REV: suplementar ao getActions
-	public boolean hasActions() {
-		return actions.size() > 0;
-	}
-	
-	
-	/**
-	 * Retorna a representação do elemento em XML.
-	 * @return Trecho XML referente ao elemento
-	 */
-	public String parse(int ident) {
+        String space, content;
 
-		String space, content;
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
 
-		// Element indentation
-		space = "";
-		for (int i = 0; i < ident; i++)
-			space += "\t";
+        content = space + "<compoundAction";
 
-		content = space + "<compoundAction";
+        if(hasDelay())
+            content += " delay='" + getDelay() + "s'";        
+        
+        content += ">\n";
+        
+        for(NCLAction action : actions)
+            content += action.parse(ident + 1);
+        
+        content += space + "</compoundAction>";
 
-		if(getDelay()!=null)
-			content += " delay='" + getDelay() + "'";		
-		
-		content += ">\n";
-		
-		for(NCLAction action : actions)
-			content += action.parse(ident + 1);
-		
-		content += space + "</compoundAction>";
+        return content;
+    }
 
-		return content;
-	}
-
-	@Override
-	public String toString() {
-		return parse(0);		
-	}
-	
-	
+    @Override
+    public String toString() {
+        return parse(0);        
+    }
+    
+    
 }

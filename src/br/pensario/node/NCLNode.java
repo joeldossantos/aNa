@@ -1,10 +1,9 @@
 package br.pensario.node;
 
-import br.pensario.NCLIdentification;
+import br.pensario.NCLIdentifiable;
 
-public abstract class NCLNode implements Comparable<NCLNode> {
-	
-	private String id;
+
+public abstract class NCLNode extends NCLIdentifiable implements Comparable<NCLNode> {
 	
 	
 	/**
@@ -14,8 +13,7 @@ public abstract class NCLNode implements Comparable<NCLNode> {
 	 * @throws IllegalArgumentException se o id for inválido.
 	 */
 	public void setId(String id) throws Exception {
-		NCLIdentification.validate(id);
-		this.id = id;
+		setIdentification(id);
 	}
 	
 	
@@ -25,7 +23,7 @@ public abstract class NCLNode implements Comparable<NCLNode> {
 	 * @return String com o id do nó.
 	 */
 	public String getId() {
-		return id;
+		return getIdentification();
 	}
 	
 	
