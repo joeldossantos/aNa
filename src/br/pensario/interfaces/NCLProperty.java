@@ -7,9 +7,10 @@ import br.pensario.NCLValues.NCLSystemVariable;
  */
 public class NCLProperty extends NCLInterface implements Comparable<NCLProperty> {
 
+	private String name;
 	private String value;
 	
-	
+	//TODO - verificar se name tem regras de boa formação (assim como o id)
 	/**
 	 * Construtor da propriedade sem seguir os nomes padrão.
 	 * 
@@ -18,8 +19,7 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 	 */
 	public NCLProperty(String name) throws Exception {
 		setName(name);
-	}
-	
+	}	
 	
 	/**
 	 * Construtor da propriedade seguindo os nomes padrão.
@@ -40,9 +40,8 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 	 * @throws Exception se o nome não for válido.
 	 */
 	public void setName(String name) throws Exception {
-		setIdentification(name);
-	}
-	
+		this.name = name;
+	}	
 	
 	/**
 	 * Determina o nome de uma propriedade seguindo os valore padrão especificados na norma.
@@ -67,7 +66,7 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 	 * @return String com o nome da propriedade.
 	 */
 	public String getName() {
-		return getIdentification();
+		return name;
 	}
 	
 	
@@ -178,4 +177,5 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
 	public int compareTo(NCLProperty property) {
 		return getName().compareTo(property.getName());
 	}
+
 }

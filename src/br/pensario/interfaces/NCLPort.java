@@ -10,7 +10,6 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 	private NCLNode component;
 	private NCLInterface interfac;
 	
-	
 	/**
 	 * Construtor da porta.
 	 * 
@@ -22,29 +21,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 		setId(id);
 		setComponent(component);
 	}
-	
-	
-	/**
-	 * Determina o id de uma porta.
-	 * 
-	 * @param id String com o id da porta.
-	 * @throws IllegalArgumentException se o id for inválido.
-	 */
-	public void setId(String id) throws Exception {
-		setIdentification(id);
-	}
-	
-	
-	/**
-	 * Obtém o id da porta.
-	 * 
-	 * @return String com o id da porta.
-	 */
-	public String getId() {
-		return getIdentification();
-	}
-	
-	
+			
 	/**
 	 * Determina o conteúdo do atributo component da porta.
 	 * 
@@ -143,7 +120,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
 		content += " id='" + getId() + "'";
 		content += " component='" + getComponent().getId() + "'";
 		if (hasInterface())
-			content += " interface='" + getInterface().getIdentification() + "'";
+			content += " interface='" + getInterface().getId() + "'";
 		content += "/>\n";
 		
 		return content;

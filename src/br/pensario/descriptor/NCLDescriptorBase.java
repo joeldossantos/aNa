@@ -3,7 +3,8 @@ package br.pensario.descriptor;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.pensario.NCLIdentification;
+import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 
 /**
  * Classe referente a base de descritores NCL.
@@ -12,40 +13,25 @@ import br.pensario.NCLIdentification;
  * @since 24/09/2010
  * @version 1.0
  */
-public class NCLDescriptorBase {
+public class NCLDescriptorBase extends NCLIdentifiableElement {
 
-	private String id;
 	Set<NCLDescriptor> descriptors = new TreeSet<NCLDescriptor>();
 
+	/**
+	 * Contrutor padrão vazio
+	 *
+	 */
+	public NCLDescriptorBase(){}
+	
 	/**
 	 * Contrutor padrão
 	 * 
 	 * @param id
 	 */
-	public NCLDescriptorBase(String id) throws Exception{
-		NCLIdentification.validate(id);
-		setId(id);
+	public NCLDescriptorBase(String id) throws NCLInvalidIdentifierException{
+		super.setId(id);		
 	}	
-	
-	/**
-	 * Retorna o identificador do elemento NCL
-	 * 
-	 * @return Identificador
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Atribui um novo identificador ao elemento NCL
-	 * 
-	 * @param id Identificador
-	 */
-	public void setId(String id) throws Exception{
-		NCLIdentification.validate(id);
-		this.id = id;
-	}
-
+		
 	/**
 	 * Adiciona um novo descritor à base de descritores
 	 * 
@@ -107,8 +93,8 @@ public class NCLDescriptorBase {
 
 		content = space + "<descriptorBase ";
 
-		if (getId() != null)
-			content += " id='" + getId();
+		if (super.getId() != null)
+			content += " id='" + super.getId();
 
 		content += "'>\n";
 

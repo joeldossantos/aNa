@@ -4,7 +4,7 @@ import br.pensario.connector.NCLConnectorBase;
 import br.pensario.descriptor.NCLDescriptorBase;
 import br.pensario.region.NCLRegionBase;
 
-public class NCLHead {
+public class NCLHead extends NCLElement{
 	
 	private NCLRegionBase rbase;
 	private NCLDescriptorBase dbase;

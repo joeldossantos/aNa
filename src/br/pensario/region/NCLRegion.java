@@ -3,7 +3,8 @@ package br.pensario.region;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.pensario.NCLIdentification;
+import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 
 /**
  * Esta classe define uma região do dispositivo para a exibição de conteúdo. 
@@ -19,9 +20,7 @@ import br.pensario.NCLIdentification;
  * 
  */
 
-public class NCLRegion implements Comparable<NCLRegion> {
-
-	private String id;
+public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLRegion> {
 
 	private String title;
 
@@ -47,43 +46,16 @@ public class NCLRegion implements Comparable<NCLRegion> {
 	/**
 	 * NCLRegion class constructor. Create a new region with default parameters.
 	 * 
-	 * @param identification
+	 * @param id
 	 *            Region identification.
 	 * 
 	 * @exception Exception
 	 *                Invalid identification format.
 	 */
-	public NCLRegion(String identification) throws Exception {
-		setId(identification);
+	public NCLRegion(String id) throws NCLInvalidIdentifierException {
+		setId(id);
 	}
-
-	/**
-	 * Return region identification string.
-	 * 
-	 * @return region identification string.
-	 * 
-	 * @see NCLIdentification
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Set a new identification for the region.
-	 * 
-	 * @param identification
-	 *            Element new identification.
-	 * 
-	 * @see NCLIdentification
-	 * 
-	 * @exception Exception
-	 *                Invalid identification format.
-	 */
-	public void setId(String identification) throws Exception {
-		NCLIdentification.validate(id);
-		this.id = id;
-	}
-
+	
 	/**
 	 * Two regions are considered equal based only on their identification
 	 * strings.
@@ -99,10 +71,10 @@ public class NCLRegion implements Comparable<NCLRegion> {
 		if (getClass() != obj.getClass())
 			return false;
 		NCLRegion other = (NCLRegion) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}

@@ -1,12 +1,11 @@
 package br.pensario.descriptor;
 
-import br.pensario.NCLIdentification;
+import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues;
 import br.pensario.region.NCLRegion;
 
-public class NCLDescriptor implements Comparable{
-
-	private String id;
+public class NCLDescriptor extends NCLIdentifiableElement implements Comparable{
 
 	private String player;
 	private String explicitDur; 
@@ -35,10 +34,9 @@ public class NCLDescriptor implements Comparable{
 	 * @param id Identificador do descritor
 	 * @throws Exception Caso o identificador não seja conformante com NCLIdentification.validate()
 	 */
-	public NCLDescriptor(String id) throws Exception
-	{
-		NCLIdentification.validate(id);
-		setId(id);		
+	public NCLDescriptor(String id) throws NCLInvalidIdentifierException
+	{		
+		super.setId(id);		
 	}	
 
 	/**
@@ -289,16 +287,6 @@ public class NCLDescriptor implements Comparable{
 	 */
 	public NCLRegion getRegion() {
 		return region;
-	}
-
-	//TODO - será colocado na superclasse
-	public String getId() {
-		return id;
-	}
-
-	//TODO - será colocado na superclasse
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**

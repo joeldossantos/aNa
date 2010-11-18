@@ -1,31 +1,9 @@
 package br.pensario.node;
 
-import br.pensario.NCLIdentifiable;
+import br.pensario.NCLIdentifiableElement;
 
 
-public abstract class NCLNode extends NCLIdentifiable implements Comparable<NCLNode> {
-	
-	
-	/**
-	 * Determina o id de um nó.
-	 * 
-	 * @param id String com o id do nó.
-	 * @throws IllegalArgumentException se o id for inválido.
-	 */
-	public void setId(String id) throws Exception {
-		setIdentification(id);
-	}
-	
-	
-	/**
-	 * Obtém o id do nó.
-	 * 
-	 * @return String com o id do nó.
-	 */
-	public String getId() {
-		return getIdentification();
-	}
-	
+public abstract class NCLNode extends NCLIdentifiableElement implements Comparable<NCLNode> {
 	
 	/**
 	 * Cria o código XML de um nó.

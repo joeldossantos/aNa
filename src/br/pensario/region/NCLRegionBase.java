@@ -2,7 +2,9 @@ package br.pensario.region;
 
 import java.util.Set;
 import java.util.TreeSet;
-import br.pensario.NCLIdentification;
+
+import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 
 /**
  * Classe referente a base de regiões NCL.
@@ -13,9 +15,8 @@ import br.pensario.NCLIdentification;
  * @version 1.0
  */
 
-public class NCLRegionBase {
+public class NCLRegionBase extends NCLIdentifiableElement{
 
-	private String id;
 	private String device;
 	private NCLRegion parent_region;
 	
@@ -26,29 +27,10 @@ public class NCLRegionBase {
 	 * 
 	 * @param id
 	 */
-	public NCLRegionBase(String id) throws Exception{		
+	public NCLRegionBase(String id) throws NCLInvalidIdentifierException{		
 		setId(id);
 	}	
 	
-	/**
-	 * Retorna o identificador do elemento NCL
-	 * 
-	 * @return Identificador
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Atribui um novo identificador ao elemento NCL
-	 * 
-	 * @param id Identificador
-	 */
-	public void setId(String id) throws Exception{
-		NCLIdentification.validate(id);
-		this.id = id;
-	}
-
 	/**
 	 * Atribui o dispositivo de exibição para as regiões presentes na base
 	 * 

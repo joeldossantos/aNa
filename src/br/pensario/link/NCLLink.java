@@ -1,6 +1,6 @@
 package br.pensario.link;
 
-import br.pensario.NCLIdentifiable;
+import br.pensario.NCLIdentifiableElement;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -15,7 +15,7 @@ import br.pensario.node.NCLNode;
 /**
  * Classe representando o elemento link da linguagem NCL.
  */
-public class NCLLink extends NCLIdentifiable implements Comparable<NCLLink>{
+public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLink>{
 
 	private NCLCausalConnector xconnector;
 	
@@ -36,39 +36,7 @@ public class NCLLink extends NCLIdentifiable implements Comparable<NCLLink>{
 		addBind(bind1);
 		addBind(bind2);
 	}
-	
-	
-	/**
-	 * Determina o id do link.
-	 * 
-	 * @param id String com o id do link.
-	 * @throws IllegalArgumentException se o id for inválido.
-	 */
-	public void setId(String id) throws Exception {
-		setIdentification(id);
-	}
-	
-	
-	/**
-	 * Obtém o id do link.
-	 * 
-	 * @return String com o id do link.
-	 */
-	public String getId() {
-		return getIdentification();
-	}
-	
-	
-	/**
-	 * Verifica se o link possui um id.
-	 * 
-	 * @return True se o link possuir um id.
-	 */
-	public boolean hasId() {
-		return (getIdentification() != null);
-	}
-	
-	
+		
 	/**
 	 * Determina o conector utilizado pelo link.
 	 * 
@@ -284,7 +252,7 @@ public class NCLLink extends NCLIdentifiable implements Comparable<NCLLink>{
 	 */
 	public boolean equals(NCLLink link) {
 		// Link tem id? é diferente?
-		if (!hasId() || !link.hasId() || !getId().equals(link.getId()))
+		if (!getId().equals(link.getId()))
 			return false;
 		// The xconnector attributes are different
 		if (!getXconnector().equals(link.getXconnector()))
@@ -350,7 +318,7 @@ public class NCLLink extends NCLIdentifiable implements Comparable<NCLLink>{
 		
 		// <link> element and attributes declaration
 		content = space + "<link";
-		if (hasId())
+		if (getId()!=null)
 			content += " id='" + getId() + "'";
 		content += " xconnector='" + getXconnector().getId() + "'";
 		content += ">\n";

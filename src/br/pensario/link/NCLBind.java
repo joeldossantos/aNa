@@ -275,7 +275,7 @@ public class NCLBind implements Comparable<NCLBind>{
 		content += " role='" + getRole().getId().toString() + "'";
 		content += " component='" + getComponent().getId() + "'";
 		if (hasInterface())
-			content += " interface='" + getInterface().getIdentification() + "'";
+			content += " interface='" + getInterface().getId() + "'";
 		if (hasDescriptor())
 			content += " descriptor='" + getDescriptor().getId() + "'";
 		

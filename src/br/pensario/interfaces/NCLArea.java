@@ -1,5 +1,7 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLInvalidIdentifierException;
+
 
 /**
  * Classe representando o elemento area de NCL.
@@ -22,32 +24,10 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 	 * @param id id da âncora.
 	 * @throws IllegalArgumentException se o id for inválido.
 	 */
-	public NCLArea(String id) throws Exception {
-		setId(id);
+	public NCLArea(String id) throws NCLInvalidIdentifierException {
+		super.setId(id);
 	}
-	
-	
-	/**
-	 * Determina o id da âncora.
-	 * 
-	 * @param id id da âncora
-	 * @throws IllegalArgumentException se o id for inválido.
-	 */
-	public void setId(String id) throws Exception {
-		setIdentification(id);
-	}
-	
-	
-	/**
-	 * Obtém o id da âncora.
-	 * 
-	 * @return String com o id da âncora.
-	 */
-	public String getId() {
-		return getIdentification();
-	}
-	
-	
+			
 	/**
 	 * Define uma âncora de conteudo representando porções espaciais.
 	 * x1,y1,x2,y2,...,xN,yN
@@ -380,8 +360,7 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
 		space = "";
 		for (int i = 0; i < ident; i++)
 			space += "\t";
-		
-		
+				
 		// <area> element and attributes declaration
 		content = space + "<area";
 		content += " id='" + getId() + "'";

@@ -10,50 +10,19 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class NCLBody extends NCLIdentifiable {
+public class NCLBody extends NCLIdentifiableElement {
 
 	private Set<NCLPort> ports = new TreeSet<NCLPort>();
 	private Set<NCLProperty> properties = new TreeSet<NCLProperty>();
 	private Set<NCLNode> nodes = new TreeSet<NCLNode>();
-	private Set<NCLLink> links = new TreeSet<NCLLink>();
+	private Set<NCLLink> links = new TreeSet<NCLLink>();	
 	
+	public NCLBody() {}	
 	
-	public NCLBody() {
-		
+	public NCLBody(String id) throws NCLInvalidIdentifierException {
+		super.setId(id);
 	}
-	
-	
-	/**
-	 * Determina o id de um body.
-	 * 
-	 * @param id String com o id do body.
-	 * @throws IllegalArgumentException se o id for inválido.
-	 */
-	public void setId(String id) throws Exception {
-		setId(id);
-	}
-	
-	
-	/**
-	 * Obtém o id do body.
-	 * 
-	 * @return String com o id do body.
-	 */
-	public String getId() {
-		return getIdentification();
-	}
-	
-	
-	/**
-	 * Verifica se o body possui um id.
-	 * 
-	 * @return True se o body possuir um id.
-	 */
-	public boolean hasId() {
-		return (getIdentification() != null);
-	}
-	
-	
+			
 	/**
 	 * Adiciona uma porta ao body.
 	 * 
@@ -426,7 +395,7 @@ public class NCLBody extends NCLIdentifiable {
 		
 		// <body> element and attributes declaration
 		content = space + "<body";
-		if (hasId())
+		if (getId()!=null)
 			content += " id='" + getId() + "'";
 		content += ">\n";
 		
