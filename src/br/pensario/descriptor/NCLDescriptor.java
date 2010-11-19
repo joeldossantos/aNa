@@ -2,362 +2,488 @@ package br.pensario.descriptor;
 
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues;
+import br.pensario.NCLValues.NCLColor;
 import br.pensario.region.NCLRegion;
-
-public class NCLDescriptor extends NCLIdentifiableElement implements Comparable{
-
-	private String player;
-	private String explicitDur; 
-	
-	private Boolean freeze;
-
-	private NCLDescriptor moveLeft; 
-									
-	private NCLDescriptor moveRight;
-	private NCLDescriptor moveUp;
-	private NCLDescriptor moveDown;
-
-	private Integer focusIndex;
-	private NCLValues.NCLColor focusBorderColor;
-	private Integer focusBorderWidth;
-	private Integer focusBorderTransparency;
-	private String focusSrc;
-	private String focusSelSrc;
-
-	private NCLValues.NCLColor selBorderColor;
-
-	private NCLRegion region;
-	
-	/**
-	 * Construtor padrão
-	 * @param id Identificador do descritor
-	 * @throws Exception Caso o identificador não seja conformante com NCLIdentification.validate()
-	 */
-	public NCLDescriptor(String id) throws NCLInvalidIdentifierException
-	{		
-		super.setId(id);		
-	}	
-
-	/**
-	 * Identifica a ferramenta de apresentação utilizada
-	 * @param player Nome da ferramenta
-	 */
-	public void setPlayer(String player) {
-		this.player = player;
-	}
-
-	/**
-	 * Retorna qual ferramenta de apresentação é utilizada pelo descritor
-	 * @return Nome da ferramenta
-	 */
-	public String getPlayer() {
-		return player;
-	}
-
-	/**
-	 * Atribui uma duração ao descritor
-	 * @param explicitDur Duração
-	 */
-	//TODO - verificar se é um "timing"
-	public void setExplicitDur(String explicitDur) {
-		this.explicitDur = explicitDur;
-	}
-
-	/**
-	 * Retorna a duração do descritor
-	 * @return Duração
-	 */
-	public String getExplicitDur() {
-		return explicitDur;
-	}
-
-	/**
-	 * Indica se ???
-	 * @param freeze
-	 */
-	public void setFreeze(Boolean freeze) {
-		this.freeze = freeze;
-	}
-
-	/**
-	 * Indica se ???
-	 */
-	public Boolean isFreeze() {
-		return freeze;
-	}
-
-	/**
-	 * Atribui qual o próximo descritor para quando a seta para a esquerda for pressionada.
-	 * @param descriptor Descritor 
-	 */
-	public void setMoveLeft(NCLDescriptor descriptor) {
-		this.moveLeft = descriptor;
-	}
-	
-	/**
-	 * Retorna qual o próximo descritor de foco quando a seta para esquerda for pressionada
-	 * 
-	 * @return Descritor
-	 */
-
-	public NCLDescriptor getMoveLeft() {
-		return moveLeft;
-	}
-
-	/**
-	 * Retorna qual o próximo descritor de foco quando a seta para direitafor pressionada
-	 * 
-	 * @return Descritor
-	 */
-	
-	public NCLDescriptor getMoveRight() {
-		return moveRight;
-	}
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
-	/**
-	 * Atribui qual o próximo descritor para quando a seta para a direita for pressionada.
-	 * @param descriptor Descritor 
-	 */	
-	public void setMoveRight(NCLDescriptor descriptor) {
-		this.moveRight = descriptor;
-	}
+/**
+ * Esta classe define o elemento <i>descriptor</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define um descritor em um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ */
+public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<NCLDescriptor>{
 
-	/**
-	 * Retorna qual o próximo descritor de foco quando a seta para cima for pressionada
-	 * 
-	 * @return Descritor
-	 */
-	public NCLDescriptor getMoveUp() {
-		return moveUp;
-	}
+    private String player;
+    private Integer explicitDur;
+    private Boolean freeze;
+    private NCLDescriptor moveLeft;
+    private NCLDescriptor moveRight;
+    private NCLDescriptor moveUp;
+    private NCLDescriptor moveDown;
+    private Integer focusIndex;
+    private NCLColor focusBorderColor;
+    private Integer focusBorderWidth;
+    private Integer focusBorderTransparency;
+    private String focusSrc;
+    private String focusSelSrc;
+    private NCLColor selBorderColor;
+    private NCLRegion region;
 
 
-	/**
-	 * Atribui qual o próximo descritor para quando a seta para a cima for pressionada.
-	 * @param descriptor Descritor 
-	 */
-	
-	public void setMoveUp(NCLDescriptor descriptor) {
-		this.moveUp = descriptor;
-	}
+    /**
+     * Construtor do elemento <i>descriptor</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador do descritor.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador do descritor não for válido.
+     */
+    public NCLDescriptor(String id) throws NCLInvalidIdentifierException {        
+        setId(id);
+    }    
 
-	
-	/**
-	 * Retorna qual o próximo descritor de foco quando a seta para baixo for pressionada
-	 * 
-	 * @return Descritor
-	 */
-	public NCLDescriptor getMoveDown() {
-		return moveDown;
-	}
 
-	/**
-	 * Atribui qual o próximo descritor para quando a seta para baixo for pressionada.
-	 * @param descriptor Descritor 
-	 */	
-	public void setMoveDown(NCLDescriptor descriptor) {
-		this.moveDown = descriptor;
-	}	
-	
-	
-	/**
-	 * Retorna qual o índice de foco atribuído ao descritor
-	 * @return Inteiro relativo ao índice de foco
-	 */
-	public Integer getFocusIndex() {
-		return focusIndex;
-	}
+    /**
+     * Identifica o node da ferramenta de apresentação utilizada pelo descritor.
+     *
+     * @param player
+     *          nome da ferramenta a ser utilizada.
+     * @throws java.lang.IllegalArgumentException
+     *          se a String passada como parâmetro for vazia.
+     */
+    public void setPlayer(String player) throws IllegalArgumentException {
+        if (player != null && "".equals(player.trim()))
+            throw new IllegalArgumentException("Empty player String");
 
-	/**
-	 * Atribui um novo índice de foco para o descritor.
-	 * @param focusIndex Indice de foco
-	 */
-	public void setFocusIndex(Integer focusIndex) {
-		this.focusIndex = focusIndex;
-	}
+        this.player = player;
+    }
 
-	/**
-	 * Retorna qual a cor de borda utilizada pelo descritor quando este está em foco.
-	 * 
-	 * @return Cor
-	 */
-	
-	public NCLValues.NCLColor getFocusBorderColor() {
-		return focusBorderColor;
-	}
 
-	/**
-	 * Atribui a cor da borda do descritor quando este está em foco.
-	 * 
-	 * @param focusBorderColor Cor
-	 */
-	public void setFocusBorderColor(NCLValues.NCLColor focusBorderColor) {
-		this.focusBorderColor = focusBorderColor;
-	}
+    /**
+     * Retorna o node da ferramenta de apresentação utilizada pelo descritor.
+     *
+     * @return
+     *          String contendo o nome da ferramenta.
+     */
+    public String getPlayer() {
+        return player;
+    }
 
-	/**
-	 * Retorna a largura da borda que é apresentada quando o descritor está em foco 
-	 * @return Inteiro relativo a largura da borda em pixels
-	 */
-	public Integer getFocusBorderWidth() {
-		return focusBorderWidth;
-	}
 
-	/**
-	 * Artribui a largura da borda que é apresentada quando o descritor está em foco
-	 * @param focusBorderWidth Largura da borda
-	 */
-	public void setFocusBorderWidth(Integer focusBorderWidth) {
-		this.focusBorderWidth = focusBorderWidth;
-	}
+    /**
+     * Atribui uma duração explícita ao descritor.
+     *
+     * @param explicitDur
+     *          inteiro representando a duração a ser usada pelo descritor em segundos.
+     */
+    public void setExplicitDur(Integer explicitDur) {
+        this.explicitDur = explicitDur;
+    }
 
-	/**
-	 * Retorna a transparência da borda que é apresentada quando o descritor está em foco 
-	 * @return Percentagem relativa a transparência da borda
-	 */
-	public Integer getFocusBorderTransparency() {
-		return focusBorderTransparency;
-	}
 
-	/**
-	 * Atribui a transparência da borda que é apresentada quando o descritor está em foco
-	 * @param focusBorderTransparency Percentagem relativa a transparência da borda
-	 */
-	public void setFocusBorderTransparency(Integer focusBorderTransparency) {
-		this.focusBorderTransparency = focusBorderTransparency;
-	}
+    /**
+     * Retorna a duração explícita definida no descritor.
+     *
+     * @return
+     *          inteiro representando a duração definida no descritor em segundos.
+     */
+    public Integer getExplicitDur() {
+        return explicitDur;
+    }
 
-	/**
-	 * Retorna o conteúdo alternativo que é exibido quando o descritor está em foco 
-	 * @return Caminho do conteúdo alternativo
-	 */
-	public String getFocusSrc() {
-		return focusSrc;
-	}
 
-	/**
-	 * Atribui o conteúdo alternativo que é exibido quando o descritor está em foco
-	 * @param focusSrc Caminho do conteúdo alternativo
-	 */
-	public void setFocusSrc(String focusSrc) {
-		this.focusSrc = focusSrc;
-	}
+    /**
+     * Indica se o último quadro de uma mídia continuará sendo apresentando após seu fim.
+     * Este último quadro será apresentando até o fim da duração definida no descritor.
+     *
+     * @param freeze
+     *          booleano definindo se o último quadro deverá ser exibido continuamente.
+     */
+    public void setFreeze(Boolean freeze) {
+        this.freeze = freeze;
+    }
 
-	/**
-	 * Retorna o conteúdo alternativo que é exibido quando o descritor é selecionado
-	 * @return Caminho do conteúdo alternativo
-	 */	
-	public String getFocusSelSrc() {
-		return focusSelSrc;
-	}
 
-	/**
-	 * Atribui o conteúdo alternativo que é exibido quando o descritor é selecionado
-	 * @param focusSelSrc Caminho do conteúdo alternativo
-	 */
-	public void setFocusSelSrc(String focusSelSrc) {
-		this.focusSelSrc = focusSelSrc;
-	}
+    /**
+     * Retorna o valor do atributo freeze que indica se o último quadro de uma mídia
+     * continuará sendo apresentando após seu fim.
+     *
+     * @return
+     *          Verdadeiro se o último quadro deverá ser exibido continuamente.
+     */
+    public Boolean getFreeze() {
+        return freeze;
+    }
 
-	public NCLValues.NCLColor getSelBorderColor() {
-		return selBorderColor;
-	}
+    
+    /**
+     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
+     * a esquerda do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public void setMoveLeft(NCLDescriptor descriptor) {
+        this.moveLeft = descriptor;
+    }
 
-	/**
-	 * Atribui a cor da borda que é exibida quando o descritor é selecionado
-	 * @param selBorderColor Cor da borda
-	 */
-	public void setSelBorderColor(NCLValues.NCLColor selBorderColor) {
-		this.selBorderColor = selBorderColor;
-	}
 
-	/**
-	 * Atribui uma região ao descritor NCL
-	 * @param region Região NCL
-	 */
-	public void setRegion(NCLRegion region) {
-		this.region = region;
-	}
+    /**
+     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
+     * a esquerda do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @return
+     *          elemento representando o descritor que receberá foco.
+     */
+    public NCLDescriptor getMoveLeft() {
+        return moveLeft;
+    }
 
-	/**
-	 * Retorna a região NCL relacionada ao descritor NCL
-	 * @return Região NCL
-	 */
-	public NCLRegion getRegion() {
-		return region;
-	}
 
-	/**
-	 * Retorna a representação do elemento em XML.
-	 * @return Trecho XML referente ao elemento
-	 */
-	public String parse(int ident) {
+    /**
+     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
+     * a direita do controle remoto for pressionada e o foco estiver neste descritor.
+     * 
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public void setMoveRight(NCLDescriptor descriptor) {
+        this.moveRight = descriptor;
+    }
 
-		String space, content;
 
-		// Element indentation
-		space = "";
-		for (int i = 0; i < ident; i++)
-			space += "\t";
+    /**
+     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
+     * a direita do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public NCLDescriptor getMoveRight() {
+        return moveRight;
+    }
 
-		content = space + "<descriptor";
-		content += " id='" + getId() + "'";
-	
-		if (getRegion() != null)
-			content += " region='" + getRegion().getId() + "'";
 
-		if (getExplicitDur() != null)
-			content += " explicitDur='" + getExplicitDur() + "'";
+    /**
+     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
+     * cima do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public void setMoveUp(NCLDescriptor descriptor) {
+        this.moveUp = descriptor;
+    }
 
-		if (isFreeze() != null)
-			content += " freeze='" + isFreeze() + "'";
 
-		if (getPlayer() != null)
-			content += " player='" + getPlayer() + "'";
+    /**
+     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
+     * cima do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public NCLDescriptor getMoveUp() {
+        return moveUp;
+    }
 
-		if (getMoveLeft() != null)
-			content += " moveLeft='" + getMoveLeft().getId() + "'";
 
-		if (getMoveRight() != null)
-			content += " moveRight='" + getMoveRight().getId() + "'";
-		
-		if (getMoveDown() != null)
-			content += " moveDown='" + getMoveDown().getId() + "'";
-		
-		if (getMoveUp() != null)
-			content += " moveUp='" + getMoveUp().getId() + "'";
-		
-		if (getFocusIndex() != null)
-			content += " focusIndex='" + getFocusIndex() + "'";
+    /**
+     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
+     * baixo do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public void setMoveDown(NCLDescriptor descriptor) {
+        this.moveDown = descriptor;
+    }
 
-		if (getFocusBorderColor() != null)
-			content += " focusBorderColor='" + getFocusBorderColor() + "'";
+    
+    /**
+     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
+     * baixo do controle remoto for pressionada e o foco estiver neste descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor que receberá foco.
+     */
+    public NCLDescriptor getMoveDown() {
+        return moveDown;
+    }  
+    
+    
+    /**
+     * Atribui um índice de foco para o descritor.
+     *
+     * @param focusIndex
+     *          inteiro representando o índice de foco do descritor.
+     */
+    public void setFocusIndex(Integer focusIndex) {
+        this.focusIndex = focusIndex;
+    }
 
-		if (getFocusBorderWidth() != null)
-			content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
 
-		if (getFocusBorderTransparency() != null)
-			content += " focusBorderTransparency='" + getFocusBorderTransparency() + "'";
+    /**
+     * Retorna o índice de foco atribuído ao descritor.
+     *
+     * @return
+     *          inteiro representando o índice de foco do descritor.
+     */
+    public Integer getFocusIndex() {
+        return focusIndex;
+    }
 
-		if (getFocusSrc() != null)
-			content += " focusSrc='" + getFocusSrc() + "'";
-		
-		if (getFocusSelSrc() != null)
-			content += " focusSelSrc='" + getFocusSelSrc() + "'";
 
-		if (getSelBorderColor() != null)
-			content += " focusSelBorderColor='" + getSelBorderColor() + "'";
+    /**
+     * Atribui uma cor para a borda do descritor quando este está em foco.
+     *
+     * @param focusBorderColor
+     *          cor da borda do descritor.
+     */
+    public void setFocusBorderColor(NCLColor focusBorderColor) {
+        this.focusBorderColor = focusBorderColor;
+    }
 
-		
-		content += " />\n";
 
-		return content;
-	}
-	
-	public int compareTo(Object arg0) {
-		return getId().compareTo(((NCLDescriptor) arg0).getId());
-	}
+    /**
+     * Retorna a cor para a borda do descritor quando este está em foco utilizada.
+     * 
+     * @return
+     *          cor da borda do descritor.
+     */
+    public NCLColor getFocusBorderColor() {
+        return focusBorderColor;
+    }
+
+    
+    /**
+     * Artribui a largura da borda que é apresentada quando o descritor está em foco.
+     *
+     * @param focusBorderWidth
+     *          inteiro representando a largura da borda em pixels.
+     */
+    public void setFocusBorderWidth(Integer focusBorderWidth) {
+        this.focusBorderWidth = focusBorderWidth;
+    }
+
+
+    /**
+     * Retorna a largura da borda que é apresentada quando o descritor está em foco.
+     *
+     * @return
+     *          inteiro representando a largura da borda em pixels.
+     */
+    public Integer getFocusBorderWidth() {
+        return focusBorderWidth;
+    }
+
+
+    /**
+     * Atribui um grau de transparência à borda que é apresentada quando o descritor está em foco.
+     *
+     * @param focusBorderTransparency
+     *          inteiro representando a percentagem relativa a transparência da borda.
+     *          o inteiro deve estar no intervalo [0,100].
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor estiver fora do intervalo.
+     */
+    public void setFocusBorderTransparency(Integer focusBorderTransparency) throws IllegalArgumentException {
+        if (focusBorderTransparency != null && (focusBorderTransparency < 0 || focusBorderTransparency > 100))
+            throw new IllegalArgumentException("Ilegal value");
+
+        this.focusBorderTransparency = focusBorderTransparency;
+    }
+
+
+    /**
+     * Retorna o grau de transparência à borda que é apresentada quando o descritor está em foco.
+     *
+     * @return
+     *          inteiro representando a percentagem relativa a transparência da borda.
+     *          o inteiro está no intervalo [0,100].
+     */
+    public Integer getFocusBorderTransparency() {
+        return focusBorderTransparency;
+    }
+
+
+    /**
+     * Atribui a URI do conteúdo alternativo que é exibido quando o descritor está em foco.
+     *
+     * @param focusSrc
+     *          String contendo a URI do conteúdo alternativo.
+     * @throws java.net.URISyntaxException
+     *          se a URI não for válida.
+     *
+     * @see java.net.URI
+     */
+    public void setFocusSrc(String focusSrc) throws URISyntaxException {
+        if (focusSrc != null)
+            this.focusSrc = new URI(focusSrc).toString();
+
+        this.focusSrc = focusSrc;
+    }
+
+
+    /**
+     * Retorna a URI do conteúdo alternativo que é exibido quando o descritor está em foco.
+     *
+     * @return
+     *          String contendo a URI do conteúdo alternativo.
+     */
+    public String getFocusSrc() {
+        return focusSrc;
+    }
+
+
+    /**
+     * Atribui a URI do conteúdo alternativo que é exibido quando o descritor é selecionado.
+     *
+     * @param focusSelSrc
+     *          String contendo a URI do conteúdo alternativo.
+     * @throws java.net.URISyntaxException
+     *          se a URI não for válida (@see java.net.URI).
+     */
+    public void setFocusSelSrc(String focusSelSrc) throws URISyntaxException {
+        if (focusSelSrc != null)
+            this.focusSelSrc = new URI(focusSelSrc).toString();
+
+        this.focusSelSrc = focusSelSrc;
+    }
+
+
+    /**
+     * Retorna a URI do conteúdo alternativo que é exibido quando o descritor é selecionado.
+     *
+     * @return
+     *          String contendo a URI do conteúdo alternativo.
+     */    
+    public String getFocusSelSrc() {
+        return focusSelSrc;
+    }
+
+
+    /**
+     * Atribui a cor da borda que é exibida quando o descritor é selecionado.
+     *
+     * @param selBorderColor
+     *          cor da borda do descritor.
+     */
+    public void setSelBorderColor(NCLColor selBorderColor) {
+        this.selBorderColor = selBorderColor;
+    }
+
+
+    /**
+     * Retorna a cor da borda que é exibida quando o descritor é selecionado.
+     *
+     * @return
+     *          cor da borda do descritor.
+     */
+    public NCLColor getSelBorderColor() {
+        return selBorderColor;
+    }
+
+
+    /**
+     * Atribui uma região ao descritor.
+     *
+     * @param region
+     *          elemento representando uma região.
+     */
+    public void setRegion(NCLRegion region) {
+        this.region = region;
+    }
+
+
+    /**
+     * Retorna a região relacionada ao descritor.
+     *
+     * @return
+     *          elemento representando uma região.
+     */
+    public NCLRegion getRegion() {
+        return region;
+    }
+
+
+    public String parse(int ident) {
+        String space, content;
+
+        if (ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<descriptor";
+        content += " id='" + getId() + "'";
+    
+        if (getRegion() != null)
+            content += " region='" + getRegion().getId() + "'";
+
+        if (getExplicitDur() != null)
+            content += " explicitDur='" + getExplicitDur() + "s'";
+
+        if (getFreeze() != null)
+            content += " freeze='" + getFreeze().toString() + "'";
+
+        if (getPlayer() != null)
+            content += " player='" + getPlayer() + "'";
+
+        if (getMoveLeft() != null)
+            content += " moveLeft='" + getMoveLeft().getFocusIndex() + "'";
+
+        if (getMoveRight() != null)
+            content += " moveRight='" + getMoveRight().getFocusIndex() + "'";
+        
+        if (getMoveDown() != null)
+            content += " moveDown='" + getMoveDown().getFocusIndex() + "'";
+        
+        if (getMoveUp() != null)
+            content += " moveUp='" + getMoveUp().getFocusIndex() + "'";
+        
+        if (getFocusIndex() != null)
+            content += " focusIndex='" + getFocusIndex() + "'";
+
+        if (getFocusBorderColor() != null)
+            content += " focusBorderColor='" + getFocusBorderColor().toString() + "'";
+
+        if (getFocusBorderWidth() != null)
+            content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
+
+        if (getFocusBorderTransparency() != null)
+            content += " focusBorderTransparency='" + getFocusBorderTransparency() + "%'";
+
+        if (getFocusSrc() != null)
+            content += " focusSrc='" + getFocusSrc() + "'";
+        
+        if (getFocusSelSrc() != null)
+            content += " focusSelSrc='" + getFocusSelSrc() + "'";
+
+        if (getSelBorderColor() != null)
+            content += " focusSelBorderColor='" + getSelBorderColor().toString() + "'";
+
+        content += " />\n";
+
+        return content;
+    }
+
+
+    public int compareTo(NCLDescriptor other) {
+        return getId().compareTo(other.getId());
+    }
 
 }

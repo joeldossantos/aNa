@@ -1,11 +1,10 @@
 package br.pensario.connector;
 
-import br.pensario.ExistentElementException;
 import java.util.Set;
 
 import br.pensario.NCLValues.NCLActionOperator;
 
-public class NCLCompoundAction extends NCLAction{
+public class NCLCompoundAction extends NCLAction {
 
     private NCLActionOperator operator;
     
@@ -16,11 +15,8 @@ public class NCLCompoundAction extends NCLAction{
      * Atribui um operador para a ação composta NCL.
      * @param operator Operador NCL
      */
-    public void setOperator(NCLActionOperator operator) throws IllegalArgumentException{
-        if(operator!=null)
-            this.operator = operator;
-        else
-            throw new IllegalArgumentException("A ação composta não pode conter operador nulo");
+    public void setOperator(NCLActionOperator operator) {
+        this.operator = operator;
     }
     
     
@@ -39,9 +35,8 @@ public class NCLCompoundAction extends NCLAction{
      * @param action NCLAction Ação a ser adicionada 
      * @return Se a adição foi realizada
      */
-    public void addAction(NCLAction action) throws ExistentElementException {
-        if (!actions.add(action))
-            throw new ExistentElementException("action already exists");
+    public boolean addAction(NCLAction action) {
+        return actions.add(action);
     }
 
     
@@ -93,7 +88,7 @@ public class NCLCompoundAction extends NCLAction{
 
         content = space + "<compoundAction";
 
-        if(hasDelay())
+        if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";        
         
         content += ">\n";
@@ -112,4 +107,34 @@ public class NCLCompoundAction extends NCLAction{
     }
     
     
+    public boolean compareActions(NCLAction other) {
+        NCLCompoundAction cact = (NCLCompoundAction) other;
+        
+        for(NCLAction action : actions)
+            if(!cact.hasAction(action)) return false;
+        
+        return true;
+    }
+    
+    
+    public boolean equals(NCLAction other) {
+        //nao sao do mesmo tipo?
+        if (!(other instanceof NCLCompoundAction))
+            return false;
+        //tem o mesmo operador?
+        if (!((NCLCompoundAction) other).getOperator().toString().equals(operator.toString()))
+            return false;
+        if (!compareActions(other))
+            return false;
+        else
+            return true;
+    }
+    
+    
+    public int compareTo(NCLAction other) {
+        if (equals(other))
+            return 0;
+        else
+            return -1;
+    }
 }

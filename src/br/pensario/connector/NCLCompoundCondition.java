@@ -1,6 +1,5 @@
 package br.pensario.connector;
 
-import br.pensario.ExistentElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -38,9 +37,8 @@ public class NCLCompoundCondition extends NCLCondition {
      * @param condition Condição a ser adicionada 
      * @return Se a adição foi realizada
      */
-    public void addCondition(NCLCondition condition) throws ExistentElementException {
-        if(!conditions.add(condition))
-            throw new ExistentElementException("Condition already exists");
+    public boolean addCondition(NCLCondition condition) {
+        return conditions.add(condition);
     }
 
 
@@ -83,9 +81,8 @@ public class NCLCompoundCondition extends NCLCondition {
      * @param statement asertiva a ser adicionada 
      * @return Se a adição foi realizada
      */
-    public void addStatement(NCLStatement statement) throws ExistentElementException {
-        if(!statements.add(statement))
-            throw new ExistentElementException("Statement already exists");
+    public boolean addStatement(NCLStatement statement) {
+        return statements.add(statement);
     }
 
 
@@ -136,7 +133,7 @@ public class NCLCompoundCondition extends NCLCondition {
 
         content = space + "<compoundCondition";
 
-        if(hasDelay())
+        if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";        
         
         content += ">\n";
@@ -158,18 +155,34 @@ public class NCLCompoundCondition extends NCLCondition {
     }
 
 
-    public int compareTo(NCLCondition arg0) {        
-                
-        if(!(arg0 instanceof NCLCompoundCondition))
-            return -1;        
+    public boolean compareConditions(NCLCondition other) {
+        NCLCompoundCondition ccond = (NCLCompoundCondition) other;
         
-        NCLCompoundCondition ccond = (NCLCompoundCondition) arg0;        
+        for(NCLCondition condition : conditions)
+            if(!ccond.hasCondition(condition)) return false;
         
-        for(NCLCondition condition : conditions)        
-            if(!ccond.hasCondition(condition)) return -1;        
-        
-        if(ccond.compareTo(this) != 0 ) return -1;
-        
-        return 0;
-    }    
+        return true;
+    }
+    
+    
+    public boolean equals(NCLCondition other) {
+        //nao sao do mesmo tipo?
+        if (!(other instanceof NCLCompoundCondition))
+            return false;
+        //tem o mesmo operador?
+        if (!((NCLCompoundCondition) other).getOperator().toString().equals(operator.toString()))
+            return false;
+        if (!compareConditions(other))
+            return false;
+        else
+            return true;
+    }
+    
+    
+    public int compareTo(NCLCondition other) {
+        if (equals(other))
+            return 0;
+        else
+            return -1;
+    }
 }

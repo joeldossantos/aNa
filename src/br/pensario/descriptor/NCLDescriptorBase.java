@@ -4,112 +4,130 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
+
 
 /**
- * Classe referente a base de descritores NCL.
- * 
- * @author Wagner Schau
- * @since 24/09/2010
- * @version 1.0
+ * Esta classe define o elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define uma base de descritores de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
 public class NCLDescriptorBase extends NCLIdentifiableElement {
 
-	Set<NCLDescriptor> descriptors = new TreeSet<NCLDescriptor>();
+    Set<NCLDescriptor> descriptors = new TreeSet<NCLDescriptor>();
 
-	/**
-	 * Contrutor padrão vazio
-	 *
-	 */
-	public NCLDescriptorBase(){}
-	
-	/**
-	 * Contrutor padrão
-	 * 
-	 * @param id
-	 */
-	public NCLDescriptorBase(String id) throws NCLInvalidIdentifierException{
-		super.setId(id);		
-	}	
-		
-	/**
-	 * Adiciona um novo descritor à base de descritores
-	 * 
-	 * @param descriptor Descritor NCL a ser adicionado
-	 */
-	public boolean addDescriptor(NCLDescriptor descriptor) {
-		return descriptors.add(descriptor);
 
-	}
+    /**
+     * Adiciona um descritor à base de descritores.
+     * 
+     * @param descriptor
+     *          elemento representando o descritor a ser adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addDescriptor(NCLDescriptor descriptor) {
+        return descriptors.add(descriptor);
+    }
 
-	/**
-	 * Remove um descritor da base de descritores
-	 * 
-	 * @param descriptor Descritor NCL a ser removido
-	 */
-	public boolean removeDescriptor(NCLDescriptor descriptor) {
-		return descriptors.remove(descriptor);
-	}
 
-	/**
-	 * Indica se a base de descritores contém um determinado descritor NCL
-	 * 
-	 * @param descriptor Descritor NCL a ser buscado
-	 */
-	public boolean hasDescriptor(NCLDescriptor descriptor) {
-		return descriptors.contains(descriptor);
-	}
+    /**
+     * Remove um descritor da base de descritores.
+     *
+     * @param id
+     *          identificador do descritor a ser removido.
+     * @return
+     *          Verdadeiro se o descritor foi removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeDescriptor(String id) {
+        for (NCLDescriptor descriptor : descriptors){
+            if (descriptor.getId().equals(id))
+                return descriptors.remove(descriptor);
+        }
+        return false;
+    }
+    
 
-	/**
-	 * Indica se a base possui algum descritor NCL
-	 * 
-	 * @return Verdadeiro caso a base possua ao menos um Descritor NCL
-	 */
-	public boolean hasDescriptor() {
-		return descriptors.size() > 0;
-	}
+    /**
+     * Remove um descritor da base de descritores.
+     * 
+     * @param descriptor
+     *          elemento representando o descritor a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeDescriptor(NCLDescriptor descriptor) {
+        return descriptors.remove(descriptor);
+    }
 
-	/**
-	 * Retorna uma coleção iterável contendo os descritores NCL da base
-	 * 
-	 */
-	public Iterable<NCLDescriptor> getDescriptors() {
-		return descriptors;
-	}
 
-	/**
-	 * Retorna a representação do elemento em XML.
-	 * 
-	 * @return Trecho XML referente ao elemento
-	 */
-	public String parse(int ident) {
+    /**
+     * Verifica se a base de descritores contém um descritor.
+     * 
+     * @param descriptor
+     *          elemento representando o descritor a ser verificado.
+     */
+    public boolean hasDescriptor(NCLDescriptor descriptor) {
+        return descriptors.contains(descriptor);
+    }
 
-		String space, content;
 
-		// Element indentation
-		space = "";
-		for (int i = 0; i < ident; i++)
-			space += "\t";
+    /**
+     * Verifica se a base de descritores possui algum descritor.
+     * 
+     * @return
+     *          verdadeiro se a base de descritores possuir algum descritor.
+     */
+    public boolean hasDescriptor() {
+        return !descriptors.isEmpty();
+    }
 
-		content = space + "<descriptorBase ";
 
-		if (super.getId() != null)
-			content += " id='" + super.getId();
+    /**
+     * Retorna os descritores da base de descritores.
+     *
+     * @return
+     *          objeto Iterable contendo os descritores da base de descritores.
+     */
+    public Iterable<NCLDescriptor> getDescriptors() {
+        return descriptors;
+    }
 
-		content += "'>\n";
 
-		if (hasDescriptor())
+    public String parse(int ident) {
+        String space, content;
 
-			for (NCLDescriptor descriptor : getDescriptors())
-				content += descriptor.parse(ident + 1);
+        if (ident < 0)
+            ident = 0;
 
-		content += space + "<descriptorBase/>\n";
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
 
-		return content;
-	}
+        content = space + "<descriptorBase ";
 
-	public String toString() {
-		return parse(0);
-	}
+        if (getId() != null)
+            content += " id='" + getId();
+
+        content += "'>\n";
+
+        if (hasDescriptor()){
+            for (NCLDescriptor descriptor : descriptors)
+                content += descriptor.parse(ident + 1);
+        }
+
+        content += space + "<descriptorBase/>\n";
+
+        return content;
+    }
 
 }

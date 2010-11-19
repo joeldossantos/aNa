@@ -1,44 +1,13 @@
 package br.pensario.connector;
 
-import br.pensario.NCLIdentifiable;
+import br.pensario.NCLIdentifiableElement;
 import java.util.Set;
 import java.util.TreeSet;
 
 
-public class NCLConnectorBase extends NCLIdentifiable {
+public class NCLConnectorBase extends NCLIdentifiableElement {
 
     Set<NCLCausalConnector> connectors = new TreeSet<NCLCausalConnector>();
-    
-    
-    /**
-     * Atribui um id à base de conetores.
-     * 
-     * @param id String Identificador (compatível com NCLIdentification).
-     * @throws IllegalArgumentException Se o id for inválido.
-     */
-    public void setId(String id) throws Exception {
-        setIdentification(id);
-    }
-    
-    
-    /**
-     * Retorna o id da base de conectores.
-     * 
-     * @return id da base.
-     */
-    public String getId() {
-        return getIdentification();
-    }
-    
-    
-    /**
-     * Verifica se a base de conectores possui um id.
-     * 
-     * @return Verdadeiro caso a base possua um id.
-     */
-    public boolean hasId() {
-        return (getIdentification() != null);
-    }
     
     
     /**

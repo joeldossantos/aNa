@@ -1,17 +1,35 @@
 package br.pensario.connector;
 
-public abstract class NCLAction {
+import br.pensario.NCLElement;
 
-    private int delay = -1;    
+
+/**
+ * Esta classe define uma ação de um conector da <i>Nested Context Language</i> (NCL).<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
+public abstract class NCLAction extends NCLElement implements Comparable<NCLAction> {
+
+    private Integer delay;    
     
     
     /**
-     * Atribui um atraso à condição.
+     * Atribui um atraso à ação.
      * 
-     * @param delay int de atraso, em segundos.
+     * @param delay
+     *          inteiro contendo o atraso, em segundos.
+     * @throws java.lang.IllegalArgumentException
+     *          se o inteiro for negativo.
      */
-    public void setDelay(int delay) throws IllegalArgumentException {
-        if (delay < 0)
+    public void setDelay(Integer delay) throws IllegalArgumentException {
+        if (delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
         
         this.delay = delay;
@@ -19,24 +37,12 @@ public abstract class NCLAction {
     
     
     /**
-     * Retorna o atraso em relação a condição
-     * @return String Atraso em milisegundos
+     * Retorna o atraso atribuido à ação.
+     *
+     * @return
+     *          inteiro contendo o atraso, em segundos.
      */
-    public int getDelay() {
+    public Integer getDelay() {
         return delay;
     }
-    
-    
-    /**
-     * Verifica se a condição tem um delay.
-     * 
-     * @return Verdadeiro se possuir delay.
-     */
-    public boolean hasDelay() {
-        return (delay != -1);
-    }
-    
-    
-    public abstract String parse(int ident);
-    public abstract String toString();
 }

@@ -1,14 +1,12 @@
 package br.pensario.connector;
 
 
-import br.pensario.ExistentElementException;
-import br.pensario.InvalidIdentifierException;
-import br.pensario.NCLIdentifiable;
+import br.pensario.NCLIdentifiableElement;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class NCLCausalConnector extends NCLIdentifiable implements Comparable<NCLCausalConnector> {
+public class NCLCausalConnector extends NCLIdentifiableElement implements Comparable<NCLCausalConnector> {
 
     private NCLCondition condition;
     private NCLAction action;
@@ -26,37 +24,12 @@ public class NCLCausalConnector extends NCLIdentifiable implements Comparable<NC
     
     
     /**
-     * Atribui um id ao conector causal NCL.
-     * 
-     * @param id String Identificador (compatível com NCLIdentification).
-     * @throws IllegalArgumentException Se o id for inválido.
-     */    
-    public void setId(String id) throws Exception{
-        setIdentification(id);
-    }
-    
-    
-    /**
-     * Retorna o identificador do elemento NCL.
-     * 
-     * @return Identificador
-     */    
-    public String getId() {
-        return getIdentification();
-    }
-
-    
-    /**
      * Atribui uma condição ao conector causal NCL.
      * 
      * @param condition NCLCondition Condição NCL.
-     * @throws IllegalArgumentException Se a condição for nula.
      */    
-    public void setCondition(NCLCondition condition) throws IllegalArgumentException{
-        if(condition!=null)
-            this.condition = condition;
-        else
-            throw new IllegalArgumentException("O conector causal não pode conter condição nula");
+    public void setCondition(NCLCondition condition) {
+        this.condition = condition;
     }
     
     
@@ -74,13 +47,9 @@ public class NCLCausalConnector extends NCLIdentifiable implements Comparable<NC
      * Atribui uma ação ao conector causal NCL.
      * 
      * @param action NCLAction Ação NCL.
-     * @throws IllegalArgumentException Se a ação for nula.
      */    
     public void setAction(NCLAction action) {
-        if(action != null)
-            this.action = action;
-        else
-            throw new IllegalArgumentException("O conector causal não pode conter ação nula");
+        this.action = action;
     }
     
     
@@ -99,11 +68,10 @@ public class NCLCausalConnector extends NCLIdentifiable implements Comparable<NC
      * 
      * @param param NCLConnectorParam Parâmetro a ser adicionado.
      */    
-    public void addConnectorParam(String name) throws InvalidIdentifierException, ExistentElementException {
+    public boolean addConnectorParam(String name) throws Exception {
         NCLConnectorParam param = new NCLConnectorParam(name);
         
-        if(!conn_params.add(param))
-            throw new ExistentElementException("Param already exists");
+        return conn_params.add(param);
     }
     
     
@@ -128,16 +96,18 @@ public class NCLCausalConnector extends NCLIdentifiable implements Comparable<NC
      * 
      * @param nome String Nome do parâmetro a ser removido.
      */    
-    public void removeConnectorParam(String nome) {
+    public boolean removeConnectorParam(String nome) {
 
         Iterator<NCLConnectorParam> it = conn_params.iterator();
 
         while (it.hasNext()) {
             NCLConnectorParam connp = it.next();
-            if (connp.getName().equals(nome))
+            if (connp.getName().equals(nome)){
                 it.remove();
+                return true;
+            }
         }
-        
+        return false;
     }
 
     

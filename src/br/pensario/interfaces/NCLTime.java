@@ -1,422 +1,335 @@
 package br.pensario.interfaces;
 
+
 /**
- * Indicado de tempo definido de acordo com a norma NCL.
- * O indicador pode ter um dos seguintes formatos:
- *    - ano:mês:dia:hora:minuto:segundo.fração
- *    - hora:minuto:segundo.fração
- *    - segundo.fração
- *    - segundos
+ * Esta classe define um indicador temporal da <i>Nested Context Language</i> (NCL).<br>
+ * O indicador pode ter um dos seguintes formatos:<br>
+ *    - ano:mês:dia:hora:minuto:segundo.fração<br>
+ *    - hora:minuto:segundo.fração<br>
+ *    - segundo.fração<br>
+ *    - segundos<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
 public class NCLTime {
 
-	private int year = -1;
-	private int month = -1;
-	private int day = -1;
-	private int hour = -1;
-	private int minute = -1;
-	private int second = -1;
-	private int fraction = -1;
-	
-	private boolean absoluteSecond = false;
-	
-	
-	/**
-	 * Construtor do indicador de tempo possuindo ano, mês, dia, hora, minuto, segundo e fração.
-	 * 
-	 * @param year Inteiro com o valor de ano.
-	 * @param month Inteiro com o valor de mês.
-	 * @param day Inteiro com o valor de dia.
-	 * @param hour Inteiro com o valor de hora.
-	 * @param minute Inteiro com o valor de minuto.
-	 * @param second Inteiro com o valor de segundo.
-	 * @param fraction Inteiro com o valor das frações de segundo.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public NCLTime(int year, int month, int day, int hour, int minute, int second, int fraction) throws Exception {
-		setYear(year);
-		setMonth(month);
-		setDay(day);
-		setHour(hour);
-		setMinute(minute);
-		setSecond(second);
-		setFraction(fraction);
-	}
-	
-	
-	/**
-	 * Construtor do indicador de tempo possuindo hora, minuto, segundo e fração.
-	 * 
-	 * @param hour Inteiro com o valor de hora.
-	 * @param minute Inteiro com o valor de minuto.
-	 * @param second Inteiro com o valor de segundo.
-	 * @param fraction Inteiro com o valor das frações de segundo.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public NCLTime(int hour, int minute, int second, int fraction) throws Exception {
-		setHour(hour);
-		setMinute(minute);
-		setSecond(second);
-		setFraction(fraction);
-	}
-	
-	
-	/**
-	 * Construtor do indicador de tempo possuindo segundo e fração.
-	 * 
-	 * @param second Inteiro que determina o valor em segundos.
-	 * @param fraction Inteiro que determina as frações de segundo.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public NCLTime(int second, int fraction) throws Exception {
-		absoluteSecond = true;
-		setSecond(second);
-		setFraction(fraction);
-	}
-	
-	
-	/**
-	 * Construtor do indicador de tempo que só possui segundo.
-	 * 
-	 * @param second Inteiro que determina o valor em segundos.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public NCLTime(int second) throws Exception {
-		absoluteSecond = true;
-		setSecond(second);
-	}
-	
-	
-	/**
-	 * Determina a parte de ano do indicador de tempo.
-	 * 
-	 * @param year Inteiro que determina o valor da parte de ano.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setYear(int year) throws Exception {
-		if (year >= 0){
-			this.year = year;
-			absoluteSecond = false;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid year");
-			throw ex;
-		}
-	}
-	
-	
-	/**
-	 * Obtém a parte de ano do indicador de tempo.
-	 * 
-	 * @return Inteiro com o ano.
-	 */
-	public int getYear() {
-		return year;
-	}
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de ano.
-	 * 
-	 * @return True se o indicador possui ano.
-	 */
-	public boolean hasYear() {
-		return (year != -1);
-	}
-	
-	
-	/**
-	 * Determina a parte de mês do indicador de tempo.
-	 * 
-	 * @param month Inteiro que determina o valor da parte de mês.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setMonth(int month) throws Exception {
-		if (month >= 1 && month <= 12){
-			this.month = month;
-			absoluteSecond = false;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid month");
-			throw ex;
-		}
-	}
-	
-	
-	/**
-	 * Obtém a parte de mês do indicador de tempo.
-	 * 
-	 * @return Inteiro com o mês.
-	 */
-	public int getMonth() {
-		return month;
-	}
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de mês.
-	 * 
-	 * @return True se o indicador possui mês.
-	 */
-	public boolean hasMonth() {
-		return (month != -1);
-	}
-	
-	
-	/**
-	 * Determina a parte de dia do indicador de tempo.
-	 * 
-	 * @param day Inteiro que determina o valor da parte de dia.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setDay(int day) throws Exception {
-		if (day >= 1 && day <= 31){
-			this.day = day;
-			absoluteSecond = false;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid day");
-			throw ex;
-		}
-	}
-	
-	
-	/**
-	 * Obtém a parte de dia do indicador de tempo.
-	 * 
-	 * @return Inteiro com o dia.
-	 */
-	public int getDay() {
-		return day;
-	}
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de dia.
-	 * 
-	 * @return True se o indicador possui dia.
-	 */
-	public boolean hasDay() {
-		return (day != -1);
-	}
-	
-	
-	/**
-	 * Determina a parte de hora do indicador de tempo.
-	 * 
-	 * @param hour Inteiro que determina o valor da parte de hora.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setHour(int hour) throws Exception {
-		if (hour >= 0 && (!hasDay() || hour <= 23)){
-			this.hour = hour;
-			absoluteSecond = false;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid hour");
-			throw ex;
-		}
-	}
-	
-	
-	/**
-	 * Obtém a parte de hora do indicador de tempo.
-	 * 
-	 * @return Inteiro com a hora.
-	 */
-	public int getHour() {
-		return hour;
-	}
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de hora.
-	 * 
-	 * @return True se o indicador possui hora.
-	 */
-	public boolean hasHour() {
-		return (hour != -1);
-	}
-	
-	
-	/**
-	 * Determina a parte de minuto do indicador de tempo.
-	 * 
-	 * @param minute Inteiro que determina o valor da parte de minuto.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setMinute(int minute) throws Exception {
-		if (minute >= 0 && minute <= 59){
-			this.minute = minute;
-			absoluteSecond = false;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid minute");
-			throw ex;
-		}
-	}
-	
-	
-	/**
-	 * Obtém a parte de minuto do indicador de tempo.
-	 * 
-	 * @return Inteiro com o minuto.
-	 */
-	public int getMinute() {
-		return minute;
-	}
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de minuto.
-	 * 
-	 * @return True se o indicador possui minuto.
-	 */
-	public boolean hasMinute() {
-		return (minute != -1);
-	}
-	
-	
-	/**
-	 * Determina a parte de segundo do indicador de tempo.
-	 * 
-	 * @param second Inteiro que determina o valor da parte de segundo.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setSecond(int second) throws Exception {
-		if (second >= 0 && (absoluteSecond || second <= 59)){
-			this.second = second;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid second");
-			throw ex;
-		}
-	}
-	
-	
-	/**
-	 * Obtém a parte de segundo do indicador de tempo.
-	 * 
-	 * @return Inteiro com o segundo.
-	 */
-	public int getSecond() {
-		return second;
-	}
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de segundo.
-	 * 
-	 * @return True se o indicador possui segundo.
-	 */
-	public boolean hasSecond() {
-		return (second != -1);
-	}
-	
-	
-	
-	/**
-	 * Determina a parte de fração do indicador de tempo.
-	 * 
-	 * @param fraction Inteiro que determina o valor da parte de fração.
-	 * @throws IllegalArgumentException se o valor não estiver no formato definido pela norma.
-	 */
-	public void setFraction(int fraction) throws Exception {
-		if (fraction >= 0){
-			this.fraction = fraction;
-		}
-		else{
-			Exception ex = new IllegalArgumentException("Invalid fraction");
-			throw ex;
-		}
-	}
-	
-	
-	
-	/**
-	 * Obtém a parte de fração do indicador de tempo.
-	 * 
-	 * @return Inteiro com a fração.
-	 */
-	public int getFraction() {
-		return fraction;
-	}
-	
-	
-	
-	/**
-	 * Verifica se o indicador de tempo tem a parte de fração.
-	 * 
-	 * @return True se o indicador possui fração.
-	 */
-	public boolean hasFraction() {
-		return (fraction != -1);
-	}
-	
-	
-	
-	/**
-	 * Verifica se o indicador de tempo está no formato UTC (ano:mês:dia:hora:minuto:segundo:fração).
-	 * 
-	 * @return True se o indicador estiver no formato UTC.
-	 */
-	public boolean isUTC() {
-		if (hasYear() && hasMonth() && hasDay() && hasHour() && hasMinute() && hasSecond() && hasFraction())
-			return true;
-		else
-			return false;
-	}
-	
-	
-	
-	/**
-	 * Compara dois indicadores de tempo.
-	 * 
-	 * @param time Indicador de tempo com o qual comparar.
-	 * @return True se os indicadores forem iguais.
-	 */
-	public boolean equals(NCLTime time) {
-		if (!hasYear() || !time.hasYear() || getYear() != time.getYear())
-			return false;
-		if (!hasMonth() || !time.hasMonth() || getMonth() != time.getMonth())
-			return false;
-		if (!hasDay() || !time.hasDay() || getDay() != time.getDay())
-			return false;
-		if (!hasHour() || !time.hasHour() || getHour() != time.getHour())
-			return false;
-		if (!hasMinute() || !time.hasMinute() || getMinute() != time.getMinute())
-			return false;
-		if (!hasSecond() || !time.hasSecond() || getSecond() != time.getSecond())
-			return false;
-		if (!hasFraction() || !time.hasFraction() || getFraction() != time.getFraction())
-			return false;
-		else
-			return true;
-	}
-	
-	
-	
-	/**
-	 * Retorna o indicador de tempo em uma string de acordo com o formato especificado na norma NCL.
-	 * 
-	 * @return String representando o indicador de tempo.
-	 */
-	public String toString() {
-		if (hasSecond()){
-			if (hasFraction()){
-				if (hasHour() && hasMinute()){
-					if (hasYear() && hasMonth() && hasDay()){
-						return year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + "." + fraction;
-					}
-					else
-						return hour + ":" +	minute + ":" + second + "." + fraction;
-				}
-				else
-					return second + "." + fraction + "s";
-			}
-			else
-				return second + "s";
-		}
-		return null;
-	}
+    private Integer year;
+    private Integer month;
+    private Integer day;
+    private Integer hour;
+    private Integer minute;
+    private Integer second;
+    private Integer fraction;
+    
+    
+    /**
+     * Construtor do indicador temporal da <i>Nested Context Language</i> (NCL).
+     * 
+     * @param year
+     *          inteiro com o valor de ano.
+     * @param month
+     *          inteiro com o valor de mês.
+     * @param day
+     *          inteiro com o valor de dia.
+     * @param hour
+     *          inteiro com o valor de hora.
+     * @param minute
+     *          inteiro com o valor de minuto.
+     * @param second
+     *          inteiro com o valor de segundo.
+     * @param fraction
+     *          inteiro com o valor das frações de segundo.
+     * @throws java.lang.IllegalArgumentException
+     *          se algum valor não estiver no formato definido pela norma.
+     *
+     * @see NCLTime#setYear
+     * @see NCLTime#setMonth
+     * @see NCLTime#setDay
+     * @see NCLTime#setHour
+     * @see NCLTime#setMinute
+     * @see NCLTime#setSecond
+     * @see NCLTime#setFraction
+     */
+    public NCLTime(int year, int month, int day, int hour, int minute, int second, int fraction) throws IllegalArgumentException {
+        setYear(year);
+        setMonth(month);
+        setDay(day);
+        setHour(hour);
+        setMinute(minute);
+        setSecond(second);
+        setFraction(fraction);
+    }
+    
+    
+    /**
+     * Construtor do indicador temporal da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLTime(int second) {
+    }
+    
+    
+    /**
+     * Atribui um valor de ano ao indicador temporal.
+     * 
+     * @param year
+     *          inteiro que determina o valor da parte de ano. Deve ser um inteiro positivo.
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setYear(Integer year) throws IllegalArgumentException {
+        if (year != null && year < 0)
+            throw new IllegalArgumentException("Invalid year");
+
+        this.year = year;
+    }
+    
+    
+    /**
+     * Retorna o valor de ano do indicador temporal.
+     * 
+     * @return
+     *          inteiro que determina o valor da parte de ano.
+     */
+    public Integer getYear() {
+        return year;
+    }
+    
+    
+    /**
+     * Atribui um valor de mês ao indicador temporal.
+     * 
+     * @param month
+     *          Inteiro que determina o valor da parte de mês. Deve ser um inteiro no intervalo [1,12].
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setMonth(Integer month) throws IllegalArgumentException {
+        if (month != null && !(month >= 1 && month <= 12))
+            throw new IllegalArgumentException("Invalid month");
+
+        this.month = month;
+    }
+    
+    
+    /**
+     * Retorna o valor de mês do indicador temporal.
+     * 
+     * @return
+     *          Inteiro que determina o valor da parte de mês.
+     */
+    public Integer getMonth() {
+        return month;
+    }
+    
+    
+    /**
+     * Atribui um valor de dia ao indicador temporal.
+     * 
+     * @param day
+     *          inteiro que determina o valor da parte de dia. Deve ser um inteiro no intervalo [1,31].
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setDay(Integer day) throws IllegalArgumentException {
+        if (day != null && !(day >= 1 && day <= 31))
+            throw new IllegalArgumentException("Invalid day");
+
+        this.day = day;
+    }
+    
+    
+    /**
+     * Retorna o valor de dia do indicador temporal.
+     * 
+     * @return
+     *          Inteiro que determina o valor da parte de dia.
+     */
+    public Integer getDay() {
+        return day;
+    }
+    
+    
+    /**
+     * Atribui um valor de hora ao indicador temporal.
+     *
+     * @param hour
+     *          inteiro que determina o valor da parte de hora.
+     *          Deve ser um inteiro no intervalo [0,23], caso hava um valor de dia,
+     *          ou um inteiro positivo, caso contrário.
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setHour(Integer hour) throws IllegalArgumentException {
+        if (hour != null && !(hour >= 0 && (absoluteHour() || hour <= 23)))
+            throw new IllegalArgumentException("Invalid hour");
+
+        this.hour = hour;
+    }
+    
+    
+    /**
+     * Retorna o valor de hora do indicador temporal.
+     *
+     * @return
+     *          Inteiro que determina o valor da parte de hora.
+     */
+    public Integer getHour() {
+        return hour;
+    }
+
+
+    /**
+     * Atribui um valor de minuto ao indicador temporal.
+     *
+     * @param minute
+     *          inteiro que determina o valor da parte de minuto. Deve ser um inteiro no intervalo [0,59].
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setMinute(Integer minute) throws IllegalArgumentException {
+        if (minute != null && !(minute >= 0 && minute <= 59))
+            throw new IllegalArgumentException("Invalid minute");
+
+        this.minute = minute;
+    }
+    
+    
+    /**
+     * Retorna o valor de minuto do indicador temporal.
+     *
+     * @return
+     *          Inteiro que determina o valor da parte de minuto.
+     */
+    public Integer getMinute() {
+        return minute;
+    }
+    
+    
+    /**
+     * Atribui um valor de segundo ao indicador temporal.
+     *
+     * @param second
+     *          inteiro que determina o valor da parte de segundo.
+     *          Deve ser um inteiro no intervalo [0,59], caso hava um valor de minuto,
+     *          ou um inteiro positivo, caso contrário.
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setSecond(Integer second) throws IllegalArgumentException {
+        if (second != null && !(second >= 0 && (absoluteSecond() || second <= 59)))
+            throw new IllegalArgumentException("Invalid second");
+
+        this.second = second;
+    }
+    
+    
+    /**
+     * Retorna o valor de segundo do indicador temporal.
+     *
+     * @return
+     *          Inteiro que determina o valor da parte de segundo.
+     */
+    public Integer getSecond() {
+        return second;
+    }
+    
+    
+    /**
+     * Atribui um valor de fração de segundo ao indicador temporal.
+     *
+     * @param fraction
+     *          inteiro que determina o valor da parte de fração de segundo. Deve ser um inteiro positivo.
+     * @throws java.lang.IllegalArgumentException
+     *          se o valor não estiver no formato definido pela norma.
+     */
+    public void setFraction(Integer fraction) throws IllegalArgumentException {
+        if (fraction != null && fraction < 0)
+            throw new IllegalArgumentException("Invalid fraction");
+
+        this.fraction = fraction;
+    }
+    
+    
+    
+    /**
+     * Retorna o valor de fração de segundo do indicador temporal.
+     *
+     * @return
+     *          Inteiro que determina o valor da parte de fração de segundo.
+     */
+    public Integer getFraction() {
+        return fraction;
+    }
+    
+    
+    
+    /**
+     * Verifica se o indicador temporal está no formato UTC (ano:mês:dia:hora:minuto:segundo:fração).
+     * 
+     * @return
+     *          verdadeiro se o indicador estiver no formato UTC.
+     */
+    public boolean isUTC() {
+        if (getYear() != null && getMonth() != null && getDay() != null &&
+                getHour() != null && getMinute() != null && getSecond() != null && getFraction()!= null)
+            return true;
+        else
+            return false;
+    }
+
+
+    private boolean absoluteHour() {
+        if (getYear() == null && getMonth() == null && getDay() == null)
+            return true;
+        else
+            return false;
+    }
+
+
+    private boolean absoluteSecond() {
+        if (getYear() == null && getMonth() == null && getDay() == null &&
+                getHour() == null && getMinute() == null)
+            return true;
+        else
+            return false;
+    }
+    
+    
+    public String toString() {
+        if (getSecond() != null){
+            if (getFraction() != null){
+                if (getHour() != null && getMinute() != null){
+                    if (getYear() != null && getMonth() != null && getDay() != null){
+                        return year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + "." + fraction;
+                    }
+                    else
+                        return hour + ":" +    minute + ":" + second + "." + fraction;
+                }
+                else
+                    return second + "." + fraction + "s";
+            }
+            else
+                return second + "s";
+        }
+        return null;
+    }
+
+
+    public int compareTo(NCLTime other) {
+        String this_time = toString();
+        String other_time = other.toString();
+
+        if (this_time == null) this_time = "";
+        if (other_time == null) other_time = "";
+
+        return this_time.compareTo(other_time);
+    }
+
 }

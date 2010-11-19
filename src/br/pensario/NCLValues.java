@@ -1,10 +1,24 @@
 package br.pensario;
 
+
+/**
+ * Esta classe representa valores padronizados para atributos de elementos da
+ * <i>Nested Context Language</i> (NCL).<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public abstract class NCLValues {
 
 
     /**
-     * NCL Namespace Values
+     * Valores padronizados de Namespace do documento NCL (atributo <i>xmlns</i>.
      */
     public enum NCLNamespace {
         
@@ -20,7 +34,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Logical operators
+     * Operadores lógicos da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLOperator {
         
@@ -35,7 +49,7 @@ public abstract class NCLValues {
 
 
     /**
-     * NCL logical comparators
+     * Operadores de comparação da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLComparator {
         
@@ -54,7 +68,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Colors
+     * Cores definidas pela <i>Nested Context Language</i> (NCL).
      */
     public enum NCLColor {
         
@@ -83,7 +97,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL CompoundCondition Operator
+     * Operadores lógicos para condições compostas da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLConditionOperator {
         
@@ -98,7 +112,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL CompoundAction Operator
+     * Operadores lógicos para ações compostas da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLActionOperator {
         
@@ -113,7 +127,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL media Mime Type
+     * Mime Types dos elementos <i>media</i> da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLMimeType {
         
@@ -145,7 +159,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL System Variables name. Simple variables only
+     * Nomes das variáveis de sistema (que não tem argumento) da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLSystemVariable {
 
@@ -191,7 +205,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL System Variables name
+     * Nomes das variáveis de sistema (com argumento) da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLArgSystemVariable {
 
@@ -211,7 +225,8 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Area Sample type
+     * Tipos de amostra definidos paro o atributo <i>first</i> e <i>last</i> do
+     * elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLSampleType {
 
@@ -220,7 +235,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Default roles for simple conditions
+     * Papéis padronizados para condições da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLDefaultConditionRole {
         
@@ -241,7 +256,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Default roles for simple actions
+     * Papéis padronizados para ações da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLDefaultActionRole {
         
@@ -260,8 +275,9 @@ public abstract class NCLValues {
 
     
     /**
-    * NCL URIs
-    */
+     * Tipos de URI definidas para o atributo <i>src</i> do elemento
+     * <i>media</i> da <i>Nested Context Language</i> (NCL).
+     */
     public enum NCLUriType {
 
         FILE("file://"),
@@ -280,7 +296,7 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Keys
+     * Teclas do controle remoto definidas pela <i>Nested Context Language</i> (NCL).
      */
     public enum NCLKey {
 
@@ -356,7 +372,7 @@ public abstract class NCLValues {
 
 
     /**
-     * NCL Event types used in connectors
+     * Tipos de eventos de uma mídia da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLEventType {
 
@@ -372,7 +388,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL Event transitions used in connectors
+     * Transições dos estados dos eventos de uma mídia da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLEventTransition {
 
@@ -390,7 +406,8 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL Event actions used in connectors
+     * Ações possíveis de serem realizadas sobre máquinas de estados de uma
+     * mídia da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLEventAction {
 
@@ -408,7 +425,8 @@ public abstract class NCLValues {
 
     
     /**
-     * NCL Assessment Statement Attribute values
+     * Valores do atributo <i>attributeType</i> do elemento
+     * <i>attributeAssessment</i> da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLAttributeType {
 
@@ -425,7 +443,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL Value Assessment default values
+     * Valores padronizados para o elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLDefaultValueAssessment {
 
@@ -441,7 +459,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL reuse feature instance type.
+     * Tipos de instância usados no reúso de elementos da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLInstanceType {
         
@@ -457,7 +475,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL transition type.
+     * Tipos de transições da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLTransitionType {
         
@@ -475,7 +493,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL transition subtype.
+     * Subtipos de transições da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLTransitionSubtype {
         
@@ -509,7 +527,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL transition type.
+     * Direção de uma transição da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLTransitionDirection {
         
@@ -524,7 +542,7 @@ public abstract class NCLValues {
     
     
     /**
-     * NCL Attributes used in the descriptor parameters
+     * Atributos de uma mídia (podem ser parametrizados pelo descritor) da <i>Nested Context Language</i> (NCL).
      */
     public enum NCLAttributes {
 

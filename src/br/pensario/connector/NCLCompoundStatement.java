@@ -1,6 +1,5 @@
 package br.pensario.connector;
 
-import br.pensario.ExistentElementException;
 import br.pensario.NCLValues.NCLOperator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,13 +27,8 @@ public class NCLCompoundStatement extends NCLStatement {
      * Determina o operador da compoundStatement.
      * 
      * @param operator operador a ser utilizado.
-     * @throws java.lang.NullPointerException se o operador for nulo.
      */
-    public void setOperator(NCLOperator operator) throws NullPointerException {
-        if (operator == null)
-            throw new NullPointerException("null operator");
-        
-        
+    public void setOperator(NCLOperator operator) {
         this.operator = operator;
     }
     
@@ -54,7 +48,7 @@ public class NCLCompoundStatement extends NCLStatement {
      * 
      * @param isNegated valor a ser utilizado.
      */
-    public void setIsNegated(boolean isNegated) {
+    public void setIsNegated(Boolean isNegated) {
         this.isNegated = isNegated;
     }
     
@@ -70,24 +64,13 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Verifica se o compoundStatement possui atributo isNegated.
-     * 
-     * @return Verdadeiro se possuir.
-     */
-    public boolean hasIsNegated() {
-        return (isNegated != null);
-    }
-    
-    
-    /**
      * Adiciona um NCLStatement ao compoundStatement.
      * 
      * @param statement NCLStatement a ser adicionado.
      * @throws br.pensario.ExistentElementException se o elemento adicionado já existir.
      */
-    public void addStatement(NCLStatement statement) throws ExistentElementException {
-        if (!statements.add(statement))
-            throw new ExistentElementException("statement already exists");
+    public boolean addStatement(NCLStatement statement) {
+        return statements.add(statement);
     }
     
     
@@ -97,9 +80,8 @@ public class NCLCompoundStatement extends NCLStatement {
      * @param statement NCLStatement a ser removido.
      * @throws br.pensario.ExistentElementException se o elemento a ser removido não existir.
      */
-    public void removeStatement(NCLStatement statement) throws ExistentElementException {
-        if (!statements.remove(statement))
-            throw new ExistentElementException("statement does not exists");
+    public boolean removeStatement(NCLStatement statement) {
+        return statements.remove(statement);
     }
     
     
@@ -110,7 +92,7 @@ public class NCLCompoundStatement extends NCLStatement {
      * @return Verdadeiro se possuir.
      * @throws java.lang.Exception
      */
-    public boolean hasStatement(NCLStatement statement) throws Exception {
+    public boolean hasStatement(NCLStatement statement) {
         return statements.contains(statement);
     }
     
@@ -136,24 +118,79 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
+     * Retorna o código XML do elemento CompoundStatement.
      * 
-     * @param ident
-     * @return
+     * @param ident nível de indentação do código.
+     * @return String com o código XML.
      */
     public String parse(int ident) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String space, content;
+
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<compoundStatement";
+
+        if(getOperator() != null)
+            content += " operator='" + getOperator().toString() + "'";
+        
+        if(getIsNegated() != null)
+            content += " isNegated='" + getIsNegated().toString() + "'";
+        
+        content += ">\n";
+        
+        for(NCLStatement statement : statements)
+            content += statement.parse(ident + 1);
+        
+        content += space + "</compoundStatement>\n";
+
+        return content;
     }
     
+    
+    /**
+     * Retorna o código XML do elemento CompoundStatement se indentação.
+     * 
+     * @return String com o código XML.
+     */
     public String toString() {
         return parse(0);
     }
     
-    public boolean equals(NCLStatement statement) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    public boolean compareStatements(NCLStatement other) {
+        NCLCompoundStatement cstat = (NCLCompoundStatement) other;
+        
+        for(NCLStatement statement : statements)
+            if(!cstat.hasStatement(statement)) return false;
+        
+        return true;
     }
-
-    public int compareTo(NCLStatement arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    
+    public boolean equals(NCLStatement other) {
+        //nao sao do mesmo tipo?
+        if (!(other instanceof NCLCompoundStatement))
+            return false;
+        //tem o mesmo operador?
+        if (!((NCLCompoundStatement) other).getOperator().toString().equals(operator.toString()))
+            return false;
+        //tem o mesmo isNegated?
+        if (((NCLCompoundStatement) other).getIsNegated() != isNegated)
+            return false;
+        if (!compareStatements(other))
+            return false;
+        else
+            return true;
     }
-
+    
+    
+    public int compareTo(NCLStatement other) {
+        if (equals(other))
+            return 0;
+        else
+            return -1;
+    }
 }
