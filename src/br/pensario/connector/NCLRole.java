@@ -23,8 +23,10 @@ public class NCLRole {
      * 
      * @param name
      *          String com o nome do papel.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o nome a ser atribuído for uma String vazia.
      */
-    public NCLRole(String name) {
+    public NCLRole(String name) throws IllegalArgumentException {
         setName(name);
     }
 
@@ -34,8 +36,13 @@ public class NCLRole {
      *
      * @param name
      *          String com o nome do papel.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o nome a ser atribuído for uma String vazia.
      */
-    public void setName(String name) {
+    public void setName(String name) throws IllegalArgumentException {
+        if (name != null && "".equals(name.trim()))
+            throw new IllegalArgumentException("Empty name String");
+
         this.name = name;
     }
     

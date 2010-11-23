@@ -4,6 +4,20 @@ import java.util.Set;
 
 import br.pensario.NCLValues.NCLActionOperator;
 
+
+/**
+ * Esta classe define o elemento <i>compoundAction</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define uma ação composta de um conector de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public class NCLCompoundAction extends NCLAction {
 
     private NCLActionOperator operator;
@@ -12,8 +26,10 @@ public class NCLCompoundAction extends NCLAction {
     
     
     /**
-     * Atribui um operador para a ação composta NCL.
-     * @param operator Operador NCL
+     * Determina o operador da ação composta.
+     *
+     * @param operator
+     *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLActionOperator operator) {
         this.operator = operator;
@@ -21,8 +37,10 @@ public class NCLCompoundAction extends NCLAction {
     
     
     /**
-     * Retorna o operador utilizado pela ação composta NCL    
-     * @return Operador utilizado pela ação
+     * Retorna o operador atribuido a ação composta.
+     *
+     * @return
+     *          elemento representando o operador atribuido.
      */
     public NCLActionOperator getOperator() {
         return operator;
@@ -30,56 +48,75 @@ public class NCLCompoundAction extends NCLAction {
 
     
     /**
-     * Adiciona uma a ação NCL na ação composta.
-     * 
-     * @param action NCLAction Ação a ser adicionada 
-     * @return Se a adição foi realizada
+     * Adiciona uma ação a ação composta.
+     *
+     * @param action
+     *          elemento representando a ação a ser adicionada
+     * @return
+     *          verdadeiro se a ação foi adicionada.
+     *
+     * @see TreeSet#add
      */
     public boolean addAction(NCLAction action) {
         return actions.add(action);
     }
 
-    
+
     /**
-     * Remove uma ação NCL da ação composta.
-     * 
-     * @param action NCLAction Ação a ser removida
-     * @return Se a remoção foi realizada
+     * Remove uma ação a ação composta.
+     *
+     * @param action
+     *          elemento representando a ação a ser removida
+     * @return
+     *          verdadeiro se a ação foi removida.
+     *
+     * @see TreeSet#remove
      */
     public boolean removeAction(NCLAction action) {
         return actions.remove(action);
     }
 
-    
+
     /**
-     * Indica se a ação NCL está presente na ação composta (em um único nível da hierarquia).
-     * 
-     * @param action NCLAction Ação a ser buscada
-     * @return Se a ação está presente na ação composta
+     * Verifica se a ação composta possui uma ação.
+     *
+     * @param action
+     *          elemento representando a ação a ser verificada
+     * @return
+     *          verdadeiro se a ação existe.
      */
     public boolean hasAction(NCLAction action) {
         return actions.contains(action);
     }
 
-    
+
     /**
-     * Indica se a ação composta NCL possui ao menos uma ação.
-     * 
-     * @return Se a ação composta possui ações
+     * Verifica se a ação composta possui alguma ação.
+     *
+     * @return
+     *          verdadeiro se a ação composta possui alguma ação.
      */
-    //REV: suplementar ao getActions
     public boolean hasActions() {
-        return actions.size() > 0;
+        return !actions.isEmpty();
+    }
+
+
+    /**
+     * Retorna as ações da ação composta.
+     *
+     * @return
+     *          objeto Iterable contendo as ações da ação composta.
+     */
+    public Iterable<NCLAction> getActions() {
+        return actions;
     }
     
     
-    /**
-     * Retorna a representação do elemento em XML.
-     * @return Trecho XML referente ao elemento
-     */
     public String parse(int ident) {
-
         String space, content;
+
+        if (ident < 0)
+            ident = 0;
 
         // Element indentation
         space = "";
@@ -101,40 +138,49 @@ public class NCLCompoundAction extends NCLAction {
         return content;
     }
 
-    @Override
-    public String toString() {
-        return parse(0);        
-    }
-    
-    
-    public boolean compareActions(NCLAction other) {
-        NCLCompoundAction cact = (NCLCompoundAction) other;
-        
-        for(NCLAction action : actions)
-            if(!cact.hasAction(action)) return false;
-        
-        return true;
-    }
-    
-    
-    public boolean equals(NCLAction other) {
-        //nao sao do mesmo tipo?
-        if (!(other instanceof NCLCompoundAction))
-            return false;
-        //tem o mesmo operador?
-        if (!((NCLCompoundAction) other).getOperator().toString().equals(operator.toString()))
-            return false;
-        if (!compareActions(other))
-            return false;
-        else
-            return true;
-    }
-    
-    
+
     public int compareTo(NCLAction other) {
-        if (equals(other))
-            return 0;
-        else
-            return -1;
+        int comp = 0;
+
+        String this_act, other_act;
+        NCLCompoundAction other_comp = (NCLCompoundAction) other;
+
+        // Verifica se sao do mesmo tipo
+        if (!(other instanceof NCLCompoundAction))
+            comp = -1;
+
+        // Compara pelo operador
+        if (comp == 0){
+            if (getOperator() == null) this_act = ""; else this_act = getOperator().toString();
+            if (other_comp.getOperator() == null) other_act = ""; else other_act = other_comp.getOperator().toString();
+            comp = this_act.compareTo(other_act);
+        }
+
+        // Compara pelo delay
+        if (comp == 0){
+            int this_del, other_del;
+            if (getDelay() == null) this_del = 0; else this_del = getDelay();
+            if (other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
+            comp = this_del - other_del;
+        }
+
+        // Compara o número de acoes
+        if (comp == 0)
+            comp = actions.size() - ((Set) other_comp.getActions()).size();
+
+        // Compara as acoes
+        if (comp == 0){
+            NCLAction acts[] = (NCLAction[]) actions.toArray();
+            NCLAction other_acts[] = (NCLAction[]) ((Set) other_comp.getActions()).toArray();
+
+            for (int i = 0; i < acts.length; i++){
+                comp = acts[i].compareTo(other_acts[i]);
+                if (comp != 0)
+                    break;
+            }
+        }
+
+
+        return comp;
     }
 }

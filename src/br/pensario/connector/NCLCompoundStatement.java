@@ -4,6 +4,20 @@ import br.pensario.NCLValues.NCLOperator;
 import java.util.Set;
 import java.util.TreeSet;
 
+
+/**
+ * Esta classe define o elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define uma assertiva composta de um conector de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public class NCLCompoundStatement extends NCLStatement {
 
     private NCLOperator operator;
@@ -13,20 +27,10 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Compound Statement constructor.
+     * Determina o operador da assertiva composta.
      * 
-     * @param operator compoundStatement operator
-     * @throws java.lang.Exception if the operator is invalid
-     */
-    public NCLCompoundStatement(NCLOperator operator) throws Exception {
-        setOperator(operator);
-    }
-    
-    
-    /**
-     * Determina o operador da compoundStatement.
-     * 
-     * @param operator operador a ser utilizado.
+     * @param operator
+     *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLOperator operator) {
         this.operator = operator;
@@ -34,9 +38,10 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Retorna o operador da compoundStatement.
+     * Retorna o operador atribuido a assertiva composta.
      * 
-     * @return NCLOperator representando o operador.
+     * @return
+     *          elemento representando o operador atribuido.
      */
     public NCLOperator getOperator() {
         return operator;
@@ -44,9 +49,10 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Determina o atributo isNegated do compoundStatement.
+     * Determina se a assertiva composta está negada.
      * 
-     * @param isNegated valor a ser utilizado.
+     * @param isNegated
+     *          booleano que define se a assertiva está negada.
      */
     public void setIsNegated(Boolean isNegated) {
         this.isNegated = isNegated;
@@ -54,9 +60,10 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Retorna o valor do atributo isNegated do compoundStatement.
+     * Retorna se a assertiva composta está negada.
      * 
-     * @return Boolean representando o atributo.
+     * @return
+     *          booleano que define se a assertiva está negada.
      */
     public Boolean getIsNegated() {
         return isNegated;
@@ -64,10 +71,14 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Adiciona um NCLStatement ao compoundStatement.
+     * Adiciona uma assertiva a assertiva composta.
      * 
-     * @param statement NCLStatement a ser adicionado.
-     * @throws br.pensario.ExistentElementException se o elemento adicionado já existir.
+     * @param statement
+     *          elemento representando a assertiva a ser adicionada.
+     * @return
+     *          verdadeiro se a assertiva foi adicionada.
+     *
+     * @see TreeSet#add
      */
     public boolean addStatement(NCLStatement statement) {
         return statements.add(statement);
@@ -75,10 +86,14 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Remove um NCLStatement do compoundStatement.
-     * 
-     * @param statement NCLStatement a ser removido.
-     * @throws br.pensario.ExistentElementException se o elemento a ser removido não existir.
+     * Remove uma assertiva da assertiva composta.
+     *
+     * @param statement
+     *          elemento representando a assertiva a ser removida.
+     * @return
+     *          verdadeiro se a assertiva foi removida.
+     *
+     * @see TreeSet#remove
      */
     public boolean removeStatement(NCLStatement statement) {
         return statements.remove(statement);
@@ -86,11 +101,12 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Verifica se o compoundStatement possui um statement.
+     * Verifica se a assertiva composta possui uma assertiva.
      * 
-     * @param statement NCLStatement a ser verificado.
-     * @return Verdadeiro se possuir.
-     * @throws java.lang.Exception
+     * @param statement
+     *          elemento representando a assertiva a ser verificada.
+     * @return
+     *          verdadeiro se a assertiva existe.
      */
     public boolean hasStatement(NCLStatement statement) {
         return statements.contains(statement);
@@ -98,9 +114,10 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Verifica se o compoundStetement possui algum statement.
+     * Verifica se a assertiva composta possui pelo menos uma assertiva.
      * 
-     * @return Verdadeiro se possuir.
+     * @return
+     *          verdadeiro se a assertiva composta possuir pelo menos uma assertiva.
      */
     public boolean hasStatement() {
         return !statements.isEmpty();
@@ -108,23 +125,21 @@ public class NCLCompoundStatement extends NCLStatement {
     
     
     /**
-     * Retorna um iterador de NCLStatements.
-     * 
-     * @return Iterable
+     * Retorna as assertivas da assertiva composta.
+     *
+     * @return
+     *          objeto Iterable contendo as assertivas da assertiva composta.
      */
     public Iterable<NCLStatement> getStatements() {
         return statements;
     }
     
     
-    /**
-     * Retorna o código XML do elemento CompoundStatement.
-     * 
-     * @param ident nível de indentação do código.
-     * @return String com o código XML.
-     */
     public String parse(int ident) {
         String space, content;
+
+        if (ident < 0)
+            ident = 0;
 
         // Element indentation
         space = "";
@@ -150,47 +165,47 @@ public class NCLCompoundStatement extends NCLStatement {
     }
     
     
-    /**
-     * Retorna o código XML do elemento CompoundStatement se indentação.
-     * 
-     * @return String com o código XML.
-     */
-    public String toString() {
-        return parse(0);
-    }
-    
-    
-    public boolean compareStatements(NCLStatement other) {
-        NCLCompoundStatement cstat = (NCLCompoundStatement) other;
-        
-        for(NCLStatement statement : statements)
-            if(!cstat.hasStatement(statement)) return false;
-        
-        return true;
-    }
-    
-    
-    public boolean equals(NCLStatement other) {
-        //nao sao do mesmo tipo?
-        if (!(other instanceof NCLCompoundStatement))
-            return false;
-        //tem o mesmo operador?
-        if (!((NCLCompoundStatement) other).getOperator().toString().equals(operator.toString()))
-            return false;
-        //tem o mesmo isNegated?
-        if (((NCLCompoundStatement) other).getIsNegated() != isNegated)
-            return false;
-        if (!compareStatements(other))
-            return false;
-        else
-            return true;
-    }
-    
-    
     public int compareTo(NCLStatement other) {
-        if (equals(other))
-            return 0;
-        else
-            return -1;
+        int comp = 0;
+
+        String this_stat, other_stat;
+        NCLCompoundStatement other_comp = (NCLCompoundStatement) other;
+
+        // Verifica se sao do mesmo tipo
+        if (!(other instanceof NCLCompoundStatement))
+            comp = -1;
+
+        // Compara pelo operador
+        if (comp == 0){
+            if (getOperator() == null) this_stat = ""; else this_stat = getOperator().toString();
+            if (other_comp.getOperator() == null) other_stat = ""; else other_stat = other_comp.getOperator().toString();
+            comp = this_stat.compareTo(other_stat);
+        }
+
+        // Compara pelo isNegated
+        if (comp == 0){
+            if (getIsNegated() == null) this_stat = ""; else this_stat = getIsNegated().toString();
+            if (other_comp.getIsNegated() == null) other_stat = ""; else other_stat = other_comp.getIsNegated().toString();
+            comp = this_stat.compareTo(other_stat);
+        }
+
+        // Compara o número de statements
+        if (comp == 0)
+            comp = statements.size() - ((Set) other_comp.getStatements()).size();
+
+        // Compara as statements
+        if (comp == 0){
+            NCLStatement stats[] = (NCLStatement[]) statements.toArray();
+            NCLStatement other_stats[] = (NCLStatement[]) ((Set) other_comp.getStatements()).toArray();
+
+            for (int i = 0; i < stats.length; i++){
+                comp = stats[i].compareTo(other_stats[i]);
+                if (comp != 0)
+                    break;
+            }
+        }
+
+
+        return comp;
     }
 }

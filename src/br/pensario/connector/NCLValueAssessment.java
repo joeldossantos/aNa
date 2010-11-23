@@ -24,8 +24,10 @@ public class NCLValueAssessment {
      *
      * @param value
      *          String contendo o valor da assertiva.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o valor a ser atribuído for uma String vazia.
      */
-    public NCLValueAssessment(String value) {
+    public NCLValueAssessment(String value) throws IllegalArgumentException {
         setValue(value);
     }
     
@@ -35,8 +37,13 @@ public class NCLValueAssessment {
      *
      * @param value
      *          String contendo o valor da assertiva.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(String value) {
+    public void setValue(String value) throws IllegalArgumentException {
+        if (value != null && "".equals(value.trim()))
+            throw new IllegalArgumentException("Empty value String");
+
         this.value = value;
     }
     
@@ -55,6 +62,9 @@ public class NCLValueAssessment {
     public String parse(int ident) {
         String space, content;
 
+        if (ident < 0)
+            ident = 0;
+        
         // Element indentation
         space = "";
         for (int i = 0; i < ident; i++)

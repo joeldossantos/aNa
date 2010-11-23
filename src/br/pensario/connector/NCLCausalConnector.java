@@ -1,32 +1,50 @@
 package br.pensario.connector;
 
-
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+
+/**
+ * Esta classe define o elemento <i>causalConnector</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define um conector de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public class NCLCausalConnector extends NCLIdentifiableElement implements Comparable<NCLCausalConnector> {
 
     private NCLCondition condition;
     private NCLAction action;
-    private Set<NCLConnectorParam> conn_params = new TreeSet<NCLConnectorParam>();
+    private Set<NCLConnectorParam> conn_params = new TreeSet();
+
 
     /**
-     * Construtor padrão de um conector causal.
+     * Construtor do elemento <i>causalConnector</i> da <i>Nested Context Language</i> (NCL).
      * 
-     * @param id String Identificador do conector
-     * @throws Exception Caso o identificador seja inválido
+     * @param id
+     *          identificador do conector.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          caso o identificador seja inválido.
      */    
-    public NCLCausalConnector(String id) throws Exception {
+    public NCLCausalConnector(String id) throws NCLInvalidIdentifierException {
         this.setId(id);
     }
     
     
     /**
-     * Atribui uma condição ao conector causal NCL.
+     * Atribui uma condição ao conector causal.
      * 
-     * @param condition NCLCondition Condição NCL.
+     * @param condition
+     *          elemento representando uma condição do conector.
      */    
     public void setCondition(NCLCondition condition) {
         this.condition = condition;
@@ -34,9 +52,10 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
     
     
     /**
-     * Retorna condição NCL utilizada pelo conector causal NCL.
+     * Retorna a condição atribuida ao conector causal.
      * 
-     * @return Condição NCL
+     * @return
+     *          elemento representando uma condição do conector.
      */    
     public NCLCondition getCondition() {
         return condition;
@@ -44,9 +63,10 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
 
 
     /**
-     * Atribui uma ação ao conector causal NCL.
+     * Atribui uma ação ao conector causal.
      * 
-     * @param action NCLAction Ação NCL.
+     * @param action
+     *          elemento representando uma ação do conector.
      */    
     public void setAction(NCLAction action) {
         this.action = action;
@@ -54,9 +74,10 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
     
     
     /**
-     * Retorna ação NCL utilizada pelo conector causal NCL.
-     * 
-     * @return Ação NCL
+     * Retorna a ação atribuida ao conector causal.
+     *
+     * @return
+     *          elemento representando uma ação do conector.
      */
     public NCLAction getAction() {
         return action;
@@ -64,66 +85,87 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
 
     
     /**
-     * Adiciona um novo parâmetro NCL ao conector causal NCL.     
+     * Adiciona um parâmetro ao conector causal NCL.     
      * 
-     * @param param NCLConnectorParam Parâmetro a ser adicionado.
+     * @param name
+     *          nome do parâmetro a ser adicionado ao conector.
+     * @return
+     *          verdadeiro se o parâmetro for adicionado.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o nome do parâmetro for inválido.
+     *
+     * @see TreeSet#add
      */    
-    public boolean addConnectorParam(String name) throws Exception {
+    public boolean addConnectorParam(String name) throws NCLInvalidIdentifierException {
         NCLConnectorParam param = new NCLConnectorParam(name);
         
         return conn_params.add(param);
     }
-    
-    
-    /**
-     * Retorna o parâmetro do conector NCL de acordo com o nome.     
-     * 
-     * @param nome String Nome do parâmetro a ser buscado.
-     * @return Parâmetro do conector
-     */    
-    public NCLConnectorParam getConnectorParam(String nome) {
-
-        for (NCLConnectorParam connp : conn_params)
-            if (connp.getName().equals(nome))
-                return connp;
-
-        return null;
-    }
 
     
     /**
-     * Remove um parâmetro do conector NCL de acordo com o nome.     
+     * Remove um parâmetro do conector causal.
      * 
-     * @param nome String Nome do parâmetro a ser removido.
+     * @param name
+     *          nome do parâmetro a ser removido do conector.
+     * @return
+     *          verdadeiro se o parâmetro for removido.
      */    
     public boolean removeConnectorParam(String nome) {
-
-        Iterator<NCLConnectorParam> it = conn_params.iterator();
-
-        while (it.hasNext()) {
-            NCLConnectorParam connp = it.next();
-            if (connp.getName().equals(nome)){
-                it.remove();
-                return true;
-            }
+        for (NCLConnectorParam connp : conn_params){
+            if (connp.getName().equals(nome))
+                return conn_params.remove(connp);
         }
+
         return false;
     }
 
-    
-    public String toString() {
-        return parse(0);
+
+    /**
+     * Verifica se o conector possui um parâmetro.
+     *
+     * @param name
+     *          nome do parâmetro a ser verificado.
+     * @return
+     *          verdadeiro se o parâmetro existir.
+     */
+    public boolean hasAttributeAssessment(String nome) {
+        for (NCLConnectorParam connp : conn_params){
+            if (connp.getName().equals(nome))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Verifica se o conector possui pelo menos um parâmetro.
+     *
+     * @return
+     *          verdadeiro se o conector possuir pelo menos um parâmetro.
+     */
+    public boolean hasAttributeAssessment() {
+        return !conn_params.isEmpty();
+    }
+
+
+    /**
+     * Retorna os parâmetros do conector.
+     *
+     * @return
+     *          objeto Iterable contendo os parâmetros do conector.
+     */
+    public Iterable<NCLConnectorParam> getAttributeAssessments() {
+        return conn_params;
     }
 
     
-    /**
-     * Retorna a representação do elemento em XML.
-     * 
-     * @return Trecho XML referente ao elemento
-     */
     public String parse(int ident) {
-
         String space, content;
+
+        if (ident < 0)
+            ident = 0;
 
         // Element indentation
         space = "";
@@ -131,10 +173,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
             space += "\t";
 
         content = space + "<causalConnector";
-
-        if (getId() != null)
-            content += " id='" + getId() + "'";
-
+        content += " id='" + getId() + "'";
         content += ">\n";
 
         for(NCLConnectorParam connp : conn_params)
@@ -149,8 +188,8 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
     }
 
     
-    public int compareTo(NCLCausalConnector cconn) {
-        return cconn.getId().compareTo(this.getId());
+    public int compareTo(NCLCausalConnector other) {
+        return getId().compareTo(other.getId());
     }
 
 }

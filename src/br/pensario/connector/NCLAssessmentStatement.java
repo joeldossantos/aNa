@@ -5,6 +5,20 @@ import br.pensario.NCLValues.NCLDefaultValueAssessment;
 import java.util.Set;
 import java.util.TreeSet;
 
+
+/**
+ * Esta classe define o elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define uma assertiva de um conector de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public class NCLAssessmentStatement extends NCLStatement {
 
     private NCLComparator comparator;
@@ -16,7 +30,8 @@ public class NCLAssessmentStatement extends NCLStatement {
     /**
      * Determina o comparador da assertiva.
      * 
-     * @param comparator comparador da assertiva.
+     * @param comparator
+     *          comparador utilizado pela assertiva.
      */
     public void setComparator(NCLComparator comparator) {
         this.comparator = comparator;
@@ -26,7 +41,8 @@ public class NCLAssessmentStatement extends NCLStatement {
     /**
      * Retorna o comparador da assertiva.
      * 
-     * @return NCLComparator representando o comparador.
+     * @return
+     *          comparador utilizado pela assertiva.
      */
     public NCLComparator getComparator() {
         return comparator;
@@ -34,29 +50,41 @@ public class NCLAssessmentStatement extends NCLStatement {
     
     
     /**
-     * Adiciona um valor a assertiva.
+     * Determina um valor de comparação a assertiva.
      * 
-     * @param value String com o valor a ser utilizado.
+     * @param value
+     *          String representando o valor de comparação a ser utilizado.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o valor for uma String vazia.
+     *
+     * @see NCLValueAssessment
      */
-    public void addValueAssessment(String value) {
+    public void setValueAssessment(String value) throws IllegalArgumentException {
         this.valueAssessment = new NCLValueAssessment(value);
     }
     
     
     /**
-     * Adiciona um valor a assertiva.
+     * Determina um valor de comparação a assertiva. Usa um dos valores padrão.
      * 
-     * @param value NCLDefaultValueAssessment com o valor a ser utilizado.
+     * @param value
+     *          elemento representando o valor de comparação a ser utilizado.
      */
-    public void addValueAssessment(NCLDefaultValueAssessment value) {
-        this.valueAssessment = new NCLValueAssessment(value.toString());
+    public void setValueAssessment(NCLDefaultValueAssessment value) {
+        try{
+            this.valueAssessment = new NCLValueAssessment(value.toString());
+        }
+        catch(IllegalArgumentException e){
+
+        }
     }
     
     
     /**
-     * Retorna o valueAssessment.
+     * Retorna o valor de comparação a assertiva.
      * 
-     * @return NCLValueAssessment representando o valueAssessment
+     * @return
+     *          elemento representando o valor de comparação utilizado.
      */
     public NCLValueAssessment getValueAssessment() {
         return valueAssessment;
@@ -64,35 +92,34 @@ public class NCLAssessmentStatement extends NCLStatement {
     
     
     /**
-     * Remove o valor da assertiva.
-     */
-    public void removeValueAssessment() {
-        this.valueAssessment = null;
-    }
-    
-    
-    /**
-     * Adiciona um atributo a assertiva.
+     * Adiciona um atributo de comparação a assertiva.
      * 
-     * @param attribute atributo a ser adicionado.
-     * @return verdadeiro se o atributo foi adicionado.
-     * @throws java.lang.Exception se o número máximo de atributos for ultrapassado.
+     * @param attribute
+     *          elemento representando o atributo a ser adicionado.
+     * @return
+     *          verdadeiro se o atributo foi adicionado.
+     * @throws java.lang.Exception
+     *          se o número máximo de atributos for ultrapassado.
+     *
+     * @see TreeSet#add
      */
     public boolean addAttributeAssessment(NCLAttributeAssessment attribute) throws Exception {
-        if (attributeAssessments.size() == 2){
-            Exception ex = new Exception("can't have more than two attributes"); //TODO: Criar tipo de excecao
-            throw ex;
-        }
+        if (attributeAssessments.size() == 2)
+            throw new Exception("can't have more than two attributes"); //TODO: Criar tipo de excecao
         
         return attributeAssessments.add(attribute);
     }
     
     
     /**
-     * Remove um atributo da assertiva.
+     * Remove um atributo de comparação da assertiva.
      * 
-     * @param attribute atributo a ser removido.
-     * @return verdadeiro se o atributo for removido.
+     * @param attribute
+     *          elemento representando o atributo a ser removido.
+     * @return
+     *          verdadeiro se o atributo for removido.
+     *
+     * @see TreeSet#remove
      */
     public boolean removeAttributeAssessment(NCLAttributeAssessment attribute) {
         return attributeAssessments.remove(attribute);
@@ -100,11 +127,12 @@ public class NCLAssessmentStatement extends NCLStatement {
     
     
     /**
-     * Verifica se um atributo está presente.
+     * Verifica se a assertiva possui um atributo.
      * 
-     * @param attribute atributo a ser verificado.
-     * @return verdadeiro se o atributo estiver presente.
-     * @throws java.lang.Exception
+     * @param attribute
+     *          elemento representando o atributo a ser verificado.
+     * @return
+     *          verdadeiro se o atributo estiver presente.
      */
     public boolean hasAttributeAssessment(NCLAttributeAssessment attribute) {
         return attributeAssessments.contains(attribute);
@@ -112,24 +140,33 @@ public class NCLAssessmentStatement extends NCLStatement {
     
     
     /**
-     * Verifica se pelo menos um atributo está presente.
+     * Verifica se a assertiva possui pelo menos um atributo.
      * 
-     * @return verdadeiro so pelo menos um atributo existir.
+     * @return
+     *          verdadeiro se a assertiva possuir pelo menos um atributo.
      */
     public boolean hasAttributeAssessment() {
         return !attributeAssessments.isEmpty();
     }
-    
-    
+
+
     /**
-     * Retorna o código XML do elemento AssessmentStatement.
-     * 
-     * @param ident nível de indentação do código.
-     * @return String com o código XML.
+     * Retorna os atributos da assertiva.
+     *
+     * @return
+     *          objeto Iterable contendo os atributos da assertiva.
      */
+    public Iterable<NCLAttributeAssessment> getAttributeAssessments() {
+        return attributeAssessments;
+    }
+    
+    
     public String parse(int ident) {
         String space, content;
 
+        if (ident < 0)
+            ident = 0;
+        
         // Element indentation
         space = "";
         for (int i = 0; i < ident; i++)
@@ -153,51 +190,48 @@ public class NCLAssessmentStatement extends NCLStatement {
     }
     
     
-    /**
-     * Retorna o código XML do elemento AssessmentStatement sem indentação.
-     * 
-     * @return String com o código XML.
-     */
-    public String toString() {
-        return parse(0);
-    }
-    
-    
-    public boolean compareAssessments(NCLStatement other) {
-        NCLAssessmentStatement astat = (NCLAssessmentStatement) other;
-        
-        for(NCLAttributeAssessment attribute : attributeAssessments)
-            if(!astat.hasAttributeAssessment(attribute)) return false;
-        
-        if (valueAssessment == null && astat.getValueAssessment() != null)
-            return false;
-        if (valueAssessment != null && astat.getValueAssessment() == null)
-            return false;
-        if (!valueAssessment.getValue().equals(astat.getValueAssessment().getValue()))
-            return false;
-        
-        return true;
-    }
-    
-    
-    public boolean equals(NCLStatement other) {
-        //nao sao do mesmo tipo?
-        if (!(other instanceof NCLAssessmentStatement))
-            return false;
-        //tem o mesmo operador?
-        if (!((NCLAssessmentStatement) other).getComparator().toString().equals(comparator.toString()))
-            return false;
-        if (!compareAssessments(other))
-            return false;
-        else
-            return true;
-    }
-    
-    
     public int compareTo(NCLStatement other) {
-        if (equals(other))
-            return 0;
-        else
-            return -1;
+        int comp = 0;
+
+        String this_stat, other_stat;
+        NCLAssessmentStatement other_asses = (NCLAssessmentStatement) other;
+
+        // Verifica se sao do mesmo tipo
+        if (!(other instanceof NCLAssessmentStatement))
+            comp = -1;
+
+        // Compara pelo comparador
+        if (comp == 0){
+            if (getComparator() == null) this_stat = ""; else this_stat = getComparator().toString();
+            if (other_asses.getComparator() == null) other_stat = ""; else other_stat = other_asses.getComparator().toString();
+            comp = this_stat.compareTo(other_stat);
+        }
+
+        // Compara o número de attributeAssessment
+        if (comp == 0)
+            comp = attributeAssessments.size() - ((Set) other_asses.getAttributeAssessments()).size();
+
+        // Compara os attributeAssessment
+        if (comp == 0){
+            NCLAttributeAssessment atts[] = (NCLAttributeAssessment[]) attributeAssessments.toArray();
+            NCLAttributeAssessment other_atts[] = (NCLAttributeAssessment[]) ((Set) other_asses.getAttributeAssessments()).toArray();
+
+            for (int i = 0; i < atts.length; i++){
+                comp = atts[i].compareTo(other_atts[i]);
+                if (comp != 0)
+                    break;
+            }
+        }
+
+        // Compara os valueAssessment
+        if (comp == 0){
+            if (getValueAssessment() == null) this_stat = ""; else this_stat = getValueAssessment().getValue();
+            if (other_asses.getValueAssessment() == null) other_stat = ""; else other_stat = other_asses.getValueAssessment().getValue();
+            comp = this_stat.compareTo(other_stat);
+        }
+
+
+        return comp;
     }
+
 }

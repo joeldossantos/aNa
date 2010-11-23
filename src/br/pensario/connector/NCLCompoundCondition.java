@@ -5,6 +5,20 @@ import java.util.TreeSet;
 
 import br.pensario.NCLValues.NCLConditionOperator;
 
+
+/**
+ * Esta classe define o elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define uma condição composta de um conector de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public class NCLCompoundCondition extends NCLCondition {
     
     private NCLConditionOperator operator;
@@ -14,8 +28,10 @@ public class NCLCompoundCondition extends NCLCondition {
     
     
     /**
-     * Atribui um operador para a condição composta NCL.
-     * @param operator Operador NCL
+     * Determina o operador da condição composta.
+     *
+     * @param operator
+     *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLConditionOperator operator) {
         this.operator = operator;
@@ -23,8 +39,10 @@ public class NCLCompoundCondition extends NCLCondition {
     
     
     /**
-     * Retorna o operador utilizado pela condição composta NCL    
-     * @return Operador utilizado pela condição
+     * Retorna o operador atribuido a condição composta.
+     *
+     * @return
+     *          elemento representando o operador atribuido.
      */
     public NCLConditionOperator getOperator() {
         return operator;
@@ -32,10 +50,14 @@ public class NCLCompoundCondition extends NCLCondition {
 
 
     /**
-     * Adiciona uma condição NCL na condição composta.
+     * Adiciona uma condição a condição composta.
      * 
-     * @param condition Condição a ser adicionada 
-     * @return Se a adição foi realizada
+     * @param condition
+     *          elemento representando a condição a ser adicionada
+     * @return
+     *          verdadeiro se a condição foi adicionada.
+     *
+     * @see TreeSet#add
      */
     public boolean addCondition(NCLCondition condition) {
         return conditions.add(condition);
@@ -43,10 +65,14 @@ public class NCLCompoundCondition extends NCLCondition {
 
 
     /**
-     * Remove uma condição NCL da condição composta.
-     * 
-     * @param condition Condição a ser removida
-     * @return Se a remoção foi realizada
+     * Remove uma condição a condição composta.
+     *
+     * @param condition
+     *          elemento representando a condição a ser removida
+     * @return
+     *          verdadeiro se a condição foi removida.
+     *
+     * @see TreeSet#remove
      */
     public boolean removeCondition(NCLCondition condition) {
         return conditions.remove(condition);
@@ -54,10 +80,12 @@ public class NCLCompoundCondition extends NCLCondition {
 
     
     /**
-     * Indica se a condição NCL passada como parâmetro está presente na condição composta (em um único nível da hierarquia).
+     * Verifica se a condição composta possui uma condição.
      * 
-     * @param Condition NCLCondition Condição a ser buscada
-     * @return Se a condição está presente na condição composta
+     * @param condition
+     *          elemento representando a condição a ser verificada
+     * @return
+     *          verdadeiro se a condição existe.
      */
     public boolean hasCondition(NCLCondition condition) {
         return conditions.contains(condition);
@@ -65,21 +93,36 @@ public class NCLCompoundCondition extends NCLCondition {
 
     
     /**
-     * Indica se a condição composta NCL possui ao menos uma condição interna.
-     * 
-     * @return Se a condição composta possui condições internas
+     * Verifica se a condição composta possui alguma condição.
+     *
+     * @return
+     *          verdadeiro se a condição composta possui alguma condição.
      */
-    //REV: suplementar ao getConditions
     public boolean hasConditions() {
-        return conditions.size() > 0;
+        return !conditions.isEmpty();
+    }
+
+
+    /**
+     * Retorna as condições da condição composta.
+     *
+     * @return
+     *          objeto Iterable contendo as condições da condição composta.
+     */
+    public Iterable<NCLCondition> getConditions() {
+        return conditions;
     }
     
     
     /**
-     * Adiciona uma asertiva NCL na condição composta.
-     * 
-     * @param statement asertiva a ser adicionada 
-     * @return Se a adição foi realizada
+     * Adiciona uma assertiva a condição composta.
+     *
+     * @param statement
+     *          elemento representando a assertiva a ser adicionada.
+     * @return
+     *          verdadeiro se a assertiva foi adicionada.
+     *
+     * @see TreeSet#add
      */
     public boolean addStatement(NCLStatement statement) {
         return statements.add(statement);
@@ -87,44 +130,60 @@ public class NCLCompoundCondition extends NCLCondition {
 
 
     /**
-     * Remove uma asertiva NCL da condição composta.
-     * 
-     * @param statement asertiva a ser removida
-     * @return Se a remoção foi realizada
+     * Remove uma assertiva da condição composta.
+     *
+     * @param statement
+     *          elemento representando a assertiva a ser removida.
+     * @return
+     *          verdadeiro se a assertiva foi removida.
+     *
+     * @see TreeSet#remove
      */
     public boolean removeStatement(NCLStatement statement) {
         return statements.remove(statement);
     }
 
-    
+
     /**
-     * Indica se a asertiva NCL passada como parâmetro está presente na condição composta (em um único nível da hierarquia).
-     * 
-     * @param statement asertiva a ser buscada
-     * @return Se a asertiva está presente na condição composta
+     * Verifica se a condição composta possui uma assertiva.
+     *
+     * @param statement
+     *          elemento representando a assertiva a ser verificada.
+     * @return
+     *          verdadeiro se a assertiva existe.
      */
     public boolean hasStatement(NCLStatement statement) {
         return statements.contains(statement);
     }
 
-    
+
     /**
-     * Indica se a condição composta NCL possui ao menos uma asertiva interna.
-     * 
-     * @return Se a condição composta possui asertivas internas
+     * Verifica se a condição composta possui pelo menos uma assertiva.
+     *
+     * @return
+     *          verdadeiro se a condição composta possuir pelo menos uma assertiva.
      */
     public boolean hasStatement() {
-        return statements.size() > 0;
+        return !statements.isEmpty();
+    }
+
+
+    /**
+     * Retorna as assertivas da condição composta.
+     *
+     * @return
+     *          objeto Iterable contendo as assertivas da condição composta.
+     */
+    public Iterable<NCLStatement> getStatements() {
+        return statements;
     }
 
     
-    /**
-     * Retorna a representação do elemento em XML.
-     * @return Trecho XML referente ao elemento
-     */
     public String parse(int ident) {
-
         String space, content;
+
+        if (ident < 0)
+            ident = 0;
 
         // Element indentation
         space = "";
@@ -148,41 +207,66 @@ public class NCLCompoundCondition extends NCLCondition {
 
         return content;
     }
-
-
-    public String toString() {
-        return parse(0);        
-    }
-
-
-    public boolean compareConditions(NCLCondition other) {
-        NCLCompoundCondition ccond = (NCLCompoundCondition) other;
-        
-        for(NCLCondition condition : conditions)
-            if(!ccond.hasCondition(condition)) return false;
-        
-        return true;
-    }
-    
-    
-    public boolean equals(NCLCondition other) {
-        //nao sao do mesmo tipo?
-        if (!(other instanceof NCLCompoundCondition))
-            return false;
-        //tem o mesmo operador?
-        if (!((NCLCompoundCondition) other).getOperator().toString().equals(operator.toString()))
-            return false;
-        if (!compareConditions(other))
-            return false;
-        else
-            return true;
-    }
     
     
     public int compareTo(NCLCondition other) {
-        if (equals(other))
-            return 0;
-        else
-            return -1;
+        int comp = 0;
+
+        String this_cond, other_cond;
+        NCLCompoundCondition other_comp = (NCLCompoundCondition) other;
+
+        // Verifica se sao do mesmo tipo
+        if (!(other instanceof NCLCompoundCondition))
+            comp = -1;
+
+        // Compara pelo operador
+        if (comp == 0){
+            if (getOperator() == null) this_cond = ""; else this_cond = getOperator().toString();
+            if (other_comp.getOperator() == null) other_cond = ""; else other_cond = other_comp.getOperator().toString();
+            comp = this_cond.compareTo(other_cond);
+        }
+
+        // Compara pelo delay
+        if (comp == 0){
+            int this_del, other_del;
+            if (getDelay() == null) this_del = 0; else this_del = getDelay();
+            if (other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
+            comp = this_del - other_del;
+        }
+
+        // Compara o número de condicoes
+        if (comp == 0)
+            comp = conditions.size() - ((Set) other_comp.getConditions()).size();
+
+        // Compara as condicoes
+        if (comp == 0){
+            NCLCondition conds[] = (NCLCondition[]) conditions.toArray();
+            NCLCondition other_conds[] = (NCLCondition[]) ((Set) other_comp.getConditions()).toArray();
+
+            for (int i = 0; i < conds.length; i++){
+                comp = conds[i].compareTo(other_conds[i]);
+                if (comp != 0)
+                    break;
+            }
+        }
+
+        // Compara o número de statements
+        if (comp == 0)
+            comp = statements.size() - ((Set) other_comp.getStatements()).size();
+
+        // Compara as statements
+        if (comp == 0){
+            NCLStatement stats[] = (NCLStatement[]) statements.toArray();
+            NCLStatement other_stats[] = (NCLStatement[]) ((Set) other_comp.getStatements()).toArray();
+
+            for (int i = 0; i < stats.length; i++){
+                comp = stats[i].compareTo(other_stats[i]);
+                if (comp != 0)
+                    break;
+            }
+        }
+
+
+        return comp;
     }
 }

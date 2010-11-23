@@ -5,92 +5,94 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
+/**
+ * Esta classe define o elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define uma base de conectores de um documento NCL.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ */
 public class NCLConnectorBase extends NCLIdentifiableElement {
 
-    Set<NCLCausalConnector> connectors = new TreeSet<NCLCausalConnector>();
+    Set<NCLCausalConnector> connectors = new TreeSet();
     
     
     /**
-     * Adiciona um conector causal NCL à base de conectores.
+     * Adiciona um conector a base de conectores.
      * 
-     * @param connector NCLCausalConnector Conector a ser adicionado 
-     * @return Se a adição foi realizada
+     * @param connector
+     *          elemento representando o conector a ser adicionado.
+     * @return
+     *          verdadeiro se o conector foi adicionado.
+     *
+     * @sse TreeSet#add
      */
-    public boolean addCausalConnector(NCLCausalConnector connector)
-    {
+    public boolean addCausalConnector(NCLCausalConnector connector) {
         return connectors.add(connector);        
     }
     
     
     /**
-     * Remove um conector causal NCL da base de conectores.
+     * Remove um conector da base de conectores.
      * 
-     * @param connector NCLCausalConnector Conector a ser removido 
-     * @return Se a remoção foi realizada
+     * @param connector
+     *          elemento representando o conector a ser removido.
+     * @return
+     *          verdadeiro se o conector foi removido.
+     *
+     * @sse TreeSet#remove
      */    
-    public boolean removeCausalConnector(NCLCausalConnector connector)
-    {
+    public boolean removeCausalConnector(NCLCausalConnector connector) {
         return connectors.remove(connector);        
     }
     
     
     /**
-     * Busca um determinado conector de acordo com o id
-     * @param id String Id do conector a ser buscado
-     * @return O próprio conector caso exista na base
-     */
-    public NCLCausalConnector getCausalConnector(String id)
-    {
-        NCLCausalConnector rconn = null;
-        
-        for(NCLCausalConnector cconn : connectors)
-            if(cconn.getId().equals(id)) rconn = cconn;
-        
-        return rconn;
-    }
-    
-    
-    /**
-     * Busca um conector causal NCL na base de conectores.
+     * Verifica se a base de conectores possui um conector.
      * 
-     * @param connector NCLCausalConnector Conector a ser buscado 
-     * @return Se o conector existe na base
+     * @param connector
+     *          elemento representando o conector a ser verificado.
+     * @return
+     *          verdadeiro se o conector existir.
      */
-    public boolean hasCausalConnector(NCLCausalConnector connector)
-    {
+    public boolean hasCausalConnector(NCLCausalConnector connector) {
         return connectors.contains(connector);        
     }
     
     
     /**
-     * Indica se a base possui ao menos um conector.
+     * Verifica se a base de conectores possui pelo menos um conector.
      * 
-     * @return Se a base possui conectores
+     * @return
+     *          verdadeiro se a base de conectores possui pelo menos um conector.
      */
-    public boolean hasCausalConnector()
-    {
-        return connectors.size() > 0;        
+    public boolean hasCausalConnector() {
+        return !connectors.isEmpty();
     }
 
     
     /**
-     * Retorna os conectores da base.
+     * Retorna os conectores da base de conectores.
      * 
-     * @return Conjunto iterável de conectores
+     * @return
+     *          objeto Iterable contendo os conectores da base de conectores.
      */
-    public Iterable<NCLCausalConnector> getCausalConnectors()
-    {
+    public Iterable<NCLCausalConnector> getCausalConnectors() {
         return connectors;        
     }
     
     
-    /**
-     * Retorna a representação do elemento em XML.
-     * @return Trecho XML referente ao elemento
-     */
     public String parse(int ident) {
-
         String space, content;
+
+        if (ident < 0)
+            ident = 0;
 
         // Element indentation
         space = "";
@@ -112,11 +114,6 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
         content += space + "<connectorBase/>\n";
 
         return content;
-    }
-
-    
-    public String toString() {
-        return parse(0);
     }
     
 }
