@@ -638,16 +638,8 @@
           <generalization xmi:id="_m7ZqELagEd-g56eOHhzzmw" general="_8jC9YLafEd-g56eOHhzzmw"/>
           <ownedAttribute xmi:id="_iNkpALagEd-g56eOHhzzmw" name="operator" type="_CUvBcLabEd-g56eOHhzzmw" isUnique="false" aggregation="composite"/>
         </packagedElement>
-        <packagedElement xmi:type="uml:Class" xmi:id="_NJJXgLahEd-g56eOHhzzmw" name="NCLConditionRole">
-          <generalization xmi:id="_kRImwLahEd-g56eOHhzzmw" general="_SIrzoLahEd-g56eOHhzzmw"/>
-          <ownedAttribute xmi:id="_VFGhcLahEd-g56eOHhzzmw" name="id" type="_JlHe0LabEd-g56eOHhzzmw" isUnique="false" aggregation="composite"/>
-        </packagedElement>
-        <packagedElement xmi:type="uml:Class" xmi:id="_PxCm0LahEd-g56eOHhzzmw" name="NCLActionRole">
-          <generalization xmi:id="_jhFC0LahEd-g56eOHhzzmw" general="_SIrzoLahEd-g56eOHhzzmw"/>
-          <ownedAttribute xmi:id="_djuTkLahEd-g56eOHhzzmw" name="id" type="_xrPqMLabEd-g56eOHhzzmw" isUnique="false" aggregation="composite"/>
-        </packagedElement>
         <packagedElement xmi:type="uml:Class" xmi:id="_SIrzoLahEd-g56eOHhzzmw" name="NCLRole">
-          <ownedAttribute xmi:id="_4aAscOdoEd-_GOOrPpEdgA" name="id" aggregation="composite">
+          <ownedAttribute xmi:id="_4aAscOdoEd-_GOOrPpEdgA" name="name" aggregation="composite">
             <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
           </ownedAttribute>
         </packagedElement>
@@ -712,7 +704,7 @@
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_pDF54rahEd-g56eOHhzzmw" value="1"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_pDF54bahEd-g56eOHhzzmw" value="1"/>
           </ownedEnd>
-          <ownedEnd xmi:id="_pDF547ahEd-g56eOHhzzmw" name="role" type="_NJJXgLahEd-g56eOHhzzmw" aggregation="composite" association="_pDFS0LahEd-g56eOHhzzmw">
+          <ownedEnd xmi:id="_pDF547ahEd-g56eOHhzzmw" name="role" type="_SIrzoLahEd-g56eOHhzzmw" aggregation="composite" association="_pDFS0LahEd-g56eOHhzzmw">
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_pDF55bahEd-g56eOHhzzmw" value="1"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_pDF55LahEd-g56eOHhzzmw" value="1"/>
           </ownedEnd>
@@ -722,7 +714,7 @@
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_upzDsbahEd-g56eOHhzzmw" value="1"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_upzDsLahEd-g56eOHhzzmw" value="1"/>
           </ownedEnd>
-          <ownedEnd xmi:id="_upzDsrahEd-g56eOHhzzmw" name="role" type="_PxCm0LahEd-g56eOHhzzmw" aggregation="composite" association="_upycoLahEd-g56eOHhzzmw">
+          <ownedEnd xmi:id="_upzDsrahEd-g56eOHhzzmw" name="role" type="_SIrzoLahEd-g56eOHhzzmw" aggregation="composite" association="_upycoLahEd-g56eOHhzzmw">
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_upzDtLahEd-g56eOHhzzmw" value="1"/>
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_upzDs7ahEd-g56eOHhzzmw" value="1"/>
           </ownedEnd>
