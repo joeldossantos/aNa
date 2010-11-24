@@ -65,7 +65,7 @@ public class NCLParam extends NCLElement implements Comparable<NCLParam>{
     /**
      * Determina o valor do atributo value do parâmetro.
      * 
-     * @param title
+     * @param value
      *          String contendo o valor a ser atribuído ao parâmetro.
      *
      * @throws java.lang.IllegalArgumentException

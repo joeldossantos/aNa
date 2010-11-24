@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
@@ -65,7 +65,7 @@ public abstract class NCLIdentifiableElement extends NCLElement{
 
         Matcher matcher = pattern.matcher(id);
 
-        return !matcher.matches();  
+        return matcher.matches();  
         
     }
     

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.connector.NCLCausalConnector;
+import java.util.Iterator;
 
 
 /**
@@ -16,7 +17,7 @@ import br.pensario.connector.NCLCausalConnector;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
@@ -235,11 +236,10 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
 
         // Compara os parâmetros
         if (comp == 0){
-            NCLParam params[] = (NCLParam[]) linkParams.toArray();
-            NCLParam other_params[] = (NCLParam[]) ((Set) other.getLinkParams()).toArray();
-
-            for (int i = 0; i < params.length; i++){
-                comp = params[i].compareTo(other_params[i]);
+            Iterator it = other.getLinkParams().iterator();
+            for (NCLParam param : linkParams){
+                NCLParam other_param = (NCLParam) it.next();
+                comp = param.compareTo(other_param);
                 if (comp != 0)
                     break;
             }
@@ -247,11 +247,10 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
 
         // Compara os binds
         if (comp == 0){
-            NCLBind bind[] = (NCLBind[]) binds.toArray();
-            NCLBind other_bind[] = (NCLBind[]) ((Set) other.getBinds()).toArray();
-
-            for (int i = 0; i < bind.length; i++){
-                comp = bind[i].compareTo(other_bind[i]);
+            Iterator it = other.getBinds().iterator();
+            for (NCLBind bind : binds){
+                NCLBind other_bind = (NCLBind) it.next();
+                comp = bind.compareTo(other_bind);
                 if (comp != 0)
                     break;
             }

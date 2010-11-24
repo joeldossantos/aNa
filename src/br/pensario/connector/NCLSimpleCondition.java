@@ -239,7 +239,7 @@ public class NCLSimpleCondition extends NCLCondition {
         if (getTransition() != null)
             content += " transition='" + getTransition().toString() + "'";
         
-        content += " />\n";
+        content += "/>\n";
 
         return content;
     }

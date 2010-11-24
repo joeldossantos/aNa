@@ -1,6 +1,7 @@
 package br.pensario.connector;
 
 import br.pensario.NCLValues.NCLOperator;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -14,7 +15,7 @@ import java.util.TreeSet;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
@@ -195,11 +196,10 @@ public class NCLCompoundStatement extends NCLStatement {
 
         // Compara as statements
         if (comp == 0){
-            NCLStatement stats[] = (NCLStatement[]) statements.toArray();
-            NCLStatement other_stats[] = (NCLStatement[]) ((Set) other_comp.getStatements()).toArray();
-
-            for (int i = 0; i < stats.length; i++){
-                comp = stats[i].compareTo(other_stats[i]);
+            Iterator it = other_comp.getStatements().iterator();
+            for (NCLStatement st : statements){
+                NCLStatement other_st = (NCLStatement) it.next();
+                comp = st.compareTo(other_st);
                 if (comp != 0)
                     break;
             }

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLValues.NCLConditionOperator;
+import java.util.Iterator;
 
 
 /**
@@ -15,7 +16,7 @@ import br.pensario.NCLValues.NCLConditionOperator;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
@@ -240,11 +241,10 @@ public class NCLCompoundCondition extends NCLCondition {
 
         // Compara as condicoes
         if (comp == 0){
-            NCLCondition conds[] = (NCLCondition[]) conditions.toArray();
-            NCLCondition other_conds[] = (NCLCondition[]) ((Set) other_comp.getConditions()).toArray();
-
-            for (int i = 0; i < conds.length; i++){
-                comp = conds[i].compareTo(other_conds[i]);
+            Iterator it = other_comp.getConditions().iterator();
+            for (NCLCondition c : conditions){
+                NCLCondition other_c = (NCLCondition) it.next();
+                comp = c.compareTo(other_c);
                 if (comp != 0)
                     break;
             }
@@ -256,11 +256,10 @@ public class NCLCompoundCondition extends NCLCondition {
 
         // Compara as statements
         if (comp == 0){
-            NCLStatement stats[] = (NCLStatement[]) statements.toArray();
-            NCLStatement other_stats[] = (NCLStatement[]) ((Set) other_comp.getStatements()).toArray();
-
-            for (int i = 0; i < stats.length; i++){
-                comp = stats[i].compareTo(other_stats[i]);
+            Iterator it = other_comp.getStatements().iterator();
+            for (NCLStatement st : statements){
+                NCLStatement other_st = (NCLStatement) it.next();
+                comp = st.compareTo(other_st);
                 if (comp != 0)
                     break;
             }

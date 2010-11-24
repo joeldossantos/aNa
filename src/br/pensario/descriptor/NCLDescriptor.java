@@ -166,7 +166,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * Retorna o próximo descritor deverá receber foco quando a tecla seta para
      * a direita do controle remoto for pressionada e o foco estiver neste descritor.
      *
-     * @param descriptor
+     * @return
      *          elemento representando o descritor que receberá foco.
      */
     public NCLDescriptor getMoveRight() {
@@ -190,7 +190,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * Retorna o próximo descritor deverá receber foco quando a tecla seta para
      * cima do controle remoto for pressionada e o foco estiver neste descritor.
      *
-     * @param descriptor
+     * @return
      *          elemento representando o descritor que receberá foco.
      */
     public NCLDescriptor getMoveUp() {
@@ -214,7 +214,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * Retorna o próximo descritor deverá receber foco quando a tecla seta para
      * baixo do controle remoto for pressionada e o foco estiver neste descritor.
      *
-     * @param descriptor
+     * @return
      *          elemento representando o descritor que receberá foco.
      */
     public NCLDescriptor getMoveDown() {

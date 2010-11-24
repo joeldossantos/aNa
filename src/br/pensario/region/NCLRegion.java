@@ -121,7 +121,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     /**
      * Atribui o valor da posição a direita da região.
      *
-     * @param left
+     * @param right
      *          inteiro representando a posição a direita da região.
      * @param relative
      *          booleano indicando se o valor de posição é uma porcentagem.
@@ -158,7 +158,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     /**
      * Atribui o valor da posição de topo da região.
      *
-     * @param left
+     * @param top
      *          inteiro representando a posição de topo da região.
      * @param relative
      *          booleano indicando se o valor de posição é uma porcentagem.
@@ -195,7 +195,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     /**
      * Atribui o valor da posição inferior da região.
      *
-     * @param left
+     * @param bottom
      *          inteiro representando a posição inferior da região.
      * @param relative
      *          booleano indicando se o valor de posição é uma porcentagem.
@@ -270,7 +270,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     /**
      * Atribui uma largura a região.
      *
-     * @param height
+     * @param width
      *          inteiro representando a largura da região.
      * @param relative
      *          booleano indicando se o valor de altura é uma porcentagem.
@@ -501,7 +501,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     /**
      * Remove uma região filha da região.
      *
-     * @param child
+     * @param region
      *          elemento representando a região a ser removida.
      * @return
      *          verdadeiro se a região foi removida.

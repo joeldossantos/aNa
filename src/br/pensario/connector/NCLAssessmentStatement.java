@@ -2,6 +2,7 @@ package br.pensario.connector;
 
 import br.pensario.NCLValues.NCLComparator;
 import br.pensario.NCLValues.NCLDefaultValueAssessment;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -15,7 +16,7 @@ import java.util.TreeSet;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
@@ -213,11 +214,10 @@ public class NCLAssessmentStatement extends NCLStatement {
 
         // Compara os attributeAssessment
         if (comp == 0){
-            NCLAttributeAssessment atts[] = (NCLAttributeAssessment[]) attributeAssessments.toArray();
-            NCLAttributeAssessment other_atts[] = (NCLAttributeAssessment[]) ((Set) other_asses.getAttributeAssessments()).toArray();
-
-            for (int i = 0; i < atts.length; i++){
-                comp = atts[i].compareTo(other_atts[i]);
+            Iterator it = other_asses.getAttributeAssessments().iterator();
+            for (NCLAttributeAssessment att : attributeAssessments){
+                NCLAttributeAssessment other_att = (NCLAttributeAssessment) it.next();
+                comp = att.compareTo(other_att);
                 if (comp != 0)
                     break;
             }

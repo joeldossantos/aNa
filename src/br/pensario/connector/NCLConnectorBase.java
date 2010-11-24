@@ -31,7 +31,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se o conector foi adicionado.
      *
-     * @sse TreeSet#add
+     * @see TreeSet#add(java.lang.Object)
      */
     public boolean addCausalConnector(NCLCausalConnector connector) {
         return connectors.add(connector);        
@@ -46,7 +46,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se o conector foi removido.
      *
-     * @sse TreeSet#remove
+     * @see TreeSet#remove(java.lang.Object)
      */    
     public boolean removeCausalConnector(NCLCausalConnector connector) {
         return connectors.remove(connector);        

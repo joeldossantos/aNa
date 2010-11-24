@@ -3,6 +3,8 @@ package br.pensario.connector;
 import java.util.Set;
 
 import br.pensario.NCLValues.NCLActionOperator;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 
 /**
@@ -14,7 +16,7 @@ import br.pensario.NCLValues.NCLActionOperator;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
@@ -55,7 +57,7 @@ public class NCLCompoundAction extends NCLAction {
      * @return
      *          verdadeiro se a ação foi adicionada.
      *
-     * @see TreeSet#add
+     * @see TreeSet#add(java.lang.Object) 
      */
     public boolean addAction(NCLAction action) {
         return actions.add(action);
@@ -70,7 +72,7 @@ public class NCLCompoundAction extends NCLAction {
      * @return
      *          verdadeiro se a ação foi removida.
      *
-     * @see TreeSet#remove
+     * @see TreeSet#remove(java.lang.Object)
      */
     public boolean removeAction(NCLAction action) {
         return actions.remove(action);
@@ -170,11 +172,10 @@ public class NCLCompoundAction extends NCLAction {
 
         // Compara as acoes
         if (comp == 0){
-            NCLAction acts[] = (NCLAction[]) actions.toArray();
-            NCLAction other_acts[] = (NCLAction[]) ((Set) other_comp.getActions()).toArray();
-
-            for (int i = 0; i < acts.length; i++){
-                comp = acts[i].compareTo(other_acts[i]);
+            Iterator it = other_comp.getActions().iterator();
+            for (NCLAction a : actions){
+                NCLAction other_a = (NCLAction) it.next();
+                comp = a.compareTo(other_a);
                 if (comp != 0)
                     break;
             }

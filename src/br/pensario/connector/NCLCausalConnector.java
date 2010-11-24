@@ -2,7 +2,6 @@ package br.pensario.connector;
 
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -111,9 +110,9 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @return
      *          verdadeiro se o parâmetro for removido.
      */    
-    public boolean removeConnectorParam(String nome) {
+    public boolean removeConnectorParam(String name) {
         for (NCLConnectorParam connp : conn_params){
-            if (connp.getName().equals(nome))
+            if (connp.getName().equals(name))
                 return conn_params.remove(connp);
         }
 
@@ -129,9 +128,9 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @return
      *          verdadeiro se o parâmetro existir.
      */
-    public boolean hasAttributeAssessment(String nome) {
+    public boolean hasAttributeAssessment(String name) {
         for (NCLConnectorParam connp : conn_params){
-            if (connp.getName().equals(nome))
+            if (connp.getName().equals(name))
                 return true;
         }
 

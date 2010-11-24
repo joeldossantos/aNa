@@ -339,7 +339,7 @@ public class NCLSimpleAction extends NCLAction {
             content += " repeat='" + getRepeat() + "'";
 
         if(getRepeatDelay() != null)
-            content += " repeatDelay='" + getRepeatDelay() + "'";
+            content += " repeatDelay='" + getRepeatDelay() + "s'";
 
         if(getDuration() != null)
             content += " duration='" + getDuration() + "'";
@@ -347,7 +347,7 @@ public class NCLSimpleAction extends NCLAction {
         if(getBy() != null)
             content += " by='" + getBy() + "'";
         
-        content += " />\n";
+        content += "/>\n";
 
         return content;
     }

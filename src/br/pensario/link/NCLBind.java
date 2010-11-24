@@ -8,6 +8,7 @@ import br.pensario.connector.NCLRole;
 import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.NCLInterface;
 import br.pensario.node.NCLNode;
+import java.util.Iterator;
 
 
 /**
@@ -19,7 +20,7 @@ import br.pensario.node.NCLNode;
  *      NBR 15606-5:2008</a>
  *
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
@@ -260,11 +261,10 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
 
         // Compara os parâmetros
         if (comp == 0){
-            NCLParam params[] = (NCLParam[]) bindParams.toArray();
-            NCLParam other_params[] = (NCLParam[]) ((Set) other.getBindParams()).toArray();
-
-            for (int i = 0; i < params.length; i++){
-                comp = params[i].compareTo(other_params[i]);
+            Iterator it = other.getBindParams().iterator();
+            for (NCLParam param : bindParams){
+                NCLParam other_param = (NCLParam) it.next();
+                comp = param.compareTo(other_param);
                 if (comp != 0)
                     break;
             }
