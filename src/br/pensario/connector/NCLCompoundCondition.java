@@ -217,7 +217,7 @@ public class NCLCompoundCondition extends NCLCondition {
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLCompoundCondition))
-            comp = -1;
+            comp = 1;
 
         // Compara pelo operador
         if (comp == 0){

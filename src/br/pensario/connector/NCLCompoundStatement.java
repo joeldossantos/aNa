@@ -173,7 +173,7 @@ public class NCLCompoundStatement extends NCLStatement {
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLCompoundStatement))
-            comp = -1;
+            comp = 1;
 
         // Compara pelo operador
         if (comp == 0){

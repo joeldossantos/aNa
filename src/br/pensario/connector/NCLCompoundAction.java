@@ -147,7 +147,7 @@ public class NCLCompoundAction extends NCLAction {
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLCompoundAction))
-            comp = -1;
+            comp = 1;
 
         // Compara pelo operador
         if (comp == 0){
