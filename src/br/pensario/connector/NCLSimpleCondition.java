@@ -35,9 +35,12 @@ public class NCLSimpleCondition extends NCLCondition {
      * Determina o número mínimo de binds que devem usar essa condição.
      * 
      * @param min
-     *          inteiro representando o número mínimo.
+     *          inteiro positivo representando o número mínimo.
      */
     public void setMin(Integer min) {
+        if (min != null && min < 0)
+            throw new IllegalArgumentException("Invalid min");
+        
         this.min = min;
     }
 
@@ -46,7 +49,7 @@ public class NCLSimpleCondition extends NCLCondition {
      * Retorna o número mínimo de binds que devem usar essa condição.
      *
      * @return
-     *          inteiro representando o número mínimo.
+     *          inteiro positivo representando o número mínimo.
      */    
     public Integer getMin() {
         return min;
@@ -57,9 +60,13 @@ public class NCLSimpleCondition extends NCLCondition {
      * Determina o número máximo de binds que devem usar essa condição.
      *
      * @param max
-     *          inteiro representando o número máximo.
+     *          inteiro positivo representando o número máximo ou um inteiro negativo
+     *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(Integer max) {
+        if (max != null && max < 0)
+            this.max = -1;
+        
         this.max = max;
     }
 
@@ -68,7 +75,8 @@ public class NCLSimpleCondition extends NCLCondition {
      * Retorna o número máximo de binds que devem usar essa condição.
      *
      * @return
-     *          inteiro representando o número máximo.
+     *          inteiro positivo representando o número máximo ou -1
+     *          caso o número máximo seja a String "umbouded".
      */
     public Integer getMax() {
         return max;
@@ -227,8 +235,11 @@ public class NCLSimpleCondition extends NCLCondition {
         if(getMin() != null)
             content += " min='" + getMin() + "'";        
         
-        if(getMax() != null)
-            content += " max='" + getMax() + "'";
+        if (getMax() != null)
+            if (getMax() < 0)
+                content += " max='unbounded'";
+            else
+                content += " max='" + getMax() + "'";
             
         if(getQualifier() != null)
             content += " qualifier='" + getQualifier().toString() + "'";
@@ -249,11 +260,13 @@ public class NCLSimpleCondition extends NCLCondition {
         int comp = 0;
 
         String this_cond, other_cond;
-        NCLSimpleCondition other_simp = (NCLSimpleCondition) other;
+        NCLSimpleCondition other_simp;
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLSimpleCondition))
-            comp = -1;
+            return -1;
+
+         other_simp = (NCLSimpleCondition) other;
 
         // Compara pelo role
         if (getRole() == null) this_cond = ""; else this_cond = getRole().getName();

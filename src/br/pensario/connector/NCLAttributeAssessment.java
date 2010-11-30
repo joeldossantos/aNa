@@ -159,19 +159,19 @@ public class NCLAttributeAssessment {
 
         content += " role='" + getRole().getName() + "'";
 
-        if(getEventType()!= null)
+        if(getEventType() != null)
             content += " eventType='" + getEventType().toString() + "'";
         
-        if(getKey()!= null)
+        if(getKey() != null)
             content += " key='" + getKey().toString() + "'";
         
-        if(getAttributeType()!= null)
+        if(getAttributeType() != null)
             content += " attributeType='" + getAttributeType().toString() + "'";        
         
-        if(getOffset()!= null)
+        if(getOffset() != null)
             content += " offset='" + getOffset() + "'";
         
-        content += " />\n";
+        content += "/>\n";
 
         return content;
     }

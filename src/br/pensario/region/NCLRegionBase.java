@@ -171,7 +171,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
         for (int i = 0; i < ident; i++)
             space += "\t";
 
-        content = space + "<regionBase ";
+        content = space + "<regionBase";
         
         if(getId() != null)
             content += " id='" + getId() + "'";

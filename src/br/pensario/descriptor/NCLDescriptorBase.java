@@ -113,12 +113,12 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
         for (int i = 0; i < ident; i++)
             space += "\t";
 
-        content = space + "<descriptorBase ";
+        content = space + "<descriptorBase";
 
         if (getId() != null)
-            content += " id='" + getId();
+            content += " id='" + getId() + "'";
 
-        content += "'>\n";
+        content += ">\n";
 
         if (hasDescriptor()){
             for (NCLDescriptor descriptor : descriptors)

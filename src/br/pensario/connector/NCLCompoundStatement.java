@@ -170,12 +170,14 @@ public class NCLCompoundStatement extends NCLStatement {
         int comp = 0;
 
         String this_stat, other_stat;
-        NCLCompoundStatement other_comp = (NCLCompoundStatement) other;
+        NCLCompoundStatement other_comp;
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLCompoundStatement))
-            comp = 1;
+            return 1;
 
+        other_comp = (NCLCompoundStatement) other;
+        
         // Compara pelo operador
         if (comp == 0){
             if (getOperator() == null) this_stat = ""; else this_stat = getOperator().toString();

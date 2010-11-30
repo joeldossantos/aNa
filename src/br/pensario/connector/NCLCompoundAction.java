@@ -24,7 +24,7 @@ public class NCLCompoundAction extends NCLAction {
 
     private NCLActionOperator operator;
     
-    private Set<NCLAction> actions; 
+    private Set<NCLAction> actions = new TreeSet(); 
     
     
     /**
@@ -126,7 +126,7 @@ public class NCLCompoundAction extends NCLAction {
             space += "\t";
 
         content = space + "<compoundAction";
-
+        content += " operator='" + getOperator() + "'";
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";        
         
@@ -135,7 +135,7 @@ public class NCLCompoundAction extends NCLAction {
         for(NCLAction action : actions)
             content += action.parse(ident + 1);
         
-        content += space + "</compoundAction>";
+        content += space + "</compoundAction>\n";
 
         return content;
     }
@@ -145,12 +145,14 @@ public class NCLCompoundAction extends NCLAction {
         int comp = 0;
 
         String this_act, other_act;
-        NCLCompoundAction other_comp = (NCLCompoundAction) other;
+        NCLCompoundAction other_comp;
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLCompoundAction))
-            comp = 1;
+            return 1;
 
+        other_comp = (NCLCompoundAction) other;
+        
         // Compara pelo operador
         if (comp == 0){
             if (getOperator() == null) this_act = ""; else this_act = getOperator().toString();

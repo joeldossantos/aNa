@@ -75,9 +75,7 @@ public class NCLAssessmentStatement extends NCLStatement {
         try{
             this.valueAssessment = new NCLValueAssessment(value.toString());
         }
-        catch(IllegalArgumentException e){
-
-        }
+        catch(IllegalArgumentException e){}
     }
     
     
@@ -195,12 +193,14 @@ public class NCLAssessmentStatement extends NCLStatement {
         int comp = 0;
 
         String this_stat, other_stat;
-        NCLAssessmentStatement other_asses = (NCLAssessmentStatement) other;
+        NCLAssessmentStatement other_asses;
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLAssessmentStatement))
-            comp = -1;
+            return -1;
 
+        other_asses = (NCLAssessmentStatement) other;
+        
         // Compara pelo comparador
         if (comp == 0){
             if (getComparator() == null) this_stat = ""; else this_stat = getComparator().toString();

@@ -74,7 +74,7 @@ public class NCLValueAssessment {
 
         content += " value='" + getValue() + "'";        
         
-        content += ">\n";
+        content += "/>\n";
 
         return content;
     }

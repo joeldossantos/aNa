@@ -88,15 +88,19 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * 
      * @param name
      *          nome do parâmetro a ser adicionado ao conector.
+     * @param type
+     *          tipo do parâmetro a ser adicionado ao conector.
      * @return
      *          verdadeiro se o parâmetro for adicionado.
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome do parâmetro for inválido.
+     *         java.lang.IllegalArgumentException
+     *          se a String do tipo for vazia.
      *
      * @see TreeSet#add
      */    
-    public boolean addConnectorParam(String name) throws NCLInvalidIdentifierException {
-        NCLConnectorParam param = new NCLConnectorParam(name);
+    public boolean addConnectorParam(String name, String type) throws NCLInvalidIdentifierException {
+        NCLConnectorParam param = new NCLConnectorParam(name, type);
         
         return conn_params.add(param);
     }

@@ -24,7 +24,7 @@ public class NCLCompoundCondition extends NCLCondition {
     
     private NCLConditionOperator operator;
     
-    private Set<NCLCondition> conditions = new TreeSet<NCLCondition>();
+    private Set<NCLCondition> conditions = new TreeSet();
     private Set<NCLStatement> statements = new TreeSet();
     
     
@@ -192,7 +192,7 @@ public class NCLCompoundCondition extends NCLCondition {
             space += "\t";
 
         content = space + "<compoundCondition";
-
+        content += " operator='" + getOperator() + "'";
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";        
         
@@ -214,12 +214,14 @@ public class NCLCompoundCondition extends NCLCondition {
         int comp = 0;
 
         String this_cond, other_cond;
-        NCLCompoundCondition other_comp = (NCLCompoundCondition) other;
+        NCLCompoundCondition other_comp;
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLCompoundCondition))
-            comp = 1;
+            return 1;
 
+        other_comp = (NCLCompoundCondition) other;
+        
         // Compara pelo operador
         if (comp == 0){
             if (getOperator() == null) this_cond = ""; else this_cond = getOperator().toString();

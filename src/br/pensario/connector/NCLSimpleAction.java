@@ -65,9 +65,12 @@ public class NCLSimpleAction extends NCLAction {
      * Determina o número mínimo de binds que devem usar essa ação.
      *
      * @param min
-     *          inteiro representando o número mínimo.
+     *          inteiro positivo representando o número mínimo.
      */
     public void setMin(Integer min) {
+        if (min != null && min < 0)
+            throw new IllegalArgumentException("Invalid min");
+        
         this.min = min;
     }
 
@@ -76,7 +79,7 @@ public class NCLSimpleAction extends NCLAction {
      * Retorna o número mínimo de binds que devem usar essa ação.
      *
      * @return
-     *          inteiro representando o número mínimo.
+     *          inteiro positivo representando o número mínimo.
      */
     public Integer getMin() {
         return min;
@@ -87,9 +90,13 @@ public class NCLSimpleAction extends NCLAction {
      * Determina o número máximo de binds que devem usar essa ação.
      *
      * @param max
-     *          inteiro representando o número máximo.
+     *          inteiro positivo representando o número máximo ou um inteiro negativo
+     *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(Integer max) {
+        if (max != null && max < 0)
+            this.max = -1;
+        
         this.max = max;
     }
 
@@ -98,7 +105,8 @@ public class NCLSimpleAction extends NCLAction {
      * Retorna o número máximo de binds que devem usar essa ação.
      *
      * @return
-     *          inteiro representando o número máximo.
+     *          inteiro positivo representando o número máximo ou -1
+     *          caso o número máximo seja a String "umbouded".
      */
     public Integer getMax() {
         return max;
@@ -314,19 +322,22 @@ public class NCLSimpleAction extends NCLAction {
 
         content += " role='" + getRole().getName() + "'";
 
-        if(getValue() != null)
+        if (getValue() != null)
             content += " value='" + getValue() + "'";
 
-        if(getDelay() != null)
+        if (getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         
-        if(getMin() != null)
+        if (getMin() != null)
             content += " min='" + getMin() + "'";
         
-        if(getMax() != null)
-            content += " max='" + getMax() + "'";        
+        if (getMax() != null)
+            if (getMax() < 0)
+                content += " max='unbounded'";
+            else
+                content += " max='" + getMax() + "'";
         
-        if(getQualifier() != null)
+        if (getQualifier() != null)
             content += " qualifier='" + getQualifier().toString() + "'";
 
         if (getEventType() != null)
@@ -342,7 +353,7 @@ public class NCLSimpleAction extends NCLAction {
             content += " repeatDelay='" + getRepeatDelay() + "s'";
 
         if(getDuration() != null)
-            content += " duration='" + getDuration() + "'";
+            content += " duration='" + getDuration() + "s'";
 
         if(getBy() != null)
             content += " by='" + getBy() + "'";
@@ -358,11 +369,13 @@ public class NCLSimpleAction extends NCLAction {
 
         String this_act, other_act;
         int this_ac, other_ac;
-        NCLSimpleAction other_simp = (NCLSimpleAction) other;
+        NCLSimpleAction other_simp;
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLSimpleAction))
-            comp = -1;
+            return -1;
+
+         other_simp = (NCLSimpleAction) other;
 
         // Compara pelo role
         if (getRole() == null) this_act = ""; else this_act = getRole().getName();

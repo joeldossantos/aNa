@@ -476,7 +476,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
         if (getSelBorderColor() != null)
             content += " focusSelBorderColor='" + getSelBorderColor().toString() + "'";
 
-        content += " />\n";
+        content += "/>\n";
 
         return content;
     }

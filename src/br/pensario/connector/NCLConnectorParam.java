@@ -27,11 +27,16 @@ public class NCLConnectorParam extends NCLIdentifiableElement implements Compara
      * 
      * @param name
      *          String contendo o nome a ser atribuido ao parâmetro.
+     * @param type
+     *          String contendo o tipo a ser atribuido ao parâmetro.
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome do parâmetro for inválido.
+     *         java.lang.IllegalArgumentException
+     *          se a String do tipo for vazia.
      */
-    public NCLConnectorParam(String name) throws NCLInvalidIdentifierException {
-        setName(name);        
+    public NCLConnectorParam(String name, String type) throws NCLInvalidIdentifierException {
+        setName(name);
+        setType(type);
     }
 
 
@@ -105,7 +110,7 @@ public class NCLConnectorParam extends NCLIdentifiableElement implements Compara
         if(getType() != null)
             content += " type='" + getType() + "'";        
         
-        content += " />\n";
+        content += "/>\n";
 
         return content;
     }
