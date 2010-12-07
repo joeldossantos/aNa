@@ -1,0 +1,632 @@
+package br.pensario.region;
+
+import java.util.Set;
+import java.util.TreeSet;
+
+import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
+
+
+/**
+ * Esta classe define o elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
+ * Este elemento define uma região de exibição de conteúdo.<br>
+ *
+ * @see <a
+ *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
+ *      NBR 15606-5:2008</a>
+ *
+ *
+ * @version 1.0.0
+ * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
+ * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ */
+public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLRegion> {
+
+    private String title;
+    private Integer left;
+    private Integer right;
+    private Integer top;
+    private Integer bottom;
+    private Integer height;
+    private Integer width;
+    private Integer zIndex;
+
+    private boolean relativeLeft;
+    private boolean relativeRight;
+    private boolean relativeTop;
+    private boolean relativeBottom;
+    private boolean relativeHeight;
+    private boolean relativeWidth;
+
+    private Set<NCLRegion> regions = new TreeSet();
+
+
+    /**
+     * Construtor do elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
+     * 
+     * @param id
+     *          identificador da região.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador for inválido.
+     */
+    public NCLRegion(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
+
+
+    /**
+     * Atribui um título para a região.
+     * 
+     * @param title
+     *          String representando o títuloo da região.
+     * @throws java.lang.IllegalArgumentException
+     *          se o título for uma String vazia.
+     */
+    public void setTitle(String title) throws IllegalArgumentException {
+        if (title != null && "".equals(title.trim()))
+            throw new IllegalArgumentException("Empty title String");
+
+        this.title = title;
+    }
+
+
+    /**
+     * Retorna o título da região.
+     * 
+     * @return
+     *          String representando o títuloo da região.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+
+    /**
+     * Atribui o valor da posição a esquerda da região.
+     * 
+     * @param left
+     *          inteiro representando a posição a esquerda da região.
+     * @param relative
+     *          booleano indicando se o valor de posição é uma porcentagem.
+     * @throws java.lang.IllegalArgumentException
+     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     */
+    public void setLeft(Integer left, boolean relative) throws IllegalArgumentException {
+        setRelativeLeft(relative);
+
+        if (isRelativeLeft() && (left < 0 || left > 100))
+            throw new IllegalArgumentException("Invalid percentage position value (%left= " +
+                    left + "). It must be between 0 and 100.");
+
+        this.left = left;
+    }
+
+
+    /**
+     * Retorna o valor da posição a esquerda da região.
+     * 
+     * @return
+     *          inteiro representando a posição a esquerda da região.
+     *          pode representar uma grandeza em pixels ou percentual, dependendo
+     *          da especificação de posição relativa.
+     * 
+     * @see NCLRegion#setLeft
+     * @see NCLRegion#isRelativeLeft
+     */
+    public Integer getLeft() {
+        return left;
+    }
+
+
+    /**
+     * Atribui o valor da posição a direita da região.
+     *
+     * @param right
+     *          inteiro representando a posição a direita da região.
+     * @param relative
+     *          booleano indicando se o valor de posição é uma porcentagem.
+     * @throws java.lang.IllegalArgumentException
+     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     */
+    public void setRight(int right, boolean relative) throws IllegalArgumentException {
+        setRelativeRight(relative);
+
+        if (isRelativeRight() && (right < 0 || right > 100))
+            throw new IllegalArgumentException("Invalid percentage position value (%right= " +
+                    right + "). It must be between 0 and 100.");
+
+        this.right = right;
+    }
+
+
+    /**
+     * Retorna o valor da posição a direita da região.
+     *
+     * @return
+     *          inteiro representando a posição a direita da região.
+     *          pode representar uma grandeza em pixels ou percentual, dependendo
+     *          da especificação de posição relativa.
+     *
+     * @see NCLRegion#setRight
+     * @see NCLRegion#isRelativeRight
+     */
+    public Integer getRight() {
+        return right;
+    }
+
+
+    /**
+     * Atribui o valor da posição de topo da região.
+     *
+     * @param top
+     *          inteiro representando a posição de topo da região.
+     * @param relative
+     *          booleano indicando se o valor de posição é uma porcentagem.
+     * @throws java.lang.IllegalArgumentException
+     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     */
+    public void setTop(int top, boolean relative) throws IllegalArgumentException {
+        setRelativeTop(relative);
+
+        if (isRelativeTop() && top >= 0 && top <= 100)
+            throw new IllegalArgumentException("Invalid percentage position value (%top= " +
+                    top + "). It must be between 0 and 100.");
+
+        this.top = top;
+    }
+
+
+    /**
+     * Retorna o valor da posição de topo da região.
+     *
+     * @return
+     *          inteiro representando a posição de topo da região.
+     *          pode representar uma grandeza em pixels ou percentual, dependendo
+     *          da especificação de posição relativa.
+     *
+     * @see NCLRegion#setRight
+     * @see NCLRegion#isRelativeRight
+     */
+    public Integer getTop() {
+        return top;
+    }
+
+
+    /**
+     * Atribui o valor da posição inferior da região.
+     *
+     * @param bottom
+     *          inteiro representando a posição inferior da região.
+     * @param relative
+     *          booleano indicando se o valor de posição é uma porcentagem.
+     * @throws java.lang.IllegalArgumentException
+     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     */
+    public void setBottom(int bottom, boolean relative) throws IllegalArgumentException {
+        setRelativeBottom(relative);
+
+        if (isRelativeBottom() && (bottom < 0 || bottom > 100))
+            throw new IllegalArgumentException("Invalid percentage position value (%bottom= " +
+                    bottom + "). It must be between 0 and 100.");
+
+
+        this.bottom = bottom;
+    }
+
+
+    /**
+     * Retorna o valor da posição inferior da região.
+     *
+     * @return
+     *          inteiro representando a posição inferior da região.
+     *          pode representar uma grandeza em pixels ou percentual, dependendo
+     *          da especificação de posição relativa.
+     *
+     * @see NCLRegion#setBottom
+     * @see NCLRegion#isRelativeBottom
+     */
+    public Integer getBottom() {
+        return bottom;
+    }
+
+
+    /**
+     * Atribui uma altura a região.
+     * 
+     * @param height
+     *          inteiro representando a altura da região.
+     * @param relative
+     *          booleano indicando se o valor de altura é uma porcentagem.
+     * @throws java.lang.IllegalArgumentException
+     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     */
+    public void setHeight(int height, boolean relative) throws IllegalArgumentException {
+        setRelativeHeight(relative);
+
+        if (isRelativeHeight() && (height < 0 || height > 100))
+            throw new IllegalArgumentException("Valor não percentual para atributo relativo de posicionamento (%height= "
+                            + height + ")");
+
+        this.height = height;
+    }
+
+
+    /**
+     * Retorna o valor da altura da região.
+     *
+     * @return
+     *          inteiro representando a altura da região.
+     *          pode representar uma grandeza em pixels ou percentual, dependendo
+     *          da especificação de posição relativa.
+     *
+     * @see NCLRegion#setHeight
+     * @see NCLRegion#isRelativeHeight
+     */
+    public Integer getHeight() {
+        return height;
+    }
+
+
+    /**
+     * Atribui uma largura a região.
+     *
+     * @param width
+     *          inteiro representando a largura da região.
+     * @param relative
+     *          booleano indicando se o valor de altura é uma porcentagem.
+     * @throws java.lang.IllegalArgumentException
+     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     */
+    public void setWidth(int width, boolean relative) throws IllegalArgumentException {
+        setRelativeWidth(relative);
+
+        if (isRelativeWidth() && (width < 0 || width > 100))
+            throw new IllegalArgumentException("Valor não porcentual para atributo relativo de posicionamento (%width= "
+                            + width + ")");
+
+        this.width = width;
+    }
+
+
+    /**
+     * Retorna o valor da largura da região.
+     *
+     * @return
+     *          inteiro representando a largura da região.
+     *          pode representar uma grandeza em pixels ou percentual, dependendo
+     *          da especificação de posição relativa.
+     *
+     * @see NCLRegion#setWidth
+     * @see NCLRegion#isRelativeWidth
+     */
+    public Integer getWidth() {
+        return width;
+    }
+
+
+    /**
+     * Atribui um indice no eixo z (usado para sobreposição) a região.
+     *
+     * @param zIndex
+     *          inteiro representando o índice da região.
+     * @throws java.lang.IllegalArgumentException
+     *          se o índice for um valor negativo.
+     */
+    public void setzIndex(Integer zIndex) throws IllegalArgumentException {
+        if (zIndex != null && zIndex < 0)
+            throw new IllegalArgumentException("Illegal index value");
+
+        this.zIndex = zIndex;
+    }
+
+
+    /**
+     * Retorna o indice no eixo z (usado para sobreposição) da região.
+     *
+     * @return
+     *          inteiro representando o índice da região.
+     */
+    public Integer getzIndex() {
+        return zIndex;
+    }
+
+
+    /**
+     * Determina se a posição a esquerda da região é uma porcentagem.
+     *
+     * @param relativeLeft
+     *          booleano indicando se a posição a esquerda da região é uma porcentagem.
+     */
+    private void setRelativeLeft(boolean relativeLeft) {
+        this.relativeLeft = relativeLeft;
+    }
+
+
+    /**
+     * Retorna se a posição a esquerda da região é uma porcentagem.
+     *
+     * @return
+     *          booleano indicando se a posição a esquerda da região é uma porcentagem.
+     */
+    private boolean isRelativeLeft() {
+        return relativeLeft;
+    }
+
+
+    /**
+     * Determina se a posição a direita da região é uma porcentagem.
+     *
+     * @param relativeRight
+     *          booleano indicando se a posição a direita da região é uma porcentagem.
+     */
+    private void setRelativeRight(boolean relativeRight) {
+        this.relativeRight = relativeRight;
+    }
+
+
+    /**
+     * Retorna se a posição a direita da região é uma porcentagem.
+     *
+     * @return
+     *          booleano indicando se a posição a direita da região é uma porcentagem.
+     */
+    private boolean isRelativeRight() {
+        return relativeRight;
+    }
+
+
+    /**
+     * Determina se a posição de topo da região é uma porcentagem.
+     *
+     * @param relativeTop
+     *          booleano indicando se a posição de topo da região é uma porcentagem.
+     */
+    private void setRelativeTop(boolean relativeTop) {
+        this.relativeTop = relativeTop;
+    }
+
+
+    /**
+     * Retorna se a posição de topo da região é uma porcentagem.
+     *
+     * @return
+     *          booleano indicando se a posição de topo da região é uma porcentagem.
+     */
+    private boolean isRelativeTop() {
+        return relativeTop;
+    }
+
+
+    /**
+     * Determina se a posição inferior da região é uma porcentagem.
+     *
+     * @param relativeBottom
+     *          booleano indicando se a posição inferior da região é uma porcentagem.
+     */
+    private void setRelativeBottom(boolean relativeBottom) {
+        this.relativeBottom = relativeBottom;
+    }
+
+
+    /**
+     * Retorna se a posição inferior da região é uma porcentagem.
+     *
+     * @return
+     *          booleano indicando se a posição inferior da região é uma porcentagem.
+     */
+    private boolean isRelativeBottom() {
+        return relativeBottom;
+    }
+
+
+    /**
+     * Determina se a altura da região é uma porcentagem.
+     *
+     * @param relativeHeight
+     *          booleano indicando se a altura da região é uma porcentagem.
+     */
+    private void setRelativeHeight(boolean relativeHeight) {
+        this.relativeHeight = relativeHeight;
+    }
+
+
+    /**
+     * Retorna se a altura da região é uma porcentagem.
+     *
+     * @return
+     *          booleano indicando se a altura da região é uma porcentagem.
+     */
+    private boolean isRelativeHeight() {
+        return relativeHeight;
+    }
+
+
+    /**
+     * Determina se a largura da região é uma porcentagem.
+     *
+     * @param relativeWidth
+     *          booleano indicando se a largura da região é uma porcentagem.
+     */
+    private void setRelativeWidth(boolean relativeWidth) {
+        this.relativeWidth = relativeWidth;
+    }
+
+
+    /**
+     * Retorna se a largura da região é uma porcentagem.
+     *
+     * @return
+     *          booleano indicando se a largura da região é uma porcentagem.
+     */
+    private boolean isRelativeWidth() {
+        return relativeWidth;
+    }
+
+
+    /**
+     * Adiciona uma região filha à região. A região filha é considerada uma região interna
+     * tendo seus parâmetros relativos a esta região.
+     *
+     * @param child
+     *          elemento representando a região a ser adicionada.
+     * @return
+     *          verdadeiro se a região foi adicionada.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addRegion(NCLRegion child) throws Exception {
+        return regions.add(child);
+    }
+
+
+    /**
+     * Remove uma região filha da região.
+     *
+     * @param id
+     *          identificador da região a ser removida.
+     * @return
+     *          Verdadeiro se a região foi removida.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeRegion(String id) {
+        for (NCLRegion region : regions){
+            if (region.getId().equals(id))
+                return regions.remove(region);
+        }
+        return false;
+    }
+
+
+    /**
+     * Remove uma região filha da região.
+     *
+     * @param region
+     *          elemento representando a região a ser removida.
+     * @return
+     *          verdadeiro se a região foi removida.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeRegion(NCLRegion region) {
+        return regions.remove(region);
+    }
+
+
+    /**
+     * Verifica se a região possui uma região como filha.
+     *
+     * @param child
+     *          elemento representando a região a ser verificada.
+     * @return
+     *          verdadeiro se a região existir.
+     */
+    public boolean hasRegion(NCLRegion child) {
+        return regions.contains(child);
+    }
+
+
+    /**
+     * Verifica se a região possui alguma região como filha.
+     *
+     * @return
+     *          verdadeiro se a região possuir alguma região filha.
+     */
+    public boolean hasRegion() {
+        return !regions.isEmpty();
+    }
+
+
+    /**
+     * Retorna as regiões internas a região.
+     *
+     * @return
+     *          objeto Iterable contendo as regiões internas.
+     */
+    public Iterable<NCLRegion> getRegions() {
+        return regions;
+    }
+    
+
+    public String parse(int ident) {
+        String space, content;
+
+        if (ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<region";
+        content += " id='" + getId() + "'";
+
+        if (getLeft() != null) {
+            String percent = "";
+            if (isRelativeLeft())
+                percent = "%";
+            content += " left='" + getLeft() + percent + "'";
+        }
+
+        if (getRight() != null) {
+            String percent = "";
+            if (isRelativeRight())
+                percent = "%";
+            content += " right='" + getRight() + percent + "'";
+        }
+
+        if (getTop() != null) {
+            String percent = "";
+            if (isRelativeTop())
+                percent = "%";
+            content += " top='" + getTop() + percent + "'";
+        }
+
+        if (getBottom() != null) {
+            String percent = "";
+            if (isRelativeBottom())
+                percent = "%";
+            content += " bottom='" + getBottom() + percent + "'";
+        }
+
+        if (getHeight() != null) {
+            String percent = "";
+            if (isRelativeHeight())
+                percent = "%";
+            content += " height='" + getHeight() + percent + "'";
+        }
+
+        if (getWidth() != null) {
+            String percent = "";
+            if (isRelativeWidth())
+                percent = "%";
+            content += " width='" + getWidth() + percent + "'";
+        }
+
+        if (getzIndex() != null)
+            content += " zIndex='" + getzIndex() + "'";
+
+        if (getTitle() != null)
+            content += " title='" + getTitle() + "'";
+
+        if (hasRegion()) {
+            content += ">\n";
+
+            for (NCLRegion region : getRegions())
+                content += region.parse(ident + 1);
+            
+            content += space + "</region>\n";
+        }
+        else
+            content += "/>\n";
+
+        return content;
+    }
+
+
+    public int compareTo(NCLRegion other) {
+        return getId().compareTo(other.getId());
+    }
+
+}
