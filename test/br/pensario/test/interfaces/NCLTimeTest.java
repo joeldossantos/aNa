@@ -14,8 +14,6 @@ public class NCLTimeTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		t1 = new NCLTime(10);
-		t2 = new NCLTime(10, 100);
-		t3 = new NCLTime(20, 54, 54, 2548);
 		t4 = new NCLTime(154, 10, 22, 23, 55, 55, 1568);
 	}
 	
@@ -48,34 +46,6 @@ public class NCLTimeTest {
 	}
 	
 	@Test
-	public void testHasYear_t1() {
-		boolean expResult = false;
-		boolean result = t1.hasYear();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasYear_t2() {
-		boolean expResult = false;
-		boolean result = t2.hasYear();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasYear_t3() {
-		boolean expResult = false;
-		boolean result = t3.hasYear();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasYear_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasYear();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
 	public void testGetYear_t1() {
 		int expResult = -1;
 		int result = t1.getYear();
@@ -100,34 +70,6 @@ public class NCLTimeTest {
 	public void testGetYear_t4() {
 		int expResult = 154;
 		int result = t4.getYear();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMonth_t1() {
-		boolean expResult = false;
-		boolean result = t1.hasMonth();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMonth_t2() {
-		boolean expResult = false;
-		boolean result = t2.hasMonth();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMonth_t3() {
-		boolean expResult = false;
-		boolean result = t3.hasMonth();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMonth_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasMonth();
 		assertEquals(expResult, result);
 	}
 	
@@ -160,34 +102,6 @@ public class NCLTimeTest {
 	}
 	
 	@Test
-	public void testHasDay_t1() {
-		boolean expResult = false;
-		boolean result = t1.hasDay();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasDay_t2() {
-		boolean expResult = false;
-		boolean result = t2.hasDay();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasDay_t3() {
-		boolean expResult = false;
-		boolean result = t3.hasDay();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasDay_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasDay();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
 	public void testGetDay_t1() {
 		int expResult = -1;
 		int result = t1.getDay();
@@ -212,34 +126,6 @@ public class NCLTimeTest {
 	public void testGetDay_t4() {
 		int expResult = 22;
 		int result = t4.getDay();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasHour_t1() {
-		boolean expResult = false;
-		boolean result = t1.hasHour();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasHour_t2() {
-		boolean expResult = false;
-		boolean result = t2.hasHour();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasHour_t3() {
-		boolean expResult = true;
-		boolean result = t3.hasHour();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasHour_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasHour();
 		assertEquals(expResult, result);
 	}
 	
@@ -272,34 +158,6 @@ public class NCLTimeTest {
 	}
 	
 	@Test
-	public void testHasMinute_t1() {
-		boolean expResult = false;
-		boolean result = t1.hasMinute();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMinute_t2() {
-		boolean expResult = false;
-		boolean result = t2.hasMinute();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMinute_t3() {
-		boolean expResult = true;
-		boolean result = t3.hasMinute();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasMinute_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasMinute();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
 	public void testGetMinute_t1() {
 		int expResult = -1;
 		int result = t1.getMinute();
@@ -328,34 +186,6 @@ public class NCLTimeTest {
 	}
 	
 	@Test
-	public void testHasSecond_t1() {
-		boolean expResult = true;
-		boolean result = t1.hasSecond();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasSecond_t2() {
-		boolean expResult = true;
-		boolean result = t2.hasSecond();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasSecond_t3() {
-		boolean expResult = true;
-		boolean result = t3.hasSecond();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasSecond_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasSecond();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
 	public void testGetSecond_t1() {
 		int expResult = 10;
 		int result = t1.getSecond();
@@ -380,34 +210,6 @@ public class NCLTimeTest {
 	public void testGetSecond_t4() {
 		int expResult = 55;
 		int result = t4.getSecond();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasFraction_t1() {
-		boolean expResult = false;
-		boolean result = t1.hasFraction();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasFraction_t2() {
-		boolean expResult = true;
-		boolean result = t2.hasFraction();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasFraction_t3() {
-		boolean expResult = true;
-		boolean result = t3.hasFraction();
-		assertEquals(expResult, result);
-	}
-	
-	@Test
-	public void testHasFraction_t4() {
-		boolean expResult = true;
-		boolean result = t4.hasFraction();
 		assertEquals(expResult, result);
 	}
 	
