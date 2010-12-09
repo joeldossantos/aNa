@@ -580,4 +580,18 @@ public abstract class NCLValues {
         private NCLAttributes(String name) { this.name = name;}
         public String toString() { return name; }
     }
+
+
+    /**
+     * Tipos do parâmetro usado dentro de links (pode ser parâmetro do link ou do bind).
+     */
+    public enum NCLParamInstance {
+
+        LINKPARAM("linkParam"),
+        BINDPARAM("bindParam");
+
+        private String name;
+        private NCLParamInstance(String name) { this.name = name;}
+        public String toString() { return name;}
+    }
 }

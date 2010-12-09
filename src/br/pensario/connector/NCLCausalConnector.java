@@ -19,11 +19,12 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCausalConnector extends NCLIdentifiableElement implements Comparable<NCLCausalConnector> {
+public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCondition, Ac extends NCLAction, P extends NCLConnectorParam>
+        extends NCLIdentifiableElement implements Comparable<C> {
 
-    private NCLCondition condition;
-    private NCLAction action;
-    private Set<NCLConnectorParam> conn_params = new TreeSet();
+    private Co condition;
+    private Ac action;
+    private Set<P> conn_params = new TreeSet<P>();
 
 
     /**
@@ -45,7 +46,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @param condition
      *          elemento representando uma condição do conector.
      */    
-    public void setCondition(NCLCondition condition) {
+    public void setCondition(Co condition) {
         this.condition = condition;
     }
     
@@ -56,7 +57,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @return
      *          elemento representando uma condição do conector.
      */    
-    public NCLCondition getCondition() {
+    public Co getCondition() {
         return condition;
     }
 
@@ -67,7 +68,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @param action
      *          elemento representando uma ação do conector.
      */    
-    public void setAction(NCLAction action) {
+    public void setAction(Ac action) {
         this.action = action;
     }
     
@@ -78,7 +79,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @return
      *          elemento representando uma ação do conector.
      */
-    public NCLAction getAction() {
+    public Ac getAction() {
         return action;
     }
 
@@ -86,22 +87,14 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
     /**
      * Adiciona um parâmetro ao conector causal NCL.     
      * 
-     * @param name
+     * @param param
      *          nome do parâmetro a ser adicionado ao conector.
-     * @param type
-     *          tipo do parâmetro a ser adicionado ao conector.
      * @return
      *          verdadeiro se o parâmetro for adicionado.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome do parâmetro for inválido.
-     *         java.lang.IllegalArgumentException
-     *          se a String do tipo for vazia.
      *
      * @see TreeSet#add
      */    
-    public boolean addConnectorParam(String name, String type) throws NCLInvalidIdentifierException {
-        NCLConnectorParam param = new NCLConnectorParam(name, type);
-        
+    public boolean addConnectorParam(P param) throws NCLInvalidIdentifierException {
         return conn_params.add(param);
     }
 
@@ -115,7 +108,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      *          verdadeiro se o parâmetro for removido.
      */    
     public boolean removeConnectorParam(String name) {
-        for (NCLConnectorParam connp : conn_params){
+        for (P connp : conn_params){
             if (connp.getName().equals(name))
                 return conn_params.remove(connp);
         }
@@ -133,7 +126,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      *          verdadeiro se o parâmetro existir.
      */
     public boolean hasAttributeAssessment(String name) {
-        for (NCLConnectorParam connp : conn_params){
+        for (P connp : conn_params){
             if (connp.getName().equals(name))
                 return true;
         }
@@ -159,7 +152,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
      * @return
      *          objeto Iterable contendo os parâmetros do conector.
      */
-    public Iterable<NCLConnectorParam> getAttributeAssessments() {
+    public Iterable<P> getAttributeAssessments() {
         return conn_params;
     }
 
@@ -179,7 +172,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
         content += " id='" + getId() + "'";
         content += ">\n";
 
-        for(NCLConnectorParam connp : conn_params)
+        for(P connp : conn_params)
             content += connp.parse(ident + 1);
         
         content += getCondition().parse(ident + 1);
@@ -191,7 +184,7 @@ public class NCLCausalConnector extends NCLIdentifiableElement implements Compar
     }
 
     
-    public int compareTo(NCLCausalConnector other) {
+    public int compareTo(C other) {
         return getId().compareTo(other.getId());
     }
 

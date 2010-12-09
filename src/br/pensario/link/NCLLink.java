@@ -21,12 +21,12 @@ import java.util.Iterator;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLink>{
+public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> extends NCLIdentifiableElement implements Comparable<L>{
 
     private NCLCausalConnector xconnector;
     
-    private Set<NCLParam> linkParams = new TreeSet();
-    private Set<NCLBind> binds = new TreeSet();
+    private Set<P> linkParams = new TreeSet<P>();
+    private Set<B> binds = new TreeSet<B>();
     
     
     /**
@@ -61,7 +61,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      *
      * @see TreeSet#add
      */
-    public boolean addLinkParam(NCLParam param) {
+    public boolean addLinkParam(P param) {
         return linkParams.add(param);
     }
     
@@ -76,7 +76,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      *
      * @see TreeSet#remove
      */
-    public boolean removeLinkParam(NCLParam param) {
+    public boolean removeLinkParam(P param) {
         return linkParams.remove(param);
     }
     
@@ -89,7 +89,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      * @return
      *          verdadeiro se o parâmetro existir.
      */
-    public boolean hasLinkParam(NCLParam param) {
+    public boolean hasLinkParam(P param) {
         return linkParams.contains(param);
     }
     
@@ -111,7 +111,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      * @return
      *          objeto Iterable contendo os parâmetros do link.
      */
-    public Iterable<NCLParam> getLinkParams() {
+    public Iterable<P> getLinkParams() {
         return linkParams;
     }
     
@@ -126,7 +126,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      *
      * @see TreeSet#add
      */
-    public boolean addBind(NCLBind bind) {
+    public boolean addBind(B bind) {
         return binds.add(bind);
     }
     
@@ -141,7 +141,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      *
      * @see TreeSet#remove
      */
-    public boolean removeBind(NCLBind bind) {
+    public boolean removeBind(B bind) {
         return binds.remove(bind);
     }
     
@@ -154,7 +154,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      * @return
      *          verdadeiro se o bind existir.
      */
-    public boolean hasBind(NCLBind bind) {
+    public boolean hasBind(B bind) {
         return binds.contains(bind);
     }
 
@@ -176,7 +176,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
      * @return
      *          objeto Iterable contendo os binds do link.
      */
-    public Iterable<NCLBind> getBinds() {
+    public Iterable<B> getBinds() {
         return binds;
     }
     
@@ -202,11 +202,11 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
         
         // <link> element content
         if (hasLinkParam()){
-            for (NCLParam param : linkParams)
+            for (P param : linkParams)
                 content += param.parse(ident + 1);
         }
 
-        for (NCLBind bind : binds)
+        for (B bind : binds)
             content += bind.parse(ident + 1);
         
         // <link> element end declaration
@@ -216,7 +216,7 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
     }
 
 
-    public int compareTo(NCLLink other) {
+    public int compareTo(L other) {
         int comp = 0;
 
         String this_link, other_link;
@@ -237,8 +237,8 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
         // Compara os parâmetros
         if (comp == 0){
             Iterator it = other.getLinkParams().iterator();
-            for (NCLParam param : linkParams){
-                NCLParam other_param = (NCLParam) it.next();
+            for (P param : linkParams){
+                P other_param = (P) it.next();
                 comp = param.compareTo(other_param);
                 if (comp != 0)
                     break;
@@ -248,8 +248,8 @@ public class NCLLink extends NCLIdentifiableElement implements Comparable<NCLLin
         // Compara os binds
         if (comp == 0){
             Iterator it = other.getBinds().iterator();
-            for (NCLBind bind : binds){
-                NCLBind other_bind = (NCLBind) it.next();
+            for (B bind : binds){
+                B other_bind = (B) it.next();
                 comp = bind.compareTo(other_bind);
                 if (comp != 0)
                     break;

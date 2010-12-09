@@ -20,7 +20,7 @@ import br.pensario.NCLInvalidIdentifierException;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLRegion> {
+public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement implements Comparable<R> {
 
     private String title;
     private Integer left;
@@ -38,7 +38,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     private boolean relativeHeight;
     private boolean relativeWidth;
 
-    private Set<NCLRegion> regions = new TreeSet();
+    private Set<R> regions = new TreeSet<R>();
 
 
     /**
@@ -94,7 +94,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     public void setLeft(Integer left, boolean relative) throws IllegalArgumentException {
         setRelativeLeft(relative);
 
-        if (isRelativeLeft() && (left < 0 || left > 100))
+        if (isRelativeLeft() && left != null && (left < 0 || left > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%left= " +
                     left + "). It must be between 0 and 100.");
 
@@ -128,10 +128,10 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @throws java.lang.IllegalArgumentException
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
-    public void setRight(int right, boolean relative) throws IllegalArgumentException {
+    public void setRight(Integer right, boolean relative) throws IllegalArgumentException {
         setRelativeRight(relative);
 
-        if (isRelativeRight() && (right < 0 || right > 100))
+        if (isRelativeRight() && right != null && (right < 0 || right > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%right= " +
                     right + "). It must be between 0 and 100.");
 
@@ -165,10 +165,10 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @throws java.lang.IllegalArgumentException
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
-    public void setTop(int top, boolean relative) throws IllegalArgumentException {
+    public void setTop(Integer top, boolean relative) throws IllegalArgumentException {
         setRelativeTop(relative);
 
-        if (isRelativeTop() && top >= 0 && top <= 100)
+        if (isRelativeTop() && top != null && (top < 0 || top > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%top= " +
                     top + "). It must be between 0 and 100.");
 
@@ -202,10 +202,10 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @throws java.lang.IllegalArgumentException
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
-    public void setBottom(int bottom, boolean relative) throws IllegalArgumentException {
+    public void setBottom(Integer bottom, boolean relative) throws IllegalArgumentException {
         setRelativeBottom(relative);
 
-        if (isRelativeBottom() && (bottom < 0 || bottom > 100))
+        if (isRelativeBottom() && bottom != null && (bottom < 0 || bottom > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%bottom= " +
                     bottom + "). It must be between 0 and 100.");
 
@@ -240,10 +240,10 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @throws java.lang.IllegalArgumentException
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
-    public void setHeight(int height, boolean relative) throws IllegalArgumentException {
+    public void setHeight(Integer height, boolean relative) throws IllegalArgumentException {
         setRelativeHeight(relative);
 
-        if (isRelativeHeight() && (height < 0 || height > 100))
+        if (isRelativeHeight() && height != null && (height < 0 || height > 100))
             throw new IllegalArgumentException("Valor não percentual para atributo relativo de posicionamento (%height= "
                             + height + ")");
 
@@ -277,10 +277,10 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @throws java.lang.IllegalArgumentException
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
-    public void setWidth(int width, boolean relative) throws IllegalArgumentException {
+    public void setWidth(Integer width, boolean relative) throws IllegalArgumentException {
         setRelativeWidth(relative);
 
-        if (isRelativeWidth() && (width < 0 || width > 100))
+        if (isRelativeWidth() && width != null && (width < 0 || width > 100))
             throw new IllegalArgumentException("Valor não porcentual para atributo relativo de posicionamento (%width= "
                             + width + ")");
 
@@ -474,7 +474,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      *
      * @see TreeSet#add
      */
-    public boolean addRegion(NCLRegion child) throws Exception {
+    public boolean addRegion(R child) throws Exception {
         return regions.add(child);
     }
 
@@ -490,7 +490,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @see TreeSet#remove
      */
     public boolean removeRegion(String id) {
-        for (NCLRegion region : regions){
+        for (R region : regions){
             if (region.getId().equals(id))
                 return regions.remove(region);
         }
@@ -508,7 +508,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      *
      * @see TreeSet#remove
      */
-    public boolean removeRegion(NCLRegion region) {
+    public boolean removeRegion(R region) {
         return regions.remove(region);
     }
 
@@ -521,7 +521,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @return
      *          verdadeiro se a região existir.
      */
-    public boolean hasRegion(NCLRegion child) {
+    public boolean hasRegion(R child) {
         return regions.contains(child);
     }
 
@@ -543,7 +543,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
      * @return
      *          objeto Iterable contendo as regiões internas.
      */
-    public Iterable<NCLRegion> getRegions() {
+    public Iterable<R> getRegions() {
         return regions;
     }
     
@@ -613,7 +613,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
         if (hasRegion()) {
             content += ">\n";
 
-            for (NCLRegion region : getRegions())
+            for (R region : getRegions())
                 content += region.parse(ident + 1);
             
             content += space + "</region>\n";
@@ -625,7 +625,7 @@ public class NCLRegion extends NCLIdentifiableElement implements Comparable<NCLR
     }
 
 
-    public int compareTo(NCLRegion other) {
+    public int compareTo(R other) {
         return getId().compareTo(other.getId());
     }
 

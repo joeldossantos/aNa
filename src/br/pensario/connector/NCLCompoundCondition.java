@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -20,12 +21,13 @@ import java.util.Iterator;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCompoundCondition extends NCLCondition {
+public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement> extends NCLElement implements NCLCondition<C> {
     
     private NCLConditionOperator operator;
     
-    private Set<NCLCondition> conditions = new TreeSet();
-    private Set<NCLStatement> statements = new TreeSet();
+    private Set<C> conditions = new TreeSet<C>();
+    private Set<S> statements = new TreeSet<S>();
+    private Integer delay;
     
     
     /**
@@ -60,7 +62,7 @@ public class NCLCompoundCondition extends NCLCondition {
      *
      * @see TreeSet#add
      */
-    public boolean addCondition(NCLCondition condition) {
+    public boolean addCondition(C condition) {
         return conditions.add(condition);
     }
 
@@ -75,7 +77,7 @@ public class NCLCompoundCondition extends NCLCondition {
      *
      * @see TreeSet#remove
      */
-    public boolean removeCondition(NCLCondition condition) {
+    public boolean removeCondition(C condition) {
         return conditions.remove(condition);
     }
 
@@ -88,7 +90,7 @@ public class NCLCompoundCondition extends NCLCondition {
      * @return
      *          verdadeiro se a condição existe.
      */
-    public boolean hasCondition(NCLCondition condition) {
+    public boolean hasCondition(C condition) {
         return conditions.contains(condition);
     }
 
@@ -110,14 +112,14 @@ public class NCLCompoundCondition extends NCLCondition {
      * @return
      *          objeto Iterable contendo as condições da condição composta.
      */
-    public Iterable<NCLCondition> getConditions() {
+    public Iterable<C> getConditions() {
         return conditions;
     }
-    
-    
+
+
     /**
      * Adiciona uma assertiva a condição composta.
-     *
+     * 
      * @param statement
      *          elemento representando a assertiva a ser adicionada.
      * @return
@@ -125,7 +127,7 @@ public class NCLCompoundCondition extends NCLCondition {
      *
      * @see TreeSet#add
      */
-    public boolean addStatement(NCLStatement statement) {
+    public boolean addStatement(S statement) {
         return statements.add(statement);
     }
 
@@ -140,7 +142,7 @@ public class NCLCompoundCondition extends NCLCondition {
      *
      * @see TreeSet#remove
      */
-    public boolean removeStatement(NCLStatement statement) {
+    public boolean removeStatement(S statement) {
         return statements.remove(statement);
     }
 
@@ -153,11 +155,11 @@ public class NCLCompoundCondition extends NCLCondition {
      * @return
      *          verdadeiro se a assertiva existe.
      */
-    public boolean hasStatement(NCLStatement statement) {
+    public boolean hasStatement(S statement) {
         return statements.contains(statement);
     }
 
-
+    
     /**
      * Verifica se a condição composta possui pelo menos uma assertiva.
      *
@@ -175,11 +177,24 @@ public class NCLCompoundCondition extends NCLCondition {
      * @return
      *          objeto Iterable contendo as assertivas da condição composta.
      */
-    public Iterable<NCLStatement> getStatements() {
+    public Iterable<S> getStatements() {
         return statements;
     }
 
-    
+
+    public void setDelay(Integer delay) throws IllegalArgumentException {
+        if (delay != null && delay < 0)
+            throw new IllegalArgumentException("Invalid delay");
+
+        this.delay = delay;
+    }
+
+
+    public Integer getDelay() {
+        return delay;
+    }
+
+
     public String parse(int ident) {
         String space, content;
 
@@ -198,19 +213,19 @@ public class NCLCompoundCondition extends NCLCondition {
         
         content += ">\n";
         
-        for(NCLCondition condition : conditions)
+        for(C condition : conditions)
             content += condition.parse(ident + 1);
         
-        for(NCLStatement statement : statements)
+        for(S statement : statements)
             content += statement.parse(ident + 1);
-        
+
         content += space + "</compoundCondition>\n";
 
         return content;
     }
     
     
-    public int compareTo(NCLCondition other) {
+    public int compareTo(C other) {
         int comp = 0;
 
         String this_cond, other_cond;

@@ -19,12 +19,12 @@ import br.pensario.NCLIdentifiableElement;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLRegionBase extends NCLIdentifiableElement {
+public class NCLRegionBase<R extends NCLRegion> extends NCLIdentifiableElement {
 
     private String device;
-    private NCLRegion parent_region;
+    private R parent_region;
     
-    Set<NCLRegion> regions= new TreeSet();
+    Set<R> regions= new TreeSet<R>();
 
 
     /**
@@ -60,7 +60,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
      * @param region
      *          elemento representando a região a ser utilizada como pai.
      */
-    public void setParentRegion(NCLRegion region) {
+    public void setParentRegion(R region) {
         this.parent_region = region;
     }
 
@@ -86,7 +86,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
      *
      * @see TreeSet#add
      */
-    public boolean addRegion(NCLRegion region) {
+    public boolean addRegion(R region) {
         return regions.add(region);
     }
 
@@ -102,7 +102,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
      * @see TreeSet#remove
      */
     public boolean removeRegion(String id) {
-        for (NCLRegion region : regions){
+        for (R region : regions){
             if (region.getId().equals(id))
                 return regions.remove(region);
         }
@@ -120,7 +120,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeRegion(NCLRegion region) {
+    public boolean removeRegion(R region) {
         return regions.remove(region);        
     }
 
@@ -133,7 +133,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se a região existir.
      */    
-    public boolean hasRegion(NCLRegion region) {
+    public boolean hasRegion(R region) {
         return regions.contains(region);        
     }
 
@@ -155,7 +155,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo as regiões da base de regiões.
      */
-    public Iterable<NCLRegion> getRegions() {
+    public Iterable<R> getRegions() {
         return regions;        
     }
 
@@ -185,7 +185,7 @@ public class NCLRegionBase extends NCLIdentifiableElement {
         if (hasRegion()) {
             content += ">\n";
             
-            for (NCLRegion region : regions)
+            for (R region : regions)
                 content += region.parse(ident + 1);
 
             content += space + "</regionBase>\n";

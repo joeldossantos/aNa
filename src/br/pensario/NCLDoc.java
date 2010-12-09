@@ -16,13 +16,13 @@ import br.pensario.NCLValues.NCLNamespace;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLDoc extends NCLIdentifiableElement {
+public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiableElement {
 
     private String title;
     private NCLNamespace xmlns; //atributo obrigatório
 
-    private NCLHead head;
-    private NCLBody body;
+    private H head;
+    private B body;
 
     
     /**
@@ -30,10 +30,8 @@ public class NCLDoc extends NCLIdentifiableElement {
      * 
      * @param xmlns
      *          namespace usado pelo documento NCL.
-     * @throws java.lang.Exception
-     *          se o atributo xmlns for nulo.
      */
-    public NCLDoc(NCLNamespace xmlns) throws Exception {
+    public NCLDoc(NCLNamespace xmlns) {
         setXmlns(xmlns);
     }    
 
@@ -95,7 +93,7 @@ public class NCLDoc extends NCLIdentifiableElement {
      * @param head
      *          elemento representando o cabeçalho do documento NCL.
      */
-    public void setHead(NCLHead head) {
+    public void setHead(H head) {
         this.head = head;
     }
 
@@ -106,7 +104,7 @@ public class NCLDoc extends NCLIdentifiableElement {
      * @return
      *          elemento representando o cabeçalho do documento NCL.
      */
-    public NCLHead getHead() {
+    public H getHead() {
         return head;
     }
 
@@ -117,7 +115,7 @@ public class NCLDoc extends NCLIdentifiableElement {
      * @param body
      *          elemento representando o corpo do documento NCL.
      */
-    public void setBody(NCLBody body) {
+    public void setBody(B body) {
         this.body = body;
     }
 
@@ -128,7 +126,7 @@ public class NCLDoc extends NCLIdentifiableElement {
      * @return
      *          elemento representando o cabeçalho do documento NCL.
      */
-    public NCLBody getBody() {
+    public B getBody() {
         return body;
     }
 
@@ -145,8 +143,8 @@ public class NCLDoc extends NCLIdentifiableElement {
             space += "\t";
 
         // XML document start declaration
-        content = space + "<?xml version='1.0' encoding='ISO-8859-1'?>\n"; // TODO: ou
-                                                                    // UTF8??
+        content = space + "<?xml version='1.0' encoding='ISO-8859-1'?>\n";
+
         content += space + "<!-- Generated with NCL API -->\n\n";
 
         // <ncl> element and attributes declaration

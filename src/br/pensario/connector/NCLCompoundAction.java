@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import java.util.Set;
 
 import br.pensario.NCLValues.NCLActionOperator;
@@ -20,11 +21,12 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCompoundAction extends NCLAction {
+public class NCLCompoundAction<A extends NCLAction> extends NCLElement implements NCLAction<A> {
 
     private NCLActionOperator operator;
+    private Integer delay;
     
-    private Set<NCLAction> actions = new TreeSet(); 
+    private Set<A> actions = new TreeSet<A>();
     
     
     /**
@@ -59,7 +61,7 @@ public class NCLCompoundAction extends NCLAction {
      *
      * @see TreeSet#add(java.lang.Object) 
      */
-    public boolean addAction(NCLAction action) {
+    public boolean addAction(A action) {
         return actions.add(action);
     }
 
@@ -74,7 +76,7 @@ public class NCLCompoundAction extends NCLAction {
      *
      * @see TreeSet#remove(java.lang.Object)
      */
-    public boolean removeAction(NCLAction action) {
+    public boolean removeAction(A action) {
         return actions.remove(action);
     }
 
@@ -87,7 +89,7 @@ public class NCLCompoundAction extends NCLAction {
      * @return
      *          verdadeiro se a ação existe.
      */
-    public boolean hasAction(NCLAction action) {
+    public boolean hasAction(A action) {
         return actions.contains(action);
     }
 
@@ -109,8 +111,21 @@ public class NCLCompoundAction extends NCLAction {
      * @return
      *          objeto Iterable contendo as ações da ação composta.
      */
-    public Iterable<NCLAction> getActions() {
+    public Iterable<A> getActions() {
         return actions;
+    }
+
+
+    public void setDelay(Integer delay) throws IllegalArgumentException {
+        if (delay != null && delay < 0)
+            throw new IllegalArgumentException("Invalid delay");
+
+        this.delay = delay;
+    }
+
+
+    public Integer getDelay() {
+        return delay;
     }
     
     
@@ -132,7 +147,7 @@ public class NCLCompoundAction extends NCLAction {
         
         content += ">\n";
         
-        for(NCLAction action : actions)
+        for(A action : actions)
             content += action.parse(ident + 1);
         
         content += space + "</compoundAction>\n";
@@ -141,7 +156,7 @@ public class NCLCompoundAction extends NCLAction {
     }
 
 
-    public int compareTo(NCLAction other) {
+    public int compareTo(A other) {
         int comp = 0;
 
         String this_act, other_act;

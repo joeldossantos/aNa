@@ -21,15 +21,15 @@ import java.net.URISyntaxException;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<NCLDescriptor>{
+public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends NCLIdentifiableElement implements Comparable<D>{
 
     private String player;
     private Integer explicitDur;
     private Boolean freeze;
-    private NCLDescriptor moveLeft;
-    private NCLDescriptor moveRight;
-    private NCLDescriptor moveUp;
-    private NCLDescriptor moveDown;
+    private D moveLeft;
+    private D moveRight;
+    private D moveUp;
+    private D moveDown;
     private Integer focusIndex;
     private NCLColor focusBorderColor;
     private Integer focusBorderWidth;
@@ -37,7 +37,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
     private String focusSrc;
     private String focusSelSrc;
     private NCLColor selBorderColor;
-    private NCLRegion region;
+    private R region;
 
 
     /**
@@ -133,7 +133,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveLeft(NCLDescriptor descriptor) {
+    public void setMoveLeft(D descriptor) {
         this.moveLeft = descriptor;
     }
 
@@ -145,7 +145,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public NCLDescriptor getMoveLeft() {
+    public D getMoveLeft() {
         return moveLeft;
     }
 
@@ -157,7 +157,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveRight(NCLDescriptor descriptor) {
+    public void setMoveRight(D descriptor) {
         this.moveRight = descriptor;
     }
 
@@ -169,7 +169,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public NCLDescriptor getMoveRight() {
+    public D getMoveRight() {
         return moveRight;
     }
 
@@ -181,7 +181,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveUp(NCLDescriptor descriptor) {
+    public void setMoveUp(D descriptor) {
         this.moveUp = descriptor;
     }
 
@@ -193,7 +193,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public NCLDescriptor getMoveUp() {
+    public D getMoveUp() {
         return moveUp;
     }
 
@@ -205,7 +205,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveDown(NCLDescriptor descriptor) {
+    public void setMoveDown(D descriptor) {
         this.moveDown = descriptor;
     }
 
@@ -217,7 +217,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public NCLDescriptor getMoveDown() {
+    public D getMoveDown() {
         return moveDown;
     }  
     
@@ -401,7 +401,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @param region
      *          elemento representando uma região.
      */
-    public void setRegion(NCLRegion region) {
+    public void setRegion(R region) {
         this.region = region;
     }
 
@@ -412,7 +412,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
      * @return
      *          elemento representando uma região.
      */
-    public NCLRegion getRegion() {
+    public R getRegion() {
         return region;
     }
 
@@ -482,7 +482,7 @@ public class NCLDescriptor extends NCLIdentifiableElement implements Comparable<
     }
 
 
-    public int compareTo(NCLDescriptor other) {
+    public int compareTo(D other) {
         return getId().compareTo(other.getId());
     }
 

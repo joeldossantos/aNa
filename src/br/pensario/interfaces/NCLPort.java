@@ -1,5 +1,6 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.node.NCLNode;
 
@@ -17,10 +18,10 @@ import br.pensario.node.NCLNode;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
+public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
 
-    private NCLNode component;
-    private NCLInterface interfac;
+    private N component;
+    private I interfac;
 
 
     /**
@@ -42,7 +43,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
      * @param component
      *          elemento representando o nó.
      */
-    public void setComponent(NCLNode component) {
+    public void setComponent(N component) {
         this.component = component;
     }
     
@@ -53,7 +54,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
      * @return
      *          elemento representando o nó.
      */
-    public NCLNode getComponent() {
+    public N getComponent() {
         return component;
     }
     
@@ -64,7 +65,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
      * @param interfac
      *          elemento representando a interface do nó.
      */
-    public void setInterface(NCLInterface interfac) {
+    public void setInterface(I interfac) {
         this.interfac = interfac;
     }
     
@@ -75,7 +76,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
      * @return
      *          elemento representando a interface do nó.
      */
-    public NCLInterface getInterface() {
+    public I getInterface() {
         return interfac;
     }
     
@@ -104,7 +105,7 @@ public class NCLPort extends NCLInterface implements Comparable<NCLPort> {
     }
     
     
-    public int compareTo(NCLPort port) {
-        return getId().compareTo(port.getId());
+    public int compareTo(I other) {
+        return getId().compareTo(other.getId());
     }
 }

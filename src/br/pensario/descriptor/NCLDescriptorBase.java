@@ -19,9 +19,9 @@ import br.pensario.NCLIdentifiableElement;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLDescriptorBase extends NCLIdentifiableElement {
+public class NCLDescriptorBase<D extends NCLDescriptor> extends NCLIdentifiableElement {
 
-    Set<NCLDescriptor> descriptors = new TreeSet<NCLDescriptor>();
+    Set<D> descriptors = new TreeSet<D>();
 
 
     /**
@@ -32,7 +32,7 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
      *
      * @see TreeSet#add
      */
-    public boolean addDescriptor(NCLDescriptor descriptor) {
+    public boolean addDescriptor(D descriptor) {
         return descriptors.add(descriptor);
     }
 
@@ -48,7 +48,7 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(String id) {
-        for (NCLDescriptor descriptor : descriptors){
+        for (D descriptor : descriptors){
             if (descriptor.getId().equals(id))
                 return descriptors.remove(descriptor);
         }
@@ -64,7 +64,7 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeDescriptor(NCLDescriptor descriptor) {
+    public boolean removeDescriptor(D descriptor) {
         return descriptors.remove(descriptor);
     }
 
@@ -75,7 +75,7 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
      * @param descriptor
      *          elemento representando o descritor a ser verificado.
      */
-    public boolean hasDescriptor(NCLDescriptor descriptor) {
+    public boolean hasDescriptor(D descriptor) {
         return descriptors.contains(descriptor);
     }
 
@@ -97,7 +97,7 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo os descritores da base de descritores.
      */
-    public Iterable<NCLDescriptor> getDescriptors() {
+    public Iterable<D> getDescriptors() {
         return descriptors;
     }
 
@@ -121,7 +121,7 @@ public class NCLDescriptorBase extends NCLIdentifiableElement {
         content += ">\n";
 
         if (hasDescriptor()){
-            for (NCLDescriptor descriptor : descriptors)
+            for (D descriptor : descriptors)
                 content += descriptor.parse(ident + 1);
         }
 

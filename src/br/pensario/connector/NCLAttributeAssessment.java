@@ -18,9 +18,9 @@ import br.pensario.NCLValues.NCLKey;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLAttributeAssessment {
+public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends NCLRole> implements Comparable<A>{
 
-    private NCLRole role;
+    private R role;
     private NCLEventType eventType;
     private NCLKey key;
     private NCLAttributeType attributeType;
@@ -35,8 +35,8 @@ public class NCLAttributeAssessment {
      * @throws java.lang.IllegalArgumentException
      *          Se o role for uma String vazia.
      */
-    public void setRole(String role) throws IllegalArgumentException {
-        this.role = new NCLRole(role);
+    public void setRole(R role) {
+        this.role = role;
     }
     
     
@@ -46,7 +46,7 @@ public class NCLAttributeAssessment {
      * @return
      *          elemento representando o papel.
      */
-    public NCLRole getRole() {
+    public R getRole() {
         return role;
     }
     
@@ -177,7 +177,7 @@ public class NCLAttributeAssessment {
     }
 
     
-    public int compareTo(NCLAttributeAssessment other) {
+    public int compareTo(A other) {
         int comp = 0;
 
         String this_att, other_att;

@@ -1,6 +1,6 @@
 package br.pensario.interfaces;
 
-import br.pensario.NCLIdentifiableElement;
+import br.pensario.IdentifiableElement;
 
 
 /**
@@ -15,6 +15,6 @@ import br.pensario.NCLIdentifiableElement;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public abstract class NCLInterface extends NCLIdentifiableElement {
+public interface NCLInterface<T> extends Comparable<T>, IdentifiableElement {
 
 }

@@ -1,5 +1,7 @@
 package br.pensario.connector;
 
+import br.pensario.NCLValues.NCLDefaultValueAssessment;
+
 
 /**
  * Esta classe define o elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
@@ -45,6 +47,17 @@ public class NCLValueAssessment {
             throw new IllegalArgumentException("Empty value String");
 
         this.value = value;
+    }
+
+
+    /**
+     * Determina o valor da assertiva do conector. Usa um dos valores padrão.
+     *
+     * @param value
+     *          elemento representando o valor da assertiva.
+     */
+    public void setValueAssessment(NCLDefaultValueAssessment value) {
+        this.value = value.toString();
     }
     
 

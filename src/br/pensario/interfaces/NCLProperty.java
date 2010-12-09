@@ -1,5 +1,6 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLSystemVariable;
 
@@ -17,7 +18,7 @@ import br.pensario.NCLValues.NCLSystemVariable;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLProperty extends NCLInterface implements Comparable<NCLProperty> {
+public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
 
     private String value;
     
@@ -138,8 +139,8 @@ public class NCLProperty extends NCLInterface implements Comparable<NCLProperty>
     }
     
     
-    public int compareTo(NCLProperty property) {
-        return getName().compareTo(property.getName());
+    public int compareTo(I other) {
+        return getId().compareTo(other.getId());
     }
 
 }

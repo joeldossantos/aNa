@@ -1,6 +1,7 @@
 package br.pensario.link;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLValues.NCLParamInstance;
 import br.pensario.connector.NCLConnectorParam;
 
 
@@ -17,27 +18,22 @@ import br.pensario.connector.NCLConnectorParam;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLParam extends NCLElement implements Comparable<NCLParam>{
+public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends NCLElement implements Comparable<P>{
 
-    private NCLConnectorParam name;
+    private C name;
     private String value;
 
-    private NCLElement parent;
+    private NCLParamInstance paramType;
     
     
     /**
      * Construtor do parâmetro interno a um elemento <i>link</i> ou <i>bind</i>.
      * 
-     * @param parent
-     *          elemento pai do parâmetro. Deve ser um elemento <i>link</i> ou <i>bind</i>.
-     * @throws java.lang.IllegalArgumentException
-     *          se o pai a ser atribuído não for um elemento <i>link</i> ou <i>bind</i>.
+     * @param paramType
+     *          define se o parâmetro é de um elemento <i>link</i> ou <i>bind</i>.
      */
-    public NCLParam(NCLElement parent) throws IllegalArgumentException {
-        if ( !(parent instanceof NCLLink) && !(parent instanceof NCLBind) )
-            throw new IllegalArgumentException("Invalid parent type");
-
-        this.parent = parent;
+    public NCLParam(NCLParamInstance paramType) {
+        this.paramType = paramType;
     }
     
     
@@ -47,7 +43,7 @@ public class NCLParam extends NCLElement implements Comparable<NCLParam>{
      * @param connectorParam
      *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
      */
-    public void setName(NCLConnectorParam connectorParam) {
+    public void setName(C connectorParam) {
         this.name = connectorParam;
     }
     
@@ -57,7 +53,7 @@ public class NCLParam extends NCLElement implements Comparable<NCLParam>{
      * 
      * @return NCLConnectorParam representando o nome do parâmetro.
      */
-    public NCLConnectorParam getName() {
+    public C getName() {
         return name;
     }
     
@@ -103,10 +99,7 @@ public class NCLParam extends NCLElement implements Comparable<NCLParam>{
         
         
         // param element and attributes declaration
-        if (parent instanceof NCLLink)
-            content = space + "<linkParam";
-        else
-            content = space + "<bindParam";
+        content = space + "<" + paramType.toString();
 
         content += " name='" + getName().getName() + "'";
         content += " value='" + getValue() + "'";
@@ -116,7 +109,7 @@ public class NCLParam extends NCLElement implements Comparable<NCLParam>{
     }
     
     
-    public int compareTo(NCLParam other) {
+    public int compareTo(P other) {
         return getName().getName().compareTo(other.getName().getName());
     }
 

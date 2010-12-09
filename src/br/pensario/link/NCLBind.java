@@ -24,14 +24,15 @@ import java.util.Iterator;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLBind extends NCLElement implements Comparable<NCLBind>{
+public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I extends NCLInterface, D extends NCLDescriptor, P extends NCLParam>
+        extends NCLElement implements Comparable<B>{
 
-    private NCLRole role;
-    private NCLNode component;
-    private NCLInterface interfac;
-    private NCLDescriptor descriptor;
+    private R role;
+    private N component;
+    private I interfac;
+    private D descriptor;
     
-    private Set<NCLParam> bindParams = new TreeSet();
+    private Set<P> bindParams = new TreeSet<P>();
     
     
     /**
@@ -40,7 +41,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @param role
      *          elemento representando o papel ao qual o bind será associado.
      */
-    public void setRole(NCLRole role) {
+    public void setRole(R role) {
         this.role = role;
     }
     
@@ -51,7 +52,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @return
      *          elemento representando o papel ao qual o bind será associado.
      */
-    public NCLRole getRole() {
+    public R getRole() {
         return role;
     }
     
@@ -62,7 +63,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @param component
      *          elemento representando o nó mapeado pelo bind.
      */
-    public void setComponent(NCLNode component) {
+    public void setComponent(N component) {
         this.component = component;
     }
     
@@ -73,7 +74,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @return
      *          elemento representando o nó mapeado pelo bind.
      */
-    public NCLNode getComponent() {
+    public N getComponent() {
         return component;
     }
     
@@ -84,7 +85,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @param interfac
      *          elemento representando a interface do nó.
      */
-    public void setInterface(NCLInterface interfac) {
+    public void setInterface(I interfac) {
         this.interfac = interfac;
     }
     
@@ -95,7 +96,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @return
      *          elemento representando a interface do nó.
      */
-    public NCLInterface getInterface() {
+    public I getInterface() {
         return interfac;
     }
     
@@ -106,7 +107,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @param descriptor
      *          elemento representando o descritor a ser atribuido.
      */
-    public void setDescriptor(NCLDescriptor descriptor) {
+    public void setDescriptor(D descriptor) {
         this.descriptor = descriptor;
     }
     
@@ -117,7 +118,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @return
      *          elemento representando o descritor a ser atribuido.
      */
-    public NCLDescriptor getDescriptor() {
+    public D getDescriptor() {
         return descriptor;
     }
     
@@ -132,7 +133,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      *
      * @see TreeSet#add
      */
-    public boolean addBindParam(NCLParam param) {
+    public boolean addBindParam(P param) {
         return bindParams.add(param);
     }
 
@@ -147,7 +148,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      *
      * @see TreeSet#remove
      */
-    public boolean removeBindParam(NCLParam param) {
+    public boolean removeBindParam(P param) {
         return bindParams.remove(param);
     }
 
@@ -160,7 +161,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @return
      *          verdadeiro se o parâmetro existir.
      */
-    public boolean hasBindParam(NCLParam param) {
+    public boolean hasBindParam(P param) {
         return bindParams.contains(param);
     }
 
@@ -182,7 +183,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
      * @return
      *          objeto Iterable contendo os parâmetros do bind.
      */
-    public Iterable<NCLParam> getBindParams() {
+    public Iterable<P> getBindParams() {
         return bindParams;
     }
     
@@ -212,7 +213,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
         if (hasBindParam()){
             content += ">\n";
 
-            for (NCLParam param : bindParams)
+            for (P param : bindParams)
                 content += param.parse(ident + 1);
             
             content += space + "</bind>\n";
@@ -224,7 +225,7 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
     }
     
     
-    public int compareTo(NCLBind other) {
+    public int compareTo(B other) {
         int comp = 0;
 
         String this_bind, other_bind;
@@ -262,8 +263,8 @@ public class NCLBind extends NCLElement implements Comparable<NCLBind>{
         // Compara os parâmetros
         if (comp == 0){
             Iterator it = other.getBindParams().iterator();
-            for (NCLParam param : bindParams){
-                NCLParam other_param = (NCLParam) it.next();
+            for (P param : bindParams){
+                P other_param = (P) it.next();
                 comp = param.compareTo(other_param);
                 if (comp != 0)
                     break;

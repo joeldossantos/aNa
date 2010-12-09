@@ -1,5 +1,6 @@
 package br.pensario.node;
 
+import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLMimeType;
 import br.pensario.NCLValues.NCLUriType;
@@ -25,14 +26,15 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLMedia extends NCLNode {
+public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLDescriptor>
+        extends NCLIdentifiableElement implements NCLNode<N> {
 
     private String src;
     private NCLMimeType type;
-    private NCLDescriptor descriptor;
+    private D descriptor;
     
-    private Set<NCLArea> areas = new TreeSet();
-    private Set<NCLProperty> properties = new TreeSet();
+    private Set<A> areas = new TreeSet<A>();
+    private Set<P> properties = new TreeSet<P>();
     
     
     /**
@@ -157,7 +159,7 @@ public class NCLMedia extends NCLNode {
      * @param descriptor
      *          elemento representando o descritor da mídia.
      */
-    public void setDescriptor(NCLDescriptor descriptor) {
+    public void setDescriptor(D descriptor) {
         this.descriptor = descriptor;
     }
     
@@ -168,7 +170,7 @@ public class NCLMedia extends NCLNode {
      * @return
      *          elemento representando o descritor da mídia.
      */
-    public NCLDescriptor getDescriptor() {
+    public D getDescriptor() {
         return descriptor;
     }
     
@@ -183,7 +185,7 @@ public class NCLMedia extends NCLNode {
      *
      * @see TreeSet#add
      */
-    public boolean addArea(NCLArea area) {
+    public boolean addArea(A area) {
         return areas.add(area);
     }
     
@@ -199,7 +201,7 @@ public class NCLMedia extends NCLNode {
      * @see TreeSet#remove
      */
     public boolean removeArea(String id) {
-        for (NCLArea area : areas){
+        for (A area : areas){
             if (area.getId().equals(id))
                 return areas.remove(area);
         }
@@ -217,7 +219,7 @@ public class NCLMedia extends NCLNode {
      *
      * @see TreeSet#add
      */
-    public boolean removeArea(NCLArea area) {
+    public boolean removeArea(A area) {
         return areas.remove(area);
     }
     
@@ -231,7 +233,7 @@ public class NCLMedia extends NCLNode {
      *          verdadeiro se a âncora existir.
      */
     public boolean hasArea(String id) {
-        for (NCLArea area : areas){
+        for (A area : areas){
             if (area.getId().equals(id))
                 return true;
         }
@@ -247,7 +249,7 @@ public class NCLMedia extends NCLNode {
      * @return
      *          verdadeiro se a âncora existir.
      */
-    public boolean hasArea(NCLArea area) {
+    public boolean hasArea(A area) {
         return areas.contains(area);
     }
     
@@ -269,7 +271,7 @@ public class NCLMedia extends NCLNode {
      * @return
      *          objeto Iterable contendo as âncoras da mídia.
      */
-    public Iterable<NCLArea> getAreas() {
+    public Iterable<A> getAreas() {
         return areas;
     }
     
@@ -284,7 +286,7 @@ public class NCLMedia extends NCLNode {
      *
      * @see TreeSet#add
      */
-    public boolean addProperty(NCLProperty property) {
+    public boolean addProperty(P property) {
         return properties.add(property);
     }
 
@@ -300,7 +302,7 @@ public class NCLMedia extends NCLNode {
      * @see TreeSet#remove
      */
     public boolean removeProperty(String name) {
-        for (NCLProperty property : properties){
+        for (P property : properties){
             if (property.getId().equals(name))
                 return properties.remove(property);
         }
@@ -318,7 +320,7 @@ public class NCLMedia extends NCLNode {
      *
      * @see TreeSet#remove
      */
-    public boolean removeProperty(NCLProperty property) {
+    public boolean removeProperty(P property) {
         return properties.remove(property);
     }
 
@@ -332,7 +334,7 @@ public class NCLMedia extends NCLNode {
      *          verdadeiro se a propriedade existir.
      */
     public boolean hasProperty(String name) {
-        for (NCLProperty property : properties){
+        for (P property : properties){
             if (property.getId().equals(name))
                 return true;
         }
@@ -348,7 +350,7 @@ public class NCLMedia extends NCLNode {
      * @return
      *          verdadeiro se a propriedade existir.
      */
-    public boolean hasProperty(NCLProperty property) {
+    public boolean hasProperty(P property) {
         return properties.contains(property);
     }
 
@@ -370,7 +372,7 @@ public class NCLMedia extends NCLNode {
      * @return
      *          objeto Iterable contendo as propriedades da mídia.
      */
-    public Iterable<NCLProperty> getProperties() {
+    public Iterable<P> getProperties() {
         return properties;
     }
     
@@ -402,12 +404,12 @@ public class NCLMedia extends NCLNode {
             content += ">\n";
             
             if (hasArea()){
-                for (NCLArea area : areas)
+                for (A area : areas)
                     content += area.parse(ident + 1);
             }
             
             if (hasProperty()){
-                for (NCLProperty prop : properties)
+                for (P prop : properties)
                     content += prop.parse(ident + 1);
             }
             
@@ -419,4 +421,8 @@ public class NCLMedia extends NCLNode {
         return content;
     }
 
+
+    public int compareTo(N other) {
+        return getId().compareTo(other.getId());
+    }
 }

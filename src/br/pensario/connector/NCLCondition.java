@@ -1,6 +1,6 @@
 package br.pensario.connector;
 
-import br.pensario.NCLElement;
+import br.pensario.Element;
 
 
 /**
@@ -15,9 +15,9 @@ import br.pensario.NCLElement;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public abstract class NCLCondition extends NCLElement implements Comparable<NCLCondition> {
+public interface NCLCondition<T> extends Comparable<T>, Element {
 
-    private Integer delay;
+    
 
 
     /**
@@ -28,12 +28,7 @@ public abstract class NCLCondition extends NCLElement implements Comparable<NCLC
      * @throws java.lang.IllegalArgumentException
      *          se o inteiro for negativo.
      */
-    public void setDelay(Integer delay) throws IllegalArgumentException {
-        if (delay != null && delay < 0)
-            throw new IllegalArgumentException("Invalid delay");
-
-        this.delay = delay;
-    }
+    public void setDelay(Integer delay);
 
 
     /**
@@ -42,7 +37,5 @@ public abstract class NCLCondition extends NCLElement implements Comparable<NCLC
      * @return
      *          inteiro contendo o atraso, em segundos.
      */
-    public Integer getDelay() {
-        return delay;
-    }
+    public Integer getDelay();
 }

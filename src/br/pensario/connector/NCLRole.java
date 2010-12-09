@@ -1,5 +1,8 @@
 package br.pensario.connector;
 
+import br.pensario.NCLValues.NCLDefaultActionRole;
+import br.pensario.NCLValues.NCLDefaultConditionRole;
+
 
 /**
  * Esta classe define um papel de conector da <i>Nested Context Language</i> (NCL).<br>
@@ -32,6 +35,28 @@ public class NCLRole {
 
 
     /**
+     * Construtor do papel.
+     *
+     * @param name
+     *          elemento representando o nome do papel.
+     */
+    public NCLRole(NCLDefaultConditionRole name) {
+        setName(name);
+    }
+
+
+    /**
+     * Construtor do papel.
+     *
+     * @param name
+     *          elemento representando o nome do papel.
+     */
+    public NCLRole(NCLDefaultActionRole name) {
+        setName(name);
+    }
+
+
+    /**
      * Determina o nome do papel
      *
      * @param name
@@ -44,6 +69,28 @@ public class NCLRole {
             throw new IllegalArgumentException("Empty name String");
 
         this.name = name;
+    }
+
+
+    /**
+     * Determina o nome do papel seguindo um dos nomes de condição padrões.
+     *
+     * @param name
+     *          elemento representando o nome do papel.
+     */
+    public void setName(NCLDefaultConditionRole name) {
+        this.name = name.toString();
+    }
+
+
+    /**
+     * Determina o nome do papel seguindo um dos nomes de ação padrões.
+     *
+     * @param name
+     *          elemento representando o nome do papel.
+     */
+    public void setName(NCLDefaultActionRole name) {
+        this.name = name.toString();
     }
     
     

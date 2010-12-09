@@ -1,6 +1,6 @@
 package br.pensario.node;
 
-import br.pensario.NCLIdentifiableElement;
+import br.pensario.IdentifiableElement;
 
 
 /**
@@ -15,10 +15,6 @@ import br.pensario.NCLIdentifiableElement;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public abstract class NCLNode extends NCLIdentifiableElement implements Comparable<NCLNode> {
+public interface NCLNode<T> extends Comparable<T>, IdentifiableElement {
 
-
-    public int compareTo(NCLNode other) {
-        return getId().compareTo(other.getId());
-    }
 }

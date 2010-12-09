@@ -17,7 +17,7 @@ import br.pensario.NCLInvalidIdentifierException;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLConnectorParam extends NCLIdentifiableElement implements Comparable<NCLConnectorParam> {
+public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifiableElement implements Comparable<P> {
     
     private String type;
     
@@ -27,16 +27,13 @@ public class NCLConnectorParam extends NCLIdentifiableElement implements Compara
      * 
      * @param name
      *          String contendo o nome a ser atribuido ao parâmetro.
-     * @param type
-     *          String contendo o tipo a ser atribuido ao parâmetro.
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome do parâmetro for inválido.
      *         java.lang.IllegalArgumentException
      *          se a String do tipo for vazia.
      */
-    public NCLConnectorParam(String name, String type) throws NCLInvalidIdentifierException {
+    public NCLConnectorParam(String name) throws NCLInvalidIdentifierException {
         setName(name);
-        setType(type);
     }
 
 
@@ -116,7 +113,7 @@ public class NCLConnectorParam extends NCLIdentifiableElement implements Compara
     }
 
     
-    public int compareTo(NCLConnectorParam other) {
+    public int compareTo(P other) {
         return getName().compareTo(other.getName());
     }
 

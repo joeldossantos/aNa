@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public abstract class NCLIdentifiableElement extends NCLElement{
+public abstract class NCLIdentifiableElement extends NCLElement implements IdentifiableElement {
     
     private String id;    
 
@@ -30,7 +30,7 @@ public abstract class NCLIdentifiableElement extends NCLElement{
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador não for válido.
      */
-    protected void setId(String id) throws NCLInvalidIdentifierException {
+    public void setId(String id) throws NCLInvalidIdentifierException {
         if(!validate(id))
             throw new NCLInvalidIdentifierException("Invalid identifier");
     

@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLActionOperator;
 import br.pensario.NCLValues.NCLDefaultActionRole;
 import br.pensario.NCLValues.NCLEventAction;
@@ -19,7 +20,7 @@ import br.pensario.NCLValues.NCLEventType;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLSimpleAction extends NCLAction {
+public class NCLSimpleAction<A extends NCLAction, R extends NCLRole> extends NCLElement implements NCLAction<A> {
 
     private String value;
     private Integer min;
@@ -31,7 +32,8 @@ public class NCLSimpleAction extends NCLAction {
     private Integer repeatDelay;
     private Integer duration;
     private Integer by;
-    private NCLRole role;
+    private R role;
+    private Integer delay;
 
 
     /**
@@ -141,26 +143,8 @@ public class NCLSimpleAction extends NCLAction {
      * @param role
      *          elemento representando o nome do papel.
      */
-    public void setRole(NCLDefaultActionRole role) {
-        try {
-            NCLRole r = new NCLRole(role.toString());
-            this.role = r;
-        }
-        catch (IllegalArgumentException ex){}
-    }
-
-
-    /**
-     * Determina o nome do papel de ação.
-     *
-     * @param role
-     *          String representando o nome do papel.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o nome a ser atribuído for uma String vazia.
-     */
-    public void setRole(String role) throws IllegalArgumentException {
-            NCLRole r = new NCLRole(role);
-            this.role = r;
+    public void setRole(R role) {
+        this.role = role;
     }
 
 
@@ -170,7 +154,7 @@ public class NCLSimpleAction extends NCLAction {
      * @return
      *          elemento representando o papel.
      */
-    public NCLRole getRole() {
+    public R getRole() {
         return role;
     }
 
@@ -305,6 +289,19 @@ public class NCLSimpleAction extends NCLAction {
     public Integer getBy() {
         return by;
     }
+
+
+    public void setDelay(Integer delay) throws IllegalArgumentException {
+        if (delay != null && delay < 0)
+            throw new IllegalArgumentException("Invalid delay");
+
+        this.delay = delay;
+    }
+
+
+    public Integer getDelay() {
+        return delay;
+    }
     
     
     public String parse(int ident) {
@@ -364,7 +361,7 @@ public class NCLSimpleAction extends NCLAction {
     }
 
 
-    public int compareTo(NCLAction other) {
+    public int compareTo(A other) {
         int comp = 0;
 
         String this_act, other_act;

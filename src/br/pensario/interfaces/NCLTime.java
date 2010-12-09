@@ -72,6 +72,7 @@ public class NCLTime {
      * Construtor do indicador temporal da <i>Nested Context Language</i> (NCL).
      */
     public NCLTime(int second) {
+        setSecond(second);
     }
     
     
@@ -302,6 +303,7 @@ public class NCLTime {
     }
     
     
+    @Override
     public String toString() {
         if (getSecond() != null){
             if (getFraction() != null){

@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLConditionOperator;
 import br.pensario.NCLValues.NCLDefaultConditionRole;
 import br.pensario.NCLValues.NCLEventTransition;
@@ -20,7 +21,7 @@ import br.pensario.NCLValues.NCLKey;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLSimpleCondition extends NCLCondition {
+public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> extends NCLElement implements NCLCondition<C> {
 
     private NCLKey key;
     private Integer min;
@@ -28,7 +29,8 @@ public class NCLSimpleCondition extends NCLCondition {
     private NCLConditionOperator qualifier;
     private NCLEventType eventType;
     private NCLEventTransition transition;
-    private NCLRole role;
+    private R role;
+    private Integer delay;
     
     
     /**
@@ -111,26 +113,8 @@ public class NCLSimpleCondition extends NCLCondition {
      * @param role
      *          elemento representando o nome do papel.
      */
-    public void setRole(NCLDefaultConditionRole role) {
-        try {
-            NCLRole r = new NCLRole(role.toString());
-            this.role = r;
-        }
-        catch (IllegalArgumentException ex){}
-    }
-    
-    
-    /**
-     * Determina o nome do papel de condição.
-     *
-     * @param role
-     *          String representando o nome do papel.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o nome a ser atribuído for uma String vazia.
-     */
-    public void setRole(String role) throws IllegalArgumentException {
-            NCLRole r = new NCLRole(role);
-            this.role = r;
+    public void setRole(R role) {
+        this.role = role;
     }
 
 
@@ -140,7 +124,7 @@ public class NCLSimpleCondition extends NCLCondition {
      * @return
      *          elemento representando o papel.
      */
-    public NCLRole getRole() {
+    public R getRole() {
         return role;
     }
 
@@ -211,6 +195,19 @@ public class NCLSimpleCondition extends NCLCondition {
     }
 
 
+    public void setDelay(Integer delay) throws IllegalArgumentException {
+        if (delay != null && delay < 0)
+            throw new IllegalArgumentException("Invalid delay");
+
+        this.delay = delay;
+    }
+
+
+    public Integer getDelay() {
+        return delay;
+    }
+
+
     public String parse(int ident) {
         String space, content;
 
@@ -256,7 +253,7 @@ public class NCLSimpleCondition extends NCLCondition {
     }
 
     
-    public int compareTo(NCLCondition other) {
+    public int compareTo(C other) {
         int comp = 0;
 
         String this_cond, other_cond;

@@ -1,7 +1,7 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLComparator;
-import br.pensario.NCLValues.NCLDefaultValueAssessment;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,12 +20,13 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLAssessmentStatement extends NCLStatement {
+public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttributeAssessment, V extends NCLValueAssessment>
+        extends NCLElement implements NCLStatement<S> {
 
     private NCLComparator comparator;
     
-    private NCLValueAssessment valueAssessment;
-    private Set<NCLAttributeAssessment> attributeAssessments = new TreeSet();
+    private V valueAssessment;
+    private Set<A> attributeAssessments = new TreeSet<A>();
     
     
     /**
@@ -60,22 +61,8 @@ public class NCLAssessmentStatement extends NCLStatement {
      *
      * @see NCLValueAssessment
      */
-    public void setValueAssessment(String value) throws IllegalArgumentException {
-        this.valueAssessment = new NCLValueAssessment(value);
-    }
-    
-    
-    /**
-     * Determina um valor de comparação a assertiva. Usa um dos valores padrão.
-     * 
-     * @param value
-     *          elemento representando o valor de comparação a ser utilizado.
-     */
-    public void setValueAssessment(NCLDefaultValueAssessment value) {
-        try{
-            this.valueAssessment = new NCLValueAssessment(value.toString());
-        }
-        catch(IllegalArgumentException e){}
+    public void setValueAssessment(V value) {
+        this.valueAssessment = value;
     }
     
     
@@ -85,7 +72,7 @@ public class NCLAssessmentStatement extends NCLStatement {
      * @return
      *          elemento representando o valor de comparação utilizado.
      */
-    public NCLValueAssessment getValueAssessment() {
+    public V getValueAssessment() {
         return valueAssessment;
     }
     
@@ -102,9 +89,9 @@ public class NCLAssessmentStatement extends NCLStatement {
      *
      * @see TreeSet#add
      */
-    public boolean addAttributeAssessment(NCLAttributeAssessment attribute) throws Exception {
+    public boolean addAttributeAssessment(A attribute) throws Exception {
         if (attributeAssessments.size() == 2)
-            throw new Exception("can't have more than two attributes"); //TODO: Criar tipo de excecao
+            throw new Exception("can't have more than two attributes");
         
         return attributeAssessments.add(attribute);
     }
@@ -120,7 +107,7 @@ public class NCLAssessmentStatement extends NCLStatement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeAttributeAssessment(NCLAttributeAssessment attribute) {
+    public boolean removeAttributeAssessment(A attribute) {
         return attributeAssessments.remove(attribute);
     }
     
@@ -133,7 +120,7 @@ public class NCLAssessmentStatement extends NCLStatement {
      * @return
      *          verdadeiro se o atributo estiver presente.
      */
-    public boolean hasAttributeAssessment(NCLAttributeAssessment attribute) {
+    public boolean hasAttributeAssessment(A attribute) {
         return attributeAssessments.contains(attribute);
     }
     
@@ -155,7 +142,7 @@ public class NCLAssessmentStatement extends NCLStatement {
      * @return
      *          objeto Iterable contendo os atributos da assertiva.
      */
-    public Iterable<NCLAttributeAssessment> getAttributeAssessments() {
+    public Iterable<A> getAttributeAssessments() {
         return attributeAssessments;
     }
     
@@ -177,7 +164,7 @@ public class NCLAssessmentStatement extends NCLStatement {
         
         content += ">\n";
         
-        for(NCLAttributeAssessment attribute : attributeAssessments)
+        for(A attribute : attributeAssessments)
             content += attribute.parse(ident + 1);
         
         if (valueAssessment != null)
@@ -189,7 +176,7 @@ public class NCLAssessmentStatement extends NCLStatement {
     }
     
     
-    public int compareTo(NCLStatement other) {
+    public int compareTo(S other) {
         int comp = 0;
 
         String this_stat, other_stat;

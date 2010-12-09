@@ -22,12 +22,12 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLBody extends NCLIdentifiableElement {
+public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink> extends NCLIdentifiableElement {
 
-    private Set<NCLPort> ports = new TreeSet();
-    private Set<NCLProperty> properties = new TreeSet();
-    private Set<NCLNode> nodes = new TreeSet();
-    private Set<NCLLink> links = new TreeSet();    
+    private Set<Pt> ports = new TreeSet<Pt>();
+    private Set<Pp> properties = new TreeSet<Pp>();
+    private Set<N> nodes = new TreeSet<N>();
+    private Set<L> links = new TreeSet<L>();
 
 
     /**
@@ -40,7 +40,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#add
      */
-    public boolean addPort(NCLPort port) {
+    public boolean addPort(Pt port) {
         return ports.add(port);
     }
     
@@ -56,7 +56,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @see TreeSet#remove
      */
     public boolean removePort(String id) {
-        for (NCLPort port : ports){
+        for (Pt port : ports){
             if (port.getId().equals(id))
                 return ports.remove(port);
         }
@@ -74,7 +74,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove
      */
-    public boolean removePort(NCLPort port) {
+    public boolean removePort(Pt port) {
         return ports.remove(port);
     }
     
@@ -88,7 +88,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *          verdadeiro se a porta existir.
      */
     public boolean hasPort(String id) {
-        for (NCLPort port : ports){
+        for (Pt port : ports){
             if (port.getId().equals(id))
                 return true;
         }
@@ -104,7 +104,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se a porta existir.
      */
-    public boolean hasPort(NCLPort port) {
+    public boolean hasPort(Pt port) {
         return ports.contains(port);
     }
     
@@ -126,7 +126,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo as portas do corpo do documento NCL.
      */
-    public Iterable<NCLPort> getPorts() {
+    public Iterable<Pt> getPorts() {
         return ports;
     }
     
@@ -141,7 +141,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#add
      */
-    public boolean addProperty(NCLProperty property) {
+    public boolean addProperty(Pp property) {
         return properties.add(property);
     }
     
@@ -157,7 +157,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @see TreeSet#remove
      */
     public boolean removeProperty(String name) {
-        for (NCLProperty property : properties){
+        for (Pp property : properties){
             if (property.getId().equals(name))
                 return properties.remove(property);
         }
@@ -175,7 +175,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeProperty(NCLProperty property) {
+    public boolean removeProperty(Pp property) {
         return properties.remove(property);
     }
     
@@ -189,7 +189,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *          verdadeiro se a propriedade existir.
      */
     public boolean hasProperty(String name) {
-        for (NCLProperty property : properties){
+        for (Pp property : properties){
             if (property.getId().equals(name))
                 return true;
         }
@@ -205,7 +205,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se a propriedade existir.
      */
-    public boolean hasProperty(NCLProperty property) {
+    public boolean hasProperty(Pp property) {
         return properties.contains(property);
     }
     
@@ -227,7 +227,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo as propriedades do corpo do documento NCL.
      */
-    public Iterable<NCLProperty> getProperties() {
+    public Iterable<Pp> getProperties() {
         return properties;
     }
     
@@ -242,7 +242,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#add
      */
-    public boolean addNode(NCLNode node) {
+    public boolean addNode(N node) {
         return nodes.add(node);
     }
     
@@ -258,7 +258,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @see TreeSet#remove
      */
     public boolean removeNode(String id) {
-        for (NCLNode node : nodes){
+        for (N node : nodes){
             if (node.getId().equals(id))
                 return nodes.remove(node);
         }
@@ -276,7 +276,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeNode(NCLNode node) {
+    public boolean removeNode(N node) {
         return nodes.remove(node);
     }
     
@@ -290,7 +290,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *          verdadeiro se o nó existir.
      */
     public boolean hasNode(String id) {
-        for (NCLNode node : nodes){
+        for (N node : nodes){
             if (node.getId().equals(id))
                 return true;
         }
@@ -306,7 +306,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se o nó existir.
      */
-    public boolean hasNode(NCLNode node) {
+    public boolean hasNode(N node) {
         return nodes.contains(node);
     }
     
@@ -328,7 +328,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo os nós do corpo do documento NCL.
      */
-    public Iterable<NCLNode> getNodes() {
+    public Iterable<N> getNodes() {
         return nodes;
     }
     
@@ -343,7 +343,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#add
      */
-    public boolean addLink(NCLLink link) {
+    public boolean addLink(L link) {
         return links.add(link);
     }
     
@@ -358,7 +358,7 @@ public class NCLBody extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeLink(NCLLink link) {
+    public boolean removeLink(L link) {
         return links.remove(link);
     }
     
@@ -371,7 +371,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se o link existir.
      */
-    public boolean hasLink(NCLLink link) {
+    public boolean hasLink(L link) {
         return links.contains(link);
     }
     
@@ -393,7 +393,7 @@ public class NCLBody extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo os links do corpo do documento NCL.
      */
-    public Iterable<NCLLink> getLinks() {
+    public Iterable<L> getLinks() {
         return links;
     }
     
@@ -418,22 +418,22 @@ public class NCLBody extends NCLIdentifiableElement {
         
         // <body> element content
         if (hasPort()){
-            for (NCLPort port : ports)
+            for (Pt port : ports)
                 content += port.parse(ident + 1);
         }
         
         if (hasProperty()){
-            for (NCLProperty property : properties)
+            for (Pp property : properties)
                 content += property.parse(ident + 1);
         }
         
         if (hasNode()){
-            for (NCLNode node : nodes)
+            for (N node : nodes)
                 content += node.parse(ident + 1);
         }
         
         if (hasLink()){
-            for (NCLLink link : links)
+            for (L link : links)
                 content += link.parse(ident + 1);
         }
         

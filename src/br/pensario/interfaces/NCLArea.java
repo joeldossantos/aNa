@@ -1,5 +1,6 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 
 
@@ -16,7 +17,7 @@ import br.pensario.NCLInvalidIdentifierException;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
+public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
 
     private int[] coords;
     private NCLTime begin;
@@ -307,7 +308,7 @@ public class NCLArea extends NCLInterface implements Comparable<NCLArea> {
     }
     
     
-    public int compareTo(NCLArea other) {
+    public int compareTo(I other) {
         return getId().compareTo(other.getId());
     }
 }

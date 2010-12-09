@@ -1,6 +1,6 @@
 package br.pensario.connector;
 
-import br.pensario.NCLElement;
+import br.pensario.Element;
 
 
 /**
@@ -15,5 +15,5 @@ import br.pensario.NCLElement;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public abstract class NCLStatement extends NCLElement implements Comparable<NCLStatement> {
+public interface NCLStatement<T> extends Comparable<T>, Element {
 }

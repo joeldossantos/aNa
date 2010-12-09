@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLOperator;
 import java.util.Iterator;
 import java.util.Set;
@@ -19,12 +20,12 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCompoundStatement extends NCLStatement {
+public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement implements NCLStatement<S> {
 
     private NCLOperator operator;
     private Boolean isNegated;
     
-    private Set<NCLStatement> statements = new TreeSet();
+    private Set<S> statements = new TreeSet<S>();
     
     
     /**
@@ -81,7 +82,7 @@ public class NCLCompoundStatement extends NCLStatement {
      *
      * @see TreeSet#add
      */
-    public boolean addStatement(NCLStatement statement) {
+    public boolean addStatement(S statement) {
         return statements.add(statement);
     }
     
@@ -96,7 +97,7 @@ public class NCLCompoundStatement extends NCLStatement {
      *
      * @see TreeSet#remove
      */
-    public boolean removeStatement(NCLStatement statement) {
+    public boolean removeStatement(S statement) {
         return statements.remove(statement);
     }
     
@@ -109,7 +110,7 @@ public class NCLCompoundStatement extends NCLStatement {
      * @return
      *          verdadeiro se a assertiva existe.
      */
-    public boolean hasStatement(NCLStatement statement) {
+    public boolean hasStatement(S statement) {
         return statements.contains(statement);
     }
     
@@ -131,7 +132,7 @@ public class NCLCompoundStatement extends NCLStatement {
      * @return
      *          objeto Iterable contendo as assertivas da assertiva composta.
      */
-    public Iterable<NCLStatement> getStatements() {
+    public Iterable<S> getStatements() {
         return statements;
     }
     
@@ -157,7 +158,7 @@ public class NCLCompoundStatement extends NCLStatement {
         
         content += ">\n";
         
-        for(NCLStatement statement : statements)
+        for(S statement : statements)
             content += statement.parse(ident + 1);
         
         content += space + "</compoundStatement>\n";
@@ -166,7 +167,7 @@ public class NCLCompoundStatement extends NCLStatement {
     }
     
     
-    public int compareTo(NCLStatement other) {
+    public int compareTo(S other) {
         int comp = 0;
 
         String this_stat, other_stat;

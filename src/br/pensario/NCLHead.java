@@ -18,11 +18,11 @@ import br.pensario.region.NCLRegionBase;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLHead extends NCLElement{
+public class NCLHead<RB extends NCLRegionBase, DB extends NCLDescriptorBase, CB extends NCLConnectorBase> extends NCLElement {
     
-    private NCLRegionBase rbase;
-    private NCLDescriptorBase dbase;
-    private NCLConnectorBase cbase;
+    private RB rbase;
+    private DB dbase;
+    private CB cbase;
 
 
     /**
@@ -31,7 +31,7 @@ public class NCLHead extends NCLElement{
      * @param rbase
      *          elemento representando a base de regiões NCL a ser utilizada pelo cabeçalho.
      */
-    public void setRegionBase(NCLRegionBase rbase) {
+    public void setRegionBase(RB rbase) {
         this.rbase = rbase;
     }
 
@@ -43,7 +43,7 @@ public class NCLHead extends NCLElement{
      *          elemento representando a base de regiões NCL a ser utilizada pelo cabeçalho.
      */
     
-    public NCLRegionBase getRegionBase() {
+    public RB getRegionBase() {
         return rbase;
     }
 
@@ -54,7 +54,7 @@ public class NCLHead extends NCLElement{
      * @param dbase
      *          elemento representando a base de descritores NCL a ser utilizada pelo cabeçalho.
      */    
-    public void setDescriptorBase(NCLDescriptorBase dbase) {
+    public void setDescriptorBase(DB dbase) {
         this.dbase = dbase;
     }
 
@@ -65,7 +65,7 @@ public class NCLHead extends NCLElement{
      * @return
      *          elemento representando a base de descritores NCL a ser utilizada pelo cabeçalho.
      */
-    public NCLDescriptorBase getDescriptorBase() {
+    public DB getDescriptorBase() {
         return dbase;
     }
 
@@ -76,7 +76,7 @@ public class NCLHead extends NCLElement{
      * @param cbase
      *          elemento representando a base de conectores NCL a ser utilizada pelo cabeçalho.
      */
-    public void setConnectorBase(NCLConnectorBase cbase) {
+    public void setConnectorBase(CB cbase) {
         this.cbase = cbase;
     }
 
@@ -87,7 +87,7 @@ public class NCLHead extends NCLElement{
      * @return
      *          elemento representando a base de conectores NCL a ser utilizada pelo cabeçalho.
      */
-    public NCLConnectorBase getConnectorBase() {
+    public CB getConnectorBase() {
         return cbase;
     }
     

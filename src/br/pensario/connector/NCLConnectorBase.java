@@ -18,9 +18,9 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLConnectorBase extends NCLIdentifiableElement {
+public class NCLConnectorBase<C extends NCLCausalConnector> extends NCLIdentifiableElement {
 
-    Set<NCLCausalConnector> connectors = new TreeSet();
+    Set<C> connectors = new TreeSet<C>();
     
     
     /**
@@ -33,7 +33,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
      *
      * @see TreeSet#add(java.lang.Object)
      */
-    public boolean addCausalConnector(NCLCausalConnector connector) {
+    public boolean addCausalConnector(C connector) {
         return connectors.add(connector);        
     }
     
@@ -48,7 +48,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
      *
      * @see TreeSet#remove(java.lang.Object)
      */    
-    public boolean removeCausalConnector(NCLCausalConnector connector) {
+    public boolean removeCausalConnector(C connector) {
         return connectors.remove(connector);        
     }
     
@@ -61,7 +61,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
      * @return
      *          verdadeiro se o conector existir.
      */
-    public boolean hasCausalConnector(NCLCausalConnector connector) {
+    public boolean hasCausalConnector(C connector) {
         return connectors.contains(connector);        
     }
     
@@ -83,7 +83,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
      * @return
      *          objeto Iterable contendo os conectores da base de conectores.
      */
-    public Iterable<NCLCausalConnector> getCausalConnectors() {
+    public Iterable<C> getCausalConnectors() {
         return connectors;        
     }
     
@@ -108,7 +108,7 @@ public class NCLConnectorBase extends NCLIdentifiableElement {
 
         if (hasCausalConnector())
 
-            for (NCLCausalConnector connector: getCausalConnectors())
+            for (C connector: getCausalConnectors())
                 content += connector.parse(ident + 1);
 
         content += space + "<connectorBase/>\n";
