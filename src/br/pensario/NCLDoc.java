@@ -157,8 +157,10 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
         content += ">\n";
 
         // <ncl> element content
-        content += getHead().parse(ident + 1);
-        content += getBody().parse(ident + 1);
+        if(getHead() != null)
+            content += getHead().parse(ident + 1);
+        if(getBody() != null)
+            content += getBody().parse(ident + 1);
 
         // <ncl> element end declaration
         content += space + "</ncl>\n";

@@ -212,13 +212,19 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
 
         // Compara os valueAssessment
         if (comp == 0){
-            if (getValueAssessment() == null) this_stat = ""; else this_stat = getValueAssessment().getValue();
-            if (other_asses.getValueAssessment() == null) other_stat = ""; else other_stat = other_asses.getValueAssessment().getValue();
-            comp = this_stat.compareTo(other_stat);
+            if (getValueAssessment() == null && other_asses.getValueAssessment() == null)
+                comp = 0;
+            else if(getValueAssessment() != null && other_asses.getValueAssessment() != null)
+                comp = getValueAssessment().compareTo(other_asses.getValueAssessment());
+            else
+                comp = 1;
         }
 
 
-        return comp;
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 
 }

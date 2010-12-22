@@ -16,9 +16,11 @@ import br.pensario.NCLValues.NCLDefaultValueAssessment;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLValueAssessment {
+public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConnectorParam> implements Comparable<V> {
 
     private String value;
+    private NCLDefaultValueAssessment defValue;
+    private P parValue;
     
 
     /**
@@ -47,6 +49,21 @@ public class NCLValueAssessment {
             throw new IllegalArgumentException("Empty value String");
 
         this.value = value;
+        this.defValue = null;
+        this.parValue = null;
+    }
+
+
+    /**
+     * Determina o valor da assertiva do conector.
+     *
+     * @param value
+     *          parâmetro contendo o valor da assertiva.
+     */
+    public void setValue(P value) {
+        this.parValue = value;
+        this.value = null;
+        this.defValue = null;
     }
 
 
@@ -57,7 +74,9 @@ public class NCLValueAssessment {
      *          elemento representando o valor da assertiva.
      */
     public void setValueAssessment(NCLDefaultValueAssessment value) {
-        this.value = value.toString();
+        this.defValue = value;
+        this.value = null;
+        this.parValue = null;
     }
     
 
@@ -68,7 +87,32 @@ public class NCLValueAssessment {
      *          String contendo o valor da assertiva.
      */
     public String getValue() {
-        return value;
+        if(defValue != null)
+            return defValue.toString();
+        else
+            return value;
+    }
+
+
+    /**
+     * Retorna o valor da assetiva do conector.
+     *
+     * @return
+     *          elemento representando o valor da assertiva.
+     */
+    public NCLDefaultValueAssessment getDefaultValue() {
+        return defValue;
+    }
+
+
+    /**
+     * Retorna o valor da assetiva do conector.
+     *
+     * @return
+     *          parâmetro representando o valor da assertiva.
+     */
+    public P getParamValue() {
+        return parValue;
     }
     
     
@@ -85,11 +129,39 @@ public class NCLValueAssessment {
 
         content = space + "<valueAssessment";
 
-        content += " value='" + getValue() + "'";        
+        if(getValue() != null)
+            content += " value='" + getValue() + "'";
+        if(getParamValue() != null)
+            content += " value='$" + getParamValue().getId() + "'";
         
         content += "/>\n";
 
         return content;
     }
-    
+
+
+    public int compareTo(V other) {
+        int comp = 0;
+
+        String this_stat, other_stat;
+
+        if (getValue() == null) this_stat = ""; else this_stat = getValue();
+        if (other.getValue() == null) other_stat = ""; else other_stat = other.getValue();
+        comp = this_stat.compareTo(other_stat);
+
+        if (comp == 0){
+            if (getParamValue() == null && other.getParamValue() == null)
+                comp = 0;
+            else if (getParamValue() != null && other.getParamValue() != null)
+                comp = getParamValue().compareTo(other.getParamValue());
+            else
+                comp = 1;
+        }
+
+
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
+    }
 }

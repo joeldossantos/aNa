@@ -21,10 +21,11 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCompoundAction<A extends NCLAction> extends NCLElement implements NCLAction<A> {
+public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam> extends NCLElement implements NCLAction<A, P> {
 
     private NCLActionOperator operator;
     private Integer delay;
+    private P parDelay;
     
     private Set<A> actions = new TreeSet<A>();
     
@@ -121,11 +122,23 @@ public class NCLCompoundAction<A extends NCLAction> extends NCLElement implement
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
+        this.parDelay = null;
+    }
+
+
+    public void setDelay(P delay) {
+        this.parDelay = delay;
+        this.delay = null;
     }
 
 
     public Integer getDelay() {
         return delay;
+    }
+
+
+    public P getParamDelay() {
+        return parDelay;
     }
     
     
@@ -142,8 +155,11 @@ public class NCLCompoundAction<A extends NCLAction> extends NCLElement implement
 
         content = space + "<compoundAction";
         content += " operator='" + getOperator() + "'";
+
         if(getDelay() != null)
-            content += " delay='" + getDelay() + "s'";        
+            content += " delay='" + getDelay() + "s'";
+        if(getParamDelay() != null)
+            content += " delay='$" + getParamDelay().getId() + "'";
         
         content += ">\n";
         
@@ -157,48 +173,62 @@ public class NCLCompoundAction<A extends NCLAction> extends NCLElement implement
 
 
     public int compareTo(A other) {
+        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
         int comp = 0;
 
         String this_act, other_act;
         NCLCompoundAction other_comp;
 
         // Verifica se sao do mesmo tipo
-        if (!(other instanceof NCLCompoundAction))
+        if(!(other instanceof NCLCompoundAction))
             return 1;
 
         other_comp = (NCLCompoundAction) other;
         
         // Compara pelo operador
-        if (comp == 0){
+        if(comp == 0){
             if (getOperator() == null) this_act = ""; else this_act = getOperator().toString();
             if (other_comp.getOperator() == null) other_act = ""; else other_act = other_comp.getOperator().toString();
             comp = this_act.compareTo(other_act);
         }
 
         // Compara pelo delay
-        if (comp == 0){
+        if(comp == 0){
             int this_del, other_del;
             if (getDelay() == null) this_del = 0; else this_del = getDelay();
             if (other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
             comp = this_del - other_del;
         }
 
+        // Compara pelo delay (parametro)
+        if(comp == 0){
+            if(getParamDelay() == null && other_comp.getParamDelay() == null)
+                comp = 0;
+            else if(getParamDelay() != null && other_comp.getParamDelay() != null)
+                comp = getParamDelay().compareTo(other_comp.getParamDelay());
+            else
+                comp = 1;
+        }
+
         // Compara o número de acoes
-        if (comp == 0)
+        if(comp == 0)
             comp = actions.size() - ((Set) other_comp.getActions()).size();
 
         // Compara as acoes
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other_comp.getActions().iterator();
             for (NCLAction a : actions){
                 NCLAction other_a = (NCLAction) it.next();
                 comp = a.compareTo(other_a);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }
 
-
-        return comp;
+        
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 }

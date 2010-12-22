@@ -21,13 +21,14 @@ import java.util.Iterator;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement> extends NCLElement implements NCLCondition<C> {
+public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement, P extends NCLConnectorParam> extends NCLElement implements NCLCondition<C, P> {
     
     private NCLConditionOperator operator;
     
     private Set<C> conditions = new TreeSet<C>();
     private Set<S> statements = new TreeSet<S>();
     private Integer delay;
+    private P parDelay;
     
     
     /**
@@ -187,11 +188,23 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
+        this.parDelay= null;
+    }
+
+
+    public void setDelay(P delay) {
+        this.parDelay = delay;
+        this.delay = null;
     }
 
 
     public Integer getDelay() {
         return delay;
+    }
+
+
+    public P getParamDelay() {
+        return parDelay;
     }
 
 
@@ -208,8 +221,11 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
 
         content = space + "<compoundCondition";
         content += " operator='" + getOperator() + "'";
+
         if(getDelay() != null)
-            content += " delay='" + getDelay() + "s'";        
+            content += " delay='" + getDelay() + "s'";
+        if(getParamDelay() != null)
+            content += " delay='$" + getParamDelay() + "'";
         
         content += ">\n";
         
@@ -226,6 +242,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
     
     
     public int compareTo(C other) {
+        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
         int comp = 0;
 
         String this_cond, other_cond;
@@ -250,6 +267,16 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             if (getDelay() == null) this_del = 0; else this_del = getDelay();
             if (other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
             comp = this_del - other_del;
+        }
+
+        // Compara pelo delay (parametro)
+        if(comp == 0){
+            if(getParamDelay() == null && other_comp.getParamDelay() == null)
+                comp = 0;
+            else if(getParamDelay() != null && other_comp.getParamDelay() != null)
+                comp = getParamDelay().compareTo(other_comp.getParamDelay());
+            else
+                comp = 1;
         }
 
         // Compara o número de condicoes
@@ -283,6 +310,9 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
         }
 
 
-        return comp;
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 }

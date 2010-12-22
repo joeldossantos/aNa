@@ -2,7 +2,6 @@ package br.pensario.connector;
 
 import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLConditionOperator;
-import br.pensario.NCLValues.NCLDefaultConditionRole;
 import br.pensario.NCLValues.NCLEventTransition;
 import br.pensario.NCLValues.NCLEventType;
 import br.pensario.NCLValues.NCLKey;
@@ -21,7 +20,7 @@ import br.pensario.NCLValues.NCLKey;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> extends NCLElement implements NCLCondition<C> {
+public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P extends NCLConnectorParam> extends NCLElement implements NCLCondition<C, P> {
 
     private NCLKey key;
     private Integer min;
@@ -31,6 +30,9 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
     private NCLEventTransition transition;
     private R role;
     private Integer delay;
+
+    private P parKey;
+    private P parDelay;
     
     
     /**
@@ -137,6 +139,19 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
      */
     public void setKey(NCLKey key) {
         this.key = key;
+        this.parKey = null;
+    }
+
+
+    /**
+     * Determina a tecla da condição.
+     *
+     * @param key
+     *          parâmetro representando a tecla da condição.
+     */
+    public void setKey(P key) {
+        this.parKey = key;
+        this.key = null;
     }
 
 
@@ -148,6 +163,17 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
      */
     public NCLKey getKey() {
         return key;
+    }
+
+
+    /**
+     * Retorna a tecla da condição.
+     *
+     * @return
+     *          parâmetro representando a tecla da condição.
+     */
+    public P getParamKey() {
+        return parKey;
     }
 
 
@@ -200,11 +226,23 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
+        this.parDelay= null;
+    }
+
+
+    public void setDelay(P delay) {
+        this.parDelay = delay;
+        this.delay = null;
     }
 
 
     public Integer getDelay() {
         return delay;
+    }
+
+
+    public P getParamDelay() {
+        return parDelay;
     }
 
 
@@ -225,9 +263,13 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
         
         if(getKey() != null)
             content += " key='" + getKey().toString() + "'";
+        if(getParamKey() != null)
+            content += " key='$" + getParamKey().getId() + "'";
 
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
+        if(getParamDelay() != null)
+            content += " delay='$" + getParamDelay() + "'";
 
         if(getMin() != null)
             content += " min='" + getMin() + "'";        
@@ -254,6 +296,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
 
     
     public int compareTo(C other) {
+        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
         int comp = 0;
 
         String this_cond, other_cond;
@@ -261,7 +304,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
 
         // Verifica se sao do mesmo tipo
         if (!(other instanceof NCLSimpleCondition))
-            return -1;
+            return 1;
 
          other_simp = (NCLSimpleCondition) other;
 
@@ -294,6 +337,16 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
             comp = this_del - other_del;
         }
 
+        // Compara pelo delay (parametro)
+        if(comp == 0){
+            if(getParamDelay() == null && other_simp.getParamDelay() == null)
+                comp = 0;
+            else if(getParamDelay() != null && other_simp.getParamDelay() != null)
+                comp = getParamDelay().compareTo(other_simp.getParamDelay());
+            else
+                comp = 1;
+        }
+
         // Compara pelo qualifier
         if (comp == 0){
             if (getQualifier() == null) this_cond = ""; else this_cond = getQualifier().toString();
@@ -301,11 +354,21 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
             comp = this_cond.compareTo(other_cond);
         }
 
-        // Compara pelo tecla
+        // Compara pela tecla
         if (comp == 0){
             if (getKey() == null) this_cond = ""; else this_cond = getKey().toString();
             if (other_simp.getKey() == null) other_cond = ""; else other_cond = other_simp.getKey().toString();
             comp = this_cond.compareTo(other_cond);
+        }
+
+        // Compara pela tecla (parametro)
+        if(comp == 0){
+            if(getParamKey() == null && other_simp.getParamKey() == null)
+                comp = 0;
+            else if(getParamKey() != null && other_simp.getParamKey() != null)
+                comp = getParamKey().compareTo(other_simp.getParamKey());
+            else
+                comp = 1;
         }
 
         // Compara pelo tipo do evento
@@ -323,6 +386,9 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole> exten
         }
 
 
-        return comp;
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 }

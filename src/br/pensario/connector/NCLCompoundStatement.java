@@ -209,6 +209,9 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
         }
 
 
-        return comp;
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 }

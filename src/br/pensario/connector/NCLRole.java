@@ -19,6 +19,8 @@ import br.pensario.NCLValues.NCLDefaultConditionRole;
 public class NCLRole {
 
     private String name;
+    private NCLDefaultConditionRole cname;
+    private NCLDefaultActionRole aname;
     
     
     /**
@@ -69,6 +71,8 @@ public class NCLRole {
             throw new IllegalArgumentException("Empty name String");
 
         this.name = name;
+        this.cname = null;
+        this.aname = null;
     }
 
 
@@ -79,7 +83,9 @@ public class NCLRole {
      *          elemento representando o nome do papel.
      */
     public void setName(NCLDefaultConditionRole name) {
-        this.name = name.toString();
+        this.cname = name;
+        this.name = null;
+        this.aname = null;
     }
 
 
@@ -90,18 +96,46 @@ public class NCLRole {
      *          elemento representando o nome do papel.
      */
     public void setName(NCLDefaultActionRole name) {
-        this.name = name.toString();
+        aname = name;
+        this.name = null;
+        this.cname= null;
     }
     
     
     /**
      * Retorna o nome do papel
-     * 
+     *
      * @return
      *          String com o nome do papel.
      */
     public String getName() {
-        return name;
+        if(cname != null)
+            return cname.toString();
+        if(aname != null)
+            return aname.toString();
+        else
+            return name;
     }
-    
+
+
+    /**
+     * Retorna o nome do papel
+     *
+     * @return
+     *          NCLDefaultConditionRole representando o nome do papel
+     */
+    public NCLDefaultConditionRole getConditionName() {
+        return cname;
+    }
+
+
+    /**
+     * Retorna o nome do papel
+     *
+     * @return
+     *          NCLDefaultActionRole representando o nome do papel
+     */
+    public NCLDefaultActionRole getActionName() {
+        return aname;
+    }
 }

@@ -18,13 +18,16 @@ import br.pensario.NCLValues.NCLKey;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends NCLRole> implements Comparable<A>{
+public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends NCLRole, P extends NCLConnectorParam> implements Comparable<A>{
 
     private R role;
     private NCLEventType eventType;
     private NCLKey key;
     private NCLAttributeType attributeType;
     private Integer offset;
+
+    private P parKey;
+    private P parOffset;
     
     
     /**
@@ -81,6 +84,19 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      */
     public void setKey(NCLKey key) {
         this.key = key;
+        this.parKey = null;
+    }
+
+
+    /**
+     * Determina a tecla testada pelo atributo da assertiva.
+     *
+     * @param key
+     *          parâmetro representando a tecla.
+     */
+    public void setKey(P key) {
+        this.parKey = key;
+        this.key = null;
     }
     
     
@@ -92,6 +108,17 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      */
     public NCLKey getKey() {
         return key;
+    }
+
+
+    /**
+     * Retorna a tecla testada pelo atributo da assertiva.
+     *
+     * @return
+     *          parâmetro representando a tecla.
+     */
+    public P getParamKey() {
+        return parKey;
     }
     
     
@@ -130,6 +157,19 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             throw new IllegalArgumentException("illegal offset");
         
         this.offset = offset;
+        this.parOffset = null;
+    }
+
+
+    /**
+     * Determina o offset de teste.
+     *
+     * @param offset
+     *          parâmetro representando o valor do offset a ser utilizado no teste.
+     */
+    public void setOffset(P offset) {
+        this.parOffset = offset;
+        this.offset = null;
     }
     
     
@@ -141,6 +181,17 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      */
     public Integer getOffset() {
         return offset;
+    }
+
+
+    /**
+     * Retorna o offset de teste.
+     *
+     * @return
+     *          parâmetro representando o valor do offset a ser utilizado no teste.
+     */
+    public P getParamOffset() {
+        return parOffset;
     }
     
     
@@ -164,12 +215,16 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
         
         if(getKey() != null)
             content += " key='" + getKey().toString() + "'";
+        if(getParamKey() != null)
+            content += " key='$" + getParamKey().getId() + "'";
         
         if(getAttributeType() != null)
             content += " attributeType='" + getAttributeType().toString() + "'";        
         
         if(getOffset() != null)
             content += " offset='" + getOffset() + "'";
+        if(getParamOffset() != null)
+            content += " offset='$" + getParamOffset().getId() + "'";
         
         content += "/>\n";
 
@@ -209,6 +264,16 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             comp = this_off - other_off;
         }
 
+        // Compara pelo offset (parametro)
+        if(comp == 0){
+            if(getParamOffset() == null && other.getParamOffset() == null)
+                comp = 0;
+            else if(getParamOffset() != null && other.getParamOffset() != null)
+                comp = getParamOffset().compareTo(other.getParamOffset());
+            else
+                comp = 1;
+        }
+
         // Compara pela tecla
         if (comp == 0){
             if (getKey() == null) this_att = ""; else this_att = getKey().toString();
@@ -216,7 +281,20 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             comp = this_att.compareTo(other_att);
         }
 
+        // Compara pela tecla (parametro)
+        if(comp == 0){
+            if(getParamKey() == null && other.getParamKey() == null)
+                comp = 0;
+            else if(getParamKey() != null && other.getParamKey() != null)
+                comp = getParamKey().compareTo(other.getParamKey());
+            else
+                comp = 1;
+        }
 
-        return comp;
+
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 }

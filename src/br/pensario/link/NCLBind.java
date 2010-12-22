@@ -272,7 +272,10 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         }
 
 
-        return comp;
+        if(comp != 0)
+            return 1;
+        else
+            return 0;
     }
 
 }

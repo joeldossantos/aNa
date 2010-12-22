@@ -15,7 +15,7 @@ import br.pensario.Element;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public interface NCLCondition<T> extends Comparable<T>, Element {
+public interface NCLCondition<T, P extends NCLConnectorParam> extends Comparable<T>, Element {
 
     
 
@@ -32,10 +32,28 @@ public interface NCLCondition<T> extends Comparable<T>, Element {
 
 
     /**
+     * Atribui um atraso à condição.
+     *
+     * @param delay
+     *          parâmetro representando o atraso.
+     */
+    public void setDelay(P delay);
+
+
+    /**
      * Retorna o atraso atribuido à condição.
      *
      * @return
      *          inteiro contendo o atraso, em segundos.
      */
     public Integer getDelay();
+
+
+    /**
+     * Retorna o atraso atribuido à condição.
+     *
+     * @return
+     *          parâmetro representando o atraso.
+     */
+    public P getParamDelay();
 }

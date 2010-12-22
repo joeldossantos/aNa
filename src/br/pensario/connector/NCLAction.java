@@ -15,7 +15,7 @@ import br.pensario.Element;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public interface NCLAction<T> extends Comparable<T>, Element {
+public interface NCLAction<T, P extends NCLConnectorParam> extends Comparable<T>, Element {
 
     /**
      * Atribui um atraso à ação.
@@ -26,6 +26,15 @@ public interface NCLAction<T> extends Comparable<T>, Element {
      *          se o inteiro for negativo.
      */
     public void setDelay(Integer delay);
+
+
+    /**
+     * Atribui um atraso à ação.
+     *
+     * @param delay
+     *          parâmetro representando o atraso.
+     */
+    public void setDelay(P delay);
     
     
     /**
@@ -35,4 +44,13 @@ public interface NCLAction<T> extends Comparable<T>, Element {
      *          inteiro contendo o atraso, em segundos.
      */
     public Integer getDelay();
+
+
+    /**
+     * Retorna o atraso atribuido à ação.
+     *
+     * @return
+     *          parâmetro representando o atraso.
+     */
+    public P getParamDelay();
 }
