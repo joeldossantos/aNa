@@ -184,7 +184,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
 
 
     public void setDelay(Integer delay) throws IllegalArgumentException {
-        if (delay != null && delay < 0)
+        if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
@@ -211,12 +211,12 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<compoundCondition";
@@ -249,23 +249,23 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
         NCLCompoundCondition other_comp;
 
         // Verifica se sao do mesmo tipo
-        if (!(other instanceof NCLCompoundCondition))
+        if(!(other instanceof NCLCompoundCondition))
             return 1;
 
         other_comp = (NCLCompoundCondition) other;
         
         // Compara pelo operador
-        if (comp == 0){
-            if (getOperator() == null) this_cond = ""; else this_cond = getOperator().toString();
-            if (other_comp.getOperator() == null) other_cond = ""; else other_cond = other_comp.getOperator().toString();
+        if(comp == 0){
+            if(getOperator() == null) this_cond = ""; else this_cond = getOperator().toString();
+            if(other_comp.getOperator() == null) other_cond = ""; else other_cond = other_comp.getOperator().toString();
             comp = this_cond.compareTo(other_cond);
         }
 
         // Compara pelo delay
-        if (comp == 0){
+        if(comp == 0){
             int this_del, other_del;
-            if (getDelay() == null) this_del = 0; else this_del = getDelay();
-            if (other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
+            if(getDelay() == null) this_del = 0; else this_del = getDelay();
+            if(other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
             comp = this_del - other_del;
         }
 
@@ -280,31 +280,31 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
         }
 
         // Compara o número de condicoes
-        if (comp == 0)
+        if(comp == 0)
             comp = conditions.size() - ((Set) other_comp.getConditions()).size();
 
         // Compara as condicoes
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other_comp.getConditions().iterator();
-            for (NCLCondition c : conditions){
+            for(NCLCondition c : conditions){
                 NCLCondition other_c = (NCLCondition) it.next();
                 comp = c.compareTo(other_c);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }
 
         // Compara o número de statements
-        if (comp == 0)
+        if(comp == 0)
             comp = statements.size() - ((Set) other_comp.getStatements()).size();
 
         // Compara as statements
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other_comp.getStatements().iterator();
-            for (NCLStatement st : statements){
+            for(NCLStatement st : statements){
                 NCLStatement other_st = (NCLStatement) it.next();
                 comp = st.compareTo(other_st);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }

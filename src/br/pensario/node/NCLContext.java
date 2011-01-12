@@ -8,6 +8,8 @@ import java.util.TreeSet;
 import br.pensario.interfaces.NCLProperty;
 import br.pensario.interfaces.NCLPort;
 import br.pensario.link.NCLLink;
+import br.pensario.meta.NCLMeta;
+import br.pensario.meta.NCLMetadata;
 
 
 /**
@@ -23,13 +25,16 @@ import br.pensario.link.NCLLink;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink>
+public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata>
         extends NCLIdentifiableElement implements NCLNode<N> {
 
+    private C refer;
     private Set<Pt> ports = new TreeSet<Pt>();
     private Set<Pp> properties = new TreeSet<Pp>();
     private Set<N> nodes = new TreeSet<N>();
     private Set<L> links = new TreeSet<L>();
+    private Set<M> metas = new TreeSet<M>();
+    private Set<MT> metadatas = new TreeSet<MT>();
     
     
     /**
@@ -42,6 +47,28 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      */
     public NCLContext(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Atribui um contexto para ser reutilizado pelo contexto.
+     *
+     * @param refer
+     *          elemento representando o contexto a ser reutilizado.
+     */
+    public void setRefer(C refer) {
+        this.refer = refer;
+    }
+
+
+    /**
+     * Retorna o contexto reutilizado pelo contexto.
+     *
+     * @return
+     *          elemento representando o contexto a ser reutilizado.
+     */
+    public C getRefer() {
+        return refer;
     }
     
     
@@ -71,8 +98,8 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      * @see TreeSet#remove
      */
     public boolean removePort(String id) {
-        for (Pt port : ports){
-            if (port.getId().equals(id))
+        for(Pt port : ports){
+            if(port.getId().equals(id))
                 return ports.remove(port);
         }
         return false;
@@ -103,8 +130,8 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      *          verdadeiro se a porta existir.
      */
     public boolean hasPort(String id) {
-        for (Pt port : ports){
-            if (port.getId().equals(id))
+        for(Pt port : ports){
+            if(port.getId().equals(id))
                 return true;
         }
         return false;
@@ -172,8 +199,8 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      * @see TreeSet#remove
      */
     public boolean removeProperty(String name) {
-        for (Pp property : properties){
-            if (property.getId().equals(name))
+        for(Pp property : properties){
+            if(property.getId().equals(name))
                 return properties.remove(property);
         }
         return false;
@@ -204,8 +231,8 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      *          verdadeiro se a propriedade existir.
      */
     public boolean hasProperty(String name) {
-        for (Pp property : properties){
-            if (property.getId().equals(name))
+        for(Pp property : properties){
+            if(property.getId().equals(name))
                 return true;
         }
         return false;
@@ -273,8 +300,8 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      * @see TreeSet#remove
      */
     public boolean removeNode(String id) {
-        for (N node : nodes){
-            if (node.getId().equals(id))
+        for(N node : nodes){
+            if(node.getId().equals(id))
                 return nodes.remove(node);
         }
         return false;
@@ -305,8 +332,8 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
      *          verdadeiro se o nó existir.
      */
     public boolean hasNode(String id) {
-        for (N node : nodes){
-            if (node.getId().equals(id))
+        for(N node : nodes){
+            if(node.getId().equals(id))
                 return true;
         }
         return false;
@@ -411,45 +438,188 @@ public class NCLContext<Pt extends NCLPort, Pp extends NCLProperty, N extends NC
     public Iterable<L> getLinks() {
         return links;
     }
+
+
+    /**
+     * Adiciona um metadado ao cabeçalho do documento NCL.
+     *
+     * @param meta
+     *          elemento representando o metadado a ser adicionado.
+     * @return
+     *          Verdadeiro se o metadado foi adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addMeta(M meta) {
+        return metas.add(meta);
+    }
+
+
+    /**
+     * Remove um metadado do cabeçalho do documento NCL.
+     *
+     * @param meta
+     *          elemento representando o metadado a ser removido.
+     * @return
+     *          Verdadeiro se o link foi removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeMeta(M meta) {
+        return metas.remove(meta);
+    }
+
+
+    /**
+     * Verifica se o cabeçalho do documento NCL possui um metadado.
+     *
+     * @param meta
+     *          elemento representando o metadado a ser verificado.
+     * @return
+     *          verdadeiro se o link existir.
+     */
+    public boolean hasMeta(M meta) {
+        return metas.contains(meta);
+    }
+
+
+    /**
+     * Verifica se o cabeçalho do documento NCL possui algum metadado.
+     *
+     * @return
+     *          verdadeiro se o corpo do cabeçalho NCL possuir algum metadado.
+     */
+    public boolean hasMeta() {
+        return !metas.isEmpty();
+    }
+
+
+    /**
+     * Retorna os metadados do cabeçalho do documento NCL.
+     *
+     * @return
+     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     */
+    public Iterable<M> getMetas() {
+        return metas;
+    }
+
+
+    /**
+     * Adiciona um metadado ao cabeçalho do documento NCL.
+     *
+     * @param metadata
+     *          elemento representando o metadado a ser adicionado.
+     * @return
+     *          Verdadeiro se o metadado foi adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addMetadata(MT metadata) {
+        return metadatas.add(metadata);
+    }
+
+
+    /**
+     * Remove um metadado do cabeçalho do documento NCL.
+     *
+     * @param metadata
+     *          elemento representando o metadado a ser removido.
+     * @return
+     *          Verdadeiro se o link foi removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeMetadata(MT metadata) {
+        return metadatas.remove(metadata);
+    }
+
+
+    /**
+     * Verifica se o cabeçalho do documento NCL possui um metadado.
+     *
+     * @param metadata
+     *          elemento representando o metadado a ser verificado.
+     * @return
+     *          verdadeiro se o link existir.
+     */
+    public boolean hasMetadata(MT metadata) {
+        return metadatas.contains(metadata);
+    }
+
+
+    /**
+     * Verifica se o cabeçalho do documento NCL possui algum metadado.
+     *
+     * @return
+     *          verdadeiro se o corpo do cabeçalho NCL possuir algum metadado.
+     */
+    public boolean hasMetadata() {
+        return !metadatas.isEmpty();
+    }
+
+
+    /**
+     * Retorna os metadados do cabeçalho do documento NCL.
+     *
+     * @return
+     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     */
+    public Iterable<MT> getMetadatas() {
+        return metadatas;
+    }
     
     
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
         
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         
         // <context> element and attributes declaration
         content = space + "<context";
         content += " id='" + getId() + "'";
+
+        if(getRefer() != null)
+            content += " refer='" + getRefer().getId() + "'";
         
         // Test if the media has content
-        if (hasPort() || hasProperty() || hasNode() || hasLink()){
+        if(hasMeta() || hasMetadata() || hasPort() || hasProperty() || hasNode() || hasLink()){
             content += ">\n";
+
+            if(hasMeta()){
+                for(M meta : metas)
+                    content += meta.parse(ident + 1);
+            }
+
+            if(hasMetadata()){
+                for(MT metadata : metadatas)
+                    content += metadata.parse(ident + 1);
+            }
             
-            if (hasPort()){
-                for (Pt port : ports)
+            if(hasPort()){
+                for(Pt port : ports)
                     content += port.parse(ident + 1);
             }
 
-            if (hasProperty()){
-                for (Pp property : properties)
+            if(hasProperty()){
+                for(Pp property : properties)
                     content += property.parse(ident + 1);
             }
 
-            if (hasNode()){
-                for (N node : nodes)
+            if(hasNode()){
+                for(N node : nodes)
                     content += node.parse(ident + 1);
             }
 
-            if (hasLink()){
-                for (L link : links)
+            if(hasLink()){
+                for(L link : links)
                     content += link.parse(ident + 1);
             }
             

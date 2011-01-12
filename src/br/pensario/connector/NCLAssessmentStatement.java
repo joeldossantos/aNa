@@ -90,7 +90,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * @see TreeSet#add
      */
     public boolean addAttributeAssessment(A attribute) throws Exception {
-        if (attributeAssessments.size() == 2)
+        if(attributeAssessments.size() == 2)
             throw new Exception("can't have more than two attributes");
         
         return attributeAssessments.add(attribute);
@@ -150,12 +150,12 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
         
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<assessmentStatement";
@@ -167,7 +167,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
         for(A attribute : attributeAssessments)
             content += attribute.parse(ident + 1);
         
-        if (valueAssessment != null)
+        if(valueAssessment != null)
             content += valueAssessment.parse(ident + 1);
         
         content += space + "</assessmentStatement>\n";
@@ -183,36 +183,36 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
         NCLAssessmentStatement other_asses;
 
         // Verifica se sao do mesmo tipo
-        if (!(other instanceof NCLAssessmentStatement))
+        if(!(other instanceof NCLAssessmentStatement))
             return -1;
 
         other_asses = (NCLAssessmentStatement) other;
         
         // Compara pelo comparador
-        if (comp == 0){
-            if (getComparator() == null) this_stat = ""; else this_stat = getComparator().toString();
-            if (other_asses.getComparator() == null) other_stat = ""; else other_stat = other_asses.getComparator().toString();
+        if(comp == 0){
+            if(getComparator() == null) this_stat = ""; else this_stat = getComparator().toString();
+            if(other_asses.getComparator() == null) other_stat = ""; else other_stat = other_asses.getComparator().toString();
             comp = this_stat.compareTo(other_stat);
         }
 
         // Compara o número de attributeAssessment
-        if (comp == 0)
+        if(comp == 0)
             comp = attributeAssessments.size() - ((Set) other_asses.getAttributeAssessments()).size();
 
         // Compara os attributeAssessment
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other_asses.getAttributeAssessments().iterator();
-            for (NCLAttributeAssessment att : attributeAssessments){
+            for(NCLAttributeAssessment att : attributeAssessments){
                 NCLAttributeAssessment other_att = (NCLAttributeAssessment) it.next();
                 comp = att.compareTo(other_att);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }
 
         // Compara os valueAssessment
-        if (comp == 0){
-            if (getValueAssessment() == null && other_asses.getValueAssessment() == null)
+        if(comp == 0){
+            if(getValueAssessment() == null && other_asses.getValueAssessment() == null)
                 comp = 0;
             else if(getValueAssessment() != null && other_asses.getValueAssessment() != null)
                 comp = getValueAssessment().compareTo(other_asses.getValueAssessment());

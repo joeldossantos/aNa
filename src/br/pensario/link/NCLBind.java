@@ -191,12 +191,12 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         
@@ -204,16 +204,16 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         content = space + "<bind";
         content += " role='" + getRole().getName() + "'";
         content += " component='" + getComponent().getId() + "'";
-        if (getInterface() != null)
+        if(getInterface() != null)
             content += " interface='" + getInterface().getId() + "'";
-        if (getDescriptor() != null)
+        if(getDescriptor() != null)
             content += " descriptor='" + getDescriptor().getId() + "'";
         
         // <bind> element content
-        if (hasBindParam()){
+        if(hasBindParam()){
             content += ">\n";
 
-            for (P param : bindParams)
+            for(P param : bindParams)
                 content += param.parse(ident + 1);
             
             content += space + "</bind>\n";
@@ -231,42 +231,36 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         String this_bind, other_bind;
 
         // Compara pelo role
-        if (getRole() == null) this_bind = ""; else this_bind = getRole().getName();
-        if (other.getRole() == null) other_bind = ""; else other_bind = other.getRole().getName();
+        if(getRole() == null) this_bind = ""; else this_bind = getRole().getName();
+        if(other.getRole() == null) other_bind = ""; else other_bind = other.getRole().getName();
         comp = this_bind.compareTo(other_bind);
 
         // Compara pelo componente
-        if (comp == 0){
-            if (getComponent() == null) this_bind = ""; else this_bind = getComponent().getId();
-            if (other.getComponent() == null) other_bind = ""; else other_bind = other.getComponent().getId();
-            comp = this_bind.compareTo(other_bind);
+        if(comp == 0){
+            comp = getComponent().compareTo(other.getComponent());
         }
 
         // Compara pela interface
-        if (comp == 0){
-            if (getInterface() == null) this_bind = ""; else this_bind = getInterface().getId();
-            if (other.getInterface() == null) other_bind = ""; else other_bind = other.getInterface().getId();
-            comp = this_bind.compareTo(other_bind);
+        if(comp == 0){
+            comp = getInterface().compareTo(other.getInterface());
         }
 
         // Compara pelo descritor
-        if (comp == 0){
-            if (getDescriptor() == null) this_bind = ""; else this_bind = getDescriptor().getId();
-            if (other.getDescriptor() == null) other_bind = ""; else other_bind = other.getDescriptor().getId();
-            comp = this_bind.compareTo(other_bind);
+        if(comp == 0){
+            comp = getDescriptor().compareTo(other.getDescriptor());
         }
 
         // Compara o número de parâmetros
-        if (comp == 0)
+        if(comp == 0)
             comp = bindParams.size() - ((Set) other.getBindParams()).size();
 
         // Compara os parâmetros
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other.getBindParams().iterator();
-            for (P param : bindParams){
+            for(P param : bindParams){
                 P other_param = (P) it.next();
                 comp = param.compareTo(other_param);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }

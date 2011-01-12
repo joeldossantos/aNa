@@ -52,9 +52,9 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      *          se alguma das coordenadas for inválida.
      */
     public void setCoords(int[] coords) throws IllegalArgumentException {
-        if (coords != null){
-            for (int coord : coords){
-                if (coord < 0)
+        if(coords != null){
+            for(int coord : coords){
+                if(coord < 0)
                     throw new IllegalArgumentException("Invalid coordenate: " + coord);
             }
         }
@@ -133,7 +133,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      *          se a String for vazia.
      */
     public void setText(String text) throws IllegalArgumentException {
-        if (text != null && "".equals(text.trim()))
+        if(text != null && "".equals(text.trim()))
             throw new IllegalArgumentException("Empty value String");
 
         this.text = text;
@@ -160,7 +160,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      *          se a posição for um valor negativo.
      */
     public void setPosition(Integer position) throws IllegalArgumentException {
-        if (position != null && position < 0)
+        if(position != null && position < 0)
             throw new IllegalArgumentException("Invalid position");
 
         this.position = position;
@@ -237,7 +237,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      *          se a String for vazia.
      */
     public void setLabel(String label) throws IllegalArgumentException {
-        if (label != null && "".equals(label.trim()))
+        if(label != null && "".equals(label.trim()))
             throw new IllegalArgumentException("Empty label String");
 
         this.label = label;
@@ -258,32 +258,32 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
                 
         // <area> element and attributes declaration
         content = space + "<area";
         content += " id='" + getId() + "'";
-        if (getCoords() != null)
+        if(getCoords() != null)
             content += " coords='" + coordsToString() + "'";
-        if (getBegin() != null)
+        if(getBegin() != null)
             content += " begin='" + getBegin().toString() + "'";
-        if (getEnd() != null)
+        if(getEnd() != null)
             content += " end='" + getEnd().toString() + "'";
-        if (getText() != null)
+        if(getText() != null)
             content += " text='" + getText() + "'";
-        if (getPosition() != null)
+        if(getPosition() != null)
             content += " position='" + getPosition() + "'";
-        if (getFirst() != null)
+        if(getFirst() != null)
             content += " first='" + getFirst().toString() + "'";
-        if (getLast() != null)
+        if(getLast() != null)
             content += " last='" + getLast().toString() + "'";
-        if (getLabel() != null)
+        if(getLabel() != null)
             content += " label='" + getLabel() + "'";
         content += "/>\n";
         
@@ -299,9 +299,9 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      */
     private String coordsToString() {
         String result = "";
-        for (int i = 0; i < coords.length; i++){
+        for(int i = 0; i < coords.length; i++){
             result += coords[i];
-            if (i < coords.length - 1)
+            if(i < coords.length - 1)
                 result += ",";
         }
         return result;

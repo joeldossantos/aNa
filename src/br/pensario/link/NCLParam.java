@@ -31,8 +31,14 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
      * 
      * @param paramType
      *          define se o parâmetro é de um elemento <i>link</i> ou <i>bind</i>.
+     *
+     * @throws java.lang.NullPointerException
+     *          se o tipo for nulo.
      */
-    public NCLParam(NCLParamInstance paramType) {
+    public NCLParam(NCLParamInstance paramType) throws NullPointerException {
+        if(paramType == null)
+            throw new NullPointerException("Null type");
+
         this.paramType = paramType;
     }
     
@@ -68,7 +74,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
      *          Se o valor a ser atribuído for uma String vazia.
      */
     public void setValue(String value)  throws IllegalArgumentException {
-        if (value != null && "".equals(value.trim()))
+        if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
         this.value = value;
@@ -89,12 +95,12 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         
@@ -110,7 +116,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
     
     
     public int compareTo(P other) {
-        return getName().getName().compareTo(other.getName().getName());
+        return getName().compareTo(other.getName());
     }
 
 }

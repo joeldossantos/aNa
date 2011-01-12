@@ -46,7 +46,7 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      *          Se o título a ser atribuído for uma String vazia.
      */
     public void setTitle(String title) throws IllegalArgumentException {
-        if (title != null && "".equals(title.trim()))
+        if(title != null && "".equals(title.trim()))
             throw new IllegalArgumentException("Empty title String");
         
         
@@ -134,12 +134,12 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         // XML document start declaration
@@ -149,9 +149,9 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
 
         // <ncl> element and attributes declaration
         content += space + "<ncl";
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
-        if (getTitle() != null)
+        if(getTitle() != null)
             content += " title='" + getTitle() + "'";
         content += " xmlns='" + getXmlns() + "'";
         content += ">\n";

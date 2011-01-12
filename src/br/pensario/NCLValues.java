@@ -594,4 +594,18 @@ public abstract class NCLValues {
         private NCLParamInstance(String name) { this.name = name;}
         public String toString() { return name;}
     }
+
+
+    /**
+     * Tipos do importador usado no cabeçalho.
+     */
+    public enum NCLImportType {
+
+        BASE("importBase"),
+        NCL("importNCL");
+
+        private String name;
+        private NCLImportType(String name) { this.name = name;}
+        public String toString() { return name;}
+    }
 }

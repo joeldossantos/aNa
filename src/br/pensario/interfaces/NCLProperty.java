@@ -73,7 +73,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
      *          se o nome da propriedade não for válido.
      */
     public void setName(NCLSystemVariable name) throws NCLInvalidIdentifierException {
-        if (name != null)
+        if(name != null)
             setId(name.toString());
     }
     
@@ -98,7 +98,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
      *          se a String for vazia.
      */
     public void setValue(String value) throws IllegalArgumentException {
-        if (value != null && "".equals(value.trim()))
+        if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
         this.value = value;
@@ -119,18 +119,18 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         // <property> element and attributes declaration
         content = space + "<property";
         content += " name='" + getName() + "'";
-        if (getValue() != null)
+        if(getValue() != null)
             content += " value='" + getValue() + "'";
         content += "/>\n";
         

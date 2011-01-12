@@ -51,7 +51,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          Se o valor a ser atribuído for uma String vazia.
      */
     public void setValue(String value) {
-        if (value != null && "".equals(value.trim()))
+        if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
         this.value = value;
@@ -100,7 +100,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          inteiro positivo representando o número mínimo.
      */
     public void setMin(Integer min) {
-        if (min != null && min < 0)
+        if(min != null && min < 0)
             throw new IllegalArgumentException("Invalid min");
         
         this.min = min;
@@ -126,7 +126,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(Integer max) {
-        if (max != null && max < 0)
+        if(max != null && max < 0)
             this.max = -1;
         
         this.max = max;
@@ -418,7 +418,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
 
 
     public void setDelay(Integer delay) throws IllegalArgumentException {
-        if (delay != null && delay < 0)
+        if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
@@ -445,44 +445,44 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<simpleAction";
 
         content += " role='" + getRole().getName() + "'";
 
-        if (getValue() != null)
+        if(getValue() != null)
             content += " value='" + getValue() + "'";
-        if (getParamValue() != null)
+        if(getParamValue() != null)
             content += " value='$" + getParamValue().getId() + "'";
 
-        if (getDelay() != null)
+        if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
-        if (getParamDelay() != null)
+        if(getParamDelay() != null)
             content += " delay='$" + getParamDelay().getId() + "'";
         
-        if (getMin() != null)
+        if(getMin() != null)
             content += " min='" + getMin() + "'";
         
-        if (getMax() != null)
-            if (getMax() < 0)
+        if(getMax() != null)
+            if(getMax() < 0)
                 content += " max='unbounded'";
             else
                 content += " max='" + getMax() + "'";
         
-        if (getQualifier() != null)
+        if(getQualifier() != null)
             content += " qualifier='" + getQualifier().toString() + "'";
 
-        if (getEventType() != null)
+        if(getEventType() != null)
             content += " eventType='" + getEventType().toString() + "'";
 
-        if (getActionType() != null)
+        if(getActionType() != null)
             content += " actionType='" + getActionType().toString() + "'";
 
         if(getRepeat() != null)
@@ -520,34 +520,34 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         NCLSimpleAction other_simp;
 
         // Verifica se sao do mesmo tipo
-        if (!(other instanceof NCLSimpleAction))
+        if(!(other instanceof NCLSimpleAction))
             return 1;
 
          other_simp = (NCLSimpleAction) other;
 
         // Compara pelo role
-        if (getRole() == null) this_act = ""; else this_act = getRole().getName();
-        if (other_simp.getRole() == null) other_act = ""; else other_act = other_simp.getRole().getName();
+        if(getRole() == null) this_act = ""; else this_act = getRole().getName();
+        if(other_simp.getRole() == null) other_act = ""; else other_act = other_simp.getRole().getName();
         comp = this_act.compareTo(other_act);
 
         // Compara pelo número mínimo
-        if (comp == 0){
-            if (getMin() == null) this_ac = 0; else this_ac = getMin();
-            if (other_simp.getMin() == null) other_ac = 0; else other_ac = other_simp.getMin();
+        if(comp == 0){
+            if(getMin() == null) this_ac = 0; else this_ac = getMin();
+            if(other_simp.getMin() == null) other_ac = 0; else other_ac = other_simp.getMin();
             comp = this_ac - other_ac;
         }
 
         // Compara pelo número máximo
-        if (comp == 0){
-            if (getMax() == null) this_ac = 0; else this_ac = getMax();
-            if (other_simp.getMax() == null) other_ac = 0; else other_ac = other_simp.getMax();
+        if(comp == 0){
+            if(getMax() == null) this_ac = 0; else this_ac = getMax();
+            if(other_simp.getMax() == null) other_ac = 0; else other_ac = other_simp.getMax();
             comp = this_ac - other_ac;
         }
 
         // Compara pelo delay
-        if (comp == 0){
-            if (getDelay() == null) this_ac = 0; else this_ac = getDelay();
-            if (other_simp.getDelay() == null) other_ac = 0; else other_ac = other_simp.getDelay();
+        if(comp == 0){
+            if(getDelay() == null) this_ac = 0; else this_ac = getDelay();
+            if(other_simp.getDelay() == null) other_ac = 0; else other_ac = other_simp.getDelay();
             comp = this_ac - other_ac;
         }
 
@@ -562,16 +562,16 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         }
 
         // Compara pelo qualifier
-        if (comp == 0){
-            if (getQualifier() == null) this_act = ""; else this_act = getQualifier().toString();
-            if (other_simp.getQualifier() == null) other_act = ""; else other_act = other_simp.getQualifier().toString();
+        if(comp == 0){
+            if(getQualifier() == null) this_act = ""; else this_act = getQualifier().toString();
+            if(other_simp.getQualifier() == null) other_act = ""; else other_act = other_simp.getQualifier().toString();
             comp = this_act.compareTo(other_act);
         }
 
         // Compara pelo value
-        if (comp == 0){
-            if (getValue() == null) this_act = ""; else this_act = getValue();
-            if (other_simp.getValue() == null) other_act = ""; else other_act = other_simp.getValue();
+        if(comp == 0){
+            if(getValue() == null) this_act = ""; else this_act = getValue();
+            if(other_simp.getValue() == null) other_act = ""; else other_act = other_simp.getValue();
             comp = this_act.compareTo(other_act);
         }
 
@@ -586,23 +586,23 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         }
 
         // Compara pelo tipo do evento
-        if (comp == 0){
-            if (getEventType() == null) this_act = ""; else this_act = getEventType().toString();
-            if (other_simp.getEventType() == null) other_act = ""; else other_act = other_simp.getEventType().toString();
+        if(comp == 0){
+            if(getEventType() == null) this_act = ""; else this_act = getEventType().toString();
+            if(other_simp.getEventType() == null) other_act = ""; else other_act = other_simp.getEventType().toString();
             comp = this_act.compareTo(other_act);
         }
 
         // Compara pela acao do evento
-        if (comp == 0){
-            if (getActionType() == null) this_act = ""; else this_act = getActionType().toString();
-            if (other_simp.getActionType() == null) other_act = ""; else other_act = other_simp.getActionType().toString();
+        if(comp == 0){
+            if(getActionType() == null) this_act = ""; else this_act = getActionType().toString();
+            if(other_simp.getActionType() == null) other_act = ""; else other_act = other_simp.getActionType().toString();
             comp = this_act.compareTo(other_act);
         }
 
         // Compara pelo repeat
-        if (comp == 0){
-            if (getRepeat() == null) this_ac = 0; else this_ac = getRepeat();
-            if (other_simp.getRepeat() == null) other_ac = 0; else other_ac = other_simp.getRepeat();
+        if(comp == 0){
+            if(getRepeat() == null) this_ac = 0; else this_ac = getRepeat();
+            if(other_simp.getRepeat() == null) other_ac = 0; else other_ac = other_simp.getRepeat();
             comp = this_ac - other_ac;
         }
 
@@ -617,9 +617,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         }
 
         // Compara pelo repeatDelay
-        if (comp == 0){
-            if (getRepeatDelay() == null) this_ac = 0; else this_ac = getRepeatDelay();
-            if (other_simp.getRepeatDelay() == null) other_ac = 0; else other_ac = other_simp.getRepeatDelay();
+        if(comp == 0){
+            if(getRepeatDelay() == null) this_ac = 0; else this_ac = getRepeatDelay();
+            if(other_simp.getRepeatDelay() == null) other_ac = 0; else other_ac = other_simp.getRepeatDelay();
             comp = this_ac - other_ac;
         }
 
@@ -634,9 +634,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         }
 
         // Compara pelo duration
-        if (comp == 0){
-            if (getDuration() == null) this_ac = 0; else this_ac = getDuration();
-            if (other_simp.getDuration() == null) other_ac = 0; else other_ac = other_simp.getDuration();
+        if(comp == 0){
+            if(getDuration() == null) this_ac = 0; else this_ac = getDuration();
+            if(other_simp.getDuration() == null) other_ac = 0; else other_ac = other_simp.getDuration();
             comp = this_ac - other_ac;
         }
 
@@ -651,9 +651,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         }
 
         // Compara pelo by
-        if (comp == 0){
-            if (getBy() == null) this_ac = 0; else this_ac = getBy();
-            if (other_simp.getBy() == null) other_ac = 0; else other_ac = other_simp.getBy();
+        if(comp == 0){
+            if(getBy() == null) this_ac = 0; else this_ac = getBy();
+            if(other_simp.getBy() == null) other_ac = 0; else other_ac = other_simp.getBy();
             comp = this_ac - other_ac;
         }
 

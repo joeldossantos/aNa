@@ -45,7 +45,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
      *          Se o valor a ser atribuído for uma String vazia.
      */
     public void setValue(String value) throws IllegalArgumentException {
-        if (value != null && "".equals(value.trim()))
+        if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
         this.value = value;
@@ -119,12 +119,12 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
         
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<valueAssessment";
@@ -145,14 +145,14 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
 
         String this_stat, other_stat;
 
-        if (getValue() == null) this_stat = ""; else this_stat = getValue();
-        if (other.getValue() == null) other_stat = ""; else other_stat = other.getValue();
+        if(getValue() == null) this_stat = ""; else this_stat = getValue();
+        if(other.getValue() == null) other_stat = ""; else other_stat = other.getValue();
         comp = this_stat.compareTo(other_stat);
 
-        if (comp == 0){
-            if (getParamValue() == null && other.getParamValue() == null)
+        if(comp == 0){
+            if(getParamValue() == null && other.getParamValue() == null)
                 comp = 0;
-            else if (getParamValue() != null && other.getParamValue() != null)
+            else if(getParamValue() != null && other.getParamValue() != null)
                 comp = getParamValue().compareTo(other.getParamValue());
             else
                 comp = 1;

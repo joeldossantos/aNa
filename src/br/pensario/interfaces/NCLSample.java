@@ -48,7 +48,7 @@ public class NCLSample {
      *          se o valor não estiver no formato definido pela norma (inteiro positivo).
      */
     public void setValue(int value) throws IllegalArgumentException {
-        if (value < 0)
+        if(value < 0)
             throw new IllegalArgumentException("Invalid value");
 
         this.value = value;
@@ -75,7 +75,7 @@ public class NCLSample {
      *          se o tipo for nulo.
      */
     public void setType(NCLSampleType type) throws NullPointerException {
-        if (type == null)
+        if(type == null)
             throw new NullPointerException("Null type value");
 
         this.type = type;
@@ -94,7 +94,7 @@ public class NCLSample {
     
     
     public String toString() {
-        switch (type){
+        switch(type){
         case S:
             return value + "s";
         case F:
@@ -111,8 +111,8 @@ public class NCLSample {
         String this_sample = toString();
         String other_sample = other.toString();
 
-        if (this_sample == null) this_sample = "";
-        if (other_sample == null) other_sample = "";
+        if(this_sample == null) this_sample = "";
+        if(other_sample == null) other_sample = "";
 
         return this_sample.compareTo(other_sample);
     }

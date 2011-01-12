@@ -2,6 +2,7 @@ package br.pensario.node;
 
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLValues.NCLInstanceType;
 import br.pensario.NCLValues.NCLMimeType;
 import br.pensario.NCLValues.NCLUriType;
 import br.pensario.descriptor.NCLDescriptor;
@@ -26,12 +27,14 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLDescriptor>
+public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLDescriptor, M extends NCLMedia>
         extends NCLIdentifiableElement implements NCLNode<N> {
 
     private String src;
     private NCLMimeType type;
     private D descriptor;
+    private M refer;
+    private NCLInstanceType instance;
     
     private Set<A> areas = new TreeSet<A>();
     private Set<P> properties = new TreeSet<P>();
@@ -61,7 +64,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see java.net.URI
      */
     public void setSrc(String src) throws URISyntaxException {
-        if (src != null)
+        if(src != null)
             this.src = new URI(src).toString();
         
         this.src = src;
@@ -84,11 +87,11 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see java.net.URI
      */
     public void setSrc(NCLUriType type, String src) throws URISyntaxException, IllegalArgumentException {
-        if (getType() == NCLMimeType.APPLICATION_X_GINGA_SETTINGS)
+        if(getType() == NCLMimeType.APPLICATION_X_GINGA_SETTINGS)
             throw new IllegalArgumentException("This media don't have src");
         
         String src_type = "";
-        if (type != null)
+        if(type != null)
             src_type = type.toString();
         
         setSrc(src_type + src);
@@ -108,7 +111,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see NCLTime#isUTC()
      */
     public void setSrc(NCLTime time) throws IllegalArgumentException {
-        if (!time.isUTC() || getType() != NCLMimeType.APPLICATION_X_GINGA_TIME)
+        if(!time.isUTC() || getType() != NCLMimeType.APPLICATION_X_GINGA_TIME)
             throw new IllegalArgumentException("Invalid src");
 
         this.src = time.toString();
@@ -173,6 +176,50 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public D getDescriptor() {
         return descriptor;
     }
+
+
+    /**
+     * Atribui uma media para ser reutilizada pela media.
+     *
+     * @param refer
+     *          elemento representando a media a ser reutilizado.
+     */
+    public void setRefer(M refer) {
+        this.refer = refer;
+    }
+
+
+    /**
+     * Retorna a media reutilizada pela media.
+     *
+     * @return
+     *          elemento representando a media a ser reutilizado.
+     */
+    public M getRefer() {
+        return refer;
+    }
+
+
+    /**
+     * Determina o tipo de instância de outra media essa media é.
+     *
+     * @param instance
+     *          elemento representando o tipo de instancia.
+     */
+    public void setInstance(NCLInstanceType instance) {
+        this.instance = instance;
+    }
+
+
+    /**
+     * Retorna o tipo de instância de outra media essa media é.
+     *
+     * @return
+     *          elemento representando o tipo de instancia.
+     */
+    public NCLInstanceType getInstance() {
+        return instance;
+    }
     
     
     /**
@@ -201,8 +248,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see TreeSet#remove
      */
     public boolean removeArea(String id) {
-        for (A area : areas){
-            if (area.getId().equals(id))
+        for(A area : areas){
+            if(area.getId().equals(id))
                 return areas.remove(area);
         }
         return false;
@@ -233,8 +280,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          verdadeiro se a âncora existir.
      */
     public boolean hasArea(String id) {
-        for (A area : areas){
-            if (area.getId().equals(id))
+        for(A area : areas){
+            if(area.getId().equals(id))
                 return true;
         }
         return false;
@@ -302,8 +349,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see TreeSet#remove
      */
     public boolean removeProperty(String name) {
-        for (P property : properties){
-            if (property.getId().equals(name))
+        for(P property : properties){
+            if(property.getId().equals(name))
                 return properties.remove(property);
         }
         return false;
@@ -334,8 +381,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          verdadeiro se a propriedade existir.
      */
     public boolean hasProperty(String name) {
-        for (P property : properties){
-            if (property.getId().equals(name))
+        for(P property : properties){
+            if(property.getId().equals(name))
                 return true;
         }
         return false;
@@ -380,36 +427,40 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         
         // <media> element and attributes declaration
         content = space + "<media";
         content += " id='" + getId() + "'";
-        if (getSrc() != null)
+        if(getSrc() != null)
             content += " src='" + getSrc() + "'";
-        if (getType() != null)
+        if(getType() != null)
             content += " type='" + getType().toString() + "'";
-        if (getDescriptor() != null)
+        if(getDescriptor() != null)
             content += " descriptor='" + getDescriptor().getId() + "'";
+        if(getRefer() != null)
+            content += " refer='" + getRefer().getId() + "'";
+        if(getInstance() != null)
+            content += " instance='" + getInstance().toString() + "'";
         
         // Test if the media has content
-        if (hasArea() || hasProperty()){
+        if(hasArea() || hasProperty()){
             content += ">\n";
             
-            if (hasArea()){
-                for (A area : areas)
+            if(hasArea()){
+                for(A area : areas)
                     content += area.parse(ident + 1);
             }
             
-            if (hasProperty()){
-                for (P prop : properties)
+            if(hasProperty()){
+                for(P prop : properties)
                     content += prop.parse(ident + 1);
             }
             

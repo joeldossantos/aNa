@@ -63,7 +63,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          se o título for uma String vazia.
      */
     public void setTitle(String title) throws IllegalArgumentException {
-        if (title != null && "".equals(title.trim()))
+        if(title != null && "".equals(title.trim()))
             throw new IllegalArgumentException("Empty title String");
 
         this.title = title;
@@ -94,7 +94,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void setLeft(Integer left, boolean relative) throws IllegalArgumentException {
         setRelativeLeft(relative);
 
-        if (isRelativeLeft() && left != null && (left < 0 || left > 100))
+        if(isRelativeLeft() && left != null && (left < 0 || left > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%left= " +
                     left + "). It must be between 0 and 100.");
 
@@ -131,7 +131,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void setRight(Integer right, boolean relative) throws IllegalArgumentException {
         setRelativeRight(relative);
 
-        if (isRelativeRight() && right != null && (right < 0 || right > 100))
+        if(isRelativeRight() && right != null && (right < 0 || right > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%right= " +
                     right + "). It must be between 0 and 100.");
 
@@ -168,7 +168,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void setTop(Integer top, boolean relative) throws IllegalArgumentException {
         setRelativeTop(relative);
 
-        if (isRelativeTop() && top != null && (top < 0 || top > 100))
+        if(isRelativeTop() && top != null && (top < 0 || top > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%top= " +
                     top + "). It must be between 0 and 100.");
 
@@ -205,7 +205,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void setBottom(Integer bottom, boolean relative) throws IllegalArgumentException {
         setRelativeBottom(relative);
 
-        if (isRelativeBottom() && bottom != null && (bottom < 0 || bottom > 100))
+        if(isRelativeBottom() && bottom != null && (bottom < 0 || bottom > 100))
             throw new IllegalArgumentException("Invalid percentage position value (%bottom= " +
                     bottom + "). It must be between 0 and 100.");
 
@@ -243,7 +243,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void setHeight(Integer height, boolean relative) throws IllegalArgumentException {
         setRelativeHeight(relative);
 
-        if (isRelativeHeight() && height != null && (height < 0 || height > 100))
+        if(isRelativeHeight() && height != null && (height < 0 || height > 100))
             throw new IllegalArgumentException("Valor não percentual para atributo relativo de posicionamento (%height= "
                             + height + ")");
 
@@ -280,7 +280,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void setWidth(Integer width, boolean relative) throws IllegalArgumentException {
         setRelativeWidth(relative);
 
-        if (isRelativeWidth() && width != null && (width < 0 || width > 100))
+        if(isRelativeWidth() && width != null && (width < 0 || width > 100))
             throw new IllegalArgumentException("Valor não porcentual para atributo relativo de posicionamento (%width= "
                             + width + ")");
 
@@ -313,7 +313,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          se o índice for um valor negativo.
      */
     public void setzIndex(Integer zIndex) throws IllegalArgumentException {
-        if (zIndex != null && zIndex < 0)
+        if(zIndex != null && zIndex < 0)
             throw new IllegalArgumentException("Illegal index value");
 
         this.zIndex = zIndex;
@@ -490,8 +490,8 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @see TreeSet#remove
      */
     public boolean removeRegion(String id) {
-        for (R region : regions){
-            if (region.getId().equals(id))
+        for(R region : regions){
+            if(region.getId().equals(id))
                 return regions.remove(region);
         }
         return false;
@@ -551,69 +551,69 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<region";
         content += " id='" + getId() + "'";
 
-        if (getLeft() != null) {
+        if(getLeft() != null) {
             String percent = "";
-            if (isRelativeLeft())
+            if(isRelativeLeft())
                 percent = "%";
             content += " left='" + getLeft() + percent + "'";
         }
 
-        if (getRight() != null) {
+        if(getRight() != null) {
             String percent = "";
-            if (isRelativeRight())
+            if(isRelativeRight())
                 percent = "%";
             content += " right='" + getRight() + percent + "'";
         }
 
-        if (getTop() != null) {
+        if(getTop() != null) {
             String percent = "";
-            if (isRelativeTop())
+            if(isRelativeTop())
                 percent = "%";
             content += " top='" + getTop() + percent + "'";
         }
 
-        if (getBottom() != null) {
+        if(getBottom() != null) {
             String percent = "";
-            if (isRelativeBottom())
+            if(isRelativeBottom())
                 percent = "%";
             content += " bottom='" + getBottom() + percent + "'";
         }
 
-        if (getHeight() != null) {
+        if(getHeight() != null) {
             String percent = "";
-            if (isRelativeHeight())
+            if(isRelativeHeight())
                 percent = "%";
             content += " height='" + getHeight() + percent + "'";
         }
 
-        if (getWidth() != null) {
+        if(getWidth() != null) {
             String percent = "";
-            if (isRelativeWidth())
+            if(isRelativeWidth())
                 percent = "%";
             content += " width='" + getWidth() + percent + "'";
         }
 
-        if (getzIndex() != null)
+        if(getzIndex() != null)
             content += " zIndex='" + getzIndex() + "'";
 
-        if (getTitle() != null)
+        if(getTitle() != null)
             content += " title='" + getTitle() + "'";
 
-        if (hasRegion()) {
+        if(hasRegion()) {
             content += ">\n";
 
-            for (R region : getRegions())
+            for(R region : getRegions())
                 content += region.parse(ident + 1);
             
             content += space + "</region>\n";

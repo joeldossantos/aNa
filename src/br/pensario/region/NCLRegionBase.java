@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.reuse.NCLImport;
 
 
 /**
@@ -19,12 +20,13 @@ import br.pensario.NCLIdentifiableElement;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLRegionBase<R extends NCLRegion> extends NCLIdentifiableElement {
+public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCLIdentifiableElement {
 
     private String device;
     private R parent_region;
     
-    Set<R> regions= new TreeSet<R>();
+    private Set<R> regions = new TreeSet<R>();
+    private Set<I> imports = new TreeSet<I>();
 
 
     /**
@@ -36,7 +38,7 @@ public class NCLRegionBase<R extends NCLRegion> extends NCLIdentifiableElement {
      *          se o dispositivo a ser atribuido for uma string vazia.
      */
     public void setDevice(String device) throws IllegalArgumentException {
-        if (device != null && "".equals(device.trim()))
+        if(device != null && "".equals(device.trim()))
             throw new IllegalArgumentException("Empty device String");
 
         this.device = device;
@@ -102,8 +104,8 @@ public class NCLRegionBase<R extends NCLRegion> extends NCLIdentifiableElement {
      * @see TreeSet#remove
      */
     public boolean removeRegion(String id) {
-        for (R region : regions){
-            if (region.getId().equals(id))
+        for(R region : regions){
+            if(region.getId().equals(id))
                 return regions.remove(region);
         }
         return false;
@@ -160,15 +162,74 @@ public class NCLRegionBase<R extends NCLRegion> extends NCLIdentifiableElement {
     }
 
 
+    /**
+     * Adiciona um importador de base à base de regiões.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addImportBase(I importBase) {
+        return imports.add(importBase);
+    }
+
+
+    /**
+     * Remove um importador de base da base de regiões.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeImportBase(I importBase) {
+        return imports.remove(importBase);
+    }
+
+
+    /**
+     * Verifica se a base de regiões contém um importador de base.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser verificado.
+     */
+    public boolean hasImportBase(I importBase) {
+        return imports.contains(importBase);
+    }
+
+
+    /**
+     * Verifica se a base de regiões possui algum importador de base.
+     *
+     * @return
+     *          verdadeiro se a base de regiões possuir algum importador de base.
+     */
+    public boolean hasImportBase() {
+        return !imports.isEmpty();
+    }
+
+
+    /**
+     * Retorna os importadores de base da base de regiões.
+     *
+     * @return
+     *          objeto Iterable contendo os importadores de base da base de regiões.
+     */
+    public Iterable<I> getImportBases() {
+        return imports;
+    }
+
+
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<regionBase";
@@ -176,16 +237,21 @@ public class NCLRegionBase<R extends NCLRegion> extends NCLIdentifiableElement {
         if(getId() != null)
             content += " id='" + getId() + "'";
 
-        if (getDevice() != null)                         
+        if(getDevice() != null)                         
             content += " device='" + getDevice() + "'";
         
-        if (getParentRegion() != null)                         
+        if(getParentRegion() != null)                         
             content += " region='" + getParentRegion().getId() + "'";
         
-        if (hasRegion()) {
+        if(hasRegion()) {
             content += ">\n";
+
+            if(hasImportBase()){
+                for(I imp : imports)
+                    content += imp.parse(ident + 1);
+            }
             
-            for (R region : regions)
+            for(R region : regions)
                 content += region.parse(ident + 1);
 
             content += space + "</regionBase>\n";

@@ -184,29 +184,29 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         
         // <link> element and attributes declaration
         content = space + "<link";
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
         content += " xconnector='" + getXconnector().getId() + "'";
         content += ">\n";
         
         // <link> element content
-        if (hasLinkParam()){
-            for (P param : linkParams)
+        if(hasLinkParam()){
+            for(P param : linkParams)
                 content += param.parse(ident + 1);
         }
 
-        for (B bind : binds)
+        for(B bind : binds)
             content += bind.parse(ident + 1);
         
         // <link> element end declaration
@@ -222,36 +222,34 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
         String this_link, other_link;
 
         // Compara pelo xconnector
-        if (getXconnector() == null) this_link = ""; else this_link = getXconnector().getId();
-        if (other.getXconnector() == null) other_link = ""; else other_link = other.getXconnector().getId();
-        comp = this_link.compareTo(other_link);
+        comp = getXconnector().compareTo(other.getXconnector());
 
         // Compara o número de parâmetros
-        if (comp == 0)
+        if(comp == 0)
             comp = linkParams.size() - ((Set) other.getLinkParams()).size();
 
         // Compara o número de binds
-        if (comp == 0)
+        if(comp == 0)
             comp = binds.size() - ((Set) other.getBinds()).size();
 
         // Compara os parâmetros
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other.getLinkParams().iterator();
-            for (P param : linkParams){
+            for(P param : linkParams){
                 P other_param = (P) it.next();
                 comp = param.compareTo(other_param);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }
 
         // Compara os binds
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other.getBinds().iterator();
-            for (B bind : binds){
+            for(B bind : binds){
                 B other_bind = (B) it.next();
                 comp = bind.compareTo(other_bind);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }

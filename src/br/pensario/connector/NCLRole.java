@@ -67,7 +67,7 @@ public class NCLRole {
      *          Se o nome a ser atribuído for uma String vazia.
      */
     public void setName(String name) throws IllegalArgumentException {
-        if (name != null && "".equals(name.trim()))
+        if(name != null && "".equals(name.trim()))
             throw new IllegalArgumentException("Empty name String");
 
         this.name = name;

@@ -84,12 +84,12 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
         
         
@@ -97,7 +97,7 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
         content = space + "<port";
         content += " id='" + getId() + "'";
         content += " component='" + getComponent().getId() + "'";
-        if (getInterface() != null)
+        if(getInterface() != null)
             content += " interface='" + getInterface().getId() + "'";
         content += "/>\n";
         

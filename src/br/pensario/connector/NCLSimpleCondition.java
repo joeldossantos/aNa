@@ -42,7 +42,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          inteiro positivo representando o número mínimo.
      */
     public void setMin(Integer min) {
-        if (min != null && min < 0)
+        if(min != null && min < 0)
             throw new IllegalArgumentException("Invalid min");
         
         this.min = min;
@@ -68,7 +68,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(Integer max) {
-        if (max != null && max < 0)
+        if(max != null && max < 0)
             this.max = -1;
         
         this.max = max;
@@ -222,7 +222,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
 
 
     public void setDelay(Integer delay) throws IllegalArgumentException {
-        if (delay != null && delay < 0)
+        if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
@@ -249,7 +249,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
@@ -274,8 +274,8 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         if(getMin() != null)
             content += " min='" + getMin() + "'";        
         
-        if (getMax() != null)
-            if (getMax() < 0)
+        if(getMax() != null)
+            if(getMax() < 0)
                 content += " max='unbounded'";
             else
                 content += " max='" + getMax() + "'";
@@ -283,10 +283,10 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         if(getQualifier() != null)
             content += " qualifier='" + getQualifier().toString() + "'";
 
-        if (getEventType() != null)
+        if(getEventType() != null)
             content += " eventType='" + getEventType().toString() + "'";
 
-        if (getTransition() != null)
+        if(getTransition() != null)
             content += " transition='" + getTransition().toString() + "'";
         
         content += "/>\n";
@@ -303,37 +303,37 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         NCLSimpleCondition other_simp;
 
         // Verifica se sao do mesmo tipo
-        if (!(other instanceof NCLSimpleCondition))
+        if(!(other instanceof NCLSimpleCondition))
             return 1;
 
          other_simp = (NCLSimpleCondition) other;
 
         // Compara pelo role
-        if (getRole() == null) this_cond = ""; else this_cond = getRole().getName();
-        if (other_simp.getRole() == null) other_cond = ""; else other_cond = other_simp.getRole().getName();
+        if(getRole() == null) this_cond = ""; else this_cond = getRole().getName();
+        if(other_simp.getRole() == null) other_cond = ""; else other_cond = other_simp.getRole().getName();
         comp = this_cond.compareTo(other_cond);
 
         // Compara pelo número mínimo
-        if (comp == 0){
+        if(comp == 0){
             int this_min, other_min;
-            if (getMin() == null) this_min = 0; else this_min = getMin();
-            if (other_simp.getMin() == null) other_min = 0; else other_min = other_simp.getMin();
+            if(getMin() == null) this_min = 0; else this_min = getMin();
+            if(other_simp.getMin() == null) other_min = 0; else other_min = other_simp.getMin();
             comp = this_min - other_min;
         }
 
         // Compara pelo número máximo
-        if (comp == 0){
+        if(comp == 0){
             int this_max, other_max;
-            if (getMax() == null) this_max = 0; else this_max = getMax();
-            if (other_simp.getMax() == null) other_max = 0; else other_max = other_simp.getMax();
+            if(getMax() == null) this_max = 0; else this_max = getMax();
+            if(other_simp.getMax() == null) other_max = 0; else other_max = other_simp.getMax();
             comp = this_max - other_max;
         }
 
         // Compara pelo delay
-        if (comp == 0){
+        if(comp == 0){
             int this_del, other_del;
-            if (getDelay() == null) this_del = 0; else this_del = getDelay();
-            if (other_simp.getDelay() == null) other_del = 0; else other_del = other_simp.getDelay();
+            if(getDelay() == null) this_del = 0; else this_del = getDelay();
+            if(other_simp.getDelay() == null) other_del = 0; else other_del = other_simp.getDelay();
             comp = this_del - other_del;
         }
 
@@ -348,16 +348,16 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         }
 
         // Compara pelo qualifier
-        if (comp == 0){
-            if (getQualifier() == null) this_cond = ""; else this_cond = getQualifier().toString();
-            if (other_simp.getQualifier() == null) other_cond = ""; else other_cond = other_simp.getQualifier().toString();
+        if(comp == 0){
+            if(getQualifier() == null) this_cond = ""; else this_cond = getQualifier().toString();
+            if(other_simp.getQualifier() == null) other_cond = ""; else other_cond = other_simp.getQualifier().toString();
             comp = this_cond.compareTo(other_cond);
         }
 
         // Compara pela tecla
-        if (comp == 0){
-            if (getKey() == null) this_cond = ""; else this_cond = getKey().toString();
-            if (other_simp.getKey() == null) other_cond = ""; else other_cond = other_simp.getKey().toString();
+        if(comp == 0){
+            if(getKey() == null) this_cond = ""; else this_cond = getKey().toString();
+            if(other_simp.getKey() == null) other_cond = ""; else other_cond = other_simp.getKey().toString();
             comp = this_cond.compareTo(other_cond);
         }
 
@@ -372,16 +372,16 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         }
 
         // Compara pelo tipo do evento
-        if (comp == 0){
-            if (getEventType() == null) this_cond = ""; else this_cond = getEventType().toString();
-            if (other_simp.getEventType() == null) other_cond = ""; else other_cond = other_simp.getEventType().toString();
+        if(comp == 0){
+            if(getEventType() == null) this_cond = ""; else this_cond = getEventType().toString();
+            if(other_simp.getEventType() == null) other_cond = ""; else other_cond = other_simp.getEventType().toString();
             comp = this_cond.compareTo(other_cond);
         }
 
         // Compara pela transicao do evento
-        if (comp == 0){
-            if (getTransition() == null) this_cond = ""; else this_cond = getTransition().toString();
-            if (other_simp.getTransition() == null) other_cond = ""; else other_cond = other_simp.getTransition().toString();
+        if(comp == 0){
+            if(getTransition() == null) this_cond = ""; else this_cond = getTransition().toString();
+            if(other_simp.getTransition() == null) other_cond = ""; else other_cond = other_simp.getTransition().toString();
             comp = this_cond.compareTo(other_cond);
         }
 

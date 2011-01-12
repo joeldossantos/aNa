@@ -140,12 +140,12 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<compoundStatement";
@@ -174,36 +174,36 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
         NCLCompoundStatement other_comp;
 
         // Verifica se sao do mesmo tipo
-        if (!(other instanceof NCLCompoundStatement))
+        if(!(other instanceof NCLCompoundStatement))
             return 1;
 
         other_comp = (NCLCompoundStatement) other;
         
         // Compara pelo operador
-        if (comp == 0){
-            if (getOperator() == null) this_stat = ""; else this_stat = getOperator().toString();
-            if (other_comp.getOperator() == null) other_stat = ""; else other_stat = other_comp.getOperator().toString();
+        if(comp == 0){
+            if(getOperator() == null) this_stat = ""; else this_stat = getOperator().toString();
+            if(other_comp.getOperator() == null) other_stat = ""; else other_stat = other_comp.getOperator().toString();
             comp = this_stat.compareTo(other_stat);
         }
 
         // Compara pelo isNegated
-        if (comp == 0){
-            if (getIsNegated() == null) this_stat = ""; else this_stat = getIsNegated().toString();
-            if (other_comp.getIsNegated() == null) other_stat = ""; else other_stat = other_comp.getIsNegated().toString();
+        if(comp == 0){
+            if(getIsNegated() == null) this_stat = ""; else this_stat = getIsNegated().toString();
+            if(other_comp.getIsNegated() == null) other_stat = ""; else other_stat = other_comp.getIsNegated().toString();
             comp = this_stat.compareTo(other_stat);
         }
 
         // Compara o número de statements
-        if (comp == 0)
+        if(comp == 0)
             comp = statements.size() - ((Set) other_comp.getStatements()).size();
 
         // Compara as statements
-        if (comp == 0){
+        if(comp == 0){
             Iterator it = other_comp.getStatements().iterator();
-            for (NCLStatement st : statements){
+            for(NCLStatement st : statements){
                 NCLStatement other_st = (NCLStatement) it.next();
                 comp = st.compareTo(other_st);
-                if (comp != 0)
+                if(comp != 0)
                     break;
             }
         }

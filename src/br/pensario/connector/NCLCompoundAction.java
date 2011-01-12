@@ -118,7 +118,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
 
 
     public void setDelay(Integer delay) throws IllegalArgumentException {
-        if (delay != null && delay < 0)
+        if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
         this.delay = delay;
@@ -145,12 +145,12 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<compoundAction";
@@ -187,16 +187,16 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
         
         // Compara pelo operador
         if(comp == 0){
-            if (getOperator() == null) this_act = ""; else this_act = getOperator().toString();
-            if (other_comp.getOperator() == null) other_act = ""; else other_act = other_comp.getOperator().toString();
+            if(getOperator() == null) this_act = ""; else this_act = getOperator().toString();
+            if(other_comp.getOperator() == null) other_act = ""; else other_act = other_comp.getOperator().toString();
             comp = this_act.compareTo(other_act);
         }
 
         // Compara pelo delay
         if(comp == 0){
             int this_del, other_del;
-            if (getDelay() == null) this_del = 0; else this_del = getDelay();
-            if (other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
+            if(getDelay() == null) this_del = 0; else this_del = getDelay();
+            if(other_comp.getDelay() == null) other_del = 0; else other_del = other_comp.getDelay();
             comp = this_del - other_del;
         }
 
@@ -217,7 +217,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
         // Compara as acoes
         if(comp == 0){
             Iterator it = other_comp.getActions().iterator();
-            for (NCLAction a : actions){
+            for(NCLAction a : actions){
                 NCLAction other_a = (NCLAction) it.next();
                 comp = a.compareTo(other_a);
                 if(comp != 0)

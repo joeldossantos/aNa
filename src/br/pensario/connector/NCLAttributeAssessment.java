@@ -153,7 +153,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          se o offset for inválido.
      */
     public void setOffset(Integer offset) throws IllegalArgumentException {
-        if (offset != null && offset < 0)
+        if(offset != null && offset < 0)
             throw new IllegalArgumentException("illegal offset");
         
         this.offset = offset;
@@ -198,12 +198,12 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
     public String parse(int ident) {
         String space, content;
 
-        if (ident< 0)
+        if(ident< 0)
             ident = 0;
         
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<attributeAssessment";
@@ -238,29 +238,29 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
         String this_att, other_att;
 
         // Compara pelo role
-        if (getRole() == null) this_att = ""; else this_att = getRole().getName();
-        if (other.getRole() == null) other_att = ""; else other_att = other.getRole().getName();
+        if(getRole() == null) this_att = ""; else this_att = getRole().getName();
+        if(other.getRole() == null) other_att = ""; else other_att = other.getRole().getName();
         comp = this_att.compareTo(other_att);
 
         // Compara pelo tipo do evento
-        if (comp == 0){
-            if (getEventType() == null) this_att = ""; else this_att = getEventType().toString();
-            if (other.getEventType() == null) other_att = ""; else other_att = other.getEventType().toString();
+        if(comp == 0){
+            if(getEventType() == null) this_att = ""; else this_att = getEventType().toString();
+            if(other.getEventType() == null) other_att = ""; else other_att = other.getEventType().toString();
             comp = this_att.compareTo(other_att);
         }
 
         // Compara pelo tipo do atributo
-        if (comp == 0){
-            if (getAttributeType() == null) this_att = ""; else this_att = getAttributeType().toString();
-            if (other.getAttributeType() == null) other_att = ""; else other_att = other.getAttributeType().toString();
+        if(comp == 0){
+            if(getAttributeType() == null) this_att = ""; else this_att = getAttributeType().toString();
+            if(other.getAttributeType() == null) other_att = ""; else other_att = other.getAttributeType().toString();
             comp = this_att.compareTo(other_att);
         }
 
         // Compara pelo offset
-        if (comp == 0){
+        if(comp == 0){
             int this_off, other_off;
-            if (getOffset() == null) this_off = 0; else this_off = getOffset();
-            if (other.getOffset() == null) other_off = 0; else other_off = other.getOffset();
+            if(getOffset() == null) this_off = 0; else this_off = getOffset();
+            if(other.getOffset() == null) other_off = 0; else other_off = other.getOffset();
             comp = this_off - other_off;
         }
 
@@ -275,9 +275,9 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
         }
 
         // Compara pela tecla
-        if (comp == 0){
-            if (getKey() == null) this_att = ""; else this_att = getKey().toString();
-            if (other.getKey() == null) other_att = ""; else other_att = other.getKey().toString();
+        if(comp == 0){
+            if(getKey() == null) this_att = ""; else this_att = getKey().toString();
+            if(other.getKey() == null) other_att = ""; else other_att = other.getKey().toString();
             comp = this_att.compareTo(other_att);
         }
 

@@ -108,8 +108,8 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      *          verdadeiro se o parâmetro for removido.
      */    
     public boolean removeConnectorParam(String name) {
-        for (P connp : conn_params){
-            if (connp.getName().equals(name))
+        for(P connp : conn_params){
+            if(connp.getName().equals(name))
                 return conn_params.remove(connp);
         }
 
@@ -126,8 +126,8 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      *          verdadeiro se o parâmetro existir.
      */
     public boolean hasAttributeAssessment(String name) {
-        for (P connp : conn_params){
-            if (connp.getName().equals(name))
+        for(P connp : conn_params){
+            if(connp.getName().equals(name))
                 return true;
         }
 
@@ -160,12 +160,12 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<causalConnector";
@@ -178,7 +178,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
         content += getCondition().parse(ident + 1);
         content += getAction().parse(ident + 1);
 
-        content += space + "<causalConnector/>\n";
+        content += space + "</causalConnector>\n";
 
         return content;
     }

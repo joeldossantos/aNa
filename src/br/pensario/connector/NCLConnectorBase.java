@@ -1,6 +1,7 @@
 package br.pensario.connector;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -18,9 +19,10 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLConnectorBase<C extends NCLCausalConnector> extends NCLIdentifiableElement {
+public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport> extends NCLIdentifiableElement {
 
-    Set<C> connectors = new TreeSet<C>();
+    private Set<C> connectors = new TreeSet<C>();
+    private Set<I> imports = new TreeSet<I>();
     
     
     /**
@@ -86,32 +88,96 @@ public class NCLConnectorBase<C extends NCLCausalConnector> extends NCLIdentifia
     public Iterable<C> getCausalConnectors() {
         return connectors;        
     }
+
+
+    /**
+     * Adiciona um importador de base à base de conectores.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addImportBase(I importBase) {
+        return imports.add(importBase);
+    }
+
+
+    /**
+     * Remove um importador de base da base de conectores.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeImportBase(I importBase) {
+        return imports.remove(importBase);
+    }
+
+
+    /**
+     * Verifica se a base de conectores contém um importador de base.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser verificado.
+     */
+    public boolean hasImportBase(I importBase) {
+        return imports.contains(importBase);
+    }
+
+
+    /**
+     * Verifica se a base de conectores possui algum importador de base.
+     *
+     * @return
+     *          verdadeiro se a base de conectores possuir algum importador de base.
+     */
+    public boolean hasImportBase() {
+        return !imports.isEmpty();
+    }
+
+
+    /**
+     * Retorna os importadores de base da base de conectores.
+     *
+     * @return
+     *          objeto Iterable contendo os importadores de base da base de conectores.
+     */
+    public Iterable<I> getImportBases() {
+        return imports;
+    }
     
     
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<connectorBase ";
 
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
 
         content += ">\n";
 
-        if (hasCausalConnector())
+        if(hasImportBase()){
+            for(I imp : imports)
+                content += imp.parse(ident + 1);
+        }
 
-            for (C connector: getCausalConnectors())
+        if(hasCausalConnector()){
+            for(C connector: connectors)
                 content += connector.parse(ident + 1);
+        }
 
-        content += space + "<connectorBase/>\n";
+        content += space + "</connectorBase>\n";
 
         return content;
     }

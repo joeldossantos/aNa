@@ -85,7 +85,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setYear(Integer year) throws IllegalArgumentException {
-        if (year != null && year < 0)
+        if(year != null && year < 0)
             throw new IllegalArgumentException("Invalid year");
 
         this.year = year;
@@ -112,7 +112,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setMonth(Integer month) throws IllegalArgumentException {
-        if (month != null && !(month >= 1 && month <= 12))
+        if(month != null && !(month >= 1 && month <= 12))
             throw new IllegalArgumentException("Invalid month");
 
         this.month = month;
@@ -139,7 +139,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setDay(Integer day) throws IllegalArgumentException {
-        if (day != null && !(day >= 1 && day <= 31))
+        if(day != null && !(day >= 1 && day <= 31))
             throw new IllegalArgumentException("Invalid day");
 
         this.day = day;
@@ -168,7 +168,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setHour(Integer hour) throws IllegalArgumentException {
-        if (hour != null && !(hour >= 0 && (absoluteHour() || hour <= 23)))
+        if(hour != null && !(hour >= 0 && (absoluteHour() || hour <= 23)))
             throw new IllegalArgumentException("Invalid hour");
 
         this.hour = hour;
@@ -195,7 +195,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setMinute(Integer minute) throws IllegalArgumentException {
-        if (minute != null && !(minute >= 0 && minute <= 59))
+        if(minute != null && !(minute >= 0 && minute <= 59))
             throw new IllegalArgumentException("Invalid minute");
 
         this.minute = minute;
@@ -224,7 +224,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setSecond(Integer second) throws IllegalArgumentException {
-        if (second != null && !(second >= 0 && (absoluteSecond() || second <= 59)))
+        if(second != null && !(second >= 0 && (absoluteSecond() || second <= 59)))
             throw new IllegalArgumentException("Invalid second");
 
         this.second = second;
@@ -251,7 +251,7 @@ public class NCLTime {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setFraction(Integer fraction) throws IllegalArgumentException {
-        if (fraction != null && fraction < 0)
+        if(fraction != null && fraction < 0)
             throw new IllegalArgumentException("Invalid fraction");
 
         this.fraction = fraction;
@@ -278,7 +278,7 @@ public class NCLTime {
      *          verdadeiro se o indicador estiver no formato UTC.
      */
     public boolean isUTC() {
-        if (getYear() != null && getMonth() != null && getDay() != null &&
+        if(getYear() != null && getMonth() != null && getDay() != null &&
                 getHour() != null && getMinute() != null && getSecond() != null && getFraction()!= null)
             return true;
         else
@@ -287,7 +287,7 @@ public class NCLTime {
 
 
     private boolean absoluteHour() {
-        if (getYear() == null && getMonth() == null && getDay() == null)
+        if(getYear() == null && getMonth() == null && getDay() == null)
             return true;
         else
             return false;
@@ -295,7 +295,7 @@ public class NCLTime {
 
 
     private boolean absoluteSecond() {
-        if (getYear() == null && getMonth() == null && getDay() == null &&
+        if(getYear() == null && getMonth() == null && getDay() == null &&
                 getHour() == null && getMinute() == null)
             return true;
         else
@@ -305,10 +305,10 @@ public class NCLTime {
     
     @Override
     public String toString() {
-        if (getSecond() != null){
-            if (getFraction() != null){
-                if (getHour() != null && getMinute() != null){
-                    if (getYear() != null && getMonth() != null && getDay() != null){
+        if(getSecond() != null){
+            if(getFraction() != null){
+                if(getHour() != null && getMinute() != null){
+                    if(getYear() != null && getMonth() != null && getDay() != null){
                         return year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + "." + fraction;
                     }
                     else
@@ -328,8 +328,8 @@ public class NCLTime {
         String this_time = toString();
         String other_time = other.toString();
 
-        if (this_time == null) this_time = "";
-        if (other_time == null) other_time = "";
+        if(this_time == null) this_time = "";
+        if(other_time == null) other_time = "";
 
         return this_time.compareTo(other_time);
     }

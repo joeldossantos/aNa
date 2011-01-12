@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.reuse.NCLImport;
 
 
 /**
@@ -19,9 +20,10 @@ import br.pensario.NCLIdentifiableElement;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLDescriptorBase<D extends NCLDescriptor> extends NCLIdentifiableElement {
+public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImport> extends NCLIdentifiableElement {
 
-    Set<D> descriptors = new TreeSet<D>();
+    private Set<D> descriptors = new TreeSet<D>();
+    private Set<I> imports = new TreeSet<I>();
 
 
     /**
@@ -48,8 +50,8 @@ public class NCLDescriptorBase<D extends NCLDescriptor> extends NCLIdentifiableE
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(String id) {
-        for (D descriptor : descriptors){
-            if (descriptor.getId().equals(id))
+        for(D descriptor : descriptors){
+            if(descriptor.getId().equals(id))
                 return descriptors.remove(descriptor);
         }
         return false;
@@ -102,15 +104,74 @@ public class NCLDescriptorBase<D extends NCLDescriptor> extends NCLIdentifiableE
     }
 
 
+    /**
+     * Adiciona um importador de base à base de descritores.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addImportBase(I importBase) {
+        return imports.add(importBase);
+    }
+
+
+    /**
+     * Remove um importador de base da base de descritores.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeImportBase(I importBase) {
+        return imports.remove(importBase);
+    }
+
+
+    /**
+     * Verifica se a base de descritores contém um importador de base.
+     *
+     * @param importBase
+     *          elemento representando o importador a ser verificado.
+     */
+    public boolean hasImportBase(I importBase) {
+        return imports.contains(importBase);
+    }
+
+
+    /**
+     * Verifica se a base de descritores possui algum importador de base.
+     *
+     * @return
+     *          verdadeiro se a base de descritores possuir algum importador de base.
+     */
+    public boolean hasImportBase() {
+        return !imports.isEmpty();
+    }
+
+
+    /**
+     * Retorna os importadores de base da base de descritores.
+     *
+     * @return
+     *          objeto Iterable contendo os importadores de base da base de descritores.
+     */
+    public Iterable<I> getImportBases() {
+        return imports;
+    }
+
+
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<descriptorBase";
@@ -120,12 +181,17 @@ public class NCLDescriptorBase<D extends NCLDescriptor> extends NCLIdentifiableE
 
         content += ">\n";
 
-        if (hasDescriptor()){
-            for (D descriptor : descriptors)
+        if(hasImportBase()){
+            for(I imp : imports)
+                content += imp.parse(ident + 1);
+        }
+
+        if(hasDescriptor()){
+            for(D descriptor : descriptors)
                 content += descriptor.parse(ident + 1);
         }
 
-        content += space + "<descriptorBase/>\n";
+        content += space + "</descriptorBase>\n";
 
         return content;
     }

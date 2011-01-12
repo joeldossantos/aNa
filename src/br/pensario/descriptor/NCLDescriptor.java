@@ -4,8 +4,11 @@ import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLColor;
 import br.pensario.region.NCLRegion;
+import br.pensario.transition.NCLTransition;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -21,7 +24,7 @@ import java.net.URISyntaxException;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends NCLIdentifiableElement implements Comparable<D>{
+public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L extends NCLLayoutDescriptor, T extends NCLTransition, P extends NCLDescriptorParam> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
 
     private String player;
     private Integer explicitDur;
@@ -37,7 +40,11 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
     private String focusSrc;
     private String focusSelSrc;
     private NCLColor selBorderColor;
+    private T transIn;
+    private T transOut;
     private R region;
+
+    private Set<P> params = new TreeSet<P>();
 
 
     /**
@@ -62,7 +69,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
      *          se a String passada como parâmetro for vazia.
      */
     public void setPlayer(String player) throws IllegalArgumentException {
-        if (player != null && "".equals(player.trim()))
+        if(player != null && "".equals(player.trim()))
             throw new IllegalArgumentException("Empty player String");
 
         this.player = player;
@@ -298,7 +305,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
      *          se o valor estiver fora do intervalo.
      */
     public void setFocusBorderTransparency(Integer focusBorderTransparency) throws IllegalArgumentException {
-        if (focusBorderTransparency != null && (focusBorderTransparency < 0 || focusBorderTransparency > 100))
+        if(focusBorderTransparency != null && (focusBorderTransparency < 0 || focusBorderTransparency > 100))
             throw new IllegalArgumentException("Ilegal value");
 
         this.focusBorderTransparency = focusBorderTransparency;
@@ -328,7 +335,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
      * @see java.net.URI
      */
     public void setFocusSrc(String focusSrc) throws URISyntaxException {
-        if (focusSrc != null)
+        if(focusSrc != null)
             this.focusSrc = new URI(focusSrc).toString();
 
         this.focusSrc = focusSrc;
@@ -355,7 +362,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
      *          se a URI não for válida (@see java.net.URI).
      */
     public void setFocusSelSrc(String focusSelSrc) throws URISyntaxException {
-        if (focusSelSrc != null)
+        if(focusSelSrc != null)
             this.focusSelSrc = new URI(focusSelSrc).toString();
 
         this.focusSelSrc = focusSelSrc;
@@ -396,6 +403,50 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
 
 
     /**
+     * Atribui uma transição de entrada ao descritor.
+     *
+     * @param transIn
+     *          elemento representando uma transição.
+     */
+    public void setTransIn(T transIn) {
+        this.transIn = transIn;
+    }
+
+
+    /**
+     * Retorna a transição de entrada do descritor.
+     *
+     * @return
+     *          elemento representando uma transição.
+     */
+    public T getTransIn() {
+        return transIn;
+    }
+
+
+    /**
+     * Atribui uma transição de saida ao descritor.
+     *
+     * @param transOut
+     *          elemento representando uma transição.
+     */
+    public void setTransOut(T transOut) {
+        this.transOut = transOut;
+    }
+
+
+    /**
+     * Retorna a transição de saida do descritor.
+     *
+     * @return
+     *          elemento representando uma transição.
+     */
+    public T getTransOut() {
+        return transOut;
+    }
+
+
+    /**
      * Atribui uma região ao descritor.
      *
      * @param region
@@ -417,72 +468,149 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion> extends
     }
 
 
+    /**
+     * Adiciona um parâmetro ao descritor.
+     *
+     * @param descriptorParam
+     *          elemento representando o parâmetro a ser adicionado.
+     *
+     * @see TreeSet#add
+     */
+    public boolean addDescriptorParam(P descriptorParam) {
+        return params.add(descriptorParam);
+    }
+
+
+    /**
+     * Remove um parâmetro do descritor.
+     *
+     * @param descriptorParam
+     *          elemento representando o parâmetro a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeDescriptorParam(P descriptorParam) {
+        return params.remove(descriptorParam);
+    }
+
+
+    /**
+     * Verifica se o descritor contém um parâmetro.
+     *
+     * @param descriptorParam
+     *          elemento representando o parâmetro a ser verificado.
+     */
+    public boolean hasDescriptorParam(P descriptorParam) {
+        return params.contains(descriptorParam);
+    }
+
+
+    /**
+     * Verifica se o descritor possui algum parâmetro.
+     *
+     * @return
+     *          verdadeiro se o descritor possui algum parâmetro.
+     */
+    public boolean hasDescriptorParam() {
+        return !params.isEmpty();
+    }
+
+
+    /**
+     * Retorna os parâmetros do descritor.
+     *
+     * @return
+     *          objeto Iterable contendo os parâmetros do descritor.
+     */
+    public Iterable<P> getDescriptorParams() {
+        return params;
+    }
+
+
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<descriptor";
         content += " id='" + getId() + "'";
     
-        if (getRegion() != null)
+        if(getRegion() != null)
             content += " region='" + getRegion().getId() + "'";
 
-        if (getExplicitDur() != null)
+        if(getExplicitDur() != null)
             content += " explicitDur='" + getExplicitDur() + "s'";
 
-        if (getFreeze() != null)
+        if(getFreeze() != null)
             content += " freeze='" + getFreeze().toString() + "'";
 
-        if (getPlayer() != null)
+        if(getPlayer() != null)
             content += " player='" + getPlayer() + "'";
 
-        if (getMoveLeft() != null)
+        if(getMoveLeft() != null)
             content += " moveLeft='" + getMoveLeft().getFocusIndex() + "'";
 
-        if (getMoveRight() != null)
+        if(getMoveRight() != null)
             content += " moveRight='" + getMoveRight().getFocusIndex() + "'";
         
-        if (getMoveDown() != null)
+        if(getMoveDown() != null)
             content += " moveDown='" + getMoveDown().getFocusIndex() + "'";
         
-        if (getMoveUp() != null)
+        if(getMoveUp() != null)
             content += " moveUp='" + getMoveUp().getFocusIndex() + "'";
         
-        if (getFocusIndex() != null)
+        if(getFocusIndex() != null)
             content += " focusIndex='" + getFocusIndex() + "'";
 
-        if (getFocusBorderColor() != null)
+        if(getFocusBorderColor() != null)
             content += " focusBorderColor='" + getFocusBorderColor().toString() + "'";
 
-        if (getFocusBorderWidth() != null)
+        if(getFocusBorderWidth() != null)
             content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
 
-        if (getFocusBorderTransparency() != null)
+        if(getFocusBorderTransparency() != null)
             content += " focusBorderTransparency='" + getFocusBorderTransparency() + "%'";
 
-        if (getFocusSrc() != null)
+        if(getFocusSrc() != null)
             content += " focusSrc='" + getFocusSrc() + "'";
         
-        if (getFocusSelSrc() != null)
+        if(getFocusSelSrc() != null)
             content += " focusSelSrc='" + getFocusSelSrc() + "'";
 
-        if (getSelBorderColor() != null)
+        if(getSelBorderColor() != null)
             content += " focusSelBorderColor='" + getSelBorderColor().toString() + "'";
 
-        content += "/>\n";
+        if(getTransIn() != null)
+            content += " transIn='" + getTransIn().getId() + "'";
 
+        if(getTransOut() != null)
+            content += " transOut='" + getTransOut().getId() + "'";
+
+
+        // Test if the descriptor has content
+        if(hasDescriptorParam()){
+            content += ">\n";
+
+            for(P param : params)
+                content += param.parse(ident + 1);
+
+            content += space + "</descriptor>\n";
+        }
+        else
+            content += "/>\n";
+
+        
         return content;
     }
 
 
-    public int compareTo(D other) {
+    public int compareTo(L other) {
         return getId().compareTo(other.getId());
     }
 

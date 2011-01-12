@@ -70,7 +70,7 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
      *          se a String for vazia.
      */
     public void setType(String type) {
-        if (type != null && "".equals(type.trim()))
+        if(type != null && "".equals(type.trim()))
             throw new IllegalArgumentException("Empty type String");
 
         this.type = type;
@@ -91,12 +91,12 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
     public String parse(int ident) {
         String space, content;
 
-        if (ident < 0)
+        if(ident < 0)
             ident = 0;
 
         // Element indentation
         space = "";
-        for (int i = 0; i < ident; i++)
+        for(int i = 0; i < ident; i++)
             space += "\t";
 
         content = space + "<connectorParam";
