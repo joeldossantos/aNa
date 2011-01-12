@@ -1,6 +1,7 @@
 package br.pensario.rule;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLOperator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -18,10 +19,23 @@ import java.util.TreeSet;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLCompoundRule<T extends NCLTestRule> extends NCLIdentifiableElement implements NCLTestRule<T> {
+public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElement implements NCLTestRule<T> {
 
     private NCLOperator operator;
     private Set<T> rules = new TreeSet<T>();
+
+
+    /**
+     * Construtor do elemento <i>compositeRule</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador da regra.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador da regra não for válido.
+     */
+    public NCLCompositeRule(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
 
 
     /**

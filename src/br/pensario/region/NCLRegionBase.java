@@ -243,7 +243,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
         if(getParentRegion() != null)                         
             content += " region='" + getParentRegion().getId() + "'";
         
-        if(hasRegion()) {
+        if(hasRegion() || hasImportBase()) {
             content += ">\n";
 
             if(hasImportBase()){

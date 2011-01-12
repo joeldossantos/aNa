@@ -176,22 +176,26 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
 
         content = space + "<descriptorBase";
 
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
 
-        content += ">\n";
+        if(hasDescriptor() || hasImportBase()){
+            content += ">\n";
 
-        if(hasImportBase()){
-            for(I imp : imports)
-                content += imp.parse(ident + 1);
+            if(hasImportBase()){
+                for(I imp : imports)
+                    content += imp.parse(ident + 1);
+            }
+
+            if(hasDescriptor()){
+                for(D descriptor : descriptors)
+                    content += descriptor.parse(ident + 1);
+            }
+            
+            content += space + "</descriptorBase>\n";
         }
-
-        if(hasDescriptor()){
-            for(D descriptor : descriptors)
-                content += descriptor.parse(ident + 1);
-        }
-
-        content += space + "</descriptorBase>\n";
+        else
+            content += "/>\n";
 
         return content;
     }

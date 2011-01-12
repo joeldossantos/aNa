@@ -1,6 +1,7 @@
 package br.pensario.transition;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLColor;
 import br.pensario.NCLValues.NCLTransitionDirection;
 import br.pensario.NCLValues.NCLTransitionSubtype;
@@ -25,14 +26,27 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
     private NCLTransitionType type;
     private NCLTransitionSubtype subtype;
     private NCLTime dur;
-    private Integer startProgress;
-    private Integer endProgress;
+    private Double startProgress;
+    private Double endProgress;
     private NCLTransitionDirection direction;
     private NCLColor fadeColor;
     private Integer horRepeat;
     private Integer vertRepeat;
     private Integer borderWidth;
     private NCLColor borderColor;
+
+
+    /**
+     * Construtor do elemento <i>transition</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador da transição.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador da transição não for válido.
+     */
+    public NCLTransition(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
 
 
     /**
@@ -105,9 +119,9 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * Atribui um delay de progresso inicial a transição.
      *
      * @param startProgress
-     *          inteiro representando o delay inicial.
+     *          fracionário representando o delay inicial.
      */
-    public void setStartProgress(Integer startProgress) {
+    public void setStartProgress(Double startProgress) {
         this.startProgress = startProgress;
     }
 
@@ -116,9 +130,9 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * Retorna o delay de progresso inicial da transição.
      *
      * @return
-     *          inteiro representando o delay inicial.
+     *          fracionário representando o delay inicial.
      */
-    public Integer getStartProgress() {
+    public Double getStartProgress() {
         return startProgress;
     }
 
@@ -127,9 +141,9 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * Atribui um delay de progresso final a transição.
      *
      * @param startProgress
-     *          inteiro representando o delay final.
+     *          fracionário representando o delay final.
      */
-    public void setEndProgress(Integer endProgress) {
+    public void setEndProgress(Double endProgress) {
         this.endProgress = endProgress;
     }
 
@@ -138,9 +152,9 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * Retorna o delay de progresso final da transição.
      *
      * @return
-     *          inteiro representando o delay final.
+     *          fracionário representando o delay final.
      */
-    public Integer getEndProgress() {
+    public Double getEndProgress() {
         return endProgress;
     }
 
@@ -302,9 +316,9 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
         if(getEndProgress() != null)
             content += " endProgress='" + getEndProgress() + "'";
         if(getDirection() != null)
-            content += " direction='" + getDirection() + "'";
+            content += " direction='" + getDirection().toString() + "'";
         if(getFadeColor() != null)
-            content += " fadeColor='" + getFadeColor() + "'";
+            content += " fadeColor='" + getFadeColor().toString() + "'";
         if(getHorRepeat() != null)
             content += " horRepeat='" + getHorRepeat() + "'";
         if(getVertRepeat() != null)
@@ -312,7 +326,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
         if(getBorderWidth() != null)
             content += " borderWidth='" + getBorderWidth() + "'";
         if(getBorderColor() != null)
-            content += " borderColor='" + getBorderColor() + "'";
+            content += " borderColor='" + getBorderColor().toString() + "'";
         content += "/>\n";
 
         return content;

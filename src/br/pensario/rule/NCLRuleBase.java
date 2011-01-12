@@ -161,22 +161,26 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
 
         content = space + "<ruleBase";
 
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
 
-        content += ">\n";
+        if(hasImportBase() || hasRule()){
+            content += ">\n";
 
-        if(hasImportBase()){
-            for(I imp : imports)
-                content += imp.parse(ident + 1);
+            if(hasImportBase()){
+                for(I imp : imports)
+                    content += imp.parse(ident + 1);
+            }
+
+            if(hasRule()){
+                for(T rule : rules)
+                    content += rule.parse(ident + 1);
+            }
+
+            content += space + "</ruleBase>\n";
         }
-
-        if(hasRule()){
-            for(T rule : rules)
-                content += rule.parse(ident + 1);
-        }
-
-        content += space + "</ruleBase>\n";
+        else
+            content += "/>\n";
 
         return content;
     }

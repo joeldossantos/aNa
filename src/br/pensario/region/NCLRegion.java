@@ -474,7 +474,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *
      * @see TreeSet#add
      */
-    public boolean addRegion(R child) throws Exception {
+    public boolean addRegion(R child) {
         return regions.add(child);
     }
 

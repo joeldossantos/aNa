@@ -161,22 +161,26 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
 
         content = space + "<transitionBase";
 
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
 
-        content += ">\n";
+        if(hasImportBase() || hasTransition()){
+            content += ">\n";
 
-        if(hasImportBase()){
-            for(I imp : imports)
-                content += imp.parse(ident + 1);
+            if(hasImportBase()){
+                for(I imp : imports)
+                    content += imp.parse(ident + 1);
+            }
+
+            if(hasTransition()){
+                for(T transition : transitions)
+                    content += transition.parse(ident + 1);
+            }
+
+            content += space + "</transitionBase>\n";
         }
-
-        if(hasTransition()){
-            for(T transition : transitions)
-                content += transition.parse(ident + 1);
-        }
-
-        content += space + "</transitionBase>\n";
+        else
+            content += "/>\n";
 
         return content;
     }

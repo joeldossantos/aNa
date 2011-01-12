@@ -131,8 +131,8 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
             space += "\t";
 
         content = space + "<" + type.toString();
-        content += " id='" + getAlias() + "'";
-        content += " device='" + getDocumentURI() + "'";
+        content += " alias='" + getAlias() + "'";
+        content += " documentURI='" + getDocumentURI() + "'";
 
         if(getRegion() != null)
             content += " region='" + getRegion().getId() + "'";

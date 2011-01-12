@@ -584,7 +584,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             content += " focusSelSrc='" + getFocusSelSrc() + "'";
 
         if(getSelBorderColor() != null)
-            content += " focusSelBorderColor='" + getSelBorderColor().toString() + "'";
+            content += " SelBorderColor='" + getSelBorderColor().toString() + "'";
 
         if(getTransIn() != null)
             content += " transIn='" + getTransIn().getId() + "'";

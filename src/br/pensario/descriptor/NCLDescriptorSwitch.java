@@ -1,6 +1,7 @@
 package br.pensario.descriptor;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,6 +24,19 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
     private Set<D> descriptors = new TreeSet<D>();
     private Set<B> binds = new TreeSet<B>();
     private D defaultDescriptor;
+
+
+    /**
+     * Construtor do elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador do switch de descritor.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador do switch de descritor não for válido.
+     */
+    public NCLDescriptorSwitch(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
 
 
     /**
@@ -205,7 +219,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
         }
 
         if(getDefaultDescriptor() != null)
-            content += "<defaultDescriptor descriptor='" + getDefaultDescriptor().getId() + "'>\n";
+            content += space + "\t" + "<defaultDescriptor descriptor='" + getDefaultDescriptor().getId() + "'/>\n";
 
         if(hasDescriptor()){
             for(D descriptor : descriptors)

@@ -1,6 +1,7 @@
 package br.pensario.rule;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLComparator;
 import br.pensario.interfaces.NCLProperty;
 
@@ -22,6 +23,19 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
     private P var;
     private NCLComparator comparator;
     private String value;
+
+
+    /**
+     * Construtor do elemento <i>rule</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador da regra.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador da regra não for válido.
+     */
+    public NCLRule(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
 
 
     /**
@@ -111,8 +125,8 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
         // param element and attributes declaration
         content = space + "<rule";
         content += " id='" + getId() + "'";
-        content += " var='" + getVar() + "'";
-        content += " comparator='" + getComparator() + "'";
+        content += " var='" + getVar().getName() + "'";
+        content += " comparator='" + getComparator().toString() + "'";
         content += " value='" + getValue() + "'";
         content += "/>\n";
 

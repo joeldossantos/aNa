@@ -94,17 +94,19 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
 
         content = space + "<importedDocumentBase";
 
-        if (getId() != null)
+        if(getId() != null)
             content += " id='" + getId() + "'";
 
-        content += ">\n";
-
         if(hasImportNCL()){
+            content += ">\n";
+
             for(I imp : imports)
                 content += imp.parse(ident + 1);
-        }
 
-        content += space + "</importedDocumentBase>\n";
+            content += space + "</importedDocumentBase>\n";
+        }
+        else
+            content += "/>\n";
 
         return content;
     }
