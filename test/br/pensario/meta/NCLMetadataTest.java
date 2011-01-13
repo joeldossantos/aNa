@@ -19,7 +19,7 @@ public class NCLMetadataTest {
     @Test
     public void test1() {
         NCLMetadata meta = new NCLMetadata();
-        meta.setRDFTree("<rdf:RDF ...>\n...\n</rdf:RDF>\n");
+        meta.setRDFTree("<rdf:RDF ...>\n...\n</rdf:RDF>");
 
         String expResult = "<metadata>\n<rdf:RDF ...>\n...\n</rdf:RDF>\n</metadata>\n";
         String result = meta.parse(0);
