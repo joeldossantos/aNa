@@ -1,6 +1,7 @@
 package br.pensario.link;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLValues.NCLParamInstance;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -197,7 +198,8 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
         content = space + "<link";
         if(getId() != null)
             content += " id='" + getId() + "'";
-        content += " xconnector='" + getXconnector().getId() + "'";
+        if(getXconnector() != null)
+            content += " xconnector='" + getXconnector().getId() + "'";
         content += ">\n";
         
         // <link> element content
@@ -205,10 +207,11 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
             for(P param : linkParams)
                 content += param.parse(ident + 1);
         }
+        if(hasBind()){
+            for(B bind : binds)
+                content += bind.parse(ident + 1);
+        }
 
-        for(B bind : binds)
-            content += bind.parse(ident + 1);
-        
         // <link> element end declaration
         content += space + "</link>\n";
         
@@ -256,5 +259,26 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
 
 
         return comp;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getXconnector() != null);
+        valid &= (binds.size() >= 2);
+
+        if(hasLinkParam()){
+            for(P param : linkParams){
+                valid &= param.validate();
+                valid &= (param.getType().equals(NCLParamInstance.LINKPARAM));
+            }
+        }
+        if(hasBind()){
+            for(B bind : binds)
+                valid &= bind.validate();
+        }
+
+        return valid;
     }
 }

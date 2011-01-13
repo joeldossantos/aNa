@@ -90,6 +90,11 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
     public String getValue() {
         return value;
     }
+
+
+    public NCLParamInstance getType() {
+        return paramType;
+    }
     
     
     public String parse(int ident) {
@@ -106,9 +111,10 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
         
         // param element and attributes declaration
         content = space + "<" + paramType.toString();
-
-        content += " name='" + getName().getName() + "'";
-        content += " value='" + getValue() + "'";
+        if(getName() != null)
+            content += " name='" + getName().getName() + "'";
+        if(getValue() != null)
+            content += " value='" + getValue() + "'";
         content += "/>\n";
         
         return content;
@@ -119,4 +125,14 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
         return getName().compareTo(other.getName());
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getName() != null);
+        valid &= (getValue() != null);
+        //TODO validar o valor do parâmetro com o tipo definido no conector (?)
+
+        return valid;
+    }
 }

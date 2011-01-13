@@ -210,7 +210,8 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
             space += "\t";
 
         content = space + "<descriptorSwitch";
-        content += " id='" + getId() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         content += ">\n";
 
         if(hasBind()){
@@ -235,5 +236,24 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
 
     public int compareTo(L other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        valid &= (hasDescriptor() && hasBind());
+
+        if(hasBind()){
+            for(B bind : binds)
+                valid &= bind.validate();
+        }
+        if(hasDescriptor()){
+            for(D desc : descriptors)
+                valid &= desc.validate();
+        }
+
+        return valid;
     }
 }

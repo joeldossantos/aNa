@@ -101,7 +101,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      * @return
      *          verdadeiro se a ação composta possui alguma ação.
      */
-    public boolean hasActions() {
+    public boolean hasAction() {
         return !actions.isEmpty();
     }
 
@@ -154,18 +154,19 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
             space += "\t";
 
         content = space + "<compoundAction";
-        content += " operator='" + getOperator() + "'";
-
+        if(getOperator() != null)
+            content += " operator='" + getOperator() + "'";
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
             content += " delay='$" + getParamDelay().getId() + "'";
-        
         content += ">\n";
-        
-        for(A action : actions)
-            content += action.parse(ident + 1);
-        
+
+        if(hasAction()){
+            for(A action : actions)
+                content += action.parse(ident + 1);
+        }
+
         content += space + "</compoundAction>\n";
 
         return content;
@@ -230,5 +231,20 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getOperator() != null);
+        valid &= hasAction();
+
+        if(hasAction()){
+            for(A action : actions)
+                valid &= action.validate();
+        }
+
+        return valid;
     }
 }

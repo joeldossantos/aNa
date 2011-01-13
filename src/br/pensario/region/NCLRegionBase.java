@@ -233,13 +233,10 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
             space += "\t";
 
         content = space + "<regionBase";
-        
         if(getId() != null)
             content += " id='" + getId() + "'";
-
         if(getDevice() != null)                         
             content += " device='" + getDevice() + "'";
-        
         if(getParentRegion() != null)                         
             content += " region='" + getParentRegion().getId() + "'";
         
@@ -250,10 +247,10 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
                 for(I imp : imports)
                     content += imp.parse(ident + 1);
             }
-            
-            for(R region : regions)
-                content += region.parse(ident + 1);
-
+            if(hasRegion()){
+                for(R region : regions)
+                    content += region.parse(ident + 1);
+            }
             content += space + "</regionBase>\n";
         }
         else
@@ -261,5 +258,22 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
         return content;
     }
-    
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (hasImportBase() || hasRegion());
+
+        if(hasImportBase()){
+            for(I imp : imports)
+                valid &= imp.validate();
+        }
+        if(hasRegion()){
+            for(R region : regions)
+                valid &= region.validate();
+        }
+
+        return valid;
+    }
 }

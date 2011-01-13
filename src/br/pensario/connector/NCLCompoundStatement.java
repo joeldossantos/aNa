@@ -149,18 +149,17 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
             space += "\t";
 
         content = space + "<compoundStatement";
-
         if(getOperator() != null)
             content += " operator='" + getOperator().toString() + "'";
-        
         if(getIsNegated() != null)
             content += " isNegated='" + getIsNegated().toString() + "'";
-        
         content += ">\n";
-        
-        for(S statement : statements)
-            content += statement.parse(ident + 1);
-        
+
+        if(hasStatement()){
+            for(S statement : statements)
+                content += statement.parse(ident + 1);
+        }
+
         content += space + "</compoundStatement>\n";
 
         return content;
@@ -213,5 +212,20 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getOperator() != null);
+        valid &= hasStatement();
+
+        if(hasStatement()){
+            for(S statement : statements)
+                valid &= statement.validate();
+        }
+
+        return valid;
     }
 }

@@ -79,8 +79,10 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
             space += "\t";
 
         content = space + "<bindRule";
-        content += " rule='" + getRule().getId() + "'";
-        content += " constituent='" + getConstituent().getId() + "'";
+        if(getRule() != null)
+            content += " rule='" + getRule().getId() + "'";
+        if(getConstituent() != null)
+            content += " constituent='" + getConstituent().getId() + "'";
         content += "/>\n";
 
 
@@ -104,5 +106,17 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getRule() != null);
+        valid &= (getConstituent() != null);
+
+        //TODO validar se o constituent é do mesmo switch
+
+        return valid;
     }
 }

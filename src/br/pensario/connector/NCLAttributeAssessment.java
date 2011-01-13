@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLAttributeType;
 import br.pensario.NCLValues.NCLEventType;
 import br.pensario.NCLValues.NCLKey;
@@ -18,7 +19,7 @@ import br.pensario.NCLValues.NCLKey;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends NCLRole, P extends NCLConnectorParam> implements Comparable<A>{
+public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends NCLRole, P extends NCLConnectorParam> extends NCLElement implements Comparable<A>{
 
     private R role;
     private NCLEventType eventType;
@@ -207,25 +208,20 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             space += "\t";
 
         content = space + "<attributeAssessment";
-
-        content += " role='" + getRole().getName() + "'";
-
+        if(getRole() != null)
+            content += " role='" + getRole().getName() + "'";
         if(getEventType() != null)
             content += " eventType='" + getEventType().toString() + "'";
-        
         if(getKey() != null)
             content += " key='" + getKey().toString() + "'";
         if(getParamKey() != null)
             content += " key='$" + getParamKey().getId() + "'";
-        
         if(getAttributeType() != null)
             content += " attributeType='" + getAttributeType().toString() + "'";        
-        
         if(getOffset() != null)
             content += " offset='" + getOffset() + "'";
         if(getParamOffset() != null)
             content += " offset='$" + getParamOffset().getId() + "'";
-        
         content += "/>\n";
 
         return content;
@@ -296,5 +292,17 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getRole() != null);
+        valid &= (getEventType() != null);
+        //TODO validar o attributetype com relacao ao eventtype (?)
+        //TODO validar o key (se é para ser usado
+
+        return valid;
     }
 }

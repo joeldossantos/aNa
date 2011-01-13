@@ -16,6 +16,26 @@ package br.pensario;
 public interface Element {
 
     /**
+     * Atribui um elemento pai ao elemento NCL.
+     *
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     * @return
+     *          verdadeiro se o elemento pai foi atribuido. Caso o elemento já possua um elemento pai, o retorno será falso.
+     */
+    public boolean setParent(NCLElement parent);
+
+
+    /**
+     * Retorna o elemento pai do elemento NCL.
+     *
+     * @return
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLElement getParent();
+
+
+    /**
      * Cria o código XML do elemento da <i>Nested Context Language</i> (NCL).<br>
      *
      * @param ident
@@ -25,5 +45,15 @@ public interface Element {
      * @return
      *          String contendo o código XML do elemento.
      */
-    public String parse(int ident);
+    public abstract String parse(int ident);
+
+
+    /**
+     * Valida o elemento da <i>Nested Context Language</i> (NCL) criado.<br>
+     * Verifica se o elemento está de acordo com o padrão da linguagem.
+     *
+     * @return
+     *          verdadeiro se o elemento estiver de acordo com o padrão.
+     */
+    public abstract boolean validate();
 }

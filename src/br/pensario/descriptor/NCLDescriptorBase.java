@@ -175,7 +175,6 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
             space += "\t";
 
         content = space + "<descriptorBase";
-
         if(getId() != null)
             content += " id='" + getId() + "'";
 
@@ -200,4 +199,21 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
         return content;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (hasImportBase() || hasDescriptor());
+
+        if(hasImportBase()){
+            for(I imp : imports)
+                valid &= imp.validate();
+        }
+        if(hasDescriptor()){
+            for(D descriptor : descriptors)
+                valid &= descriptor.validate();
+        }
+
+        return valid;
+    }
 }

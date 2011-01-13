@@ -131,12 +131,12 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
             space += "\t";
 
         content = space + "<" + type.toString();
-        content += " alias='" + getAlias() + "'";
-        content += " documentURI='" + getDocumentURI() + "'";
-
+        if(getAlias() != null)
+            content += " alias='" + getAlias() + "'";
+        if(getDocumentURI() != null)
+            content += " documentURI='" + getDocumentURI() + "'";
         if(getRegion() != null)
             content += " region='" + getRegion().getId() + "'";
-        
         content += "/>\n";
 
         return content;
@@ -145,5 +145,10 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
 
     public int compareTo(I other) {
         return getAlias().compareTo(other.getAlias());
+    }
+
+
+    public boolean validate() {
+        return (getAlias() != null && getDocumentURI() != null);
     }
 }

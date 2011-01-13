@@ -124,10 +124,14 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
 
         // param element and attributes declaration
         content = space + "<rule";
-        content += " id='" + getId() + "'";
-        content += " var='" + getVar().getName() + "'";
-        content += " comparator='" + getComparator().toString() + "'";
-        content += " value='" + getValue() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
+        if(getVar() != null)
+            content += " var='" + getVar().getName() + "'";
+        if(getComparator() != null)
+            content += " comparator='" + getComparator().toString() + "'";
+        if(getValue() != null)
+            content += " value='" + getValue() + "'";
         content += "/>\n";
 
         return content;
@@ -136,5 +140,19 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
 
     public int compareTo(T other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        valid &= (getVar() != null);
+        valid &= (getComparator() != null);
+        valid &= (getValue() != null);
+
+        //TODO var deve ser do tipo settings (seu elemento pai)
+
+        return valid;
     }
 }

@@ -86,16 +86,27 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
 
         // param element and attributes declaration
         content = space + "<descriptorParam";
-
-        content += " name='" + getName().toString() + "'";
-        content += " value='" + getValue() + "'";
+        if(getName() != null)
+            content += " name='" + getName().toString() + "'";
+        if(getValue() != null)
+            content += " value='" + getValue() + "'";
         content += "/>\n";
 
         return content;
     }
 
 
-     public int compareTo(P other) {
+    public int compareTo(P other) {
         return getName().compareTo(other.getName());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getName() != null && getValue() != null);
+        //TODO validar o valor com relacao ao nome (?)
+
+        return valid;
     }
 }

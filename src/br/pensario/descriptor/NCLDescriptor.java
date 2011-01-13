@@ -539,59 +539,42 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             space += "\t";
 
         content = space + "<descriptor";
-        content += " id='" + getId() + "'";
-    
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         if(getRegion() != null)
             content += " region='" + getRegion().getId() + "'";
-
         if(getExplicitDur() != null)
             content += " explicitDur='" + getExplicitDur() + "s'";
-
         if(getFreeze() != null)
             content += " freeze='" + getFreeze().toString() + "'";
-
         if(getPlayer() != null)
             content += " player='" + getPlayer() + "'";
-
         if(getMoveLeft() != null)
             content += " moveLeft='" + getMoveLeft().getFocusIndex() + "'";
-
         if(getMoveRight() != null)
             content += " moveRight='" + getMoveRight().getFocusIndex() + "'";
-        
         if(getMoveDown() != null)
             content += " moveDown='" + getMoveDown().getFocusIndex() + "'";
-        
         if(getMoveUp() != null)
             content += " moveUp='" + getMoveUp().getFocusIndex() + "'";
-        
         if(getFocusIndex() != null)
             content += " focusIndex='" + getFocusIndex() + "'";
-
         if(getFocusBorderColor() != null)
             content += " focusBorderColor='" + getFocusBorderColor().toString() + "'";
-
         if(getFocusBorderWidth() != null)
             content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
-
         if(getFocusBorderTransparency() != null)
             content += " focusBorderTransparency='" + getFocusBorderTransparency() + "%'";
-
         if(getFocusSrc() != null)
             content += " focusSrc='" + getFocusSrc() + "'";
-        
         if(getFocusSelSrc() != null)
             content += " focusSelSrc='" + getFocusSelSrc() + "'";
-
         if(getSelBorderColor() != null)
             content += " SelBorderColor='" + getSelBorderColor().toString() + "'";
-
         if(getTransIn() != null)
             content += " transIn='" + getTransIn().getId() + "'";
-
         if(getTransOut() != null)
             content += " transOut='" + getTransOut().getId() + "'";
-
 
         // Test if the descriptor has content
         if(hasDescriptorParam()){
@@ -614,4 +597,17 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         return getId().compareTo(other.getId());
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+
+        if(hasDescriptorParam()){
+            for(P param : params)
+                valid &= param.validate();
+        }
+
+        return valid;
+    }
 }

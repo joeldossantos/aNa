@@ -160,26 +160,44 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
         for(int i = 0; i < ident; i++)
             space += "\t";
 
-        content = space + "<connectorBase ";
-
+        content = space + "<connectorBase";
         if(getId() != null)
             content += " id='" + getId() + "'";
 
-        content += ">\n";
+        if(hasImportBase() || hasCausalConnector()){
+            content += ">\n";
 
-        if(hasImportBase()){
-            for(I imp : imports)
-                content += imp.parse(ident + 1);
+            if(hasImportBase()){
+                for(I imp : imports)
+                    content += imp.parse(ident + 1);
+            }
+
+            if(hasCausalConnector()){
+                for(C connector: connectors)
+                    content += connector.parse(ident + 1);
+            }
+
+            content += space + "</connectorBase>\n";
         }
-
-        if(hasCausalConnector()){
-            for(C connector: connectors)
-                content += connector.parse(ident + 1);
-        }
-
-        content += space + "</connectorBase>\n";
+        else
+            content += "/>\n";
 
         return content;
     }
-    
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        if(hasImportBase()){
+            for(I imp : imports)
+                valid &= imp.validate();
+        }
+        if(hasCausalConnector()){
+            for(C connector: connectors)
+                valid &= connector.validate();
+        }
+
+        return valid;
+    }
 }

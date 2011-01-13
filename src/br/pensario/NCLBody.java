@@ -555,27 +555,22 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             for(M meta : metas)
                 content += meta.parse(ident + 1);
         }
-
         if(hasMetadata()){
             for(MT metadata : metadatas)
                 content += metadata.parse(ident + 1);
         }
-
         if(hasPort()){
             for(Pt port : ports)
                 content += port.parse(ident + 1);
         }
-        
         if(hasProperty()){
             for(Pp property : properties)
                 content += property.parse(ident + 1);
         }
-        
         if(hasNode()){
             for(N node : nodes)
                 content += node.parse(ident + 1);
         }
-        
         if(hasLink()){
             for(L link : links)
                 content += link.parse(ident + 1);
@@ -587,5 +582,39 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
         
         return content;
     }
-    
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        // Documento nao pode ser vazio
+        valid &= (hasMeta() || hasMetadata() || hasPort() || hasProperty() || hasNode() || hasLink());
+
+        if(hasMeta()){
+            for(M meta : metas)
+                valid &= meta.validate();
+        }
+        if(hasMetadata()){
+            for(MT metadata : metadatas)
+                valid &= metadata.validate();
+        }
+        if(hasPort()){
+            for(Pt port : ports)
+                valid &= port.validate();
+        }
+        if(hasProperty()){
+            for(Pp property : properties)
+                valid &= property.validate();
+        }
+        if(hasNode()){
+            for(N node : nodes)
+                valid &= node.validate();
+        }
+        if(hasLink()){
+            for(L link : links)
+                valid &= link.validate();
+        }
+
+        return valid;
+    }
 }

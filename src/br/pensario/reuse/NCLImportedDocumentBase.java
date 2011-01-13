@@ -93,7 +93,6 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
             space += "\t";
 
         content = space + "<importedDocumentBase";
-
         if(getId() != null)
             content += " id='" + getId() + "'";
 
@@ -109,5 +108,10 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
             content += "/>\n";
 
         return content;
+    }
+
+
+    public boolean validate() {
+        return hasImportNCL();
     }
 }

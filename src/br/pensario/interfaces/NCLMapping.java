@@ -1,7 +1,10 @@
 package br.pensario.interfaces;
 
 import br.pensario.NCLElement;
+import br.pensario.node.NCLContext;
+import br.pensario.node.NCLMedia;
 import br.pensario.node.NCLNode;
+import br.pensario.node.NCLSwitch;
 
 
 /**
@@ -80,9 +83,10 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
 
         // param element and attributes declaration
         content = space + "<mapping";
-
-        content += " component='" + getComponent().getId() + "'";
-        content += " interface='" + getInterface().getId() + "'";
+        if(getComponent() != null)
+            content += " component='" + getComponent().getId() + "'";
+        if(getInterface() != null)
+            content += " interface='" + getInterface().getId() + "'";
         content += "/>\n";
 
         return content;
@@ -102,4 +106,42 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
         return comp;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getComponent() != null);
+
+        //testa se o no contem a interface
+        if(valid && getInterface() != null){
+            if(getComponent() instanceof NCLMedia){
+                if(getInterface() instanceof NCLArea)
+                    valid &= ((NCLMedia) getComponent()).hasArea((NCLArea) getInterface());
+                else if(getInterface() instanceof NCLProperty)
+                    valid &= ((NCLMedia) getComponent()).hasProperty((NCLProperty) getInterface());
+                else
+                    valid = false;
+            }
+            else if(getComponent() instanceof NCLContext){
+                if(getInterface() instanceof NCLPort)
+                    valid &= ((NCLContext) getComponent()).hasPort((NCLPort) getInterface());
+                else if(getInterface() instanceof NCLProperty)
+                    valid &= ((NCLContext) getComponent()).hasProperty((NCLProperty) getInterface());
+                else
+                    valid = false;
+            }
+            else if(getComponent() instanceof NCLSwitch){
+                if(getInterface() instanceof NCLSwitchPort)
+                    valid &= ((NCLSwitch) getComponent()).hasPort((NCLSwitchPort) getInterface());
+                else
+                    valid = false;
+            }
+            else
+                valid = false;
+        }
+        //TODO: testar a composicionalidade
+        //TODO: testar se a interface é a mesma porta ou uma porta irma dessa porta
+
+        return valid;
+    }
 }

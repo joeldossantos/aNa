@@ -57,7 +57,7 @@ public class NCLTime {
      * @see NCLTime#setSecond
      * @see NCLTime#setFraction
      */
-    public NCLTime(int year, int month, int day, int hour, int minute, int second, int fraction) throws IllegalArgumentException {
+    public NCLTime(Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second, Integer fraction) throws IllegalArgumentException {
         setYear(year);
         setMonth(month);
         setDay(day);
@@ -71,7 +71,7 @@ public class NCLTime {
     /**
      * Construtor do indicador temporal da <i>Nested Context Language</i> (NCL).
      */
-    public NCLTime(int second) {
+    public NCLTime(Integer second) {
         setSecond(second);
     }
     

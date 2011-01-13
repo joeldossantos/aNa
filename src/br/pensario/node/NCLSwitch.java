@@ -1,6 +1,7 @@
 package br.pensario.node;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.interfaces.NCLSwitchPort;
 import java.util.Set;
 import java.util.TreeSet;
@@ -26,6 +27,19 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     private Set<P> ports = new TreeSet<P>();
     private Set<B> binds = new TreeSet<B>();
     private Set<N> nodes = new TreeSet<N>();
+
+
+    /**
+     * Construtor do elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador do switch.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador do switch for inválido.
+     */
+    public NCLSwitch(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
 
 
     /**
@@ -345,31 +359,36 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             space += "\t";
 
         content = space + "<switch";
-        content += " id='" + getId() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         if(getRefer() != null)
             content += " refer='" + getRefer() + "'";
-        content += ">\n";
 
-        if(hasPort()){
-            for(P port : ports)
-                content += port.parse(ident + 1);
+        if(hasPort() || hasBind() || hasNode()){
+            content += ">\n";
+
+            if(hasPort()){
+                for(P port : ports)
+                    content += port.parse(ident + 1);
+            }
+
+            if(hasBind()){
+                for(B bind : binds)
+                    content += bind.parse(ident + 1);
+            }
+
+            if(getDefaultComponent() != null)
+                content += space + "\t" + "<defaultComponent component='" + getDefaultComponent().getId() + "'/>\n";
+
+            if(hasNode()){
+                for(N node : nodes)
+                    content += node.parse(ident + 1);
+            }
+
+            content += space + "</switch>\n";
         }
-
-        if(hasBind()){
-            for(B bind : binds)
-                content += bind.parse(ident + 1);
-        }
-
-        if(getDefaultComponent() != null)
-            content += "<defaultComponent component='" + getDefaultComponent().getId() + "'>\n";
-
-        if(hasNode()){
-            for(N node : nodes)
-                content += node.parse(ident + 1);
-        }
-
-        content += space + "</switch>\n";
-
+        else
+            content += "/>\n";
 
         return content;
     }
@@ -378,4 +397,27 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
         return getId().compareTo(other.getId());
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        if(getRefer() != null)
+            valid &= (getRefer().compareTo(this) != 0);
+
+        if(hasPort()){
+            for(P port : ports)
+                valid &= port.validate();
+        }
+        if(hasBind()){
+            for(B bind : binds)
+                valid &= bind.validate();
+        }
+        if(hasNode()){
+            for(N node : nodes)
+                valid &= node.validate();
+        }
+
+        return valid;
+    }
 }

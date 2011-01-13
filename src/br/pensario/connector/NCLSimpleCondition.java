@@ -258,37 +258,30 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
             space += "\t";
 
         content = space + "<simpleCondition";
-
-        content += " role='" + getRole().getName() + "'";
-        
+        if(getRole() != null)
+            content += " role='" + getRole().getName() + "'";
         if(getKey() != null)
             content += " key='" + getKey().toString() + "'";
         if(getParamKey() != null)
             content += " key='$" + getParamKey().getId() + "'";
-
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
             content += " delay='$" + getParamDelay() + "'";
-
         if(getMin() != null)
             content += " min='" + getMin() + "'";        
-        
-        if(getMax() != null)
+        if(getMax() != null){
             if(getMax() < 0)
                 content += " max='unbounded'";
             else
                 content += " max='" + getMax() + "'";
-            
+        }
         if(getQualifier() != null)
             content += " qualifier='" + getQualifier().toString() + "'";
-
         if(getEventType() != null)
             content += " eventType='" + getEventType().toString() + "'";
-
         if(getTransition() != null)
             content += " transition='" + getTransition().toString() + "'";
-        
         content += "/>\n";
 
         return content;
@@ -390,5 +383,15 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getRole() != null);
+        //TODO validar as relações entre os atributos
+
+        return valid;
     }
 }

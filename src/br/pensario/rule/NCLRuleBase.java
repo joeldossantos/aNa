@@ -160,7 +160,6 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
             space += "\t";
 
         content = space + "<ruleBase";
-
         if(getId() != null)
             content += " id='" + getId() + "'";
 
@@ -185,4 +184,21 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
         return content;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (hasImportBase() || hasRule());
+
+        if(hasImportBase()){
+            for(I imp : imports)
+                valid &= imp.validate();
+        }
+        if(hasRule()){
+            for(T rule : rules)
+                valid &= rule.validate();
+        }
+
+        return valid;
+    }
 }

@@ -125,7 +125,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      * @return
      *          verdadeiro se o parâmetro existir.
      */
-    public boolean hasAttributeAssessment(String name) {
+    public boolean hasConnectorParam(String name) {
         for(P connp : conn_params){
             if(connp.getName().equals(name))
                 return true;
@@ -141,7 +141,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      * @return
      *          verdadeiro se o conector possuir pelo menos um parâmetro.
      */
-    public boolean hasAttributeAssessment() {
+    public boolean hasConnectorParam() {
         return !conn_params.isEmpty();
     }
 
@@ -152,7 +152,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      * @return
      *          objeto Iterable contendo os parâmetros do conector.
      */
-    public Iterable<P> getAttributeAssessments() {
+    public Iterable<P> getConnectorParams() {
         return conn_params;
     }
 
@@ -169,14 +169,18 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
             space += "\t";
 
         content = space + "<causalConnector";
-        content += " id='" + getId() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         content += ">\n";
 
-        for(P connp : conn_params)
-            content += connp.parse(ident + 1);
-        
-        content += getCondition().parse(ident + 1);
-        content += getAction().parse(ident + 1);
+        if(hasConnectorParam()){
+            for(P connp : conn_params)
+                content += connp.parse(ident + 1);
+        }
+        if(getCondition() != null)
+            content += getCondition().parse(ident + 1);
+        if(getAction() != null)
+            content += getAction().parse(ident + 1);
 
         content += space + "</causalConnector>\n";
 
@@ -188,4 +192,24 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
         return getId().compareTo(other.getId());
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        valid &= (getCondition() != null);
+        valid &= (getAction() != null);
+
+        if(getCondition() != null)
+            valid &= getCondition().validate();
+        if(getAction() != null)
+            valid &= getAction().validate();
+
+        if(hasConnectorParam()){
+            for(P connp : conn_params)
+                valid &= connp.validate();
+        }
+
+        return valid;
+    }
 }

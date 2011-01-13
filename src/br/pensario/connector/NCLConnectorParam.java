@@ -100,13 +100,10 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
             space += "\t";
 
         content = space + "<connectorParam";
-        
         if(getName() != null)
             content += " name='" + getName() + "'";
-
         if(getType() != null)
             content += " type='" + getType() + "'";        
-        
         content += "/>\n";
 
         return content;
@@ -117,4 +114,9 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
         return getName().compareTo(other.getName());
     }
 
+
+    public boolean validate() {
+        return (getName() != null);
+        //TODO validar o type (?)
+    }
 }

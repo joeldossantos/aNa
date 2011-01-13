@@ -268,7 +268,8 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
                 
         // <area> element and attributes declaration
         content = space + "<area";
-        content += " id='" + getId() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         if(getCoords() != null)
             content += " coords='" + coordsToString() + "'";
         if(getBegin() != null)
@@ -310,5 +311,17 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
     
     public int compareTo(I other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        //TODO validar begin com end (?)
+        //TODO validar text com position (?)
+        //TODO validar first com last (?)
+
+        return valid;
     }
 }

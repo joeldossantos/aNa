@@ -454,57 +454,46 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             space += "\t";
 
         content = space + "<simpleAction";
-
-        content += " role='" + getRole().getName() + "'";
-
+        if(getRole() != null)
+            content += " role='" + getRole().getName() + "'";
         if(getValue() != null)
             content += " value='" + getValue() + "'";
         if(getParamValue() != null)
             content += " value='$" + getParamValue().getId() + "'";
-
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
             content += " delay='$" + getParamDelay().getId() + "'";
-        
         if(getMin() != null)
             content += " min='" + getMin() + "'";
-        
-        if(getMax() != null)
+        if(getMax() != null){
             if(getMax() < 0)
                 content += " max='unbounded'";
             else
                 content += " max='" + getMax() + "'";
-        
+        }
         if(getQualifier() != null)
             content += " qualifier='" + getQualifier().toString() + "'";
-
         if(getEventType() != null)
             content += " eventType='" + getEventType().toString() + "'";
-
         if(getActionType() != null)
             content += " actionType='" + getActionType().toString() + "'";
-
         if(getRepeat() != null)
             content += " repeat='" + getRepeat() + "'";
         if(getParamRepeat() != null)
             content += " repeat='$" + getParamRepeat().getId() + "'";
-
         if(getRepeatDelay() != null)
             content += " repeatDelay='" + getRepeatDelay() + "s'";
         if(getParamRepeatDelay() != null)
             content += " repeatDelay='$" + getParamRepeatDelay().getId() + "'";
-
         if(getDuration() != null)
             content += " duration='" + getDuration() + "s'";
         if(getParamDuration() != null)
             content += " duration='$" + getParamDuration().getId() + "'";
-
         if(getBy() != null)
             content += " by='" + getBy() + "'";
         if(getParamBy() != null)
             content += " by='$" + getParamBy().getId() + "'";
-        
         content += "/>\n";
 
         return content;
@@ -674,4 +663,13 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             return 0;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getRole() != null);
+        //TODO validar as relações entre os atributos
+
+        return valid;
+    }
 }

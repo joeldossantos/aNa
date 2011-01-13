@@ -26,17 +26,6 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
 
     
     /**
-     * Construtor do elemento <i>ncl</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param xmlns
-     *          namespace usado pelo documento NCL.
-     */
-    public NCLDoc(NCLNamespace xmlns) {
-        setXmlns(xmlns);
-    }    
-
-
-    /**
      * Determina o título do documento NCL.
      * 
      * @param title
@@ -153,7 +142,8 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
             content += " id='" + getId() + "'";
         if(getTitle() != null)
             content += " title='" + getTitle() + "'";
-        content += " xmlns='" + getXmlns() + "'";
+        if(getXmlns() != null)
+            content += " xmlns='" + getXmlns() + "'";
         content += ">\n";
 
         // <ncl> element content
@@ -168,4 +158,18 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
         return content;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        // Documento nao pode ser vazio
+        valid &= (getHead() != null || getBody() != null);
+        
+        if(getHead() != null)
+            valid &= getHead().validate();
+        if(getBody() != null)
+            valid &= getBody().validate();
+
+        return valid;
+    }
 }

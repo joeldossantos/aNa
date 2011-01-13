@@ -1,6 +1,7 @@
 package br.pensario.interfaces;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -20,6 +21,19 @@ import java.util.TreeSet;
 public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends NCLIdentifiableElement implements NCLInterface<I> {
 
     private Set<M> mappings = new TreeSet<M>();
+
+
+    /**
+     * Construtor do elemento <i>switchPort</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param id
+     *          identificador da porta de switch.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador for inválido.
+     */
+    public NCLSwitchPort(String id) throws NCLInvalidIdentifierException {
+        setId(id);
+    }
 
 
     /**
@@ -101,7 +115,8 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
 
         // <port> element and attributes declaration
         content = space + "<switchPort";
-        content += " id='" + getId() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         content += ">\n";
 
         if(hasMapping()){
@@ -117,5 +132,20 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
 
     public int compareTo(I other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        valid &= hasMapping();
+
+        if(hasMapping()){
+            for(M mapping : mappings)
+                valid &= mapping.validate();
+        }
+
+        return valid;
     }
 }

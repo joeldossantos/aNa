@@ -305,8 +305,10 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
 
         // param element and attributes declaration
         content = space + "<transition";
-        content += " id='" + getId() + "'";
-        content += " type='" + getType() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
+        if(getType() != null)
+            content += " type='" + getType() + "'";
         if(getSubtype() != null)
             content += " subtype='" + getSubtype() + "'";
         if(getDur() != null)
@@ -335,5 +337,17 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
 
     public int compareTo(T other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        valid &= (getType() != null);
+        //TODO validar o subtipo com o tipo
+        //TODO validar o fadecolor com o tipo
+
+        return valid;
     }
 }

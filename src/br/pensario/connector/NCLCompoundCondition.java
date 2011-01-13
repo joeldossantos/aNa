@@ -102,7 +102,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @return
      *          verdadeiro se a condição composta possui alguma condição.
      */
-    public boolean hasConditions() {
+    public boolean hasCondition() {
         return !conditions.isEmpty();
     }
 
@@ -220,20 +220,22 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             space += "\t";
 
         content = space + "<compoundCondition";
-        content += " operator='" + getOperator() + "'";
-
+        if(getOperator() != null)
+            content += " operator='" + getOperator() + "'";
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
             content += " delay='$" + getParamDelay() + "'";
-        
         content += ">\n";
-        
-        for(C condition : conditions)
-            content += condition.parse(ident + 1);
-        
-        for(S statement : statements)
-            content += statement.parse(ident + 1);
+
+        if(hasCondition()){
+            for(C condition : conditions)
+                content += condition.parse(ident + 1);
+        }
+        if(hasStatement()){
+            for(S statement : statements)
+                content += statement.parse(ident + 1);
+        }
 
         content += space + "</compoundCondition>\n";
 
@@ -314,5 +316,24 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getOperator() != null);
+        valid &= hasCondition();
+
+        if(hasCondition()){
+            for(C condition : conditions)
+                valid &= condition.validate();
+        }
+        if(hasStatement()){
+            for(S statement : statements)
+                valid &= statement.validate();
+        }
+
+        return valid;
     }
 }

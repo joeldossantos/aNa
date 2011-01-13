@@ -560,56 +560,48 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             space += "\t";
 
         content = space + "<region";
-        content += " id='" + getId() + "'";
-
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         if(getLeft() != null) {
             String percent = "";
             if(isRelativeLeft())
                 percent = "%";
             content += " left='" + getLeft() + percent + "'";
         }
-
         if(getRight() != null) {
             String percent = "";
             if(isRelativeRight())
                 percent = "%";
             content += " right='" + getRight() + percent + "'";
         }
-
         if(getTop() != null) {
             String percent = "";
             if(isRelativeTop())
                 percent = "%";
             content += " top='" + getTop() + percent + "'";
         }
-
         if(getBottom() != null) {
             String percent = "";
             if(isRelativeBottom())
                 percent = "%";
             content += " bottom='" + getBottom() + percent + "'";
         }
-
         if(getHeight() != null) {
             String percent = "";
             if(isRelativeHeight())
                 percent = "%";
             content += " height='" + getHeight() + percent + "'";
         }
-
         if(getWidth() != null) {
             String percent = "";
             if(isRelativeWidth())
                 percent = "%";
             content += " width='" + getWidth() + percent + "'";
         }
-
         if(getzIndex() != null)
             content += " zIndex='" + getzIndex() + "'";
-
         if(getTitle() != null)
             content += " title='" + getTitle() + "'";
-
         if(hasRegion()) {
             content += ">\n";
 
@@ -629,4 +621,17 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
         return getId().compareTo(other.getId());
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+
+        if(hasRegion()){
+            for(R region : regions)
+                valid &= region.validate();
+        }
+
+        return valid;
+    }
 }

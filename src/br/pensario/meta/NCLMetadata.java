@@ -1,5 +1,7 @@
 package br.pensario.meta;
 
+import br.pensario.NCLElement;
+
 
 /**
  * Esta classe define o elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
@@ -14,7 +16,7 @@ package br.pensario.meta;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLMetadata {
+public class NCLMetadata<M extends NCLMetadata> extends NCLElement implements Comparable<M> {
 
     private String rdfTree;
 
@@ -60,11 +62,20 @@ public class NCLMetadata {
 
         // param element and attributes declaration
         content = space + "<metadata>\n";
-
-        content += getRDFTree();
-
-        content += "</metadata>\n";
+        if(getRDFTree() != null)
+            content += getRDFTree() + "\n";
+        content += space + "</metadata>\n";
 
         return content;
+    }
+
+
+    public int compareTo(M other) {
+        return getRDFTree().compareTo(other.getRDFTree());
+    }
+
+    
+    public boolean validate() {
+        return (getRDFTree() != null);
     }
 }

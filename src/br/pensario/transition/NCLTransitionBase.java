@@ -160,7 +160,6 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             space += "\t";
 
         content = space + "<transitionBase";
-
         if(getId() != null)
             content += " id='" + getId() + "'";
 
@@ -183,5 +182,23 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             content += "/>\n";
 
         return content;
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (hasImportBase() || hasTransition());
+
+        if(hasImportBase()){
+            for(I imp : imports)
+                valid &= imp.validate();
+        }
+        if(hasTransition()){
+            for(T transition : transitions)
+                valid &= transition.validate();
+        }
+
+        return valid;
     }
 }

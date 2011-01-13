@@ -438,7 +438,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
         
         // <media> element and attributes declaration
         content = space + "<media";
-        content += " id='" + getId() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         if(getSrc() != null)
             content += " src='" + getSrc() + "'";
         if(getType() != null)
@@ -458,7 +459,6 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
                 for(A area : areas)
                     content += area.parse(ident + 1);
             }
-            
             if(hasProperty()){
                 for(P prop : properties)
                     content += prop.parse(ident + 1);
@@ -475,5 +475,27 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
 
     public int compareTo(N other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        if(getRefer() != null)
+            valid &= (getRefer().compareTo(this) != 0);
+        //TODO: validar o src com o type (?)
+        //TODO: validar refer e instance (?)
+
+        if(hasArea()){
+            for(A area : areas)
+                valid &= area.validate();
+        }
+        if(hasProperty()){
+            for(P prop : properties)
+                valid &= prop.validate();
+        }
+
+        return valid;
     }
 }

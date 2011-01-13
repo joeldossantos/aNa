@@ -1,13 +1,21 @@
 package br.pensario.link;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLValues.NCLParamInstance;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.connector.NCLRole;
 import br.pensario.descriptor.NCLDescriptor;
+import br.pensario.interfaces.NCLArea;
 import br.pensario.interfaces.NCLInterface;
+import br.pensario.interfaces.NCLPort;
+import br.pensario.interfaces.NCLProperty;
+import br.pensario.interfaces.NCLSwitchPort;
+import br.pensario.node.NCLContext;
+import br.pensario.node.NCLMedia;
 import br.pensario.node.NCLNode;
+import br.pensario.node.NCLSwitch;
 import java.util.Iterator;
 
 
@@ -202,8 +210,10 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         
         // <bind> element and attributes declaration
         content = space + "<bind";
-        content += " role='" + getRole().getName() + "'";
-        content += " component='" + getComponent().getId() + "'";
+        if(getRole() != null)
+            content += " role='" + getRole().getName() + "'";
+        if(getComponent() != null)
+            content += " component='" + getComponent().getId() + "'";
         if(getInterface() != null)
             content += " interface='" + getInterface().getId() + "'";
         if(getDescriptor() != null)
@@ -272,4 +282,50 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             return 0;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getRole() != null);
+        valid &= (getComponent() != null);
+        //TODO validar o papel com o conector utilizado no link
+
+        //testa se o no contem a interface
+        if(valid && getInterface() != null){
+            if(getComponent() instanceof NCLMedia){
+                if(getInterface() instanceof NCLArea)
+                    valid &= ((NCLMedia) getComponent()).hasArea((NCLArea) getInterface());
+                else if(getInterface() instanceof NCLProperty)
+                    valid &= ((NCLMedia) getComponent()).hasProperty((NCLProperty) getInterface());
+                else
+                    valid = false;
+            }
+            else if(getComponent() instanceof NCLContext){
+                if(getInterface() instanceof NCLPort)
+                    valid &= ((NCLContext) getComponent()).hasPort((NCLPort) getInterface());
+                else if(getInterface() instanceof NCLProperty)
+                    valid &= ((NCLContext) getComponent()).hasProperty((NCLProperty) getInterface());
+                else
+                    valid = false;
+            }
+            else if(getComponent() instanceof NCLSwitch){
+                if(getInterface() instanceof NCLSwitchPort)
+                    valid &= ((NCLSwitch) getComponent()).hasPort((NCLSwitchPort) getInterface());
+                else
+                    valid = false;
+            }
+            else
+                valid = false;
+        }
+        //TODO: testar a composicionalidade
+
+        if(hasBindParam()){
+            for(P param : bindParams){
+                valid &= param.validate();
+                valid &= (param.getType().equals(NCLParamInstance.BINDPARAM));
+            }
+        }
+
+        return valid;
+    }
 }

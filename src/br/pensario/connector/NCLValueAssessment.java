@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLDefaultValueAssessment;
 
 
@@ -16,7 +17,7 @@ import br.pensario.NCLValues.NCLDefaultValueAssessment;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConnectorParam> implements Comparable<V> {
+public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConnectorParam> extends NCLElement implements Comparable<V> {
 
     private String value;
     private NCLDefaultValueAssessment defValue;
@@ -128,12 +129,10 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
             space += "\t";
 
         content = space + "<valueAssessment";
-
         if(getValue() != null)
             content += " value='" + getValue() + "'";
         if(getParamValue() != null)
             content += " value='$" + getParamValue().getId() + "'";
-        
         content += "/>\n";
 
         return content;
@@ -163,5 +162,10 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
             return 1;
         else
             return 0;
+    }
+
+
+    public boolean validate() {
+        return (getValue() != null || getParamValue() != null);
     }
 }

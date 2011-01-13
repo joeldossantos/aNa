@@ -73,8 +73,10 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
      *          se o nome da propriedade não for válido.
      */
     public void setName(NCLSystemVariable name) throws NCLInvalidIdentifierException {
-        if(name != null)
-            setId(name.toString());
+        if(name == null)
+            throw new NCLInvalidIdentifierException("Invalid name");
+
+        setId(name.toString());
     }
     
     
@@ -129,7 +131,8 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
         
         // <property> element and attributes declaration
         content = space + "<property";
-        content += " name='" + getName() + "'";
+        if(getName() != null)
+            content += " name='" + getName() + "'";
         if(getValue() != null)
             content += " value='" + getValue() + "'";
         content += "/>\n";
@@ -143,4 +146,13 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
         return getId().compareTo(other.getId());
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        //TODO validar o valor com o nome (?)
+
+        return valid;
+    }
 }

@@ -139,8 +139,10 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
 
         // param element and attributes declaration
         content = space + "<compositeRule";
-        content += " id='" + getId() + "'";
-        content += " operator='" + getOperator() + "'";
+        if(getId() != null)
+            content += " id='" + getId() + "'";
+        if(getOperator() != null)
+            content += " operator='" + getOperator() + "'";
         content += ">\n";
 
         if(hasRule()){
@@ -156,5 +158,21 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
 
     public int compareTo(T other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        valid &= (getOperator() != null);
+        valid &= (hasRule());
+
+        if(hasRule()){
+            for(T rule : rules)
+                valid &= rule.validate();
+        }
+
+        return valid;
     }
 }

@@ -159,16 +159,17 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             space += "\t";
 
         content = space + "<assessmentStatement";
-
-        content += " comparator='" + getComparator().toString() + "'";
-        
+        if(getComparator() != null)
+            content += " comparator='" + getComparator().toString() + "'";
         content += ">\n";
-        
-        for(A attribute : attributeAssessments)
-            content += attribute.parse(ident + 1);
-        
-        if(valueAssessment != null)
-            content += valueAssessment.parse(ident + 1);
+
+        if(hasAttributeAssessment()){
+            for(A attribute : attributeAssessments)
+                content += attribute.parse(ident + 1);
+        }
+
+        if(getValueAssessment() != null)
+            content += getValueAssessment().parse(ident + 1);
         
         content += space + "</assessmentStatement>\n";
 
@@ -227,4 +228,13 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             return 0;
     }
 
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getComparator() != null);
+        valid &= (attributeAssessments.size() == 2 || (attributeAssessments.size() == 1 && getValueAssessment() != null));
+
+        return valid;
+    }
 }

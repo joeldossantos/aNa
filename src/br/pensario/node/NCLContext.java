@@ -584,8 +584,8 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
         
         // <context> element and attributes declaration
         content = space + "<context";
-        content += " id='" + getId() + "'";
-
+        if(getId() != null)
+            content += " id='" + getId() + "'";
         if(getRefer() != null)
             content += " refer='" + getRefer().getId() + "'";
         
@@ -597,27 +597,22 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
                 for(M meta : metas)
                     content += meta.parse(ident + 1);
             }
-
             if(hasMetadata()){
                 for(MT metadata : metadatas)
                     content += metadata.parse(ident + 1);
             }
-            
             if(hasPort()){
                 for(Pt port : ports)
                     content += port.parse(ident + 1);
             }
-
             if(hasProperty()){
                 for(Pp property : properties)
                     content += property.parse(ident + 1);
             }
-
             if(hasNode()){
                 for(N node : nodes)
                     content += node.parse(ident + 1);
             }
-
             if(hasLink()){
                 for(L link : links)
                     content += link.parse(ident + 1);
@@ -635,5 +630,41 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
 
     public int compareTo(N other) {
         return getId().compareTo(other.getId());
+    }
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        valid &= (getId() != null);
+        if(getRefer() != null)
+            valid &= (getRefer().compareTo(this) != 0);
+
+        if(hasMeta()){
+            for(M meta : metas)
+                valid &= meta.validate();
+        }
+        if(hasMetadata()){
+            for(MT metadata : metadatas)
+                valid &= metadata.validate();
+        }
+        if(hasPort()){
+            for(Pt port : ports)
+                valid &= port.validate();
+        }
+        if(hasProperty()){
+            for(Pp property : properties)
+                valid &= property.validate();
+        }
+        if(hasNode()){
+            for(N node : nodes)
+                valid &= node.validate();
+        }
+        if(hasLink()){
+            for(L link : links)
+                valid &= link.validate();
+        }
+
+        return valid;
     }
 }

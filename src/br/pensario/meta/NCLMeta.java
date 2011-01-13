@@ -90,9 +90,10 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
 
         // param element and attributes declaration
         content = space + "<meta";
-
-        content += " name='" + getName() + "'";
-        content += " content='" + getContent() + "'";
+        if(getName() != null)
+            content += " name='" + getName() + "'";
+        if(getContent() != null)
+            content += " content='" + getContent() + "'";
         content += "/>\n";
 
         return content;
@@ -101,5 +102,10 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
 
     public int compareTo(M other) {
         return getName().compareTo(other.getName());
+    }
+
+
+    public boolean validate() {
+        return (getName() != null && getContent() != null);
     }
 }

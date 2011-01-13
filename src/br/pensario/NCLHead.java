@@ -319,27 +319,20 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
         if(getImportedDocumentBase() != null)
             content += getImportedDocumentBase().parse(ident + 1);
-
         if(getRuleBase() != null)
             content += getRuleBase().parse(ident + 1);
-
         if(getTransitionBase() != null)
             content += getTransitionBase().parse(ident + 1);
-
         if(getRegionBase() != null)
             content += getRegionBase().parse(ident + 1);
-        
         if(getDescriptorBase() != null)
             content += getDescriptorBase().parse(ident + 1);
-        
         if(getConnectorBase() != null)
             content += getConnectorBase().parse(ident + 1);
-
         if(hasMeta()){
             for(M meta : metas)
                 content += meta.parse(ident + 1);
         }
-
         if(hasMetadata()){
             for(MT metadata : metadatas)
                 content += metadata.parse(ident + 1);
@@ -349,5 +342,36 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
         
         return content;
     }
-    
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        // Cabecalho nao pode ser vazio
+        valid &= (getImportedDocumentBase() != null || getRuleBase() != null || getTransitionBase() != null ||
+                getRegionBase() != null || getDescriptorBase() != null || getConnectorBase() != null || hasMeta() || hasMetadata());
+
+        if(getImportedDocumentBase() != null)
+            valid &= getImportedDocumentBase().validate();
+        if(getRuleBase() != null)
+            valid &= getRuleBase().validate();
+        if(getTransitionBase() != null)
+            valid &= getTransitionBase().validate();
+        if(getRegionBase() != null)
+            valid &= getRegionBase().validate();
+        if(getDescriptorBase() != null)
+            valid &= getDescriptorBase().validate();
+        if(getConnectorBase() != null)
+            valid &= getConnectorBase().validate();
+        if(hasMeta()){
+            for(M meta : metas)
+                valid &= meta.validate();
+        }
+        if(hasMetadata()){
+            for(MT metadata : metadatas)
+                valid &= metadata.validate();
+        }
+
+        return valid;
+    }
 }
