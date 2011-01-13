@@ -18,7 +18,8 @@ public class NCLDocTest {
 
     @Test
     public void test1() throws NCLInvalidIdentifierException {
-        NCLDoc d = new NCLDoc(NCLValues.NCLNamespace.EDTV);
+        NCLDoc d = new NCLDoc();
+        d.setXmlns(NCLValues.NCLNamespace.EDTV);
         d.setId("meudoc");
         d.setTitle("documento de teste");
         d.setHead(new NCLHead());

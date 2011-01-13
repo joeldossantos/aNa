@@ -39,7 +39,7 @@ public class NCLLinkTest {
         l.addLinkParam(p);
         l.addBind(b);
 
-        String expResult = "<link id='l1' xconnector='onBeginSet'>\n\t<linkParam name='$var' value='10'/>\n\t<bind role='set' component='video'/>\n</link>\n";
+        String expResult = "<link id='l1' xconnector='onBeginSet'>\n\t<linkParam name='var' value='10'/>\n\t<bind role='set' component='video'/>\n</link>\n";
         String result = l.parse(0);
         assertEquals(expResult, result);
     }

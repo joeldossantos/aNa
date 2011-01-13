@@ -46,7 +46,7 @@ public class NCLBindTest {
         p.setValue("10");
         b.addBindParam(p);
 
-        String expResult = "<bind role='set' component='video'>\n\t<bindParam name='$var' value='10'/>\n</bind>\n";
+        String expResult = "<bind role='set' component='video'>\n\t<bindParam name='var' value='10'/>\n</bind>\n";
         String result = b.parse(0);
         assertEquals(expResult, result);
     }
