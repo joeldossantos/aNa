@@ -1,11 +1,13 @@
 package br.pensario.connector;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import java.util.Set;
 import java.util.TreeSet;
-
 import br.pensario.NCLValues.NCLConditionOperator;
 import java.util.Iterator;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -29,8 +31,34 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
     private Set<S> statements = new TreeSet<S>();
     private Integer delay;
     private P parDelay;
+
+    private boolean insideCondition;
     
-    
+
+    /**
+     * Construtor do elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLCompoundCondition() {}
+
+
+    /**
+     * Construtor do elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLCompoundCondition(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+
+        insideCondition = false;
+    }
+
+
     /**
      * Determina o operador da condição composta.
      *
@@ -221,7 +249,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
 
         content = space + "<compoundCondition";
         if(getOperator() != null)
-            content += " operator='" + getOperator() + "'";
+            content += " operator='" + getOperator().toString() + "'";
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
@@ -336,4 +364,63 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
 
         return valid;
     }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("compoundCondition") && !insideCondition){
+                insideCondition = true;
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("operator")){
+                        for(NCLConditionOperator o : NCLConditionOperator.values()){
+                            if(o.toString().equals(attributes.getValue(i)))
+                                setOperator(o);
+                        }
+                    }
+                    else if(attributes.getLocalName(i).equals("delay")){
+                        String var = attributes.getValue(i);
+                        if(var.contains("$")){
+                            var = var.substring(1);
+                            setDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        }
+                        else{
+                            var = var.substring(0, var.length() - 1);
+                            setDelay(new Integer(var));
+                        }
+                    }
+                }
+            }
+            else if(localName.equals("simpleCondition")){
+                NCLSimpleCondition c = new NCLSimpleCondition(getReader(), this);
+                c.startElement(uri, localName, qName, attributes);
+                addCondition((C) c); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("compoundCondition") && insideCondition){
+                NCLCompoundCondition c = new NCLCompoundCondition(getReader(), this);
+                c.startElement(uri, localName, qName, attributes);
+                addCondition((C) c); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("assessmentStatement")){
+                NCLAssessmentStatement a = new NCLAssessmentStatement(getReader(), this);
+                a.startElement(uri, localName, qName, attributes);
+                addStatement((S) a); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("compoundStatement")){
+                NCLCompoundStatement a = new NCLCompoundStatement(getReader(), this);
+                a.startElement(uri, localName, qName, attributes);
+                addStatement((S) a); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+    }
+
+/*TODO: retirar isso
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        getReader().setContentHandler(getParent());
+        insideCondition = false;
+    }*/
 }

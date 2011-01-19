@@ -5,6 +5,8 @@ import br.pensario.NCLValues.NCLOperator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -26,6 +28,32 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
     private Boolean isNegated;
     
     private Set<S> statements = new TreeSet<S>();
+
+    private boolean insideStatement;
+
+
+    /**
+     * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLCompoundStatement() {}
+
+
+    /**
+     * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLCompoundStatement(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+
+        insideStatement = false;
+    }
     
     
     /**
@@ -228,4 +256,38 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
 
         return valid;
     }
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        if(localName.equals("compoundStatement") && !insideStatement){
+            insideStatement = true;
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("operator")){
+                    for(NCLOperator o : NCLOperator.values()){
+                        if(o.toString().equals(attributes.getValue(i)))
+                            setOperator(o);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("isNegated"))
+                    setIsNegated(new Boolean(attributes.getValue(i)));
+            }
+        }
+        else if(localName.equals("assessmentStatement")){
+            NCLAssessmentStatement s = new NCLAssessmentStatement(getReader(), this);
+            s.startElement(uri, localName, qName, attributes);
+            addStatement((S) s); //TODO: retirar o cast. Como melhorar isso?
+        }
+        else if(localName.equals("compoundStatement") && insideStatement){
+            NCLCompoundStatement s = new NCLCompoundStatement(getReader(), this);
+            s.startElement(uri, localName, qName, attributes);
+            addStatement((S) s); //TODO: retirar o cast. Como melhorar isso?
+        }
+    }
+
+/*TODO: retirar isso
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        getReader().setContentHandler(getParent());
+        insideCondition = false;
+    }*/
 }

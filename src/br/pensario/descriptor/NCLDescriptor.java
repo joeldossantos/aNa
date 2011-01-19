@@ -1,5 +1,6 @@
 package br.pensario.descriptor;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLColor;
@@ -9,6 +10,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -57,7 +60,23 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      */
     public NCLDescriptor(String id) throws NCLInvalidIdentifierException {        
         setId(id);
-    }    
+    }
+
+
+    /**
+     * Construtor do elemento <i>descriptor</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLDescriptor(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -609,5 +628,75 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("descriptor")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("region"))
+                        setRegion((R) new NCLRegion(attributes.getValue(i)));//FIXME: apontar para a região verdadeira
+                    else if(attributes.getLocalName(i).equals("explicitDur")){
+                        String value = attributes.getValue(i);
+                        if(value.contains("s"))
+                            value = value.substring(0, value.length() - 1);
+                        setExplicitDur(new Integer(value));
+                    }
+                    else if(attributes.getLocalName(i).equals("freeze"))
+                        setFreeze(new Boolean(attributes.getValue(i)));
+                    else if(attributes.getLocalName(i).equals("player"))
+                        setPlayer(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("moveLeft"))
+                        setMoveLeft((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
+                    else if(attributes.getLocalName(i).equals("moveRight"))
+                        setMoveRight((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
+                    else if(attributes.getLocalName(i).equals("moveDown"))
+                        setMoveDown((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
+                    else if(attributes.getLocalName(i).equals("moveUp"))
+                        setMoveUp((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
+                    else if(attributes.getLocalName(i).equals("focusIndex"))
+                        setFocusIndex(new Integer(attributes.getValue(i)));
+                    else if(attributes.getLocalName(i).equals("focusBorderColor")){
+                        for(NCLColor c : NCLColor.values()){
+                            if(c.toString().equals(attributes.getValue(i)))
+                                setFocusBorderColor(c);
+                        }
+                    }
+                    else if(attributes.getLocalName(i).equals("focusBorderWidth"))
+                        setFocusBorderWidth(new Integer(attributes.getValue(i)));
+                    else if(attributes.getLocalName(i).equals("focusBorderTransparency"))
+                        setFocusBorderTransparency(new Integer(attributes.getValue(i)));
+                    else if(attributes.getLocalName(i).equals("focusSrc"))
+                        setFocusSrc(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("focusSelSrc"))
+                        setFocusSelSrc(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("SelBorderColor")){
+                        for(NCLColor c : NCLColor.values()){
+                            if(c.toString().equals(attributes.getValue(i)))
+                                setSelBorderColor(c);
+                        }
+                    }
+                    else if(attributes.getLocalName(i).equals("transIn"))
+                        setTransIn((T) new NCLTransition(attributes.getValue(i)));//FIXME: apontar para a transição verdadeira
+                    else if(attributes.getLocalName(i).equals("transOut"))
+                        setTransOut((T) new NCLTransition(attributes.getValue(i)));//FIXME: apontar para a transição verdadeira
+                }
+            }
+            else if(localName.equals("descriptorParam")){
+                NCLDescriptorParam p = new NCLDescriptorParam(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addDescriptorParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+        catch(URISyntaxException ex){
+            //TODO: fazer o que?
+        }
     }
 }

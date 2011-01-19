@@ -1,9 +1,12 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -33,6 +36,22 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
      */
     public NCLSwitchPort(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>switchPort</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLSwitchPort(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
 
 
@@ -147,5 +166,26 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("switchPort")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                }
+            }
+            else if(localName.equals("mapping")){
+                NCLMapping m = new NCLMapping(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addMapping((M) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

@@ -1,10 +1,15 @@
 package br.pensario.region;
 
+import br.pensario.NCLElement;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLValues.NCLImportType;
 import br.pensario.reuse.NCLImport;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -27,6 +32,28 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
     
     private Set<R> regions = new TreeSet<R>();
     private Set<I> imports = new TreeSet<I>();
+
+
+    /**
+     * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLRegionBase() {}
+
+
+    /**
+     * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLRegionBase(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -275,5 +302,35 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("regionBase")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("device"))
+                        setDevice(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("region"))
+                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));//FIXME: tem que apontar para a região verdadeira
+                }
+            }
+            else if(localName.equals("importBase")){
+                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
+                i.startElement(uri, localName, qName, attributes);
+                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("region")){
+                NCLRegion r = new NCLRegion(getReader(), this);
+                r.startElement(uri, localName, qName, attributes);
+                addRegion((R) r); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

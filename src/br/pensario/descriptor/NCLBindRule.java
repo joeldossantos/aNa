@@ -1,7 +1,11 @@
 package br.pensario.descriptor;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.rule.NCLRule;
 import br.pensario.rule.NCLTestRule;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -21,6 +25,28 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
 
     private D constituent;
     private R rule;
+
+
+    /**
+     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLBindRule() {}
+
+
+    /**
+     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLBindRule(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -118,5 +144,21 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
         //TODO validar se o constituent é do mesmo switch
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+        for(int i = 0; i < attributes.getLength(); i++){
+            if(attributes.getLocalName(i).equals("rule"))
+                setRule((R) new NCLRule(attributes.getValue(i)));//FIXME: colocar referência para a regra verdadeira.
+            else if(attributes.getLocalName(i).equals("constituent"))
+                setConstituent((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: colocar referência para o descritor verdadeiro.
+        }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

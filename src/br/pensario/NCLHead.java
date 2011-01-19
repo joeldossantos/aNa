@@ -10,6 +10,8 @@ import br.pensario.rule.NCLRuleBase;
 import br.pensario.transition.NCLTransitionBase;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -38,6 +40,28 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
     private Set<MT> metadatas = new TreeSet<MT>();
 
 
+    /**
+     * Construtor do elemento <i>head</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLHead() {}
+
+
+    /**
+     * Construtor do elemento <i>head</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLHead(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+    
     /**
      * Atribui uma base de documentos importados ao cabeçalho do documento NCL.
      *
@@ -373,5 +397,44 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        if(localName.equals("ImportedDocumentBase")){
+            setImportedDocumentBase((IB) new NCLImportedDocumentBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            getImportedDocumentBase().startElement(uri, localName, qName, attributes);
+        }
+        else if(localName.equals("ruleBase")){
+            setRuleBase((RLB) new NCLRuleBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            getRuleBase().startElement(uri, localName, qName, attributes);
+        }
+        else if(localName.equals("transitionBase")){
+            setTransitionBase((TB) new NCLTransitionBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            getTransitionBase().startElement(uri, localName, qName, attributes);
+        }
+        else if(localName.equals("regionBase")){
+            setRegionBase((RB) new NCLRegionBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            getRegionBase().startElement(uri, localName, qName, attributes);
+        }
+        else if(localName.equals("descriptorBase")){
+            setDescriptorBase((DB) new NCLDescriptorBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            getDescriptorBase().startElement(uri, localName, qName, attributes);
+        }
+        else if(localName.equals("connectorBase")){
+            setConnectorBase((CB) new NCLConnectorBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            getConnectorBase().startElement(uri, localName, qName, attributes);
+        }
+        else if(localName.equals("meta")){
+            NCLMeta m = new NCLMeta(getReader(), this);
+            m.startElement(uri, localName, qName, attributes);
+            addMeta((M) m); //TODO: retirar o cast. Como melhorar isso?
+        }
+        else if(localName.equals("metadata")){
+            NCLMetadata m = new NCLMetadata(getReader(), this);
+            m.startElement(uri, localName, qName, attributes);
+            addMetadata((MT) m); //TODO: retirar o cast. Como melhorar isso?
+        }
     }
 }

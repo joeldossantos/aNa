@@ -1,10 +1,13 @@
 package br.pensario.rule;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLOperator;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -24,6 +27,8 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
     private NCLOperator operator;
     private Set<T> rules = new TreeSet<T>();
 
+    private boolean insideRule;
+
 
     /**
      * Construtor do elemento <i>compositeRule</i> da <i>Nested Context Language</i> (NCL).
@@ -35,6 +40,24 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
      */
     public NCLCompositeRule(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>compositeRule</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLCompositeRule(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+
+        insideRule = false;
     }
 
 
@@ -175,4 +198,45 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
 
         return valid;
     }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("compositeRule") && !insideRule){
+                insideRule = true;
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("operator")){
+                        for(NCLOperator op : NCLOperator.values()){
+                        if(op.toString().equals(attributes.getValue(i)))
+                            setOperator(op);
+                        }
+                    }
+                }
+            }
+            else if(localName.equals("compositeRule") && insideRule){
+                // compositeRule e um elemento interno
+                NCLCompositeRule r = new NCLCompositeRule(getReader(), this);
+                r.startElement(uri, localName, qName, attributes);
+                addRule((T) r); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("rule")){
+                NCLRule r = new NCLRule(getReader(), this);
+                r.startElement(uri, localName, qName, attributes);
+                addRule((T) r); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+    }
+
+/*TODO: retirar isso
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        getReader().setContentHandler(getParent());
+        insideRule = false;
+    }*/
 }

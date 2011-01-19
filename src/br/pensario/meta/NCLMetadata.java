@@ -1,6 +1,8 @@
 package br.pensario.meta;
 
 import br.pensario.NCLElement;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -19,6 +21,28 @@ import br.pensario.NCLElement;
 public class NCLMetadata<M extends NCLMetadata> extends NCLElement implements Comparable<M> {
 
     private String rdfTree;
+
+
+    /**
+     * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLMetadata() {}
+
+
+    /**
+     * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLMetadata(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -77,5 +101,15 @@ public class NCLMetadata<M extends NCLMetadata> extends NCLElement implements Co
     
     public boolean validate() {
         return (getRDFTree() != null);
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {}
+//TODO: o parser vai encarar o RDF como xml também, tem que recuprerar de outra forma
+
+    @Override
+    public void characters(char[] ch, int start, int length) {
+        setRDFTree(new String(ch, start, length));
     }
 }

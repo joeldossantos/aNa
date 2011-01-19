@@ -37,6 +37,17 @@ public class NCLSample {
         setValue(value);
         setType(type);
     }
+
+
+    /**
+     * Construtor da amostra a partir de uma String.
+     *
+     * @param sample
+     *          String representando a amostra.
+     */
+    public NCLSample(String sample) {
+        stringToSample(sample);
+    }
     
     
     /**
@@ -90,6 +101,35 @@ public class NCLSample {
      */
     public NCLSampleType getType() {
         return type;
+    }
+
+
+    /**
+     * Transforma uma String em um objeto NCLSample.
+     *
+     * @param sample
+     *          String representando a amostra.
+     */
+    public void stringToSample(String sample) {
+        String var = null;
+
+        if(sample.contains("s")){
+            var = sample.substring(0, sample.length() - 1);
+            setType(NCLSampleType.S);
+        }
+        else if(sample.contains("f")){
+            var = sample.substring(0, sample.length() - 1);
+            setType(NCLSampleType.F);
+        }
+        else if(sample.contains("npt")){
+            var = sample.substring(0, sample.length() - 3);
+            setType(NCLSampleType.NPT);
+        }
+
+        if(var != null)
+            setValue(new Integer(var));
+        else
+            setValue((Integer) null);
     }
     
     

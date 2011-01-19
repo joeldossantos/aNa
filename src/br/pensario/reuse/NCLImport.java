@@ -1,10 +1,13 @@
 package br.pensario.reuse;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLImportType;
 import br.pensario.region.NCLRegion;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -42,6 +45,31 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
             throw new NullPointerException("Null type");
 
         this.type = type;
+    }
+
+
+    /**
+     * Construtor do elemento de importação.
+     *
+     * @param type
+     *          tipo do elemento, importBase ou importNCL.
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     *
+     * @throws java.lang.NullPointerException
+     *          se o tipo for nulo.
+     */
+    public NCLImport(NCLImportType type, XMLReader reader, NCLElement parent) throws NullPointerException {
+        if(type == null)
+            throw new NullPointerException("Null type");
+
+        this.type = type;
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
 
 
@@ -150,5 +178,27 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
 
     public boolean validate() {
         return (getAlias() != null && getDocumentURI() != null);
+    }
+    
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("alias"))
+                    setAlias(attributes.getValue(i));
+                else if(attributes.getLocalName(i).equals("documentURI"))
+                    setDocumentURI(attributes.getValue(i));
+                else if(attributes.getLocalName(i).equals("region")){
+                    setRegion((R) new NCLRegion(attributes.getValue(i)));//FIXME: tem que apontar para a região verdadeira
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+        catch(URISyntaxException ex){
+            //TODO: fazer o que?
+        }
     }
 }

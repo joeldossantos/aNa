@@ -1,10 +1,15 @@
 package br.pensario.descriptor;
 
+import br.pensario.NCLElement;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLValues.NCLImportType;
 import br.pensario.reuse.NCLImport;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -24,6 +29,28 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
 
     private Set<D> descriptors = new TreeSet<D>();
     private Set<I> imports = new TreeSet<I>();
+
+
+    /**
+     * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLDescriptorBase() {}
+
+
+    /**
+     * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLDescriptorBase(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -215,5 +242,36 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("descriptorBase")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                }
+            }
+            else if(localName.equals("importBase")){
+                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
+                i.startElement(uri, localName, qName, attributes);
+                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("descriptor")){
+                NCLDescriptor d = new NCLDescriptor(getReader(), this);
+                d.startElement(uri, localName, qName, attributes);
+                addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("descriptorSwitch")){
+                NCLDescriptorSwitch d = new NCLDescriptorSwitch(getReader(), this);
+                d.startElement(uri, localName, qName, attributes);
+                addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

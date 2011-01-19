@@ -1,10 +1,13 @@
 package br.pensario.node;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.interfaces.NCLSwitchPort;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -28,6 +31,8 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     private Set<B> binds = new TreeSet<B>();
     private Set<N> nodes = new TreeSet<N>();
 
+    private boolean insideSwitch;
+
 
     /**
      * Construtor do elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
@@ -39,6 +44,24 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      */
     public NCLSwitch(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLSwitch(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+
+        insideSwitch = false;
     }
 
 
@@ -419,5 +442,55 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("switch") && !insideSwitch){
+                insideSwitch = true;
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("refer"))
+                        setRefer((S) new NCLSwitch(attributes.getValue(i)));//FIXME: reparar a referência ao switch correto
+                }
+            }
+            else if(localName.equals("bindRule")){
+                NCLBindRule b = new NCLBindRule(getReader(), this);
+                b.startElement(uri, localName, qName, attributes);
+                addBind((B) b); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("defaultComponent")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("component"))
+                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: fazer referência ao nó correto
+                }
+            }
+            else if(localName.equals("switchPort")){
+                NCLSwitchPort p = new NCLSwitchPort(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addPort((P) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("media")){
+                NCLMedia m = new NCLMedia(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addNode((N) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("context")){
+                NCLContext c = new NCLContext(getReader(), this);
+                c.startElement(uri, localName, qName, attributes);
+                addNode((N) c); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("switch") && insideSwitch){
+                NCLSwitch s = new NCLSwitch(getReader(), this);
+                s.startElement(uri, localName, qName, attributes);
+                addNode((N) s); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

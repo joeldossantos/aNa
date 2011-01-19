@@ -1,9 +1,14 @@
 package br.pensario.transition;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLValues.NCLImportType;
 import br.pensario.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -25,45 +30,67 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
 
 
     /**
+     * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLTransitionBase() {}
+
+
+    /**
+     * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLTransitionBase(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+
+    /**
      * Adiciona uma transição a base de transições.
      *
-     * @param rule
+     * @param transition
      *          elemento representando a transição a ser adicionada.
      * @return
      *          verdadeiro se a transição foi adicionada.
      *
      * @see TreeSet#add
      */
-    public boolean addTransition(T rule) {
-        return transitions.add(rule);
+    public boolean addTransition(T transition) {
+        return transitions.add(transition);
     }
 
 
     /**
      * Remove uma transição da base de transições.
      *
-     * @param rule
+     * @param transition
      *          elemento representando a transição a ser removida.
      * @return
      *          verdadeiro se a transição foi removida.
      *
      * @see TreeSet#remove
      */
-    public boolean removeTransition(T rule) {
-        return transitions.remove(rule);
+    public boolean removeTransition(T transition) {
+        return transitions.remove(transition);
     }
 
 
     /**
      * Verifica se a base de transições possui uma transição.
      *
-     * @param rule
+     * @param transition
      *          elemento representando a transição a ser verificada.
      * @return
      *          verdadeiro se a transição existir.
      */
-    public boolean hasTransition(T rule) {
-        return transitions.contains(rule);
+    public boolean hasTransition(T transition) {
+        return transitions.contains(transition);
     }
 
 
@@ -200,5 +227,31 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("transitionBase")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                }
+            }
+            else if(localName.equals("importBase")){
+                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
+                i.startElement(uri, localName, qName, attributes);
+                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("transition")){
+                NCLTransition t = new NCLTransition(getReader(), this);
+                t.startElement(uri, localName, qName, attributes);
+                addTransition((T) t); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

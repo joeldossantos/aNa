@@ -1,5 +1,6 @@
 package br.pensario.node;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import java.util.Set;
@@ -10,6 +11,8 @@ import br.pensario.interfaces.NCLPort;
 import br.pensario.link.NCLLink;
 import br.pensario.meta.NCLMeta;
 import br.pensario.meta.NCLMetadata;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -35,6 +38,8 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
     private Set<L> links = new TreeSet<L>();
     private Set<M> metas = new TreeSet<M>();
     private Set<MT> metadatas = new TreeSet<MT>();
+
+    private boolean insideContext;
     
     
     /**
@@ -47,6 +52,24 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      */
     public NCLContext(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>context</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLContext(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+
+        insideContext = false;
     }
 
 
@@ -666,5 +689,64 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("context") && !insideContext){
+                insideContext = true;
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("refer"))
+                        setRefer((C) new NCLContext(attributes.getValue(i)));//FIXME: reparar a referência ao contexto correto
+                }
+            }
+            else if(localName.equals("meta")){
+                NCLMeta m = new NCLMeta(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addMeta((M) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("metadata")){
+                NCLMetadata m = new NCLMetadata(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addMetadata((MT) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("port")){
+                NCLPort p = new NCLPort(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addPort((Pt) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("property")){
+                NCLProperty p = new NCLProperty(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addProperty((Pp) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("media")){
+                NCLMedia m = new NCLMedia(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addNode((N) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("context") && insideContext){
+                NCLContext c = new NCLContext(getReader(), this);
+                c.startElement(uri, localName, qName, attributes);
+                addNode((N) c); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("switch")){
+                NCLSwitch s = new NCLSwitch(getReader(), this);
+                s.startElement(uri, localName, qName, attributes);
+                addNode((N) s); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("link")){
+                NCLLink l = new NCLLink(getReader(), this);
+                l.startElement(uri, localName, qName, attributes);
+                addLink((L) l); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

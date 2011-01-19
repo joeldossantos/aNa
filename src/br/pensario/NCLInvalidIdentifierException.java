@@ -1,7 +1,7 @@
 package br.pensario;
 
 
-public class NCLInvalidIdentifierException extends Exception{
+public class NCLInvalidIdentifierException extends Exception {
 
     
     public NCLInvalidIdentifierException() {

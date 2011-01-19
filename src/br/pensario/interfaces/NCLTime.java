@@ -1,5 +1,7 @@
 package br.pensario.interfaces;
 
+import java.util.Vector;
+
 
 /**
  * Esta classe define um indicador temporal da <i>Nested Context Language</i> (NCL).<br>
@@ -70,9 +72,27 @@ public class NCLTime {
     
     /**
      * Construtor do indicador temporal da <i>Nested Context Language</i> (NCL).
+     *
+     * @param second
+     *          inteiro com o valor de segundo.
+     * @throws java.lang.IllegalArgumentException
+     *          se algum valor não estiver no formato definido pela norma.
+     *
+     * @see NCLTime#setSecond
      */
     public NCLTime(Integer second) {
         setSecond(second);
+    }
+
+
+    /**
+     * Construtor do indicador temporal da <i>Nested Context Language</i> (NCL).
+     *
+     * @param time
+     *          String contendo o valor de tempo a ser transformado em um objeto NCLTime.
+     */
+    public NCLTime(String time) {
+        stringToTime(time);
     }
     
     
@@ -267,6 +287,67 @@ public class NCLTime {
      */
     public Integer getFraction() {
         return fraction;
+    }
+
+
+    /**
+     * Transforma uma String em um objeto NCLTime.
+     *
+     * @param time
+     *          String representando o valor de tempo.
+     */
+    public void stringToTime(String time) {
+        Vector<Integer>  timeParts = new Vector<Integer>();
+        String newTime;
+        boolean hasDot = false;
+
+        if(time.contains("s")){
+            newTime = time.substring(0, time.length() - 1);
+            hasDot = newTime.contains(".");
+            if(hasDot){
+                int index = newTime.indexOf(".");
+                timeParts.add(new Integer(newTime.substring(0, index)));
+                timeParts.add(new Integer(newTime.substring(index + 1)));
+            }
+            else
+                timeParts.add(new Integer(newTime));
+        }
+        else{
+            newTime = time;
+            while(newTime.contains(":")){
+                int index = newTime.indexOf(":");
+                timeParts.add(new Integer(newTime.substring(0, index)));
+                newTime = newTime.substring(index + 1);
+            }
+            hasDot = newTime.contains(".");
+            if(hasDot){
+                int index = newTime.indexOf(".");
+                timeParts.add(new Integer(newTime.substring(0, index)));
+                timeParts.add(new Integer(newTime.substring(index + 1)));
+            }
+            else
+                timeParts.add(new Integer(newTime));
+        }
+
+        try{
+            int index = timeParts.size() - 1;
+            if(hasDot){
+                setFraction(timeParts.elementAt(index));
+                index--;
+            }
+            setSecond(timeParts.elementAt(index));
+            index--;
+            setMinute(timeParts.elementAt(index));
+            index--;
+            setHour(timeParts.elementAt(index));
+            index--;
+            setDay(timeParts.elementAt(index));
+            index--;
+            setMonth(timeParts.elementAt(index));
+            index--;
+            setYear(timeParts.elementAt(index));
+        }
+        catch(ArrayIndexOutOfBoundsException ex){}
     }
     
     

@@ -1,9 +1,12 @@
 package br.pensario.descriptor;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -36,6 +39,22 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      */
     public NCLDescriptorSwitch(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLDescriptorSwitch(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
 
 
@@ -255,5 +274,44 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("descriptorSwitch")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                }
+            }
+            else if(localName.equals("bindRule")){
+                NCLBindRule b = new NCLBindRule(getReader(), this);
+                b.startElement(uri, localName, qName, attributes);
+                addBind((B) b); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("descriptor")){
+                NCLDescriptor d = new NCLDescriptor(getReader(), this);
+                d.startElement(uri, localName, qName, attributes);
+                addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("defaultDescriptor")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("descriptor"))
+                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: fazer referência ao descritor correto
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+    }
+
+
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        if(localName.equals("descriptorSwitch"))
+            super.endElement(uri, localName, qName);
     }
 }

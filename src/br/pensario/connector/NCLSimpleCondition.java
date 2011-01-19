@@ -1,10 +1,13 @@
 package br.pensario.connector;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLConditionOperator;
 import br.pensario.NCLValues.NCLEventTransition;
 import br.pensario.NCLValues.NCLEventType;
 import br.pensario.NCLValues.NCLKey;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -34,7 +37,29 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
     private P parKey;
     private P parDelay;
     
-    
+
+    /**
+     * Construtor do elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLSimpleCondition() {}
+
+
+    /**
+     * Construtor do elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLSimpleCondition(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+
     /**
      * Determina o número mínimo de binds que devem usar essa condição.
      * 
@@ -393,5 +418,69 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         //TODO validar as relações entre os atributos
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("role"))
+                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
+                else if(attributes.getLocalName(i).equals("key")){
+                    String value = attributes.getValue(i);
+                    if(value.contains("$")){
+                        value = value.substring(1);
+                        setKey((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        for(NCLKey k : NCLKey.values()){
+                            if(k.toString().equals(value))
+                                setKey(k);
+                        }
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("delay")){
+                    String value = attributes.getValue(i);
+                    if(value.contains("$")){
+                        value = value.substring(1);
+                        setDelay((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        value = value.substring(0, value.length() - 1);
+                        setDelay(new Integer(value));
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("min"))
+                    setMin(new Integer(attributes.getValue(i)));
+                else if(attributes.getLocalName(i).equals("max")){
+                    if(attributes.getValue(i).equals("unbounded"))
+                        setMax(-1);
+                    else
+                        setMax(new Integer(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("qualifier")){
+                    for(NCLConditionOperator q : NCLConditionOperator.values()){
+                        if(q.toString().equals(attributes.getValue(i)))
+                            setQualifier(q);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("eventType")){
+                    for(NCLEventType e : NCLEventType.values()){
+                        if(e.toString().equals(attributes.getValue(i)))
+                            setEventType(e);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("transition")){
+                    for(NCLEventTransition t : NCLEventTransition.values()){
+                        if(t.toString().equals(attributes.getValue(i)))
+                            setTransition(t);
+                    }
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

@@ -1,7 +1,10 @@
 package br.pensario.connector;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLDefaultValueAssessment;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -23,6 +26,28 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
     private NCLDefaultValueAssessment defValue;
     private P parValue;
     
+
+    /**
+     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLValueAssessment() {}
+
+
+    /**
+     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLValueAssessment(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
 
     /**
      * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
@@ -74,7 +99,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
      * @param value
      *          elemento representando o valor da assertiva.
      */
-    public void setValueAssessment(NCLDefaultValueAssessment value) {
+    public void setValue(NCLDefaultValueAssessment value) {
         this.defValue = value;
         this.value = null;
         this.parValue = null;
@@ -167,5 +192,32 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
 
     public boolean validate() {
         return (getValue() != null || getParamValue() != null);
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("value")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setValue((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        setValue(var);
+                        //Try to find the value in one of the standard values
+                        for(NCLDefaultValueAssessment v : NCLDefaultValueAssessment.values()){
+                            if(v.toString().equals(var))
+                                setValue(v);
+                        }
+                    }
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

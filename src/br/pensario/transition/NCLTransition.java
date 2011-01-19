@@ -1,5 +1,6 @@
 package br.pensario.transition;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLColor;
@@ -7,6 +8,8 @@ import br.pensario.NCLValues.NCLTransitionDirection;
 import br.pensario.NCLValues.NCLTransitionSubtype;
 import br.pensario.NCLValues.NCLTransitionType;
 import br.pensario.interfaces.NCLTime;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -46,6 +49,22 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      */
     public NCLTransition(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>transition</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLTransition(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
 
 
@@ -308,9 +327,9 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
         if(getId() != null)
             content += " id='" + getId() + "'";
         if(getType() != null)
-            content += " type='" + getType() + "'";
+            content += " type='" + getType().toString() + "'";
         if(getSubtype() != null)
-            content += " subtype='" + getSubtype() + "'";
+            content += " subtype='" + getSubtype().toString() + "'";
         if(getDur() != null)
             content += " dur='" + getDur() + "'";
         if(getStartProgress() != null)
@@ -349,5 +368,67 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
         //TODO validar o fadecolor com o tipo
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("id"))
+                    setId(attributes.getValue(i));
+                else if(attributes.getLocalName(i).equals("type")){
+                    for(NCLTransitionType t : NCLTransitionType.values()){
+                        if(t.toString().equals(attributes.getValue(i)))
+                            setType(t);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("subtype")){
+                    for(NCLTransitionSubtype s : NCLTransitionSubtype.values()){
+                        if(s.toString().equals(attributes.getValue(i)))
+                            setSubtype(s);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("dur")){
+                    setDur(new NCLTime(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("startProgress")){
+                    setStartProgress(new Double(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("endProgress")){
+                    setEndProgress(new Double(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("direction")){
+                    for(NCLTransitionDirection d : NCLTransitionDirection.values()){
+                        if(d.toString().equals(attributes.getValue(i)))
+                            setDirection(d);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("fadeColor")){
+                    for(NCLColor c : NCLColor.values()){
+                        if(c.toString().equals(attributes.getValue(i)))
+                            setFadeColor(c);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("horRepeat")){
+                    setHorRepeat(new Integer(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("vertRepeat")){
+                    setVertRepeat(new Integer(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("borderWidth")){
+                    setBorderWidth(new Integer(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("borderColor")){
+                    for(NCLColor c : NCLColor.values()){
+                        if(c.toString().equals(attributes.getValue(i)))
+                            setBorderColor(c);
+                    }
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+
+        }
     }
 }

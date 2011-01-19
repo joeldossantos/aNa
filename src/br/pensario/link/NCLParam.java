@@ -1,8 +1,11 @@
 package br.pensario.link;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLParamInstance;
 import br.pensario.connector.NCLConnectorParam;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -40,6 +43,31 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
             throw new NullPointerException("Null type");
 
         this.paramType = paramType;
+    }
+
+
+    /**
+     * Construtor do parâmetro interno a um elemento <i>link</i> ou <i>bind</i>.
+     *
+     * @param paramType
+     *          define se o parâmetro é de um elemento <i>link</i> ou <i>bind</i>.
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     *
+     * @throws java.lang.NullPointerException
+     *          se o tipo for nulo.
+     */
+    public NCLParam(NCLParamInstance paramType, XMLReader reader, NCLElement parent) throws NullPointerException {
+        if(paramType == null)
+            throw new NullPointerException("Null type");
+
+        this.paramType = paramType;
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
     
     
@@ -134,5 +162,21 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
         //TODO validar o valor do parâmetro com o tipo definido no conector (?)
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("name"))
+                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//FIXME: fazer referência ao parâmetro correto
+                else if(attributes.getLocalName(i).equals("value"))
+                    setValue(attributes.getValue(i));
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+
+        }
     }
 }

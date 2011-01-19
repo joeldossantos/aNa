@@ -1,12 +1,16 @@
 package br.pensario.link;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLParamInstance;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.connector.NCLCausalConnector;
 import java.util.Iterator;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -22,21 +26,43 @@ import java.util.Iterator;
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
-public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> extends NCLIdentifiableElement implements Comparable<L>{
+public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C extends NCLCausalConnector> extends NCLIdentifiableElement implements Comparable<L>{
 
-    private NCLCausalConnector xconnector;
+    private C xconnector;
     
     private Set<P> linkParams = new TreeSet<P>();
     private Set<B> binds = new TreeSet<B>();
     
-    
+
+    /**
+     * Construtor do elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLLink() {}
+
+
+    /**
+     * Construtor do elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLLink(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+
     /**
      * Atribui um conector ao link.
      * 
      * @param xconnector
      *          conector a ser atribuido ao link.
      */
-    public void setXconnector(NCLCausalConnector xconnector) {
+    public void setXconnector(C xconnector) {
         this.xconnector = xconnector;
     }
     
@@ -47,7 +73,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
      * @return
      *          conector atribuido ao link.
      */
-    public NCLCausalConnector getXconnector() {
+    public C getXconnector() {
         return xconnector;
     }
     
@@ -280,5 +306,33 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind> e
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("link")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("xconnector"))
+                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));//FIXME: reparar a referência ao switch correto
+                }
+            }
+            else if(localName.equals("linkParam")){
+                NCLParam p = new NCLParam(NCLParamInstance.LINKPARAM, getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addLinkParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("bind")){
+                NCLBind b = new NCLBind(getReader(), this);
+                b.startElement(uri, localName, qName, attributes);
+                addBind((B) b);//TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

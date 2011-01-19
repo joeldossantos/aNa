@@ -1,9 +1,12 @@
 package br.pensario.rule;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLComparator;
 import br.pensario.interfaces.NCLProperty;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -35,6 +38,22 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
      */
     public NCLRule(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>rule</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLRule(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
 
 
@@ -154,5 +173,29 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
         //TODO var deve ser do tipo settings (seu elemento pai)
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("id"))
+                    setId(attributes.getValue(i));
+                else if(attributes.getLocalName(i).equals("var"))
+                    setVar((P) new NCLProperty(attributes.getValue(i)));//FIXME: tem que apontar para a propriedade verdadeira
+                else if(attributes.getLocalName(i).equals("comparator")){
+                    for(NCLComparator c : NCLComparator.values()){
+                        if(c.toString().equals(attributes.getValue(i)))
+                            setComparator(c);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("value"))
+                    setValue(attributes.getValue(i));
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+
+        }
     }
 }

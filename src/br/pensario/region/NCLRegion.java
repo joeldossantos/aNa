@@ -1,10 +1,13 @@
 package br.pensario.region;
 
+import br.pensario.NCLElement;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -40,6 +43,8 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
 
     private Set<R> regions = new TreeSet<R>();
 
+    private boolean insideRegion;
+
 
     /**
      * Construtor do elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
@@ -51,6 +56,24 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      */
     public NCLRegion(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLRegion(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+
+        insideRegion = false;
     }
 
 
@@ -634,4 +657,80 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
 
         return valid;
     }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(!insideRegion){
+                insideRegion = true;
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("left")){
+                        String value = attributes.getValue(i);
+                        Boolean isRelative = attributes.getValue(i).contains("%");
+                        if(isRelative)
+                            value = value.substring(0, value.length() - 1);
+                        setLeft(new Integer(value), isRelative);
+                    }
+                    else if(attributes.getLocalName(i).equals("right")){
+                        String value = attributes.getValue(i);
+                        Boolean isRelative = attributes.getValue(i).contains("%");
+                        if(isRelative)
+                            value = value.substring(0, value.length() - 1);
+                        setRight(new Integer(value), isRelative);
+                    }
+                    else if(attributes.getLocalName(i).equals("top")){
+                        String value = attributes.getValue(i);
+                        Boolean isRelative = attributes.getValue(i).contains("%");
+                        if(isRelative)
+                            value = value.substring(0, value.length() - 1);
+                        setTop(new Integer(value), isRelative);
+                    }
+                    else if(attributes.getLocalName(i).equals("bottom")){
+                        String value = attributes.getValue(i);
+                        Boolean isRelative = attributes.getValue(i).contains("%");
+                        if(isRelative)
+                            value = value.substring(0, value.length() - 1);
+                        setBottom(new Integer(value), isRelative);
+                    }
+                    else if(attributes.getLocalName(i).equals("height")){
+                        String value = attributes.getValue(i);
+                        Boolean isRelative = attributes.getValue(i).contains("%");
+                        if(isRelative)
+                            value = value.substring(0, value.length() - 1);
+                        setHeight(new Integer(value), isRelative);
+                    }
+                    else if(attributes.getLocalName(i).equals("width")){
+                        String value = attributes.getValue(i);
+                        Boolean isRelative = attributes.getValue(i).contains("%");
+                        if(isRelative)
+                            value = value.substring(0, value.length() - 1);
+                        setWidth(new Integer(value), isRelative);
+                    }
+                    else if(attributes.getLocalName(i).equals("zIndex"))
+                        setzIndex(new Integer(attributes.getValue(i)));
+                    else if(attributes.getLocalName(i).equals("title"))
+                        setTitle(attributes.getValue(i));
+                }
+            }
+            else{
+                // Region e um elemento interno
+                NCLRegion r = new NCLRegion(getReader(), this);
+                r.startElement(uri, localName, qName, attributes);
+                addRegion((R) r); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+    }
+
+/*TODO: retirar isso
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        getReader().setContentHandler(getParent());
+        insideRegion = false;
+    }*/
 }

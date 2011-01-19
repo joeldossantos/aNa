@@ -1,10 +1,13 @@
 package br.pensario.interfaces;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.node.NCLContext;
 import br.pensario.node.NCLMedia;
 import br.pensario.node.NCLNode;
 import br.pensario.node.NCLSwitch;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -23,6 +26,28 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
 
     private N component;
     private I interfac;
+
+
+    /**
+     * Construtor do elemento <i>mapping</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLMapping() {}
+
+
+    /**
+     * Construtor do elemento <i>mapping</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLMapping(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -143,5 +168,21 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
         //TODO: testar se a interface é a mesma porta ou uma porta irma dessa porta
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("component"))
+                    setComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: fazer a referência ao nó correto
+                else if(attributes.getLocalName(i).equals("interface"))
+                    setInterface((I) new NCLPort(attributes.getValue(i)));//FIXME: fazer a referência a porta correta
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+
+        }
     }
 }

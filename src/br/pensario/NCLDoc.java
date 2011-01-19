@@ -1,6 +1,15 @@
 package br.pensario;
 
 import br.pensario.NCLValues.NCLNamespace;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**
@@ -171,5 +180,78 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
             valid &= getBody().validate();
 
         return valid;
+    }
+
+
+    /**
+     * Recupera a estrutura de classes que representam elementos NCL a partir
+     * de um arquivo XML especificado de acordo com a linguagem NCL.
+     *
+     * @param path
+     *          String contendo o caminho absoluto para o arquivo XML.
+     * @throws NCLParsingException
+     *          se algum erro ocorrer durante a recuperação do arquivo.
+     */
+    public void loadXML(String path) throws NCLParsingException {
+        try{
+            URI fileURI = new URI(path);
+            setReader(XMLReaderFactory.createXMLReader());
+
+            getReader().setContentHandler(this);
+            getReader().setErrorHandler(new NCLParsingErrorHandler());
+
+            FileReader r = new FileReader(fileURI.toString());
+            getReader().parse(new InputSource(r));
+        }
+        catch(URISyntaxException ex){
+            throw new NCLParsingException(ex.getMessage());
+        }
+        catch(SAXException ex){
+            throw new NCLParsingException(ex.getMessage());
+        }
+        catch(FileNotFoundException ex){
+            throw new NCLParsingException(ex.getMessage());
+        }
+        catch(IOException ex){
+            throw new NCLParsingException(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("ncl")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("title"))
+                        setTitle(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("xmlns")){
+                        for(NCLNamespace ns : NCLNamespace.values()){
+                            if(ns.toString().equals(attributes.getValue(i)))
+                                setXmlns(ns);
+                        }
+                    }
+                }
+            }
+            else if(localName.equals("head")){
+                setHead((H) new NCLHead(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+                getHead().startElement(uri, localName, qName, attributes);
+            }
+            else if(localName.equals("body")){
+                setBody((B) new NCLBody(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+                getBody().startElement(uri, localName, qName, attributes);
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
+    }
+
+    
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        System.out.println("Fim da recuperação do documento NCL");
     }
 }

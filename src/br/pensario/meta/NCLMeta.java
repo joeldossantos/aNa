@@ -1,6 +1,8 @@
 package br.pensario.meta;
 
 import br.pensario.NCLElement;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -20,6 +22,28 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
 
     private String name;
     private String mcontent;
+
+
+    /**
+     * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLMeta() {}
+
+
+    /**
+     * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLMeta(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -107,5 +131,16 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
 
     public boolean validate() {
         return (getName() != null && getContent() != null);
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        for(int i = 0; i < attributes.getLength(); i++){
+            if(attributes.getLocalName(i).equals("name"))
+                setName(attributes.getValue(i));
+            else if(attributes.getLocalName(i).equals("content"))
+                setContent(attributes.getValue(i));
+        }
     }
 }

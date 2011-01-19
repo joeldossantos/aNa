@@ -1,11 +1,14 @@
 package br.pensario.interfaces;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.node.NCLContext;
 import br.pensario.node.NCLMedia;
 import br.pensario.node.NCLNode;
 import br.pensario.node.NCLSwitch;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -37,6 +40,22 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
      */
     public NCLPort(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>port</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLPort(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
 
 
@@ -152,5 +171,23 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
         //TODO: testar se a interface é a mesma porta ou uma porta irma dessa porta
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("id"))
+                    setId(attributes.getValue(i));
+                else if(attributes.getLocalName(i).equals("component"))
+                    setComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: fazer a referência ao nó correto
+                else if(attributes.getLocalName(i).equals("interface"))
+                    setInterface((I) new NCLPort(attributes.getValue(i)));//FIXME: fazer a referência a porta correta
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+
+        }
     }
 }

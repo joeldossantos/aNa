@@ -2,6 +2,8 @@ package br.pensario.descriptor;
 
 import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLAttributes;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -21,6 +23,28 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
 
     private NCLAttributes name;
     private String value;
+
+
+    /**
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLDescriptorParam() {}
+
+
+    /**
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLDescriptorParam(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -108,5 +132,20 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
         //TODO validar o valor com relacao ao nome (?)
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        for(int i = 0; i < attributes.getLength(); i++){
+            if(attributes.getLocalName(i).equals("name")){
+                    for(NCLAttributes a : NCLAttributes.values()){
+                        if(a.toString().equals(attributes.getValue(i)))
+                            setName(a);
+                    }
+                }
+            else if(attributes.getLocalName(i).equals("value"))
+                setValue(attributes.getValue(i));
+        }
     }
 }

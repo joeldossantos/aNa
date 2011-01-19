@@ -1,5 +1,9 @@
 package br.pensario;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+
 
 /**
  * Esta classe define um elemento da <i>Nested Context Language</i> (NCL).<br>
@@ -13,9 +17,10 @@ package br.pensario;
  * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
-public abstract class NCLElement implements Element {
+public abstract class NCLElement extends DefaultHandler implements Element {
 
     private NCLElement parent;
+    private XMLReader reader;
 
 
     /**
@@ -47,6 +52,34 @@ public abstract class NCLElement implements Element {
 
 
     /**
+     * Atribui um leitor XML ao elemento NCL.
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @return
+     *          verdadeiro se o leitor XML foi atribuido. Caso o elemento já possua um leitor, o retorno será falso.
+     */
+    public boolean setReader(XMLReader reader) {
+        if(this.reader != null && reader != null)
+            return false;
+
+        this.reader = reader;
+        return true;
+    }
+
+
+    /**
+     * Retorna o leitor XML do elemento NCL.
+     *
+     * @return
+     *          elemento representando o leitor XML do parser SAX.
+     */
+    public XMLReader getReader() {
+        return reader;
+    }
+
+
+    /**
      * Cria o código XML do elemento da <i>Nested Context Language</i> (NCL).<br>
      * 
      * @param ident 
@@ -67,4 +100,22 @@ public abstract class NCLElement implements Element {
      *          verdadeiro se o elemento estiver de acordo com o padrão.
      */
     public abstract boolean validate();
+
+
+    /**
+     * Implementa o método startElement do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    @Override
+    public abstract void startElement(String uri, String localName, String qName, Attributes attributes);
+
+
+    /**
+     * Implementa o método endElement do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        getReader().setContentHandler(getParent());
+    }
 }

@@ -1,5 +1,6 @@
 package br.pensario.node;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLInstanceType;
@@ -12,6 +13,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -50,6 +53,22 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      */
     public NCLMedia(String id) throws NCLInvalidIdentifierException {
         setId(id);
+    }
+
+
+    /**
+     * Construtor do elemento <i>media</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLMedia(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
     }
     
     
@@ -497,5 +516,55 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("media")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                    else if(attributes.getLocalName(i).equals("src")){
+                        try{
+                            setSrc(attributes.getValue(i));
+                        }
+                        catch(URISyntaxException ex){
+                            setSrc(new NCLTime(attributes.getValue(i)));
+                        }
+                    }
+                    else if(attributes.getLocalName(i).equals("type")){
+                        for(NCLMimeType m : NCLMimeType.values()){
+                            if(m.toString().equals(attributes.getValue(i)))
+                                setType(m);
+                        }
+                    }
+                    else if(attributes.getLocalName(i).equals("descriptor"))
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: fazer referência ao descritor correto
+                    else if(attributes.getLocalName(i).equals("refer"))
+                        setRefer((M) new NCLMedia(attributes.getValue(i)));//FIXME: fazer referência a media correta
+                    else if(attributes.getLocalName(i).equals("instance")){
+                        for(NCLInstanceType in : NCLInstanceType.values()){
+                            if(in.toString().equals(attributes.getValue(i)))
+                                setInstance(in);
+                        }
+                    }
+                }
+            }
+            else if(localName.equals("area")){
+                NCLArea a = new NCLArea(getReader(), this);
+                a.startElement(uri, localName, qName, attributes);
+                addArea((A) a); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("property")){
+                NCLProperty p = new NCLProperty(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addProperty((P) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

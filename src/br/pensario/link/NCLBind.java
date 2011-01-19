@@ -1,6 +1,7 @@
 package br.pensario.link;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLParamInstance;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,6 +18,8 @@ import br.pensario.node.NCLMedia;
 import br.pensario.node.NCLNode;
 import br.pensario.node.NCLSwitch;
 import java.util.Iterator;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -42,7 +45,29 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
     
     private Set<P> bindParams = new TreeSet<P>();
     
-    
+
+    /**
+     * Construtor do elemento <i>bind</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLBind() {}
+
+
+    /**
+     * Construtor do elemento <i>bind</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLBind(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+
     /**
      * Atribui um papel ao bind.
      * 
@@ -327,5 +352,32 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("bind")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("role"))
+                        setRole((R) new NCLRole(attributes.getValue(i)));//FIXME: reparar a referência ao role correto
+                    else if(attributes.getLocalName(i).equals("component"))
+                        setComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: reparar a referência ao nó correto
+                    else if(attributes.getLocalName(i).equals("interface"))
+                        setInterface((I) new NCLPort(attributes.getValue(i)));//FIXME: reparar a referência a interface correta
+                    else if(attributes.getLocalName(i).equals("descriptor"))
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: reparar a referência ao descritor correto
+                }
+            }
+            else if(localName.equals("bindParam")){
+                NCLParam p = new NCLParam(NCLParamInstance.BINDPARAM, getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addBindParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

@@ -5,6 +5,8 @@ import br.pensario.NCLValues.NCLComparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -28,7 +30,29 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
     private V valueAssessment;
     private Set<A> attributeAssessments = new TreeSet<A>();
     
-    
+
+    /**
+     * Construtor do elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLAssessmentStatement() {}
+
+
+    /**
+     * Construtor do elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLAssessmentStatement(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+
     /**
      * Determina o comparador da assertiva.
      * 
@@ -236,5 +260,35 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
         valid &= (attributeAssessments.size() == 2 || (attributeAssessments.size() == 1 && getValueAssessment() != null));
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("assessmentStatement")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("comparator")){
+                        for(NCLComparator c : NCLComparator.values()){
+                            if(c.toString().equals(attributes.getValue(i)))
+                                setComparator(c);
+                        }
+                    }
+                }
+            }
+            else if(localName.equals("attributeAssessment")){
+                NCLAttributeAssessment a = new NCLAttributeAssessment(getReader(), this);
+                a.startElement(uri, localName, qName, attributes);
+                addAttributeAssessment((A) a); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("valueAssessment")){
+                NCLValueAssessment v = new NCLValueAssessment(getReader(), this);
+                v.startElement(uri, localName, qName, attributes);
+                setValueAssessment((V) v); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(Exception ex){
+            //TODO: fazer o que?
+        }
     }
 }

@@ -1,9 +1,12 @@
 package br.pensario.connector;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLAttributeType;
 import br.pensario.NCLValues.NCLEventType;
 import br.pensario.NCLValues.NCLKey;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -30,7 +33,29 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
     private P parKey;
     private P parOffset;
     
-    
+
+    /**
+     * Construtor do elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLAttributeAssessment() {}
+
+
+    /**
+     * Construtor do elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLAttributeAssessment(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
+
+
     /**
      * Determina o papel do atributo da assertiva.
      * 
@@ -304,5 +329,52 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
         //TODO validar o key (se é para ser usado
 
         return valid;
+    }
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("role"))
+                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
+                else if(attributes.getLocalName(i).equals("key")){
+                    String value = attributes.getValue(i);
+                    if(value.contains("$")){
+                        value = value.substring(1);
+                        setKey((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        for(NCLKey k : NCLKey.values()){
+                            if(k.toString().equals(value))
+                                setKey(k);
+                        }
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("offset")){
+                    String value = attributes.getValue(i);
+                    if(value.contains("$")){
+                        value = value.substring(1);
+                        setOffset((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                    }
+                    else
+                        setOffset(new Integer(value));
+                }
+                else if(attributes.getLocalName(i).equals("eventType")){
+                    for(NCLEventType e : NCLEventType.values()){
+                        if(e.toString().equals(attributes.getValue(i)))
+                            setEventType(e);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("attributeType")){
+                    for(NCLAttributeType t : NCLAttributeType.values()){
+                        if(t.toString().equals(attributes.getValue(i)))
+                            setAttributeType(t);
+                    }
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

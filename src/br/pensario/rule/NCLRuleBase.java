@@ -1,9 +1,14 @@
 package br.pensario.rule;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
+import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLValues.NCLImportType;
 import br.pensario.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -22,6 +27,28 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
 
     private Set<T> rules = new TreeSet<T>();
     private Set<I> imports = new TreeSet<I>();
+
+
+    /**
+     * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLRuleBase() {}
+
+
+    /**
+     * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLRuleBase(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -200,5 +227,36 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("ruleBase")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                }
+            }
+            else if(localName.equals("importBase")){
+                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
+                i.startElement(uri, localName, qName, attributes);
+                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("rule")){
+                NCLRule r = new NCLRule(getReader(), this);
+                r.startElement(uri, localName, qName, attributes);
+                addRule((T) r); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("compositeRule")){
+                NCLCompositeRule r = new NCLCompositeRule(getReader(), this);
+                r.startElement(uri, localName, qName, attributes);
+                addRule((T) r); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

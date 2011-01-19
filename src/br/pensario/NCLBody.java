@@ -6,9 +6,14 @@ import br.pensario.interfaces.NCLProperty;
 import br.pensario.link.NCLLink;
 import br.pensario.meta.NCLMeta;
 import br.pensario.meta.NCLMetadata;
+import br.pensario.node.NCLContext;
+import br.pensario.node.NCLMedia;
+import br.pensario.node.NCLSwitch;
 
 import java.util.Set;
 import java.util.TreeSet;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -32,6 +37,28 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
     private Set<L> links = new TreeSet<L>();
     private Set<M> metas = new TreeSet<M>();
     private Set<MT> metadatas = new TreeSet<MT>();
+
+
+    /**
+     * Construtor do elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLBody() {}
+
+
+    /**
+     * Construtor do elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLBody(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -616,5 +643,61 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
         }
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            if(localName.equals("body")){
+                for(int i = 0; i < attributes.getLength(); i++){
+                    if(attributes.getLocalName(i).equals("id"))
+                        setId(attributes.getValue(i));
+                }
+            }
+            else if(localName.equals("meta")){
+                NCLMeta m = new NCLMeta(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addMeta((M) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("metadata")){
+                NCLMetadata m = new NCLMetadata(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addMetadata((MT) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("port")){
+                NCLPort p = new NCLPort(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addPort((Pt) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("property")){
+                NCLProperty p = new NCLProperty(getReader(), this);
+                p.startElement(uri, localName, qName, attributes);
+                addProperty((Pp) p); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("media")){
+                NCLMedia m = new NCLMedia(getReader(), this);
+                m.startElement(uri, localName, qName, attributes);
+                addNode((N) m); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("context")){
+                NCLContext c = new NCLContext(getReader(), this);
+                c.startElement(uri, localName, qName, attributes);
+                addNode((N) c); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("switch")){
+                NCLSwitch s = new NCLSwitch(getReader(), this);
+                s.startElement(uri, localName, qName, attributes);
+                addNode((N) s); //TODO: retirar o cast. Como melhorar isso?
+            }
+            else if(localName.equals("link")){
+                NCLLink l = new NCLLink(getReader(), this);
+                l.startElement(uri, localName, qName, attributes);
+                addLink((L) l); //TODO: retirar o cast. Como melhorar isso?
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }

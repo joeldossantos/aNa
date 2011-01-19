@@ -1,9 +1,12 @@
 package br.pensario.connector;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLActionOperator;
 import br.pensario.NCLValues.NCLEventAction;
 import br.pensario.NCLValues.NCLEventType;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -40,6 +43,28 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
     private P parDuration;
     private P parBy;
     private P parDelay;
+
+
+    /**
+     * Construtor do elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLSimpleAction() {}
+
+
+    /**
+     * Construtor do elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLSimpleAction(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -671,5 +696,105 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         //TODO validar as relações entre os atributos
 
         return valid;
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        try{
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("role"))
+                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
+                else if(attributes.getLocalName(i).equals("value")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setValue((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else
+                        setValue(var);
+                }
+                else if(attributes.getLocalName(i).equals("delay")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        var = var.substring(0, var.length() - 1);
+                        setDelay(new Integer(var));
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("min"))
+                    setMin(new Integer(attributes.getValue(i)));
+                else if(attributes.getLocalName(i).equals("max")){
+                    if(attributes.getValue(i).equals("unbounded"))
+                        setMax(-1);
+                    else
+                        setMax(new Integer(attributes.getValue(i)));
+                }
+                else if(attributes.getLocalName(i).equals("qualifier")){
+                    for(NCLActionOperator q : NCLActionOperator.values()){
+                        if(q.toString().equals(attributes.getValue(i)))
+                            setQualifier(q);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("eventType")){
+                    for(NCLEventType e : NCLEventType.values()){
+                        if(e.toString().equals(attributes.getValue(i)))
+                            setEventType(e);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("actionType")){
+                    for(NCLEventAction t : NCLEventAction.values()){
+                        if(t.toString().equals(attributes.getValue(i)))
+                            setActionType(t);
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("repeat")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setRepeat((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else
+                        setRepeat(new Integer(var));
+                }
+                else if(attributes.getLocalName(i).equals("repeatDelay")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setRepeatDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        var = var.substring(0, var.length() - 1);
+                        setRepeatDelay(new Integer(var));
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("duration")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setDuration((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else{
+                        var = var.substring(0, var.length() - 1);
+                        setDuration(new Integer(var));
+                    }
+                }
+                else if(attributes.getLocalName(i).equals("by")){
+                    String var = attributes.getValue(i);
+                    if(var.contains("$")){
+                        var = var.substring(1);
+                        setBy((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                    }
+                    else
+                        setBy(new Integer(var));
+                }
+            }
+        }
+        catch(NCLInvalidIdentifierException ex){
+            //TODO: fazer o que?
+        }
     }
 }
