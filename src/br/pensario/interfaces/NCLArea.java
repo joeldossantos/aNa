@@ -358,7 +358,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
                     while(value.contains(",")){
                         int index = value.indexOf(",");
                         coord.add(new Integer(value.substring(0, index)));
-                        value.substring(index + 1);
+                        value = value.substring(index + 1);
                     }
                     coord.add(new Integer(value));
                     int[] a = new int[coord.size()];

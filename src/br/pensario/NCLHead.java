@@ -402,7 +402,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if(localName.equals("ImportedDocumentBase")){
+        if(localName.equals("importedDocumentBase")){
             setImportedDocumentBase((IB) new NCLImportedDocumentBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
             getImportedDocumentBase().startElement(uri, localName, qName, attributes);
         }

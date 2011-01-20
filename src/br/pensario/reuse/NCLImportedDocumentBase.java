@@ -146,7 +146,7 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
-            if(localName.equals("ImportedDocumentBase")){
+            if(localName.equals("importedDocumentBase")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));

@@ -227,11 +227,11 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("title"))
                         setTitle(attributes.getValue(i));
-                    else if(attributes.getLocalName(i).equals("xmlns")){
-                        for(NCLNamespace ns : NCLNamespace.values()){
-                            if(ns.toString().equals(attributes.getValue(i)))
-                                setXmlns(ns);
-                        }
+                }
+                if(!uri.equals("")){
+                    for(NCLNamespace ns : NCLNamespace.values()){
+                        if(ns.toString().equals(uri))
+                            setXmlns(ns);
                     }
                 }
             }

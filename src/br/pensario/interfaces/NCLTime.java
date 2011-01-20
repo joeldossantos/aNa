@@ -386,22 +386,24 @@ public class NCLTime {
     
     @Override
     public String toString() {
-        if(getSecond() != null){
-            if(getFraction() != null){
-                if(getHour() != null && getMinute() != null){
-                    if(getYear() != null && getMonth() != null && getDay() != null){
-                        return year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + "." + fraction;
-                    }
-                    else
-                        return hour + ":" +    minute + ":" + second + "." + fraction;
-                }
-                else
-                    return second + "." + fraction + "s";
-            }
-            else
-                return second + "s";
-        }
-        return null;
+        if(getSecond() == null)
+            return null;
+        
+        String result = "";
+
+        if(getYear() != null && getMonth() != null && getDay() != null)
+            result += getYear() + ":" + getMonth() + ":" + getDay() + ":";
+        if(getHour() != null && getMinute() != null)
+            result += getHour() + ":" + getMinute() + ":";
+        if(getFraction() != null)
+            result += getSecond() + "." + getFraction();
+        else
+            result += getSecond();
+
+        if(absoluteSecond())
+            result += "s";
+
+        return result;
     }
 
 

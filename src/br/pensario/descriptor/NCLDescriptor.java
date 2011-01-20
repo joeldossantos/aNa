@@ -650,14 +650,26 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                         setFreeze(new Boolean(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("player"))
                         setPlayer(attributes.getValue(i));
-                    else if(attributes.getLocalName(i).equals("moveLeft"))
-                        setMoveLeft((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
-                    else if(attributes.getLocalName(i).equals("moveRight"))
-                        setMoveRight((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
-                    else if(attributes.getLocalName(i).equals("moveDown"))
-                        setMoveDown((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
-                    else if(attributes.getLocalName(i).equals("moveUp"))
-                        setMoveUp((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: apontar para o descritor verdadeiro
+                    else if(attributes.getLocalName(i).equals("moveLeft")){
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        d.setFocusIndex(new Integer(attributes.getValue(i)));
+                        setMoveLeft((D) d);//FIXME: apontar para o descritor verdadeiro
+                    }
+                    else if(attributes.getLocalName(i).equals("moveRight")){
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        d.setFocusIndex(new Integer(attributes.getValue(i)));
+                        setMoveRight((D) d);//FIXME: apontar para o descritor verdadeiro
+                    }
+                    else if(attributes.getLocalName(i).equals("moveDown")){
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        d.setFocusIndex(new Integer(attributes.getValue(i)));
+                        setMoveDown((D) d);//FIXME: apontar para o descritor verdadeiro
+                    }
+                    else if(attributes.getLocalName(i).equals("moveUp")){
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        d.setFocusIndex(new Integer(attributes.getValue(i)));
+                        setMoveUp((D) d);//FIXME: apontar para o descritor verdadeiro
+                    }
                     else if(attributes.getLocalName(i).equals("focusIndex"))
                         setFocusIndex(new Integer(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("focusBorderColor")){
@@ -668,8 +680,12 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                     }
                     else if(attributes.getLocalName(i).equals("focusBorderWidth"))
                         setFocusBorderWidth(new Integer(attributes.getValue(i)));
-                    else if(attributes.getLocalName(i).equals("focusBorderTransparency"))
-                        setFocusBorderTransparency(new Integer(attributes.getValue(i)));
+                    else if(attributes.getLocalName(i).equals("focusBorderTransparency")){
+                        String value = attributes.getValue(i);
+                        if(value.contains("%"))
+                            value = value.substring(0, value.length() - 1);
+                        setFocusBorderTransparency(new Integer(value));
+                    }
                     else if(attributes.getLocalName(i).equals("focusSrc"))
                         setFocusSrc(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("focusSelSrc"))

@@ -493,4 +493,11 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             //TODO: fazer o que?
         }
     }
+
+
+    @Override
+    public void endElement(String uri, String localName, String qName) {
+        if(localName.equals("switch"))
+            super.endElement(uri, localName, qName);
+    }
 }
