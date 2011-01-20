@@ -5,11 +5,18 @@
 
 package br.pensario.interfaces;
 
+import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLSystemVariable;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.io.StringReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -79,6 +86,34 @@ public class NCLPropertyTest {
         }
         catch(Exception e){
             fail("Exceção: " + e);
+        }
+    }
+
+    @Test
+    public void test2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLProperty t = new NCLProperty("teste");
+            NCLProperty instance = new NCLProperty(reader, t);
+            instance.setParent(instance);
+            String expResult = "<property name='interacao' value='nao'/>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(NCLInvalidIdentifierException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
         }
     }
 }

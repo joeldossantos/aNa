@@ -11,10 +11,15 @@ import br.pensario.connector.NCLCausalConnector;
 import br.pensario.connector.NCLConnectorParam;
 import br.pensario.connector.NCLRole;
 import br.pensario.node.NCLMedia;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.io.StringReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -42,5 +47,30 @@ public class NCLLinkTest {
         String expResult = "<link id='l1' xconnector='onBeginSet'>\n\t<linkParam name='var' value='10'/>\n\t<bind role='set' component='video'/>\n</link>\n";
         String result = l.parse(0);
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLLink instance = new NCLLink();
+            instance.setReader(reader);
+            instance.setParent(instance);
+            String expResult = "<link id='l1' xconnector='onBeginSet'>\n\t<linkParam name='var' value='10'/>\n\t<bind role='set' component='video'/>\n</link>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
     }
 }

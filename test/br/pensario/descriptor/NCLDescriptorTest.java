@@ -6,15 +6,21 @@
 package br.pensario.descriptor;
 
 import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLParsingErrorHandler;
 import br.pensario.NCLValues.NCLAttributes;
 import br.pensario.NCLValues.NCLColor;
 import br.pensario.region.NCLRegion;
 import br.pensario.transition.NCLTransition;
 import java.net.URISyntaxException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.io.StringReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -69,5 +75,64 @@ public class NCLDescriptorTest {
         String expResult = "<descriptor id='dTV'>\n\t<descriptorParam name='top' value='100'/>\n</descriptor>\n";
         String result = descriptor.parse(0);
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDescriptor t = new NCLDescriptor("teste");
+            NCLDescriptor instance = new NCLDescriptor(reader, t);
+            instance.setParent(instance);
+            String expResult = "<descriptor id='dTV' region='rgTV' explicitDur='20s' freeze='true' player='teste' moveLeft='1' moveRight='2' moveDown='3' moveUp='4'"+
+                " focusIndex='10' focusBorderColor='black' focusBorderWidth='5' focusBorderTransparency='1%' focusSrc='foco.jpg'"+
+                " focusSelSrc='sel.jpg' SelBorderColor='aqua' transIn='tin' transOut='tout'/>\n";
+
+            reader.setContentHandler(instance);
+            reader.setErrorHandler(new NCLParsingErrorHandler());
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(NCLInvalidIdentifierException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDescriptor t = new NCLDescriptor("teste");
+            NCLDescriptor instance = new NCLDescriptor(reader, t);
+            instance.setParent(instance);
+            String expResult = "<descriptor id='dTV'>\n\t<descriptorParam name='top' value='100'/>\n</descriptor>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(NCLInvalidIdentifierException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
     }
 }

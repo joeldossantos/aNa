@@ -6,10 +6,15 @@
 package br.pensario.region;
 
 import br.pensario.NCLInvalidIdentifierException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.io.StringReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  *
@@ -60,5 +65,89 @@ public class NCLRegionTest {
         String expResult = "<region id='rgTV'>\n\t<region id='rg1'/>\n</region>\n";
         String result = region.parse(0);
         assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void test2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRegion t = new NCLRegion("teste");
+            NCLRegion instance = new NCLRegion(reader, t);
+            instance.setParent(instance);
+            String expResult = "<region id='rgTV' left='10%' right='20%' top='10%' bottom='20%' height='80%' width='80%' zIndex='1' title='Titulo de Teste'/>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(NCLInvalidIdentifierException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRegion t = new NCLRegion("teste");
+            NCLRegion instance = new NCLRegion(reader, t);
+            instance.setParent(instance);
+            String expResult = "<region id='rgTV' left='10' right='20' top='10' bottom='20' height='80' width='80' zIndex='1' title='Titulo de Teste'/>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(NCLInvalidIdentifierException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRegion t = new NCLRegion("teste");
+            NCLRegion instance = new NCLRegion(reader, t);
+            instance.setParent(instance);
+            String expResult = "<region id='rgTV'>\n\t<region id='rg1'/>\n</region>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(expResult)));
+
+            String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(NCLInvalidIdentifierException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
     }
 }

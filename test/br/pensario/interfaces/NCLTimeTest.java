@@ -5,7 +5,6 @@
 
 package br.pensario.interfaces;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -235,4 +234,49 @@ public class NCLTimeTest {
 		Integer result = t4.getFraction();
 		assertEquals(expResult, result);
 	}
+
+        @Test
+        public void testStringToTime_t1() {
+            String expResult = "1:12:23:12:56:2.100";
+            NCLTime t = new NCLTime(expResult);
+
+            String result = t.toString();
+            assertEquals(expResult, result);
+        }
+
+        @Test
+        public void testStringToTime_t2() {
+            String expResult = "125:56:2.100";
+            NCLTime t = new NCLTime(expResult);
+
+            String result = t.toString();
+            assertEquals(expResult, result);
+        }
+
+        @Test
+        public void testStringToTime_t3() {
+            String expResult = "200.100s";
+            NCLTime t = new NCLTime(expResult);
+
+            String result = t.toString();
+            assertEquals(expResult, result);
+        }
+
+        @Test
+        public void testStringToTime_t4() {
+            String expResult = "100s";
+            NCLTime t = new NCLTime(expResult);
+
+            String result = t.toString();
+            assertEquals(expResult, result);
+        }
+
+        @Test
+        public void testStringToTime_t5() {
+            String expResult = "1:12:23:12:56:2";
+            NCLTime t = new NCLTime(expResult);
+
+            String result = t.toString();
+            assertEquals(expResult, result);
+        }
 }
