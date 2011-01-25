@@ -56,9 +56,7 @@ public class NCLTransitionBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLTransitionBase instance = new NCLTransitionBase();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
             String expResult = "<transitionBase id='tb'/>\n";
 
             reader.setContentHandler(instance);
@@ -80,9 +78,7 @@ public class NCLTransitionBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLTransitionBase instance = new NCLTransitionBase();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
             String expResult = "<transitionBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<transition id='tr1' type='fade'/>\n</transitionBase>\n";
 
             reader.setContentHandler(instance);

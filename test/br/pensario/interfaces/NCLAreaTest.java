@@ -82,9 +82,7 @@ public class NCLAreaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLArea t = new NCLArea("teste");
-            NCLArea instance = new NCLArea(reader, t);
-            instance.setParent(instance);
+            NCLArea instance = new NCLArea(reader, null);
             String expResult = "<area id='anchor' begin='5s' end='20s'/>\n";
 
             reader.setContentHandler(instance);
@@ -97,9 +95,6 @@ public class NCLAreaTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -110,9 +105,7 @@ public class NCLAreaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLArea t = new NCLArea("teste");
-            NCLArea instance = new NCLArea(reader, t);
-            instance.setParent(instance);
+            NCLArea instance = new NCLArea(reader, null);
             String expResult = "<area id='anchor' first='5f' last='20f'/>\n";
 
             reader.setContentHandler(instance);
@@ -125,9 +118,6 @@ public class NCLAreaTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -138,9 +128,7 @@ public class NCLAreaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLArea t = new NCLArea("teste");
-            NCLArea instance = new NCLArea(reader, t);
-            instance.setParent(instance);
+            NCLArea instance = new NCLArea(reader, null);
             String expResult = "<area id='anchor' coords='1,2,6,56'/>\n";
 
             reader.setContentHandler(instance);
@@ -153,9 +141,6 @@ public class NCLAreaTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -166,9 +151,7 @@ public class NCLAreaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLArea t = new NCLArea("teste");
-            NCLArea instance = new NCLArea(reader, t);
-            instance.setParent(instance);
+            NCLArea instance = new NCLArea(reader, null);
             String expResult = "<area id='anchor' label='bla'/>\n";
 
             reader.setContentHandler(instance);
@@ -181,9 +164,6 @@ public class NCLAreaTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -194,9 +174,7 @@ public class NCLAreaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLArea t = new NCLArea("teste");
-            NCLArea instance = new NCLArea(reader, t);
-            instance.setParent(instance);
+            NCLArea instance = new NCLArea(reader, null);
             String expResult = "<area id='anchor' text='texto' position='2'/>\n";
 
             reader.setContentHandler(instance);
@@ -207,9 +185,6 @@ public class NCLAreaTest {
             assertEquals(expResult, result);
         }
         catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(NCLInvalidIdentifierException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

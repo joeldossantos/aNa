@@ -59,9 +59,7 @@ public class NCLRuleBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRuleBase base = new NCLRuleBase();
-            base.setReader(reader);
-            base.setParent(base);
+            NCLRuleBase base = new NCLRuleBase(reader, null);
             String expResult = "<ruleBase id='rb'/>\n";
 
             reader.setContentHandler(base);
@@ -83,9 +81,7 @@ public class NCLRuleBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRuleBase base = new NCLRuleBase();
-            base.setReader(reader);
-            base.setParent(base);
+            NCLRuleBase base = new NCLRuleBase(reader, null);
             String expResult = "<ruleBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n</ruleBase>\n";
 
             reader.setContentHandler(base);

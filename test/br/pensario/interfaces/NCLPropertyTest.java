@@ -94,9 +94,7 @@ public class NCLPropertyTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLProperty t = new NCLProperty("teste");
-            NCLProperty instance = new NCLProperty(reader, t);
-            instance.setParent(instance);
+            NCLProperty instance = new NCLProperty(reader, null);
             String expResult = "<property name='interacao' value='nao'/>\n";
 
             reader.setContentHandler(instance);
@@ -107,9 +105,6 @@ public class NCLPropertyTest {
             assertEquals(expResult, result);
         }
         catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(NCLInvalidIdentifierException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

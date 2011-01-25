@@ -5,6 +5,7 @@
 
 package br.pensario.region;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLImportType;
 import br.pensario.reuse.NCLImport;
@@ -57,9 +58,7 @@ public class NCLRegionBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRegionBase instance = new NCLRegionBase();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLRegionBase instance = new NCLRegionBase(reader, null);
             String expResult = "<regionBase id='rgb' device='systemScreen(0)'/>\n";
 
             reader.setContentHandler(instance);
@@ -82,15 +81,40 @@ public class NCLRegionBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRegionBase instance = new NCLRegionBase();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLRegionBase instance = new NCLRegionBase(reader, null);
             String expResult = "<regionBase>\n\t<importBase alias='base' documentURI='base.ncl' region='rgTV'/>\n\t<region id='rgTV'/>\n</regionBase>\n";
 
             reader.setContentHandler(instance);
             reader.parse(new InputSource(new StringReader(expResult)));
 
             String result = instance.parse(0);
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc doc = new NCLDoc();
+            doc.setReader(reader);
+            String xml = "<ncl><head><regionBase region='rgTV'>"+
+                "<region id='rgTV' title='teste'/>"+
+                "</regionBase></head></ncl>";
+
+            reader.setContentHandler(doc);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLRegion) doc.getHead().getRegionBase().getRegions().iterator().next()).getTitle();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

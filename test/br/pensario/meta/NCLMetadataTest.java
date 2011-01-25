@@ -35,9 +35,7 @@ public class NCLMetadataTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLMetadata meta = new NCLMetadata();
-            meta.setReader(reader);
-            meta.setParent(meta);
+            NCLMetadata meta = new NCLMetadata(reader, null);
             String expResult = "<metadata>\nrdftree\n</metadata>\n";
 
             reader.setContentHandler(meta);

@@ -60,9 +60,7 @@ public class NCLHeadTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLHead instance = new NCLHead();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLHead instance = new NCLHead(reader, null);
             String expResult = "<head>\n\t<importedDocumentBase/>\n\t<ruleBase/>\n\t<transitionBase/>\n\t<regionBase/>\n\t<descriptorBase/>\n\t<connectorBase/>"+
                 "\n\t<meta name='autor' content='joel'/>\n\t<metadata>\narvore rdf\n\t</metadata>\n</head>\n";
 

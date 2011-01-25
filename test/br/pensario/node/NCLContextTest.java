@@ -5,6 +5,7 @@
 
 package br.pensario.node;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.interfaces.NCLPort;
 import java.net.URISyntaxException;
@@ -44,9 +45,7 @@ public class NCLContextTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLContext t = new NCLContext("teste");
-            NCLContext instance = new NCLContext(reader, t);
-            instance.setParent(instance);
+            NCLContext instance = new NCLContext(reader, null);
             String expResult = "<context id='ctx'>\n\t<port id='pInicio' component='video'/>\n\t<media id='video'/>\n</context>\n";
 
             reader.setContentHandler(instance);
@@ -59,7 +58,33 @@ public class NCLContextTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><body>"+
+                    "<context id='da' refer='db'/>"+
+                    "<context id='db'>"+
+                    "<media id='m1'/>"+
+                    "</context></body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "m1";
+            String result = ((NCLMedia) ((NCLContext) instance.getBody().getNodes().iterator().next()).getRefer().getNodes().iterator().next()).getId();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

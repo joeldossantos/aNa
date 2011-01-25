@@ -51,9 +51,7 @@ public class NCLBodyTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLBody instance = new NCLBody();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLBody instance = new NCLBody(reader, null);
             String expResult = "<body id='bod'>\n\t<meta name='autor' content='joel'/>\n\t<port id='pInicio' component='video'/>\n\t<media id='video'/>\n</body>\n";
 
             reader.setContentHandler(instance);

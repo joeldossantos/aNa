@@ -72,9 +72,7 @@ public class NCLRegionTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRegion t = new NCLRegion("teste");
-            NCLRegion instance = new NCLRegion(reader, t);
-            instance.setParent(instance);
+            NCLRegion instance = new NCLRegion(reader, null);
             String expResult = "<region id='rgTV' left='10%' right='20%' top='10%' bottom='20%' height='80%' width='80%' zIndex='1' title='Titulo de Teste'/>\n";
 
             reader.setContentHandler(instance);
@@ -87,9 +85,6 @@ public class NCLRegionTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -100,9 +95,7 @@ public class NCLRegionTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRegion t = new NCLRegion("teste");
-            NCLRegion instance = new NCLRegion(reader, t);
-            instance.setParent(instance);
+            NCLRegion instance = new NCLRegion(reader, null);
             String expResult = "<region id='rgTV' left='10' right='20' top='10' bottom='20' height='80' width='80' zIndex='1' title='Titulo de Teste'/>\n";
 
             reader.setContentHandler(instance);
@@ -115,9 +108,6 @@ public class NCLRegionTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -128,9 +118,7 @@ public class NCLRegionTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRegion t = new NCLRegion("teste");
-            NCLRegion instance = new NCLRegion(reader, t);
-            instance.setParent(instance);
+            NCLRegion instance = new NCLRegion(reader, null);
             String expResult = "<region id='rgTV'>\n\t<region id='rg1'/>\n</region>\n";
 
             reader.setContentHandler(instance);
@@ -141,9 +129,6 @@ public class NCLRegionTest {
             assertEquals(expResult, result);
         }
         catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(NCLInvalidIdentifierException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

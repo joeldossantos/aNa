@@ -53,9 +53,7 @@ public class NCLTransitionTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLTransition t = new NCLTransition("teste");
-            NCLTransition instance = new NCLTransition(reader, t);
-            instance.setParent(instance);
+            NCLTransition instance = new NCLTransition(reader, null);
             String expResult = "<transition id='tr1' type='fade' subtype='crossfade' dur='5s' startProgress='0.1' endProgress='0.9'"+
                 " direction='forward' fadeColor='black' horRepeat='4' vertRepeat='6' borderWidth='20' borderColor='blue'/>\n";
 
@@ -66,9 +64,6 @@ public class NCLTransitionTest {
             assertEquals(expResult, result);
         }
         catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(NCLInvalidIdentifierException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

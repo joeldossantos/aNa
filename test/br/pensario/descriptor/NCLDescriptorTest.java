@@ -5,6 +5,7 @@
 
 package br.pensario.descriptor;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLParsingErrorHandler;
 import br.pensario.NCLValues.NCLAttributes;
@@ -82,15 +83,12 @@ public class NCLDescriptorTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLDescriptor t = new NCLDescriptor("teste");
-            NCLDescriptor instance = new NCLDescriptor(reader, t);
-            instance.setParent(instance);
+            NCLDescriptor instance = new NCLDescriptor(reader, null);
             String expResult = "<descriptor id='dTV' region='rgTV' explicitDur='20s' freeze='true' player='teste' moveLeft='1' moveRight='2' moveDown='3' moveUp='4'"+
                 " focusIndex='10' focusBorderColor='black' focusBorderWidth='5' focusBorderTransparency='1%' focusSrc='foco.jpg'"+
                 " focusSelSrc='sel.jpg' SelBorderColor='aqua' transIn='tin' transOut='tout'/>\n";
 
             reader.setContentHandler(instance);
-            reader.setErrorHandler(new NCLParsingErrorHandler());
             reader.parse(new InputSource(new StringReader(expResult)));
 
             String result = instance.parse(0);
@@ -98,9 +96,6 @@ public class NCLDescriptorTest {
             assertEquals(expResult, result);
         }
         catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(NCLInvalidIdentifierException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){
@@ -113,9 +108,7 @@ public class NCLDescriptorTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLDescriptor t = new NCLDescriptor("teste");
-            NCLDescriptor instance = new NCLDescriptor(reader, t);
-            instance.setParent(instance);
+            NCLDescriptor instance = new NCLDescriptor(reader, null);
             String expResult = "<descriptor id='dTV'>\n\t<descriptorParam name='top' value='100'/>\n</descriptor>\n";
 
             reader.setContentHandler(instance);
@@ -128,7 +121,203 @@ public class NCLDescriptorTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head>"+
+                    "<regionBase><region id='rgt' title='teste'/></regionBase>"+
+                    "<descriptorBase>"+
+                    "<descriptor id='dpt' region='rgt'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getRegion().getTitle();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test6() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head>"+
+                    "<transitionBase><transition id='trans' startProgress='0.5'/></transitionBase>"+
+                    "<descriptorBase>"+
+                    "<descriptor id='dpt' transIn='trans'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            Double expResult = 0.5;
+            Double result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getTransIn().getStartProgress();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test7() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head>"+
+                    "<transitionBase><transition id='trans' startProgress='0.5'/></transitionBase>"+
+                    "<descriptorBase>"+
+                    "<descriptor id='dpt' transOut='trans'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            Double expResult = 0.5;
+            Double result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getTransOut().getStartProgress();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test8() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head><descriptorBase>"+
+                    "<descriptor id='dpa' moveLeft='1'/>"+
+                    "<descriptor id='dpz' focusIndex='1' player='teste'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getMoveLeft().getPlayer();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test9() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head><descriptorBase>"+
+                    "<descriptor id='dpa' moveRight='1'/>"+
+                    "<descriptor id='dpz' focusIndex='1' player='teste'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getMoveRight().getPlayer();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test10() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head><descriptorBase>"+
+                    "<descriptor id='dpa' moveUp='1'/>"+
+                    "<descriptor id='dpz' focusIndex='1' player='teste'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getMoveUp().getPlayer();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test11() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head><descriptorBase>"+
+                    "<descriptor id='dpa' moveDown='1'/>"+
+                    "<descriptor id='dpz' focusIndex='1' player='teste'/>"+
+                    "</descriptorBase></head></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getMoveDown().getPlayer();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

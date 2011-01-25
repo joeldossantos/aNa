@@ -3,46 +3,48 @@
  * and open the template in the editor.
  */
 
-package br.pensario.reuse;
+package br.pensario.connector;
 
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLImportType;
-import java.net.URISyntaxException;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import br.pensario.reuse.NCLImport;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URISyntaxException;
+import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author joel
  */
-public class NCLImportedDocumentBaseTest {
+public class NCLConnectorBaseTest {
 
     @Test
     public void test1() throws NCLInvalidIdentifierException {
-        NCLImportedDocumentBase base = new NCLImportedDocumentBase();
-        base.setId("IDb");
+        NCLConnectorBase base = new NCLConnectorBase();
+        base.setId("cb");
 
-        String expResult = "<importedDocumentBase id='IDb'/>\n";
+        String expResult = "<connectorBase id='cb'/>\n";
         String result = base.parse(0);
         assertEquals(expResult, result);
     }
 
     @Test
     public void test2() throws NCLInvalidIdentifierException, URISyntaxException {
-        NCLImportedDocumentBase base = new NCLImportedDocumentBase();
-        NCLImport imp = new NCLImport(NCLImportType.NCL);
+        NCLConnectorBase base = new NCLConnectorBase();
+        NCLCausalConnector con = new NCLCausalConnector("c1");
+        NCLImport imp = new NCLImport(NCLImportType.BASE);
         imp.setAlias("base");
         imp.setDocumentURI("base.ncl");
-        base.addImportNCL(imp);
+        base.addImportBase(imp);
+        base.addCausalConnector(con);
 
-        String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
+        String expResult = "<connectorBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<causalConnector id='c1'>\n\t</causalConnector>\n</connectorBase>\n";
         String result = base.parse(0);
         assertEquals(expResult, result);
     }
@@ -52,8 +54,8 @@ public class NCLImportedDocumentBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLImportedDocumentBase instance = new NCLImportedDocumentBase(reader, null);
-            String expResult = "<importedDocumentBase id='IDb'/>\n";
+            NCLConnectorBase instance = new NCLConnectorBase(reader, null);
+            String expResult = "<connectorBase id='cb'/>\n";
 
             reader.setContentHandler(instance);
             reader.parse(new InputSource(new StringReader(expResult)));
@@ -75,8 +77,8 @@ public class NCLImportedDocumentBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLImportedDocumentBase instance = new NCLImportedDocumentBase(reader, null);
-            String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
+            NCLConnectorBase instance = new NCLConnectorBase(reader, null);
+            String expResult = "<connectorBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<causalConnector id='c1'>\n\t</causalConnector>\n</connectorBase>\n";
 
             reader.setContentHandler(instance);
             reader.parse(new InputSource(new StringReader(expResult)));

@@ -5,6 +5,7 @@
 
 package br.pensario.node;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLInstanceType;
 import br.pensario.NCLValues.NCLMimeType;
@@ -60,9 +61,7 @@ public class NCLMediaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLMedia t = new NCLMedia("teste");
-            NCLMedia instance = new NCLMedia(reader, t);
-            instance.setParent(instance);
+            NCLMedia instance = new NCLMedia(reader, null);
             String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
 
             reader.setContentHandler(instance);
@@ -75,9 +74,6 @@ public class NCLMediaTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
-            fail(ex.getMessage());
-        }
         catch(IOException ex){
             fail(ex.getMessage());
         }
@@ -88,9 +84,7 @@ public class NCLMediaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLMedia t = new NCLMedia("teste");
-            NCLMedia instance = new NCLMedia(reader, t);
-            instance.setParent(instance);
+            NCLMedia instance = new NCLMedia(reader, null);
             String expResult = "<media id='m1'>\n\t<area id='a1'/>\n\t<property name='top'/>\n</media>\n";
 
             reader.setContentHandler(instance);
@@ -103,7 +97,59 @@ public class NCLMediaTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><body>"+
+                    "<media id='da' refer='db'/>"+
+                    "<media id='db' src='media.png'/>"+
+                    "</body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "media.png";
+            String result = ((NCLMedia) instance.getBody().getNodes().iterator().next()).getRefer().getSrc();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test6() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><head><descriptorBase><descriptor id='dpa' player='teste'/></descriptorBase></head><body>"+
+                    "<media id='da' descriptor='dpa'/>"+
+                    "</body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLMedia) instance.getBody().getNodes().iterator().next()).getDescriptor().getPlayer();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

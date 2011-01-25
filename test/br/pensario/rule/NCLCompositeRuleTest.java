@@ -54,9 +54,7 @@ public class NCLCompositeRuleTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLCompositeRule r = new NCLCompositeRule("teste");
-            NCLCompositeRule rule = new NCLCompositeRule(reader, r);
-            rule.setParent(rule);
+            NCLCompositeRule rule = new NCLCompositeRule(reader, null);
             String expResult = "<compositeRule id='crule' operator='and'>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n\t<rule id='r2' var='idioma' comparator='eq' value='en'/>\n</compositeRule>\n";
 
             reader.setContentHandler(rule);
@@ -66,9 +64,6 @@ public class NCLCompositeRuleTest {
             assertEquals(expResult, result);
         }
         catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(NCLInvalidIdentifierException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

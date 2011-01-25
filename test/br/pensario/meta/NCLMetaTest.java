@@ -36,9 +36,7 @@ public class NCLMetaTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLMeta meta = new NCLMeta();
-            meta.setReader(reader);
-            meta.setParent(meta);
+            NCLMeta meta = new NCLMeta(reader, null);
             String expResult = "<meta name='autor' content='joel'/>\n";
 
             reader.setContentHandler(meta);

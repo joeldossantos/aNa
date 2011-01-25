@@ -5,6 +5,7 @@
 
 package br.pensario.rule;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLComparator;
 import br.pensario.interfaces.NCLProperty;
@@ -40,9 +41,7 @@ public class NCLRuleTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLRule r = new NCLRule("teste");
-            NCLRule rule = new NCLRule(reader, r);
-            rule.setParent(rule);
+            NCLRule rule = new NCLRule(reader, null);
             String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
 
             reader.setContentHandler(rule);
@@ -54,7 +53,34 @@ public class NCLRuleTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc doc = new NCLDoc();
+            doc.setReader(reader);
+            String xml = "<ncl><head><ruleBase>"+
+                "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>"+
+                "</ruleBase></head>"+
+                "<body><media id='m1'>"+
+                "<property name='legenda' value='on'/>"+
+                "</media></body></ncl>";
+
+            reader.setContentHandler(doc);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "on";
+            String result = ((NCLRule) doc.getHead().getRuleBase().getRules().iterator().next()).getVar().getValue();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

@@ -5,8 +5,10 @@
 
 package br.pensario.interfaces;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.node.NCLMedia;
+import br.pensario.node.NCLSwitch;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,9 +43,7 @@ public class NCLSwitchPortTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLSwitchPort t = new NCLSwitchPort("teste");
-            NCLSwitchPort instance = new NCLSwitchPort(reader, t);
-            instance.setParent(instance);
+            NCLSwitchPort instance = new NCLSwitchPort(reader, null);
             String expResult = "<switchPort id='pinit'>\n\t<mapping component='med1' interface='trac1'/>\n</switchPort>\n";
 
             reader.setContentHandler(instance);
@@ -56,7 +56,60 @@ public class NCLSwitchPortTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><body>"+
+                    "<switch id='sw'><switchPort><mapping component='m1' interface='a1'/></switchPort>"+
+                    "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
+                    "</switch></body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "media.png";
+            String result = ((NCLMedia) ((NCLMapping) ((NCLSwitchPort) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getPorts().iterator().next()).getMappings().iterator().next()).getComponent()).getSrc();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><body>"+
+                    "<switch id='sw'><switchPort><mapping component='m1' interface='a1'/></switchPort>"+
+                    "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
+                    "</switch></body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLArea) ((NCLMapping) ((NCLSwitchPort) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getPorts().iterator().next()).getMappings().iterator().next()).getInterface()).getLabel();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

@@ -5,6 +5,7 @@
 
 package br.pensario.interfaces;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.node.NCLMedia;
 import org.junit.Test;
@@ -39,9 +40,7 @@ public class NCLPortTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLPort t = new NCLPort("teste");
-            NCLPort instance = new NCLPort(reader, t);
-            instance.setParent(instance);
+            NCLPort instance = new NCLPort(reader, null);
             String expResult = "<port id='pinit' component='med1' interface='trac1'/>\n";
 
             reader.setContentHandler(instance);
@@ -54,7 +53,60 @@ public class NCLPortTest {
         catch(SAXException ex){
             fail(ex.getMessage());
         }
-        catch(NCLInvalidIdentifierException ex){
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><body>"+
+                    "<port id='pa' component='m1'/>"+
+                    "<media id='m1' src='media.png'/>"+
+                    "</body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "media.png";
+            String result = ((NCLMedia) ((NCLPort) instance.getBody().getPorts().iterator().next()).getComponent()).getSrc();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl><body>"+
+                    "<port id='pa' component='m1' interface='a1'/>"+
+                    "<media id='m1'><area id='a1' label='teste'/></media>"+
+                    "</body></ncl>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            String result = ((NCLArea) ((NCLPort) instance.getBody().getPorts().iterator().next()).getInterface()).getLabel();
+            //System.out.println(result);
+            assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
             fail(ex.getMessage());
         }
         catch(IOException ex){

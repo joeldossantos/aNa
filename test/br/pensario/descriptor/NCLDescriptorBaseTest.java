@@ -55,9 +55,7 @@ public class NCLDescriptorBaseTest {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLDescriptorBase instance = new NCLDescriptorBase();
-            instance.setReader(reader);
-            instance.setParent(instance);
+            NCLDescriptorBase instance = new NCLDescriptorBase(reader, null);
             String expResult = "<descriptorBase id='db'/>\n";
 
             reader.setContentHandler(instance);
