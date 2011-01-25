@@ -1,5 +1,6 @@
 package br.pensario.node;
 
+import br.pensario.NCLBody;
 import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
@@ -449,12 +450,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("switch") && !insideSwitch){
+                cleanWarnings();
+                cleanErrors();
                 insideSwitch = true;
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((S) new NCLSwitch(attributes.getValue(i)));//FIXME: reparar a referência ao switch correto
+                        setRefer((S) new NCLSwitch(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("bindRule")){
@@ -465,7 +468,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             else if(localName.equals("defaultComponent")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("component"))
-                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: fazer referência ao nó correto
+                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("switchPort")){
@@ -490,7 +493,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
@@ -499,5 +502,95 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     public void endElement(String uri, String localName, String qName) {
         if(localName.equals("switch"))
             super.endElement(uri, localName, qName);
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getDefaultComponent() != null)
+                defaultComponentReference();
+
+            if(getRefer() != null)
+                switchReference();
+        }
+
+        if(hasBind()){
+            for(B bind : binds){
+                bind.endDocument();
+                addWarning(bind.getWarnings());
+                addError(bind.getErrors());
+            }
+        }
+        if(hasPort()){
+            for(P port : ports){
+                port.endDocument();
+                addWarning(port.getWarnings());
+                addError(port.getErrors());
+            }
+        }
+        if(hasNode()){
+            for(N node : nodes){
+                node.endDocument();
+                addWarning(node.getWarnings());
+                addError(node.getErrors());
+            }
+        }
+    }
+
+
+    private void defaultComponentReference() {
+        //Search for a component node in its parent
+        for(N node : nodes){
+            if(node.getId().equals(getDefaultComponent().getId())){
+                setDefaultComponent(node);
+                return;
+            }
+        }
+
+        addWarning("Could not find node in switch with id: " + getDefaultComponent().getId());
+    }
+
+
+    private void switchReference() {
+        //Search for the interface inside the node
+        NCLElement body = getParent();
+
+        while(!(body instanceof NCLBody)){
+            body = body.getParent();
+            if(body == null){
+                addWarning("Could not find a body");
+                return;
+            }
+        }
+
+        setRefer(findSwitch(((NCLBody) body).getNodes()));
+    }
+
+
+    private S findSwitch(Iterable<N> nodes) {
+        for(N n : nodes){
+            if(n instanceof NCLContext){
+                if( ((NCLContext) n).hasNode()){
+                    Iterable<N> cnodes = ((NCLContext) n).getNodes();
+                        S s = findSwitch(cnodes);
+                        if(s != null)
+                            return (S) s;
+                }
+            }
+            else if(n instanceof NCLSwitch){
+                if(n.getId().equals(getRefer().getId()))
+                    return (S) n;
+                else if( ((NCLSwitch) n).hasNode()){
+                    Iterable<N> snodes = ((NCLSwitch) n).getNodes();
+                    S s = findSwitch(snodes);
+                    if(s != null)
+                        return (S) s;
+                }
+            }
+        }
+
+        addWarning("Could not find switch with id: " + getRefer().getId());
+        return null;
     }
 }

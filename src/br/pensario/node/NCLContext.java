@@ -1,5 +1,6 @@
 package br.pensario.node;
 
+import br.pensario.NCLBody;
 import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
@@ -696,12 +697,14 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("context") && !insideContext){
+                cleanWarnings();
+                cleanErrors();
                 insideContext = true;
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((C) new NCLContext(attributes.getValue(i)));//FIXME: reparar a referência ao contexto correto
+                        setRefer((C) new NCLContext(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("meta")){
@@ -746,7 +749,102 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getRefer() != null)
+                contextReference();
+        }
+
+        if(hasMeta()){
+            for(M meta : metas){
+                meta.endDocument();
+                addWarning(meta.getWarnings());
+                addError(meta.getErrors());
+            }
+        }
+        if(hasMetadata()){
+            for(MT metadata : metadatas){
+                metadata.endDocument();
+                addWarning(metadata.getWarnings());
+                addError(metadata.getErrors());
+            }
+        }
+        if(hasPort()){
+            for(Pt port : ports){
+                port.endDocument();
+                addWarning(port.getWarnings());
+                addError(port.getErrors());
+            }
+        }
+        if(hasProperty()){
+            for(Pp property : properties){
+                property.endDocument();
+                addWarning(property.getWarnings());
+                addError(property.getErrors());
+            }
+        }
+        if(hasNode()){
+            for(N node : nodes){
+                node.endDocument();
+                addWarning(node.getWarnings());
+                addError(node.getErrors());
+            }
+        }
+        if(hasLink()){
+            for(L link : links){
+                link.endDocument();
+                addWarning(link.getWarnings());
+                addError(link.getErrors());
+            }
+        }
+    }
+
+
+    private void contextReference() {
+        //Search for the interface inside the node
+        NCLElement body = getParent();
+
+        while(!(body instanceof NCLBody)){
+            body = body.getParent();
+            if(body == null){
+                addWarning("Could not find a body");
+                return;
+            }
+        }
+
+        setRefer(findContext(((NCLBody) body).getNodes()));
+    }
+
+
+    private C findContext(Iterable<N> nodes) {
+        for(N n : nodes){
+            if(n instanceof NCLContext){
+                if(n.getId().equals(getRefer().getId()))
+                    return (C) n;
+                else if( ((NCLContext) n).hasNode()){
+                    Iterable<N> cnodes = ((NCLContext) n).getNodes();
+                    C c = findContext(cnodes);
+                    if(c != null)
+                        return (C) c;
+                }
+            }
+            else if(n instanceof NCLSwitch){
+                if( ((NCLSwitch) n).hasNode()){
+                    Iterable<N> snodes = ((NCLSwitch) n).getNodes();
+                    C c = findContext(snodes);
+                    if(c != null)
+                        return (C) c;
+                }
+            }
+        }
+
+        addWarning("Could not find media with id: " + getRefer().getId());
+        return null;
     }
 }

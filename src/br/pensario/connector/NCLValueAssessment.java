@@ -198,12 +198,14 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("value")){
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setValue((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setValue((P) new NCLConnectorParam(var));
                     }
                     else{
                         setValue(var);
@@ -217,7 +219,39 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getParamValue() != null)
+            setValue(parameterReference(getParamValue().getId()));
+    }
+
+
+    private P parameterReference(String id) {
+        NCLElement connector = getParent();
+
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = connector.getParent();
+            if(connector == null){
+                addWarning("Could not find a parent connector");
+                return null;
+            }
+        }
+
+        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        for(P param : params){
+            if(param.getId().equals(id))
+                return param;
+        }
+
+        addWarning("Could not find connectorParam in connector with id: " + id);
+        return null;
     }
 }

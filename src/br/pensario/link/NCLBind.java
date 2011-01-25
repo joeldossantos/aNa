@@ -1,12 +1,24 @@
 package br.pensario.link;
 
+import br.pensario.NCLBody;
+import br.pensario.NCLDoc;
 import br.pensario.NCLElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLParamInstance;
+import br.pensario.connector.NCLAction;
+import br.pensario.connector.NCLAssessmentStatement;
+import br.pensario.connector.NCLAttributeAssessment;
+import br.pensario.connector.NCLCompoundAction;
+import br.pensario.connector.NCLCompoundCondition;
+import br.pensario.connector.NCLCompoundStatement;
+import br.pensario.connector.NCLCondition;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.pensario.connector.NCLRole;
+import br.pensario.connector.NCLSimpleAction;
+import br.pensario.connector.NCLSimpleCondition;
+import br.pensario.connector.NCLStatement;
 import br.pensario.descriptor.NCLDescriptor;
 import br.pensario.interfaces.NCLArea;
 import br.pensario.interfaces.NCLInterface;
@@ -359,15 +371,17 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("bind")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("role"))
-                        setRole((R) new NCLRole(attributes.getValue(i)));//FIXME: reparar a referência ao role correto
+                        setRole((R) new NCLRole(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("component"))
-                        setComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: reparar a referência ao nó correto
+                        setComponent((N) new NCLContext(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("interface"))
-                        setInterface((I) new NCLPort(attributes.getValue(i)));//FIXME: reparar a referência a interface correta
+                        setInterface((I) new NCLPort(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("descriptor"))
-                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: reparar a referência ao descritor correto
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("bindParam")){
@@ -377,7 +391,225 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getRole() != null)
+                roleReference();
+            if(getComponent() != null)
+                componentReference();
+            if(getComponent() != null && getInterface() != null)
+                interfaceReference();
+            if(getDescriptor() != null)
+                descriptorReference();
+        }
+
+        if(hasBindParam()){
+            for(P param : bindParams){
+                param.endDocument();
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
+            }
+        }
+    }
+
+
+    private void roleReference() {
+        //Search for the role inside the connector
+        if(((NCLLink) getParent()).getXconnector() == null){
+            addWarning("Could not find a connector");
+            return;
+        }
+
+        NCLCondition cond = ((NCLLink) getParent()).getXconnector().getCondition();
+        if(cond != null)
+            setRole(findRole(cond));
+
+        NCLAction act = ((NCLLink) getParent()).getXconnector().getAction();
+        if(act != null)
+            setRole(findRole(act));
+    }
+
+
+    private R findRole(NCLCondition cond) {
+        if(cond instanceof NCLSimpleCondition){
+            if(((NCLSimpleCondition) cond).getRole().getName().equals(getRole().getName()))
+                return (R) ((NCLSimpleCondition) cond).getRole();
+        }
+        else if(cond instanceof NCLCompoundCondition){
+            Iterable<NCLCondition> conditions = ((NCLCompoundCondition)cond).getConditions();
+            for(NCLCondition c : conditions){
+                NCLRole r = findRole(c);
+                if(r != null)
+                    return (R) r;
+            }
+            Iterable<NCLStatement> statements = ((NCLCompoundCondition)cond).getStatements();
+            for(NCLStatement s : statements){
+                NCLRole r = findRole(s);
+                if(r != null)
+                    return (R) r;
+            }
+        }
+
+        addWarning("Could not find role in connector with name: " + getRole().getName());
+        return null;
+    }
+
+
+    private R findRole(NCLStatement stat) {
+        if(stat instanceof NCLAssessmentStatement){
+            Iterable<NCLAttributeAssessment> attributes = ((NCLAssessmentStatement) stat).getAttributeAssessments();
+            for(NCLAttributeAssessment at : attributes){
+                if(at.getRole().getName().equals(getRole().getName()))
+                    return (R) at.getRole();
+            }
+        }
+        else if(stat instanceof NCLCompoundStatement){
+            Iterable<NCLStatement> statements = ((NCLCompoundStatement)stat).getStatements();
+            for(NCLStatement s : statements){
+                NCLRole r = findRole(s);
+                if(r != null)
+                    return (R) r;
+            }
+        }
+
+        addWarning("Could not find role in connector with name: " + getRole().getName());
+        return null;
+    }
+
+
+    private R findRole(NCLAction act) {
+        if(act instanceof NCLSimpleAction){
+            if(((NCLSimpleAction) act).getRole().getName().equals(getRole().getName()))
+                return (R) ((NCLSimpleAction) act).getRole();
+        }
+        else if(act instanceof NCLCompoundAction){
+            Iterable<NCLAction> actions = ((NCLCompoundAction)act).getActions();
+            for(NCLAction a : actions){
+                NCLRole r = findRole(a);
+                if(r != null)
+                    return (R) r;
+            }
+        }
+
+        addWarning("Could not find role in connector with name: " + getRole().getName());
+        return null;
+    }
+
+
+    private void componentReference() {
+        //Search for a component node in its parent
+        if(getParent().getParent() == null){
+            addWarning("Could not find a link parent");
+            return;
+        }
+
+        Iterable<N> nodes;
+        if(getParent().getParent() instanceof NCLBody)
+            nodes = ((NCLBody) getParent().getParent()).getNodes();
+        else
+            nodes = ((NCLContext) getParent().getParent()).getNodes();
+
+        for(N node : nodes){
+            if(node.getId().equals(getComponent().getId())){
+                setComponent(node);
+                return;
+            }
+        }
+
+        addWarning("Could not find role in node with id: " + getComponent().getId());
+    }
+
+
+    private void interfaceReference() {
+        //Search for the interface inside the node
+        Iterable<I> ifaces;
+        if(getComponent() instanceof NCLMedia){
+            ifaces = ((NCLMedia) getComponent()).getAreas();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+            ifaces = ((NCLMedia) getComponent()).getProperties();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+        }
+        else if(getComponent() instanceof NCLContext){
+            ifaces = ((NCLContext) getComponent()).getPorts();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+            ifaces = ((NCLContext) getComponent()).getProperties();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+        }
+        else if(getComponent() instanceof NCLSwitch){
+            ifaces = ((NCLSwitch) getComponent()).getPorts();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+        }
+
+        addWarning("Could not find interface with id: " + getInterface().getId());
+    }
+
+
+    private Iterable<D> getDescriptors() {
+        NCLElement root = getParent();
+
+        while(!(root instanceof NCLDoc)){
+            root = root.getParent();
+            if(root == null){
+                addWarning("Could not find a root element");
+                return null;
+            }
+        }
+
+        if(((NCLDoc) root).getHead() == null){
+            addWarning("Could not find a head");
+            return null;
+        }
+        if(((NCLDoc) root).getHead().getDescriptorBase() == null){
+            addWarning("Could not find a descriptorBase");
+            return null;
+        }
+
+        return ((NCLDoc) root).getHead().getDescriptorBase().getDescriptors();
+    }
+
+
+    private void descriptorReference() {
+        //Search for the descriptor inside the node
+        Iterable<D> descriptors = getDescriptors();
+        for(D desc : descriptors){
+            if(desc.getId().equals(getDescriptor().getId())){
+                setDescriptor(desc);
+                return;
+            }
+        }
+        //@todo: descritores internos a switch de descritores podem ser utilizados?
+
+        addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
     }
 }

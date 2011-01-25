@@ -267,6 +267,8 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("assessmentStatement")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("comparator")){
                         for(NCLComparator c : NCLComparator.values()){
@@ -288,7 +290,24 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             }
         }
         catch(Exception ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasAttributeAssessment()){
+            for(A attribute : attributeAssessments){
+                attribute.endDocument();
+                addWarning(attribute.getWarnings());
+                addError(attribute.getErrors());
+            }
+        }
+        if(getValueAssessment() != null){
+            getValueAssessment().endDocument();
+            addWarning(getValueAssessment().getWarnings());
+            addError(getValueAssessment().getErrors());
         }
     }
 }

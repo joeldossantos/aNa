@@ -702,6 +702,8 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("role"))
                     setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
@@ -709,7 +711,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setValue((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setValue((P) new NCLConnectorParam(var));
                     }
                     else
                         setValue(var);
@@ -718,7 +720,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setDelay((P) new NCLConnectorParam(var));
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -755,7 +757,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setRepeat((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setRepeat((P) new NCLConnectorParam(var));
                     }
                     else
                         setRepeat(new Integer(var));
@@ -764,7 +766,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setRepeatDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setRepeatDelay((P) new NCLConnectorParam(var));
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -775,7 +777,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setDuration((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setDuration((P) new NCLConnectorParam(var));
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -786,7 +788,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setBy((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                        setBy((P) new NCLConnectorParam(var));
                     }
                     else
                         setBy(new Integer(var));
@@ -794,7 +796,49 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getParamDelay() != null)
+            setDelay(parameterReference(getParamDelay().getId()));
+        if(getParamValue() != null)
+            setValue(parameterReference(getParamValue().getId()));
+        if(getParamRepeat() != null)
+            setRepeat(parameterReference(getParamRepeat().getId()));
+        if(getParamRepeatDelay() != null)
+            setRepeatDelay(parameterReference(getParamRepeatDelay().getId()));
+        if(getParamDuration() != null)
+            setDuration(parameterReference(getParamDuration().getId()));
+        if(getParamBy() != null)
+            setBy(parameterReference(getParamBy().getId()));
+    }
+
+
+    private P parameterReference(String id) {
+        NCLElement connector = getParent();
+
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = connector.getParent();
+            if(connector == null){
+                addWarning("Could not find a parent connector");
+                return null;
+            }
+        }
+
+        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        for(P param : params){
+            if(param.getId().equals(id))
+                return param;
+        }
+
+        addWarning("Could not find connectorParam in connector with id: " + id);
+        return null;
     }
 }

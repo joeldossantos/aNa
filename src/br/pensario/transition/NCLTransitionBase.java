@@ -234,6 +234,8 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("transitionBase")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -251,7 +253,26 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasImportBase()){
+            for(I imp : imports){
+                imp.endDocument();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
+        }
+        if(hasTransition()){
+            for(T transition : transitions){
+                transition.endDocument();
+                addWarning(transition.getWarnings());
+                addError(transition.getErrors());
+            }
         }
     }
 }

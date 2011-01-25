@@ -249,6 +249,8 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("descriptorBase")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -258,20 +260,45 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
                 NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
                 i.startElement(uri, localName, qName, attributes);
                 addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+                addWarning(i.getWarnings());
+                addError(i.getErrors());
             }
             else if(localName.equals("descriptor")){
                 NCLDescriptor d = new NCLDescriptor(getReader(), this);
                 d.startElement(uri, localName, qName, attributes);
                 addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
+                addWarning(d.getWarnings());
+                addError(d.getErrors());
             }
             else if(localName.equals("descriptorSwitch")){
                 NCLDescriptorSwitch d = new NCLDescriptorSwitch(getReader(), this);
                 d.startElement(uri, localName, qName, attributes);
                 addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
+                addWarning(d.getWarnings());
+                addError(d.getErrors());
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasImportBase()){
+            for(I imp : imports){
+                imp.endDocument();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
+        }
+        if(hasDescriptor()){
+            for(D descriptor : descriptors){
+                descriptor.endDocument();
+                addWarning(descriptor.getWarnings());
+                addError(descriptor.getErrors());
+            }
         }
     }
 }

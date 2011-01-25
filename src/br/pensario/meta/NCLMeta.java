@@ -136,6 +136,8 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        cleanWarnings();
+        cleanErrors();
         for(int i = 0; i < attributes.getLength(); i++){
             if(attributes.getLocalName(i).equals("name"))
                 setName(attributes.getValue(i));

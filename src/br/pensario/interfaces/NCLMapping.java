@@ -174,15 +174,99 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("component"))
-                    setComponent((N) new NCLContext(attributes.getValue(i)));//FIXME: fazer a referência ao nó correto
+                    setComponent((N) new NCLContext(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("interface"))
-                    setInterface((I) new NCLPort(attributes.getValue(i)));//FIXME: fazer a referência a porta correta
+                    setInterface((I) new NCLPort(attributes.getValue(i)));
             }
         }
         catch(NCLInvalidIdentifierException ex){
-
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getComponent() != null)
+            componentReference();
+
+        if(getComponent() != null && getInterface() != null)
+            interfaceReference();
+    }
+
+
+    private void componentReference() {
+        //Search for a component node in its parent
+        if(getParent().getParent() == null){
+            addWarning("Could not find a parent switch");
+            return;
+        }
+
+        Iterable<N> nodes = ((NCLSwitch) getParent().getParent()).getNodes();
+
+        for(N node : nodes){
+            if(node.getId().equals(getComponent().getId())){
+                setComponent(node);
+                return;
+            }
+        }
+
+        addWarning("Could not find node in switch with id: " + getComponent().getId());
+    }
+
+
+    private void interfaceReference() {
+        //Search for the interface inside the node
+        Iterable<I> ifaces;
+        if(getComponent() instanceof NCLMedia){
+            ifaces = ((NCLMedia) getComponent()).getAreas();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+            ifaces = ((NCLMedia) getComponent()).getProperties();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+        }
+        else if(getComponent() instanceof NCLContext){
+            ifaces = ((NCLContext) getComponent()).getPorts();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+            ifaces = ((NCLContext) getComponent()).getProperties();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+        }
+        else if(getComponent() instanceof NCLSwitch){
+            ifaces = ((NCLSwitch) getComponent()).getPorts();
+            for(I iface : ifaces){
+                if(iface.getId().equals(getInterface().getId())){
+                    setInterface(iface);
+                    return;
+                }
+            }
+        }
+
+        addWarning("Could not find interface with id: " + getInterface().getId());
     }
 }

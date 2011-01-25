@@ -1,5 +1,7 @@
 package br.pensario.node;
 
+import br.pensario.NCLBody;
+import br.pensario.NCLDoc;
 import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
@@ -523,6 +525,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("media")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -541,9 +545,9 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
                         }
                     }
                     else if(attributes.getLocalName(i).equals("descriptor"))
-                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: fazer referência ao descritor correto
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((M) new NCLMedia(attributes.getValue(i)));//FIXME: fazer referência a media correta
+                        setRefer((M) new NCLMedia(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("instance")){
                         for(NCLInstanceType in : NCLInstanceType.values()){
                             if(in.toString().equals(attributes.getValue(i)))
@@ -564,7 +568,117 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getDescriptor() != null)
+                descriptorReference();
+            if(getRefer() != null)
+                mediaReference();
+        }
+
+        if(hasArea()){
+            for(A area : areas){
+                area.endDocument();
+                addWarning(area.getWarnings());
+                addError(area.getErrors());
+            }
+        }
+        if(hasProperty()){
+            for(P property : properties){
+                property.endDocument();
+                addWarning(property.getWarnings());
+                addError(property.getErrors());
+            }
+        }
+    }
+
+
+    private Iterable<D> getDescriptors() {
+        NCLElement root = getParent();
+
+        while(!(root instanceof NCLDoc)){
+            root = root.getParent();
+            if(root == null){
+                addWarning("Could not find root element");
+                return null;
+            }
+        }
+
+        if(((NCLDoc) root).getHead() == null){
+            addWarning("Could not find a head");
+            return null;
+        }
+        if(((NCLDoc) root).getHead().getDescriptorBase() == null){
+            addWarning("Could not find a descriptorBase");
+            return null;
+        }
+
+        return ((NCLDoc) root).getHead().getDescriptorBase().getDescriptors();
+    }
+
+
+    private void descriptorReference() {
+        //Search for the interface inside the node
+        Iterable<D> descriptors = getDescriptors();
+        for(D desc : descriptors){
+            if(desc.getId().equals(getDescriptor().getId())){
+                setDescriptor(desc);
+                return;
+            }
+        }
+        //@todo: descritores internos a switch de descritores podem ser utilizados?
+
+        addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
+    }
+
+
+    private void mediaReference() {
+        //Search for the interface inside the node
+        NCLElement body = getParent();
+
+        while(!(body instanceof NCLBody)){
+            body = body.getParent();
+            if(body == null){
+                addWarning("Could not find a body");
+                return;
+            }
+        }
+
+        setRefer(findMedia(((NCLBody) body).getNodes()));
+    }
+
+
+    private M findMedia(Iterable<N> nodes) {
+        for(N n : nodes){
+            if(n instanceof NCLMedia){
+                if(n.getId().equals(getRefer().getId()))
+                    return (M) n;
+            }
+            else if(n instanceof NCLContext){
+                if( ((NCLContext) n).hasNode()){
+                    Iterable<N> cnodes = ((NCLContext) n).getNodes();
+                    M m = findMedia(cnodes);
+                    if(m != null)
+                        return (M) m;
+                }
+            }
+            else if(n instanceof NCLSwitch){
+                if( ((NCLSwitch) n).hasNode()){
+                    Iterable<N> snodes = ((NCLSwitch) n).getNodes();
+                    M m = findMedia(snodes);
+                    if(m != null)
+                        return (M) m;
+                }
+            }
+        }
+
+        addWarning("Could not find media with id: " + getRefer().getId());
+        return null;
     }
 }

@@ -105,7 +105,10 @@ public class NCLMetadata<M extends NCLMetadata> extends NCLElement implements Co
 
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {}
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        cleanWarnings();
+        cleanErrors();
+    }
 //TODO: o parser vai encarar o RDF como xml também, tem que recuprerar de outra forma
 
     @Override

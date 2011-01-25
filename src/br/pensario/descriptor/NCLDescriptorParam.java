@@ -137,6 +137,8 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        cleanWarnings();
+        cleanErrors();
         for(int i = 0; i < attributes.getLength(); i++){
             if(attributes.getLocalName(i).equals("name")){
                     for(NCLAttributes a : NCLAttributes.values()){

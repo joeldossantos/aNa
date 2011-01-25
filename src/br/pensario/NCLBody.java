@@ -650,6 +650,8 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("body")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -697,7 +699,54 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasMeta()){
+            for(M meta : metas){
+                meta.endDocument();
+                addWarning(meta.getWarnings());
+                addError(meta.getErrors());
+            }
+        }
+        if(hasMetadata()){
+            for(MT metadata : metadatas){
+                metadata.endDocument();
+                addWarning(metadata.getWarnings());
+                addError(metadata.getErrors());
+            }
+        }
+        if(hasPort()){
+            for(Pt port : ports){
+                port.endDocument();
+                addWarning(port.getWarnings());
+                addError(port.getErrors());
+            }
+        }
+        if(hasProperty()){
+            for(Pp property : properties){
+                property.endDocument();
+                addWarning(property.getWarnings());
+                addError(property.getErrors());
+            }
+        }
+        if(hasNode()){
+            for(N node : nodes){
+                node.endDocument();
+                addWarning(node.getWarnings());
+                addError(node.getErrors());
+            }
+        }
+        if(hasLink()){
+            for(L link : links){
+                link.endDocument();
+                addWarning(link.getWarnings());
+                addError(link.getErrors());
+            }
         }
     }
 }

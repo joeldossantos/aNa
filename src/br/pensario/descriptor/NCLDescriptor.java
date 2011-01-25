@@ -1,6 +1,7 @@
 package br.pensario.descriptor;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLHead;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLColor;
@@ -635,11 +636,13 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("descriptor")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("region"))
-                        setRegion((R) new NCLRegion(attributes.getValue(i)));//FIXME: apontar para a região verdadeira
+                        setRegion((R) new NCLRegion(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("explicitDur")){
                         String value = attributes.getValue(i);
                         if(value.contains("s"))
@@ -653,22 +656,22 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                     else if(attributes.getLocalName(i).equals("moveLeft")){
                         NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
-                        setMoveLeft((D) d);//FIXME: apontar para o descritor verdadeiro
+                        setMoveLeft((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveRight")){
                         NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
-                        setMoveRight((D) d);//FIXME: apontar para o descritor verdadeiro
+                        setMoveRight((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveDown")){
                         NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
-                        setMoveDown((D) d);//FIXME: apontar para o descritor verdadeiro
+                        setMoveDown((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveUp")){
                         NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
-                        setMoveUp((D) d);//FIXME: apontar para o descritor verdadeiro
+                        setMoveUp((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("focusIndex"))
                         setFocusIndex(new Integer(attributes.getValue(i)));
@@ -697,9 +700,9 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                         }
                     }
                     else if(attributes.getLocalName(i).equals("transIn"))
-                        setTransIn((T) new NCLTransition(attributes.getValue(i)));//FIXME: apontar para a transição verdadeira
+                        setTransIn((T) new NCLTransition(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("transOut"))
-                        setTransOut((T) new NCLTransition(attributes.getValue(i)));//FIXME: apontar para a transição verdadeira
+                        setTransOut((T) new NCLTransition(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("descriptorParam")){
@@ -709,10 +712,151 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
         catch(URISyntaxException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getRegion() != null)
+                regionReference();
+
+            if(getMoveUp() != null || getMoveDown() != null || getMoveLeft() != null || getMoveRight() != null)
+                descriptorReference();
+
+            if(getTransIn() != null)
+                setTransIn(transitionReference(getTransIn()));
+
+            if(getTransOut() != null)
+                setTransOut(transitionReference(getTransOut()));
+        }
+
+        if(hasDescriptorParam()){
+            for(P param : params){
+                param.endDocument();
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
+            }
+        }
+    }
+
+
+    private void regionReference() {
+        //Search for the interface inside the node
+        NCLElement head = getParent();
+
+        while(!(head instanceof NCLHead)){
+            head = head.getParent();
+            if(head == null){
+                addWarning("Could not find a head");
+                return;
+            }
+        }
+
+        if(((NCLHead) head).getRegionBase() == null){
+            addWarning("Could not find a regionBase");
+            return;
+        }
+
+        setRegion(findRegion(((NCLHead) head).getRegionBase().getRegions()));
+    }
+
+
+    private R findRegion(Iterable<R> regions) {
+        for(R reg : regions){
+            if(reg.hasRegion()){
+                NCLRegion r = findRegion(reg.getRegions());
+                if(r != null)
+                    return (R) r;
+            }
+            else{
+                if(reg.getId().equals(getRegion().getId()))
+                    return (R) reg;
+            }
+        }
+
+        addWarning("Could not find region in regionBase with id: " + getRegion().getId());
+        return null;
+    }
+
+
+    private void descriptorReference() {
+        //Search for the interface inside the node
+        NCLElement head = getParent();
+
+        while(!(head instanceof NCLHead)){
+            head = head.getParent();
+            if(head == null){
+                addWarning("Could not find a head");
+                return;
+            }
+        }
+
+        if(((NCLHead) head).getDescriptorBase() == null){
+            addWarning("Could not find a descriptorBase");
+            return;
+        }
+        if(getMoveUp() != null)
+            setMoveUp(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveUp()));
+        if(getMoveDown() != null)
+            setMoveDown(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveDown()));
+        if(getMoveLeft() != null)
+            setMoveLeft(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveLeft()));
+        if(getMoveRight() != null)
+            setMoveRight(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveRight()));
+    }
+
+
+    private D findDescriptor(Iterable<NCLLayoutDescriptor> descriptors, D move) {
+        for(NCLLayoutDescriptor descriptor : descriptors){
+            if(descriptor instanceof NCLDescriptorSwitch){
+                NCLDescriptor desc = findDescriptor(((NCLDescriptorSwitch)descriptor).getDescriptors(), move);
+                if(desc != null)
+                    return (D) desc;
+            }
+            else{
+                int indexa, indexb;
+                if(((NCLDescriptor) descriptor).getFocusIndex() != null) indexa = ((NCLDescriptor) descriptor).getFocusIndex(); else indexa = 0;
+                if(move.getFocusIndex() != null) indexb = move.getFocusIndex(); else indexb = 0;
+                if(indexa == indexb)
+                    return (D) descriptor;
+            }
+        }
+
+        addWarning("Could not find descriptor in descriptorBase with focusIndex: " + move.getFocusIndex());
+        return null;
+    }
+
+
+    private T transitionReference(T transition) {
+        //Search for the interface inside the node
+        NCLElement head = getParent();
+
+        while(!(head instanceof NCLHead)){
+            head = head.getParent();
+            if(head == null){
+                addWarning("Could not find a head");
+                return null;
+            }
+        }
+
+        if(((NCLHead) head).getTransitionBase() == null){
+            addWarning("Could not find a transitionBase");
+            return null;
+        }
+
+        Iterable<T> transitions = ((NCLHead) head).getTransitionBase().getTransitions();
+        for(T trans : transitions){
+            if(trans.getId().equals(transition.getId()))
+             return (T) trans;
+        }
+
+        addWarning("Could not find transition in transitionBase with id: " + transition.getId());
+        return null;
     }
 }

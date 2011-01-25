@@ -1,10 +1,15 @@
 package br.pensario.rule;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLComparator;
 import br.pensario.interfaces.NCLProperty;
+import br.pensario.node.NCLContext;
+import br.pensario.node.NCLMedia;
+import br.pensario.node.NCLNode;
+import br.pensario.node.NCLSwitch;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -179,11 +184,13 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("id"))
                     setId(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("var"))
-                    setVar((P) new NCLProperty(attributes.getValue(i)));//FIXME: tem que apontar para a propriedade verdadeira
+                    setVar((P) new NCLProperty(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("comparator")){
                     for(NCLComparator c : NCLComparator.values()){
                         if(c.toString().equals(attributes.getValue(i)))
@@ -195,7 +202,71 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
             }
         }
         catch(NCLInvalidIdentifierException ex){
-
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getVar() != null)
+            propertyReference();
+    }
+
+
+    private void propertyReference() {
+        //Search for the interface inside the node
+        NCLElement doc = getParent();
+
+        while(!(doc instanceof NCLDoc)){
+            doc = doc.getParent();
+            if(doc == null){
+                addWarning("Could not find a root element");
+                return;
+            }
+        }
+
+        if(((NCLDoc) doc).getBody() == null){
+            addWarning("Could not find a body");
+        }
+
+        setVar(findProperty(((NCLDoc) doc).getBody().getNodes()));
+    }
+
+
+    private P findProperty(Iterable<NCLNode> nodes) {
+        for(NCLNode n : nodes){
+            if(n instanceof NCLMedia){
+                if( ((NCLMedia) n).hasProperty()){
+                    Iterable<P> properties = ((NCLMedia) n).getProperties();
+                    for(P prop : properties){
+                        if(prop.getName().equals(getVar().getName()))
+                            return prop;
+                    }
+                }
+            }
+            else if(n instanceof NCLContext){
+                if( ((NCLContext) n).hasNode()){
+                    Iterable<NCLNode> cnodes = ((NCLContext) n).getNodes();
+                    NCLProperty p = findProperty(cnodes);
+                    if(p != null)
+                        return (P) p;
+                }
+            }
+            else if(n instanceof NCLSwitch){
+                if( ((NCLSwitch) n).hasNode()){
+                    Iterable<NCLNode> snodes = ((NCLSwitch) n).getNodes();
+                    NCLProperty p = findProperty(snodes);
+                    if(p != null)
+                        return (P) p;
+                }
+            }
+        }
+
+        addWarning("Could not find property with name: " + getVar().getName());
+        return null;
     }
 }

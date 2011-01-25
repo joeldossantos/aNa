@@ -402,7 +402,11 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if(localName.equals("importedDocumentBase")){
+        if(localName.equals("head")){
+            cleanWarnings();
+            cleanErrors();
+        }
+        else if(localName.equals("importedDocumentBase")){
             setImportedDocumentBase((IB) new NCLImportedDocumentBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
             getImportedDocumentBase().startElement(uri, localName, qName, attributes);
         }
@@ -435,6 +439,55 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             NCLMetadata m = new NCLMetadata(getReader(), this);
             m.startElement(uri, localName, qName, attributes);
             addMetadata((MT) m); //TODO: retirar o cast. Como melhorar isso?
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getImportedDocumentBase() != null){
+            getImportedDocumentBase().endDocument();
+            addWarning(getImportedDocumentBase().getWarnings());
+            addError(getImportedDocumentBase().getErrors());
+        }
+        if(getRuleBase() != null){
+            getRuleBase().endDocument();
+            addWarning(getRuleBase().getWarnings());
+            addError(getRuleBase().getErrors());
+        }
+        if(getTransitionBase() != null){
+            getTransitionBase().endDocument();
+            addWarning(getTransitionBase().getWarnings());
+            addError(getTransitionBase().getErrors());
+        }
+        if(getRegionBase() != null){
+            getRegionBase().endDocument();
+            addWarning(getRegionBase().getWarnings());
+            addError(getRegionBase().getErrors());
+        }
+        if(getDescriptorBase() != null){
+            getDescriptorBase().endDocument();
+            addWarning(getDescriptorBase().getWarnings());
+            addError(getDescriptorBase().getErrors());
+        }
+        if(getConnectorBase() != null){
+            getConnectorBase().endDocument();
+            addWarning(getConnectorBase().getWarnings());
+            addError(getConnectorBase().getErrors());
+        }
+        if(hasMeta()){
+            for(M meta : metas){
+                meta.endDocument();
+                addWarning(meta.getWarnings());
+                addError(meta.getErrors());
+            }
+        }
+        if(hasMetadata()){
+            for(MT metadata : metadatas){
+                metadata.endDocument();
+                addWarning(metadata.getWarnings());
+                addError(metadata.getErrors());
+            }
         }
     }
 }

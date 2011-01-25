@@ -260,6 +260,8 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if(localName.equals("compoundStatement") && !insideStatement){
+            cleanWarnings();
+            cleanErrors();
             insideStatement = true;
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("operator")){
@@ -284,10 +286,15 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
         }
     }
 
-/*TODO: retirar isso
+
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        getReader().setContentHandler(getParent());
-        insideCondition = false;
-    }*/
+    public void endDocument() {
+        if(hasStatement()){
+            for(S statement : statements){
+                statement.endDocument();
+                addWarning(statement.getWarnings());
+                addError(statement.getErrors());
+            }
+        }
+    }
 }

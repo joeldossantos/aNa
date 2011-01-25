@@ -1,6 +1,7 @@
 package br.pensario.reuse;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLHead;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLImportType;
 import br.pensario.region.NCLRegion;
@@ -184,21 +185,71 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("alias"))
                     setAlias(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("documentURI"))
                     setDocumentURI(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("region")){
-                    setRegion((R) new NCLRegion(attributes.getValue(i)));//FIXME: tem que apontar para a região verdadeira
+                    setRegion((R) new NCLRegion(attributes.getValue(i)));
                 }
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
         catch(URISyntaxException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getRegion() != null)
+            regionReference();
+    }
+
+
+    private void regionReference() {
+        //Search for the interface inside the node
+        NCLElement head = getParent();
+
+        while(!(head instanceof NCLHead)){
+            head = head.getParent();
+            if(head == null){
+                addWarning("Could not find a head");
+                return;
+            }
+        }
+
+        if(((NCLHead) head).getRegionBase() == null){
+            addWarning("Could not find a regionBase");
+        }
+
+        setRegion(findRegion(((NCLHead) head).getRegionBase().getRegions()));
+    }
+
+
+    private R findRegion(Iterable<R> regions) {
+        for(R reg : regions){
+            if(reg.hasRegion()){
+                NCLRegion r = findRegion(reg.getRegions());
+                if(r != null)
+                    return (R) r;
+            }
+            else{
+                if(reg.getId().equals(getRegion().getId()))
+                    return (R) reg;
+            }
+        }
+
+        addWarning("Could not find region in regionBase with id: " + getRegion().getId());
+        return null;
     }
 }

@@ -334,6 +334,8 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("role"))
                     setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
@@ -341,7 +343,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setKey((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                        setKey((P) new NCLConnectorParam(value));
                     }
                     else{
                         for(NCLKey k : NCLKey.values()){
@@ -354,7 +356,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setOffset((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                        setOffset((P) new NCLConnectorParam(value));
                     }
                     else
                         setOffset(new Integer(value));
@@ -374,7 +376,41 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getParamKey() != null)
+            setKey(parameterReference(getParamKey().getId()));
+        if(getParamOffset() != null)
+            setOffset(parameterReference(getParamOffset().getId()));
+    }
+
+
+    private P parameterReference(String id) {
+        NCLElement connector = getParent();
+
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = connector.getParent();
+            if(connector == null){
+                addWarning("Could not find a parent connector");
+                return null;
+            }
+        }
+
+        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        for(P param : params){
+            if(param.getId().equals(id))
+                return param;
+        }
+
+        addWarning("Could not find connectorParam in connector with id: " + id);
+        return null;
     }
 }

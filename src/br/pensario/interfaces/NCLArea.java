@@ -349,6 +349,8 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("id"))
                     setId(attributes.getValue(i));
@@ -383,7 +385,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
             }
         }
         catch(NCLInvalidIdentifierException ex){
-
+            addError(ex.getMessage());
         }
     }
 }

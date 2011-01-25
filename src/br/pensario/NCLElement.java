@@ -1,5 +1,8 @@
 package br.pensario;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -21,6 +24,8 @@ public abstract class NCLElement extends DefaultHandler implements Element {
 
     private NCLElement parent;
     private XMLReader reader;
+    private List<String> warnings = new ArrayList<String>();
+    private List<String> errors = new ArrayList<String>();
 
 
     /**
@@ -103,6 +108,100 @@ public abstract class NCLElement extends DefaultHandler implements Element {
 
 
     /**
+     * Adiciona uma mensagem de aviso relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     * 
+     * @param warning
+     *          String contendo a mensagem de aviso.
+     */
+    public void addWarning(String warning) {
+        warnings.add(warning);
+    }
+
+
+    /**
+     * Adiciona mensagens de aviso relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param warnings
+     *          Lista contendo mensagens de aviso.
+     */
+    public void addWarning(Iterable<String> warnings) {
+        this.warnings.addAll((Collection<? extends String>) warnings);
+    }
+
+
+    /**
+     * Retorna a mensagem de aviso relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @return
+     *          lista de mensagens de aviso.
+     */
+    public Iterable<String> getWarnings() {
+        return warnings;
+    }
+
+
+    /**
+     * Limpa a lista de mensagens de aviso.
+     */
+    public void cleanWarnings() {
+        warnings.clear();
+    }
+
+
+    /**
+     * Adiciona uma mensagem de erro relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param error
+     *          String contendo a mensagem de erro.
+     */
+    public void addError(String error) {
+        errors.add(error);
+    }
+
+
+    /**
+     * Adiciona mensagens de erro relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param errors
+     *          Lista contendo mensagens de erro.
+     */
+    public void addError(Iterable<String> errors) {
+        this.errors.addAll((Collection<? extends String>) errors);
+    }
+
+
+    /**
+     * Retorna a mensagem de erro relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @return
+     *          lista de mensagens de erro.
+     */
+    public Iterable<String> getErrors() {
+        return errors;
+    }
+
+
+    /**
+     * Limpa a lista de mensagens de erro.
+     */
+    public void cleanErrors() {
+        errors.clear();
+    }
+
+
+    /**
      * Implementa o método startElement do parser SAX para a recuperação dos objetos
      * representativos dos elementos NCL a partir de um arquivo XML.
      */
@@ -116,6 +215,15 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     @Override
     public void endElement(String uri, String localName, String qName) {
-        getReader().setContentHandler(getParent());
+        if(getParent() != null)
+            getReader().setContentHandler(getParent());
     }
+
+
+    /**
+     * Implementa o método endDocument do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    @Override
+    public void endDocument() {}
 }

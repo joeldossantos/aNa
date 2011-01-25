@@ -1,5 +1,6 @@
 package br.pensario.node;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.rule.NCLRule;
@@ -150,15 +151,87 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
-        for(int i = 0; i < attributes.getLength(); i++){
-            if(attributes.getLocalName(i).equals("rule"))
-                setRule((R) new NCLRule(attributes.getValue(i)));//FIXME: colocar referência para a regra verdadeira.
-            else if(attributes.getLocalName(i).equals("constituent"))
-                setConstituent((N) new NCLContext(attributes.getValue(i)));//FIXME: colocar referência para o nó verdadeiro.
-        }
+            cleanWarnings();
+            cleanErrors();
+            for(int i = 0; i < attributes.getLength(); i++){
+                if(attributes.getLocalName(i).equals("rule"))
+                    setRule((R) new NCLRule(attributes.getValue(i)));
+                else if(attributes.getLocalName(i).equals("constituent"))
+                    setConstituent((N) new NCLContext(attributes.getValue(i)));
+            }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getConstituent() != null)
+            constituentReference();
+
+        if(getRule() != null)
+            ruleReference();
+    }
+
+
+    private Iterable<R> getRules() {
+        NCLElement root = getParent();
+
+        while(!(root instanceof NCLDoc)){
+            root = root.getParent();
+            if(root == null){
+                addWarning("Could not find root element");
+                return null;
+            }
+        }
+
+        if(((NCLDoc) root).getHead() == null){
+            addWarning("Could not find a head");
+            return null;
+        }
+        if(((NCLDoc) root).getHead().getRuleBase() == null){
+            addWarning("Could not find a ruleBase");
+            return null;
+        }
+
+        return ((NCLDoc) root).getHead().getRuleBase().getRules();
+    }
+
+
+    private void constituentReference() {
+        //Search for a component node in its parent
+        Iterable<N> nodes = ((NCLSwitch) getParent()).getNodes();
+
+        for(N node : nodes){
+            if(node.getId().equals(getConstituent().getId())){
+                setConstituent(node);
+                return;
+            }
+        }
+
+        addWarning("Could not find node in switch with id: " + getConstituent().getId());
+    }
+
+
+    private void ruleReference() {
+        //Search for the interface inside the node
+        Iterable<R> rules = getRules();
+        if(rules == null)
+            return;
+        
+        for(R rul : rules){
+            if(rul.getId().equals(getRule().getId())){
+                setRule(rul);
+                return;
+            }
+        }
+        //@todo: regras internas a regras compostas podem ser utilizadas?
+
+        addWarning("Could not find rule in ruleBase with id: " + getRule().getId());
     }
 }

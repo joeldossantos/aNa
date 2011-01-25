@@ -45,7 +45,7 @@ public interface Element {
      * @return
      *          String contendo o código XML do elemento.
      */
-    public abstract String parse(int ident);
+    public String parse(int ident);
 
 
     /**
@@ -55,5 +55,90 @@ public interface Element {
      * @return
      *          verdadeiro se o elemento estiver de acordo com o padrão.
      */
-    public abstract boolean validate();
+    public boolean validate();
+
+
+    /**
+     * Adiciona uma mensagem de aviso relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param warning
+     *          String contendo a mensagem de aviso.
+     */
+    public void addWarning(String warning);
+
+
+    /**
+     * Adiciona mensagens de aviso relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param warnings
+     *          Lista contendo mensagens de aviso.
+     */
+    public void addWarning(Iterable<String> warnings);
+
+
+    /**
+     * Retorna a mensagem de aviso relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @return
+     *          lista de mensagens de aviso.
+     */
+    public Iterable<String> getWarnings();
+
+
+    /**
+     * Limpa a lista de mensagens de aviso.
+     */
+    public void cleanWarnings();
+
+
+    /**
+     * Adiciona uma mensagem de erro relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param error
+     *          String contendo a mensagem de erro.
+     */
+    public void addError(String error);
+
+
+    /**
+     * Adiciona mensagens de erro relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @param errors
+     *          Lista contendo mensagens de erro.
+     */
+    public void addError(Iterable<String> errors);
+
+
+    /**
+     * Retorna a mensagem de erro relacionado ao elemento NCL em questão.
+     * Uma mensagem será adicionada durante a recuperação do
+     * arquivo XML ou da validação feita pela api.
+     *
+     * @return
+     *          lista de mensagens de erro.
+     */
+    public Iterable<String> getErrors();
+
+
+    /**
+     * Limpa a lista de mensagens de erro.
+     */
+    public void cleanErrors();
+
+
+    /**
+     * Implementa o método endDocument do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    public void endDocument();
 }

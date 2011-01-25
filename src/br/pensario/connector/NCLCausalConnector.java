@@ -237,6 +237,8 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("causalConnector")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -251,25 +253,55 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
                 NCLSimpleCondition c = new NCLSimpleCondition(getReader(), this);
                 setCondition((Co) c); //TODO: retirar o cast. Como melhorar isso?
                 c.startElement(uri, localName, qName, attributes);
+                addWarning(c.getWarnings());
+                addError(c.getErrors());
             }
             else if(localName.equals("compoundCondition")){
                 NCLCompoundCondition c = new NCLCompoundCondition(getReader(), this);
                 setCondition((Co) c); //TODO: retirar o cast. Como melhorar isso?
                 c.startElement(uri, localName, qName, attributes);
+                addWarning(c.getWarnings());
+                addError(c.getErrors());
             }
             else if(localName.equals("simpleAction")){
                 NCLSimpleAction a = new NCLSimpleAction(getReader(), this);
                 setAction((Ac) a); //TODO: retirar o cast. Como melhorar isso?
                 a.startElement(uri, localName, qName, attributes);
+                addWarning(a.getWarnings());
+                addError(a.getErrors());
             }
             else if(localName.equals("compoundAction")){
                 NCLCompoundAction a = new NCLCompoundAction(getReader(), this);
                 setAction((Ac) a); //TODO: retirar o cast. Como melhorar isso?
                 a.startElement(uri, localName, qName, attributes);
+                addWarning(a.getWarnings());
+                addError(a.getErrors());
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasConnectorParam()){
+            for(P param : conn_params){
+                param.endDocument();
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
+            }
+        }
+        if(getCondition() != null){
+            getCondition().endDocument();
+            addWarning(getCondition().getWarnings());
+            addError(getCondition().getErrors());
+        }
+        if(getAction() != null){
+            getAction().endDocument();
+            addWarning(getAction().getWarnings());
+            addError(getAction().getErrors());
         }
     }
 }

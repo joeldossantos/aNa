@@ -374,6 +374,8 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("id"))
                     setId(attributes.getValue(i));
@@ -428,7 +430,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
             }
         }
         catch(NCLInvalidIdentifierException ex){
-
+            addError(ex.getMessage());
         }
     }
 }

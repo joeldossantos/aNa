@@ -424,6 +424,8 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("role"))
                     setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
@@ -431,7 +433,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setKey((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                        setKey((P) new NCLConnectorParam(value));
                     }
                     else{
                         for(NCLKey k : NCLKey.values()){
@@ -444,7 +446,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setDelay((P) new NCLConnectorParam(value));//FIXME: apontar para o parâmetro correto
+                        setDelay((P) new NCLConnectorParam(value));
                     }
                     else{
                         value = value.substring(0, value.length() - 1);
@@ -480,7 +482,41 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getParamDelay() != null)
+            setDelay(parameterReference(getParamDelay().getId()));
+        if(getParamKey() != null)
+            setKey(parameterReference(getParamKey().getId()));
+    }
+
+
+    private P parameterReference(String id) {
+        NCLElement connector = getParent();
+
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = connector.getParent();
+            if(connector == null){
+                addWarning("Could not find a parent connector");
+                return null;
+            }
+        }
+
+        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        for(P param : params){
+            if(param.getId().equals(id))
+                return param;
+        }
+
+        addWarning("Could not find connectorParam in connector with id: " + id);
+        return null;
     }
 }

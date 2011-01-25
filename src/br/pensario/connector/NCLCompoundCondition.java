@@ -370,6 +370,8 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("compoundCondition") && !insideCondition){
+                cleanWarnings();
+                cleanErrors();
                 insideCondition = true;
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("operator")){
@@ -382,7 +384,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
                         String var = attributes.getValue(i);
                         if(var.contains("$")){
                             var = var.substring(1);
-                            setDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                            setDelay((P) new NCLConnectorParam(var));
                         }
                         else{
                             var = var.substring(0, var.length() - 1);
@@ -413,14 +415,53 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
-/*TODO: retirar isso
+
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        getReader().setContentHandler(getParent());
-        insideCondition = false;
-    }*/
+    public void endDocument() {
+        if(getParent() != null){
+            if(getParamDelay() != null)
+                setDelay(parameterReference(getParamDelay().getId()));
+        }
+
+        if(hasCondition()){
+            for(C condition : conditions){
+                condition.endDocument();
+                addWarning(condition.getWarnings());
+                addError(condition.getErrors());
+            }
+        }
+        if(hasStatement()){
+            for(S statement : statements){
+                statement.endDocument();
+                addWarning(statement.getWarnings());
+                addError(statement.getErrors());
+            }
+        }
+    }
+
+
+    private P parameterReference(String id) {
+        NCLElement connector = getParent();
+
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = connector.getParent();
+            if(connector == null){
+                addWarning("Could not find a parent connector");
+                return null;
+            }
+        }
+
+        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        for(P param : params){
+            if(param.getId().equals(id))
+                return param;
+        }
+
+        addWarning("Could not find connectorParam in connector with id: " + id);
+        return null;
+    }
 }

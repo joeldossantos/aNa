@@ -281,6 +281,8 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("compoundAction") && !insideAction){
+                cleanWarnings();
+                cleanErrors();
                 insideAction = true;
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("operator")){
@@ -293,7 +295,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
                         String var = attributes.getValue(i);
                         if(var.contains("$")){
                             var = var.substring(1);
-                            setDelay((P) new NCLConnectorParam(var));//FIXME: apontar para o parâmetro correto
+                            setDelay((P) new NCLConnectorParam(var));
                         }
                         else{
                             var = var.substring(0, var.length() - 1);
@@ -314,14 +316,46 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
-/*TODO: retirar isso
+
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        getReader().setContentHandler(getParent());
-        insideCondition = false;
-    }*/
+    public void endDocument() {
+        if(getParent() != null){
+            if(getParamDelay() != null)
+                setDelay(parameterReference(getParamDelay().getId()));
+        }
+
+        if(hasAction()){
+            for(A action : actions){
+                action.endDocument();
+                addWarning(action.getWarnings());
+                addError(action.getErrors());
+            }
+        }
+    }
+
+
+    private P parameterReference(String id) {
+        NCLElement connector = getParent();
+
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = connector.getParent();
+            if(connector == null){
+                addWarning("Could not find a parent connector");
+                return null;
+            }
+        }
+
+        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        for(P param : params){
+            if(param.getId().equals(id))
+                return param;
+        }
+
+        addWarning("Could not find connectorParam in connector with id: " + id);
+        return null;
+    }
 }

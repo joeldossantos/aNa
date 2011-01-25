@@ -281,6 +281,8 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("descriptorSwitch")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -299,12 +301,12 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
             else if(localName.equals("defaultDescriptor")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("descriptor"))
-                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//FIXME: fazer referência ao descritor correto
+                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));
                 }
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
@@ -313,5 +315,40 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
     public void endElement(String uri, String localName, String qName) {
         if(localName.equals("descriptorSwitch"))
             super.endElement(uri, localName, qName);
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getDefaultDescriptor() != null)
+            defaultDescriptorReference();
+
+        if(hasBind()){
+            for(B bind : binds){
+                bind.endDocument();
+                addWarning(bind.getWarnings());
+                addError(bind.getErrors());
+            }
+        }
+        if(hasDescriptor()){
+            for(D descriptor : descriptors){
+                descriptor.endDocument();
+                addWarning(descriptor.getWarnings());
+                addError(descriptor.getErrors());
+            }
+        }
+    }
+
+
+    private void defaultDescriptorReference() {
+        //Search for a component node in its parent
+        for(D descriptor : descriptors){
+            if(descriptor.getId().equals(getDefaultDescriptor().getId())){
+                setDefaultDescriptor(descriptor);
+                return;
+            }
+        }
+
+        addWarning("Could not find descriptor in descriptorSwitch with id: " + getDefaultDescriptor().getId());
     }
 }

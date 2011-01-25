@@ -147,6 +147,8 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("importedDocumentBase")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -159,7 +161,19 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasImportNCL()){
+            for(I imp : imports){
+                imp.endDocument();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
         }
     }
 }

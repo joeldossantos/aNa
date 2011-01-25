@@ -143,6 +143,8 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("name"))
                     setName(attributes.getValue(i));
@@ -151,7 +153,7 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 }

@@ -234,6 +234,8 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("ruleBase")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -256,7 +258,26 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasImportBase()){
+            for(I imp : imports){
+                imp.endDocument();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
+        }
+        if(hasRule()){
+            for(T rule : rules){
+                rule.endDocument();
+                addWarning(rule.getWarnings());
+                addError(rule.getErrors());
+            }
         }
     }
 }

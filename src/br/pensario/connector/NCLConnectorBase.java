@@ -233,6 +233,8 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("connectorBase")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -242,15 +244,38 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
                 NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
                 i.startElement(uri, localName, qName, attributes);
                 addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+                addWarning(i.getWarnings());
+                addError(i.getErrors());
             }
             else if(localName.equals("causalConnector")){
                 NCLCausalConnector c = new NCLCausalConnector(getReader(), this);
                 c.startElement(uri, localName, qName, attributes);
                 addCausalConnector((C) c); //TODO: retirar o cast. Como melhorar isso?
+                addWarning(c.getWarnings());
+                addError(c.getErrors());
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasImportBase()){
+            for(I imp : imports){
+                imp.endDocument();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
+        }
+        if(hasCausalConnector()){
+            for(C connector : connectors){
+                connector.endDocument();
+                addWarning(connector.getWarnings());
+                addError(connector.getErrors());
+            }
         }
     }
 }

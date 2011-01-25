@@ -204,6 +204,8 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("compositeRule") && !insideRule){
+                cleanWarnings();
+                cleanErrors();
                 insideRule = true;
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
@@ -229,14 +231,19 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
-/*TODO: retirar isso
+
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        getReader().setContentHandler(getParent());
-        insideRule = false;
-    }*/
+    public void endDocument() {
+        if(hasRule()){
+            for(T rule : rules){
+                rule.endDocument();
+                addWarning(rule.getWarnings());
+                addError(rule.getErrors());
+            }
+        }
+    }
 }

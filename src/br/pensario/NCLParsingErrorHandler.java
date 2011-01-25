@@ -3,6 +3,7 @@ package br.pensario;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -18,15 +19,28 @@ import org.xml.sax.SAXParseException;
  */
 public class NCLParsingErrorHandler implements ErrorHandler {
 
-    public void warning(SAXParseException exception) throws SAXException {
-        System.out.println("WARNING: " + exception.getMessage());
+    private XMLReader reader;
+
+
+    public NCLParsingErrorHandler(XMLReader reader) {
+        this.reader = reader;
     }
+
+
+    public void warning(SAXParseException exception) throws SAXException {
+        NCLElement el = (NCLElement) reader.getContentHandler();
+        el.addWarning("PARSER WARNING: " + exception.getMessage());
+    }
+
 
     public void error(SAXParseException exception) throws SAXException {
-        System.out.println("ERROR: " + exception.getMessage());
+        NCLElement el = (NCLElement) reader.getContentHandler();
+        el.addError("PARSER ERROR: " + exception.getMessage());
     }
 
+
     public void fatalError(SAXParseException exception) throws SAXException {
-        System.out.println("FATALERROR: " + exception.getMessage());
+        NCLElement el = (NCLElement) reader.getContentHandler();
+        el.addError("PARSER FATALERROR: " + exception.getMessage());
     }
 }

@@ -168,15 +168,58 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("name"))
-                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//FIXME: fazer referência ao parâmetro correto
+                    setName((C) new NCLConnectorParam(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("value"))
                     setValue(attributes.getValue(i));
             }
         }
         catch(NCLInvalidIdentifierException ex){
-
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() == null)
+            return;
+
+        if(getName() != null)
+            nameReference();
+    }
+
+
+    private void nameReference() {
+        //Search for the connector parameter inside the connector
+        NCLElement link = getParent();
+
+        while(!(link instanceof NCLLink)){
+            link = link.getParent();{
+                if(link == null){
+                    addWarning("Could not find a parent link");
+                    return;
+                }
+            }
+        }
+
+        if(((NCLLink) link).getXconnector() == null){
+            addWarning("Could not find a connector");
+            return;
+        }
+
+        Iterable<C> params = ((NCLLink) link).getXconnector().getConnectorParams();
+
+        for(C param : params){
+            if(param.getName().equals(getName().getName())){
+                setName(param);
+                return;
+            }
+        }
+
+        addWarning("Could not find connectorParam in connector with name: " + getName().getName());
     }
 }

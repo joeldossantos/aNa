@@ -198,7 +198,7 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
             setReader(XMLReaderFactory.createXMLReader());
 
             getReader().setContentHandler(this);
-            getReader().setErrorHandler(new NCLParsingErrorHandler());
+            getReader().setErrorHandler(new NCLParsingErrorHandler(getReader()));
 
             FileReader r = new FileReader(fileURI.toString());
             getReader().parse(new InputSource(r));
@@ -222,6 +222,8 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("ncl")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
@@ -245,13 +247,22 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
-    
+
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        System.out.println("Fim da recuperação do documento NCL");
+    public void endDocument() {
+        if(getHead() != null){
+            getHead().endDocument();
+            addWarning(getHead().getWarnings());
+            addError(getHead().getErrors());
+        }
+        if(getBody() != null){
+            getBody().endDocument();
+            addWarning(getBody().getWarnings());
+            addError(getBody().getErrors());
+        }
     }
 }

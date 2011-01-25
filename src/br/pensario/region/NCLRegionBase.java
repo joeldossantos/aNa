@@ -309,13 +309,15 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("regionBase")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("device"))
                         setDevice(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("region"))
-                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));//FIXME: tem que apontar para a região verdadeira
+                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("importBase")){
@@ -330,7 +332,49 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getParentRegion() != null)
+                setParentRegion(findRegion(getRegions()));
+        }
+
+        if(hasImportBase()){
+            for(I imp : imports){
+                imp.endDocument();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
+        }
+        if(hasRegion()){
+            for(R region : regions){
+                region.endDocument();
+                addWarning(region.getWarnings());
+                addError(region.getErrors());
+            }
+        }
+    }
+
+
+    private R findRegion(Iterable<R> regions) {
+        for(R reg : regions){
+            if(reg.hasRegion()){
+                NCLRegion r = findRegion(reg.getRegions());
+                if(r != null)
+                    return (R) r;
+            }
+            else{
+                if(reg.getId().equals(getParentRegion().getId()))
+                    return (R) reg;
+            }
+        }
+
+        addWarning("Could not find region in regionBase with id: " + getParentRegion().getId());
+        return null;
     }
 }

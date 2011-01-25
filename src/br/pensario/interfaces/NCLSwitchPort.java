@@ -172,6 +172,8 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
+            cleanWarnings();
+            cleanErrors();
             if(localName.equals("switchPort")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
@@ -185,7 +187,19 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
+        }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(hasMapping()){
+            for(M mapping : mappings){
+                mapping.endDocument();
+                addWarning(mapping.getWarnings());
+                addError(mapping.getErrors());
+            }
         }
     }
 }

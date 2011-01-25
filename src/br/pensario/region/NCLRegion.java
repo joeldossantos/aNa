@@ -663,6 +663,8 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(!insideRegion){
+                cleanWarnings();
+                cleanErrors();
                 insideRegion = true;
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
@@ -723,14 +725,19 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
     }
 
-/*TODO: retirar isso
+
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        getReader().setContentHandler(getParent());
-        insideRegion = false;
-    }*/
+    public void endDocument() {
+        if(hasRegion()){
+            for(R region : regions){
+                region.endDocument();
+                addWarning(region.getWarnings());
+                addError(region.getErrors());
+            }
+        }
+    }
 }

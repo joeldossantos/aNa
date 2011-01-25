@@ -29,6 +29,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLNamespace(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -44,6 +45,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLOperator(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -63,6 +65,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLComparator(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -92,6 +95,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLColor(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -107,6 +111,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLConditionOperator(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -122,6 +127,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLActionOperator(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -154,6 +160,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLMimeType(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -200,6 +207,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLSystemVariable(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -220,6 +228,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLArgSystemVariable(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -251,6 +260,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLDefaultConditionRole(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -270,6 +280,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLDefaultActionRole(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -291,6 +302,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLUriType(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -367,6 +379,7 @@ public abstract class NCLValues {
         
         private String name;
         private NCLKey(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -383,6 +396,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLEventType(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -401,6 +415,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLEventTransition(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -420,6 +435,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLEventAction(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -438,6 +454,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLAttributeType(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -454,6 +471,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLDefaultValueAssessment(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -470,6 +488,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLInstanceType(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -488,6 +507,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLTransitionType(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -522,6 +542,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLTransitionSubtype(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -537,6 +558,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLTransitionDirection(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
     
@@ -578,6 +600,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLAttributes(String name) { this.name = name;}
+        @Override
         public String toString() { return name; }
     }
 
@@ -592,6 +615,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLParamInstance(String name) { this.name = name;}
+        @Override
         public String toString() { return name;}
     }
 
@@ -606,6 +630,7 @@ public abstract class NCLValues {
 
         private String name;
         private NCLImportType(String name) { this.name = name;}
+        @Override
         public String toString() { return name;}
     }
 }

@@ -1,5 +1,6 @@
 package br.pensario.link;
 
+import br.pensario.NCLDoc;
 import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
@@ -313,11 +314,13 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
             if(localName.equals("link")){
+                cleanWarnings();
+                cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("xconnector"))
-                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));//FIXME: reparar a referência ao switch correto
+                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));
                 }
             }
             else if(localName.equals("linkParam")){
@@ -332,7 +335,74 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
             }
         }
         catch(NCLInvalidIdentifierException ex){
-            //TODO: fazer o que?
+            addError(ex.getMessage());
         }
+    }
+
+
+    @Override
+    public void endDocument() {
+        if(getParent() != null){
+            if(getXconnector() != null)
+                connectorReference();
+        }
+
+        if(hasLinkParam()){
+            for(P param : linkParams){
+                param.endDocument();
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
+            }
+        }
+        if(hasBind()){
+            for(B bind : binds){
+                bind.endDocument();
+                addWarning(bind.getWarnings());
+                addError(bind.getErrors());
+            }
+        }
+    }
+
+
+    private Iterable<C> getConnectors() {
+        NCLElement root = getParent();
+
+        while(!(root instanceof NCLDoc)){
+            root = root.getParent();
+            if(root == null){
+                addWarning("Could not find a root element");
+                return null;
+            }
+        }
+
+        if(((NCLDoc) root).getHead() == null){
+            addWarning("Could not find a head");
+            return null;
+        }
+        if(((NCLDoc) root).getHead().getConnectorBase() == null){
+            addWarning("Could not find a connectorBase");
+            return null;
+        }
+
+        return ((NCLDoc) root).getHead().getConnectorBase().getCausalConnectors();
+    }
+
+
+    private void connectorReference() {
+        //Search for the connector inside the base
+        Iterable<C> connectors = getConnectors();
+        if(connectors == null){
+            addWarning("Could not find connector in connectorBase with id: " + getXconnector().getId());
+            return;
+        }
+
+        for(C connector : connectors){
+            if(connector.getId().equals(getXconnector().getId())){
+                setXconnector(connector);
+                return;
+            }
+        }
+
+        addWarning("Could not find connector in connectorBase with id: " + getXconnector().getId());
     }
 }
