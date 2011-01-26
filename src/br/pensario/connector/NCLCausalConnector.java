@@ -66,7 +66,14 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      *          elemento representando uma condição do conector.
      */    
     public void setCondition(Co condition) {
+        //Retira o parentesco do condition atual
+        if(this.condition != null)
+            this.condition.setParent(null);
+
         this.condition = condition;
+        //Se condition existe, atribui este como seu parente
+        if(this.condition != null)
+            this.condition.setParent(this);
     }
     
     
@@ -88,7 +95,14 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      *          elemento representando uma ação do conector.
      */    
     public void setAction(Ac action) {
+        //Retira o parentesco do action atual
+        if(this.action != null)
+            this.action.setParent(null);
+
         this.action = action;
+        //Se action existe, atribui este como seu parente
+        if(this.action != null)
+            this.action.setParent(this);
     }
     
     
@@ -107,14 +121,21 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      * Adiciona um parâmetro ao conector causal NCL.     
      * 
      * @param param
-     *          nome do parâmetro a ser adicionado ao conector.
+     *          parâmetro a ser adicionado ao conector.
      * @return
      *          verdadeiro se o parâmetro for adicionado.
      *
      * @see TreeSet#add
      */    
     public boolean addConnectorParam(P param) throws NCLInvalidIdentifierException {
-        return conn_params.add(param);
+        if(conn_params.add(param)){
+            //Se param existe, atribui este como seu parente
+            if(param != null)
+                param.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
     
@@ -129,9 +150,29 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
     public boolean removeConnectorParam(String name) {
         for(P connp : conn_params){
             if(connp.getName().equals(name))
-                return conn_params.remove(connp);
+                return removeConnectorParam(connp);
         }
 
+        return false;
+    }
+
+
+    /**
+     * Remove um parâmetro do conector causal.
+     *
+     * @param param
+     *          parâmetro a ser removido do conector.
+     * @return
+     *          verdadeiro se o parâmetro for removido.
+     */
+    public boolean removeConnectorParam(P param) {
+        if(conn_params.remove(param)){
+            //Se param existe, retira o seu parentesco
+            if(param != null)
+                param.setParent(null);
+
+            return true;
+        }
         return false;
     }
 
@@ -245,37 +286,25 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
                 }
             }
             else if(localName.equals("connectorParam")){
-                NCLConnectorParam p = new NCLConnectorParam(getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addConnectorParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+                P child = createConnectorParam();
+                child.startElement(uri, localName, qName, attributes);
+                addConnectorParam(child);
             }
             else if(localName.equals("simpleCondition")){
-                NCLSimpleCondition c = new NCLSimpleCondition(getReader(), this);
-                setCondition((Co) c); //TODO: retirar o cast. Como melhorar isso?
-                c.startElement(uri, localName, qName, attributes);
-                addWarning(c.getWarnings());
-                addError(c.getErrors());
+                setCondition(createSimpleCondition());
+                getCondition().startElement(uri, localName, qName, attributes);
             }
             else if(localName.equals("compoundCondition")){
-                NCLCompoundCondition c = new NCLCompoundCondition(getReader(), this);
-                setCondition((Co) c); //TODO: retirar o cast. Como melhorar isso?
-                c.startElement(uri, localName, qName, attributes);
-                addWarning(c.getWarnings());
-                addError(c.getErrors());
+                setCondition(createCompoundCondition());
+                getCondition().startElement(uri, localName, qName, attributes);
             }
             else if(localName.equals("simpleAction")){
-                NCLSimpleAction a = new NCLSimpleAction(getReader(), this);
-                setAction((Ac) a); //TODO: retirar o cast. Como melhorar isso?
-                a.startElement(uri, localName, qName, attributes);
-                addWarning(a.getWarnings());
-                addError(a.getErrors());
+                setAction(createSimpleAction());
+                getAction().startElement(uri, localName, qName, attributes);
             }
             else if(localName.equals("compoundAction")){
-                NCLCompoundAction a = new NCLCompoundAction(getReader(), this);
-                setAction((Ac) a); //TODO: retirar o cast. Como melhorar isso?
-                a.startElement(uri, localName, qName, attributes);
-                addWarning(a.getWarnings());
-                addError(a.getErrors());
+                setAction(createCompoundAction());
+                getAction().startElement(uri, localName, qName, attributes);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -303,5 +332,65 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
             addWarning(getAction().getWarnings());
             addError(getAction().getErrors());
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>connectorParam</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>connectorParam</i>.
+     */
+    protected P createConnectorParam() {
+        return (P) new NCLConnectorParam(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>simpleCondition</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>simpleCondition</i>.
+     */
+    protected Co createSimpleCondition() {
+        return (Co) new NCLSimpleCondition(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compoundCondition</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compoundCondition</i>.
+     */
+    protected Co createCompoundCondition() {
+        return (Co) new NCLCompoundCondition(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>simpleAction</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>simpleAction</i>.
+     */
+    protected Ac createSimpleAction() {
+        return (Ac) new NCLSimpleAction(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compoundAction</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compoundAction</i>.
+     */
+    protected Ac createCompoundAction() {
+        return (Ac) new NCLCompoundAction(getReader(), this);
     }
 }

@@ -193,7 +193,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
                 else if(attributes.getLocalName(i).equals("documentURI"))
                     setDocumentURI(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("region")){
-                    setRegion((R) new NCLRegion(attributes.getValue(i)));
+                    setRegion((R) new NCLRegion(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
         }

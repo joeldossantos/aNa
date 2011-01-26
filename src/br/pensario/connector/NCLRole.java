@@ -1,5 +1,6 @@
 package br.pensario.connector;
 
+import br.pensario.NCLElement;
 import br.pensario.NCLValues.NCLDefaultActionRole;
 import br.pensario.NCLValues.NCLDefaultConditionRole;
 
@@ -21,6 +22,8 @@ public class NCLRole {
     private String name;
     private NCLDefaultConditionRole cname;
     private NCLDefaultActionRole aname;
+
+    private NCLElement parent;
     
     
     /**
@@ -137,5 +140,33 @@ public class NCLRole {
      */
     public NCLDefaultActionRole getActionName() {
         return aname;
+    }
+
+
+    /**
+     * Atribui um elemento pai ao papel.
+     *
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     * @return
+     *          verdadeiro se o elemento pai foi atribuido. Caso o papel já possua um elemento pai, o retorno será falso.
+     */
+    public boolean setParent(NCLElement parent) {
+        if(this.parent != null && parent != null)
+            return false;
+
+        this.parent = parent;
+        return true;
+    }
+
+
+    /**
+     * Retorna o elemento pai do papel.
+     *
+     * @return
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLElement getParent() {
+        return parent;
     }
 }

@@ -62,7 +62,14 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * @see TreeSet#add
      */
     public boolean addRule(T rule) {
-        return rules.add(rule);
+        if(rules.add(rule)){
+            //Se rule existe, atribui este como seu parente
+            if(rule != null)
+                rule.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -77,7 +84,14 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * @see TreeSet#remove
      */
     public boolean removeRule(T rule) {
-        return rules.remove(rule);
+        if(rules.remove(rule)){
+            //Se rule existe, retira o seu parentesco
+            if(rule != null)
+                rule.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -125,7 +139,14 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * @see TreeSet#add
      */
     public boolean addImportBase(I importBase) {
-        return imports.add(importBase);
+        if(imports.add(importBase)){
+            //Se importBase existe, atribui este como seu parente
+            if(importBase != null)
+                importBase.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -138,7 +159,14 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * @see TreeSet#remove
      */
     public boolean removeImportBase(I importBase) {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            //Se importBase existe, retira o seu parentesco
+            if(importBase != null)
+                importBase.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -242,19 +270,19 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
                 }
             }
             else if(localName.equals("importBase")){
-                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
-                i.startElement(uri, localName, qName, attributes);
-                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+                I child = createImportBase();
+                child.startElement(uri, localName, qName, attributes);
+                addImportBase(child);
             }
             else if(localName.equals("rule")){
-                NCLRule r = new NCLRule(getReader(), this);
-                r.startElement(uri, localName, qName, attributes);
-                addRule((T) r); //TODO: retirar o cast. Como melhorar isso?
+                T child = createRule();
+                child.startElement(uri, localName, qName, attributes);
+                addRule(child);
             }
             else if(localName.equals("compositeRule")){
-                NCLCompositeRule r = new NCLCompositeRule(getReader(), this);
-                r.startElement(uri, localName, qName, attributes);
-                addRule((T) r); //TODO: retirar o cast. Como melhorar isso?
+                T child = createCompositeRule();
+                child.startElement(uri, localName, qName, attributes);
+                addRule(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -279,5 +307,41 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
                 addError(rule.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importBase</i>.
+     */
+    protected I createImportBase() {
+        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>rule</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>rule</i>.
+     */
+    protected T createRule() {
+        return (T) new NCLRule(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compositeRule</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compositeRule</i>.
+     */
+    protected T createCompositeRule() {
+        return (T) new NCLCompositeRule(getReader(), this);
     }
 }

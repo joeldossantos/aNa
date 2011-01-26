@@ -86,7 +86,14 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * @see NCLValueAssessment
      */
     public void setValueAssessment(V value) {
+        //Retira o parentesco do valueAssessment atual
+        if(this.valueAssessment != null)
+            this.valueAssessment.setParent(null);
+
         this.valueAssessment = value;
+        //Set valueAssessment existe, atribui este como seu parente
+        if(this.valueAssessment != null)
+            this.valueAssessment.setParent(this);
     }
     
     
@@ -117,7 +124,14 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
         if(attributeAssessments.size() == 2)
             throw new Exception("can't have more than two attributes");
         
-        return attributeAssessments.add(attribute);
+        if(attributeAssessments.add(attribute)){
+            //Se attribute existe, atribui este como seu parente
+            if(attribute != null)
+                attribute.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -132,7 +146,14 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * @see TreeSet#remove
      */
     public boolean removeAttributeAssessment(A attribute) {
-        return attributeAssessments.remove(attribute);
+        if(attributeAssessments.remove(attribute)){
+            //Se attribute existe, retira o seu parentesco
+            if(attribute != null)
+                attribute.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -279,14 +300,14 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
                 }
             }
             else if(localName.equals("attributeAssessment")){
-                NCLAttributeAssessment a = new NCLAttributeAssessment(getReader(), this);
-                a.startElement(uri, localName, qName, attributes);
-                addAttributeAssessment((A) a); //TODO: retirar o cast. Como melhorar isso?
+                A child = createAttributeAssessment();
+                child.startElement(uri, localName, qName, attributes);
+                addAttributeAssessment(child);
             }
             else if(localName.equals("valueAssessment")){
-                NCLValueAssessment v = new NCLValueAssessment(getReader(), this);
-                v.startElement(uri, localName, qName, attributes);
-                setValueAssessment((V) v); //TODO: retirar o cast. Como melhorar isso?
+                V child = createValueAssessment();
+                child.startElement(uri, localName, qName, attributes);
+                setValueAssessment(child);
             }
         }
         catch(Exception ex){
@@ -309,5 +330,29 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             addWarning(getValueAssessment().getWarnings());
             addError(getValueAssessment().getErrors());
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>attributeAssessment</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>attributeAssessment</i>.
+     */
+    protected A createAttributeAssessment() {
+        return (A) new NCLAttributeAssessment(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>valueAssessment</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>valueAssessment</i>.
+     */
+    protected V createValueAssessment() {
+        return (V) new NCLValueAssessment(getReader(), this);
     }
 }

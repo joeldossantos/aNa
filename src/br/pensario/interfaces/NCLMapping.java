@@ -177,10 +177,10 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
             cleanWarnings();
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("component"))
+                if(attributes.getLocalName(i).equals("component"))//TODO: precisa retirar cast?
                     setComponent((N) new NCLContext(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("interface"))
-                    setInterface((I) new NCLPort(attributes.getValue(i)));
+                    setInterface((I) new NCLPort(attributes.getValue(i)));//TODO: precisa retirar cast?
             }
         }
         catch(NCLInvalidIdentifierException ex){

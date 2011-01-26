@@ -179,7 +179,14 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      * @see TreeSet#add
      */
     public boolean addBindParam(P param) {
-        return bindParams.add(param);
+        if(bindParams.add(param)){
+            //Se param existe, atribui este como seu parente
+            if(param != null)
+                param.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -194,7 +201,14 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      * @see TreeSet#remove
      */
     public boolean removeBindParam(P param) {
-        return bindParams.remove(param);
+        if(bindParams.remove(param)){
+            //Se param existe, retira o seu parentesco
+            if(param != null)
+                param.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -284,17 +298,26 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
 
         // Compara pelo componente
         if(comp == 0){
-            comp = getComponent().compareTo(other.getComponent());
+            if(getComponent() != null)
+                comp = getComponent().compareTo(other.getComponent());
+            else
+                comp = 1;
         }
 
         // Compara pela interface
         if(comp == 0){
-            comp = getInterface().compareTo(other.getInterface());
+            if(getInterface() != null)
+                comp = getInterface().compareTo(other.getInterface());
+            else
+                comp = 1;
         }
 
         // Compara pelo descritor
         if(comp == 0){
-            comp = getDescriptor().compareTo(other.getDescriptor());
+            if(getDescriptor() != null)
+                comp = getDescriptor().compareTo(other.getDescriptor());
+            else
+                comp = 1;
         }
 
         // Compara o número de parâmetros
@@ -375,19 +398,19 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
                 cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("role"))
-                        setRole((R) new NCLRole(attributes.getValue(i)));
+                        setRole((R) new NCLRole(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("component"))
-                        setComponent((N) new NCLContext(attributes.getValue(i)));
+                        setComponent((N) new NCLContext(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("interface"))
-                        setInterface((I) new NCLPort(attributes.getValue(i)));
+                        setInterface((I) new NCLPort(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("descriptor"))
-                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
             else if(localName.equals("bindParam")){
-                NCLParam p = new NCLParam(NCLParamInstance.BINDPARAM, getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addBindParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+                P child = createBindParam();
+                child.startElement(uri, localName, qName, attributes);
+                addBindParam(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -427,12 +450,18 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         }
 
         NCLCondition cond = ((NCLLink) getParent()).getXconnector().getCondition();
-        if(cond != null)
-            setRole(findRole(cond));
+        if(cond != null){
+            NCLRole r = findRole(cond);
+            if(r != null)
+                setRole((R) r);
+        }
 
         NCLAction act = ((NCLLink) getParent()).getXconnector().getAction();
-        if(act != null)
-            setRole(findRole(act));
+        if(act != null){
+            NCLRole r = findRole(act);
+            if(r != null)
+                setRole((R) r);
+        }
     }
 
 
@@ -611,5 +640,17 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         //@todo: descritores internos a switch de descritores podem ser utilizados?
 
         addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>bindParam</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>bindParam</i>.
+     */
+    protected P createBindParam() {
+        return (P) new NCLParam(NCLParamInstance.BINDPARAM, getReader(), this);
     }
 }

@@ -69,7 +69,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      *          elemento representando a base de documentos importados a ser utilizada pelo cabeçalho.
      */
     public void setImportedDocumentBase(IB importedDocumentBase) {
+        //Retira o parentesco do importedDocumentBase atual
+        if(this.importedDocumentBase != null)
+            this.importedDocumentBase.setParent(null);
+
         this.importedDocumentBase = importedDocumentBase;
+        //Se importedDocumentBase existe, atribui este como seu parente
+        if(this.importedDocumentBase != null)
+            this.importedDocumentBase.setParent(this);
     }
 
 
@@ -92,7 +99,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      *          elemento representando a base de regras NCL a ser utilizada pelo cabeçalho.
      */
     public void setRuleBase(RLB ruleBase) {
+        //Retira o parentesco do ruleBase atual
+        if(this.ruleBase != null)
+            this.ruleBase.setParent(null);
+
         this.ruleBase = ruleBase;
+        //Se ruleBase existe, atribui este como seu parente
+        if(this.ruleBase != null)
+            this.ruleBase.setParent(this);
     }
 
 
@@ -115,7 +129,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      *          elemento representando a base de transições NCL a ser utilizada pelo cabeçalho.
      */
     public void setTransitionBase(TB transitionBase) {
+        //Retira o parentesco do transitionBase atual
+        if(this.transitionBase != null)
+            this.transitionBase.setParent(null);
+
         this.transitionBase = transitionBase;
+        //Se transitionBase existe, atribui este como seu parente
+        if(this.transitionBase != null)
+            this.transitionBase.setParent(this);
     }
 
 
@@ -138,7 +159,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      *          elemento representando a base de regiões NCL a ser utilizada pelo cabeçalho.
      */
     public void setRegionBase(RB regionBase) {
+        //Retira o parentesco do regionBase atual
+        if(this.regionBase != null)
+            this.regionBase.setParent(null);
+
         this.regionBase = regionBase;
+        //Se regionBase existe, atribui este como seu parente
+        if(this.regionBase != null)
+            this.regionBase.setParent(this);
     }
 
 
@@ -161,7 +189,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      *          elemento representando a base de descritores NCL a ser utilizada pelo cabeçalho.
      */    
     public void setDescriptorBase(DB descriptorBase) {
+        //Retira o parentesco do descriptorBase atual
+        if(this.descriptorBase != null)
+            this.descriptorBase.setParent(null);
+
         this.descriptorBase = descriptorBase;
+        //Se descriptorBase existe, atribui este como seu parente
+        if(this.descriptorBase != null)
+            this.descriptorBase.setParent(this);
     }
 
     
@@ -183,7 +218,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      *          elemento representando a base de conectores NCL a ser utilizada pelo cabeçalho.
      */
     public void setConnectorBase(CB connectorBase) {
+        //Retira o parentesco do connectorBase atual
+        if(this.connectorBase != null)
+            this.connectorBase.setParent(null);
+
         this.connectorBase = connectorBase;
+        //Se connectorBase existe, atribui este como seu parente
+        if(this.connectorBase != null)
+            this.connectorBase.setParent(this);
     }
 
     
@@ -209,7 +251,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * @see TreeSet#add
      */
     public boolean addMeta(M meta) {
-        return metas.add(meta);
+        if(metas.add(meta)){
+            //Se meta existe, atribui este como seu parente
+            if(meta != null)
+                meta.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -224,7 +273,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * @see TreeSet#remove
      */
     public boolean removeMeta(M meta) {
-        return metas.remove(meta);
+        if(metas.remove(meta)){
+            //Se meta existe, retira o seu parentesco
+            if(meta != null)
+                meta.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -274,7 +330,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * @see TreeSet#add
      */
     public boolean addMetadata(MT metadata) {
-        return metadatas.add(metadata);
+        if(metadatas.add(metadata)){
+            //Se metadata existe, atribui este como seu parente
+            if(metadata != null)
+                metadata.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -289,7 +352,14 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * @see TreeSet#remove
      */
     public boolean removeMetadata(MT metadata) {
-        return metadatas.remove(metadata);
+        if(metadatas.remove(metadata)){
+            //Se metadata existe, retira o seu parentesco
+            if(metadata != null)
+                metadata.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -407,38 +477,38 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             cleanErrors();
         }
         else if(localName.equals("importedDocumentBase")){
-            setImportedDocumentBase((IB) new NCLImportedDocumentBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            setImportedDocumentBase(createImportedDocumentBase());
             getImportedDocumentBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("ruleBase")){
-            setRuleBase((RLB) new NCLRuleBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            setRuleBase(createRuleBase());
             getRuleBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("transitionBase")){
-            setTransitionBase((TB) new NCLTransitionBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            setTransitionBase(createTransitionBase());
             getTransitionBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("regionBase")){
-            setRegionBase((RB) new NCLRegionBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            setRegionBase(createRegionBase());
             getRegionBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("descriptorBase")){
-            setDescriptorBase((DB) new NCLDescriptorBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            setDescriptorBase(createDescriptorBase());
             getDescriptorBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("connectorBase")){
-            setConnectorBase((CB) new NCLConnectorBase(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+            setConnectorBase(createConnectorBase());
             getConnectorBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("meta")){
-            NCLMeta m = new NCLMeta(getReader(), this);
-            m.startElement(uri, localName, qName, attributes);
-            addMeta((M) m); //TODO: retirar o cast. Como melhorar isso?
+            M child = createMeta();
+            child.startElement(uri, localName, qName, attributes);
+            addMeta(child);
         }
         else if(localName.equals("metadata")){
-            NCLMetadata m = new NCLMetadata(getReader(), this);
-            m.startElement(uri, localName, qName, attributes);
-            addMetadata((MT) m); //TODO: retirar o cast. Como melhorar isso?
+            MT child = createMetadata();
+            child.startElement(uri, localName, qName, attributes);
+            addMetadata(child);
         }
     }
 
@@ -489,5 +559,101 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
                 addError(metadata.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importedDocumentBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importedDocumentBase</i>.
+     */
+    protected IB createImportedDocumentBase() {
+        return (IB) new NCLImportedDocumentBase(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>ruleBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>ruleBase</i>.
+     */
+    protected RLB createRuleBase() {
+        return (RLB) new NCLRuleBase(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>transitionBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>transitionBase</i>.
+     */
+    protected TB createTransitionBase() {
+        return (TB) new NCLTransitionBase(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>regionBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>regionBase</i>.
+     */
+    protected RB createRegionBase() {
+        return (RB) new NCLRegionBase(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>descriptorBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>descriptorBase</i>.
+     */
+    protected DB createDescriptorBase() {
+        return (DB) new NCLDescriptorBase(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>connectorBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>connectorBase</i>.
+     */
+    protected CB createConnectorBase() {
+        return (CB) new NCLConnectorBase(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>meta</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>meta</i>.
+     */
+    protected M createMeta() {
+        return (M) new NCLMeta(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>metadata</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>metadata</i>.
+     */
+    protected MT createMetadata() {
+        return (MT) new NCLMetadata(getReader(), this);
     }
 }

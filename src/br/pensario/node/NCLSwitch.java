@@ -99,7 +99,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @see TreeSet#add
      */
     public boolean addPort(P port) {
-        return ports.add(port);
+        if(ports.add(port)){
+            //Se port existe, atribui este como seu parente
+            if(port != null)
+                port.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -116,7 +123,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     public boolean removePort(String id) {
         for(P port : ports){
             if(port.getId().equals(id))
-                return ports.remove(port);
+                return removePort(port);
         }
         return false;
     }
@@ -133,7 +140,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @see TreeSet#remove
      */
     public boolean removePort(P port) {
-        return ports.remove(port);
+        if(ports.remove(port)){
+            //Se port existe, retira o seu parentesco
+            if(port != null)
+                port.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -220,7 +234,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @see TreeSet#add
      */
     public boolean addBind(B bind) {
-        return binds.add(bind);
+        if(binds.add(bind)){
+            //Se bind existe, atribui este como seu parente
+            if(bind != null)
+                bind.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -233,7 +254,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @see TreeSet#remove
      */
     public boolean removeBind(B bind) {
-        return binds.remove(bind);
+        if(binds.remove(bind)){
+            //Se bind existe, retira o seu parentesco
+            if(bind != null)
+                bind.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -281,7 +309,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @see TreeSet#add
      */
     public boolean addNode(N node) {
-        return nodes.add(node);
+        if(nodes.add(node)){
+            //Se node existe, atribui este como seu parente
+            if(node != null)
+                node.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -298,7 +333,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     public boolean removeNode(String id) {
         for(N node : nodes){
             if(node.getId().equals(id))
-                return nodes.remove(node);
+                return removeNode(node);
         }
         return false;
     }
@@ -315,7 +350,14 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @see TreeSet#remove
      */
     public boolean removeNode(N node) {
-        return nodes.remove(node);
+        if(nodes.remove(node)){
+            //Se node existe, retira o seu parentesco
+            if(node != null)
+                node.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -457,39 +499,39 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((S) new NCLSwitch(attributes.getValue(i)));
+                        setRefer((S) new NCLSwitch(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
             else if(localName.equals("bindRule")){
-                NCLBindRule b = new NCLBindRule(getReader(), this);
-                b.startElement(uri, localName, qName, attributes);
-                addBind((B) b); //TODO: retirar o cast. Como melhorar isso?
+                B child = createBindRule();
+                child.startElement(uri, localName, qName, attributes);
+                addBind(child);
             }
             else if(localName.equals("defaultComponent")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("component"))
-                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));
+                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
             else if(localName.equals("switchPort")){
-                NCLSwitchPort p = new NCLSwitchPort(getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addPort((P) p); //TODO: retirar o cast. Como melhorar isso?
+                P child = createSwitchPort();
+                child.startElement(uri, localName, qName, attributes);
+                addPort(child);
             }
             else if(localName.equals("media")){
-                NCLMedia m = new NCLMedia(getReader(), this);
-                m.startElement(uri, localName, qName, attributes);
-                addNode((N) m); //TODO: retirar o cast. Como melhorar isso?
+                N child = createMedia();
+                child.startElement(uri, localName, qName, attributes);
+                addNode(child);
             }
             else if(localName.equals("context")){
-                NCLContext c = new NCLContext(getReader(), this);
-                c.startElement(uri, localName, qName, attributes);
-                addNode((N) c); //TODO: retirar o cast. Como melhorar isso?
+                N child = createContext();
+                child.startElement(uri, localName, qName, attributes);
+                addNode(child);
             }
             else if(localName.equals("switch") && insideSwitch){
-                NCLSwitch s = new NCLSwitch(getReader(), this);
-                s.startElement(uri, localName, qName, attributes);
-                addNode((N) s); //TODO: retirar o cast. Como melhorar isso?
+                N child = createSwitch();
+                child.startElement(uri, localName, qName, attributes);
+                addNode(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -592,5 +634,65 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
 
         addWarning("Could not find switch with id: " + getRefer().getId());
         return null;
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>bindRule</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>bindRule</i>.
+     */
+    protected B createBindRule() {
+        return (B) new NCLBindRule(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>switchPort</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>switchPort</i>.
+     */
+    protected P createSwitchPort() {
+        return (P) new NCLSwitchPort(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>media</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>media</i>.
+     */
+    protected N createMedia() {
+        return (N) new NCLMedia(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>context</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>context</i>.
+     */
+    protected N createContext() {
+        return (N) new NCLContext(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>switch</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>switch</i>.
+     */
+    protected N createSwitch() {
+        return (N) new NCLSwitch(getReader(), this);
     }
 }

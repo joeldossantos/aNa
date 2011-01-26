@@ -67,7 +67,14 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * @see TreeSet#add
      */
     public boolean addDescriptor(D descriptor) {
-        return descriptors.add(descriptor);
+        if(descriptors.add(descriptor)){
+            //Se descriptor existe, atribui este como seu parente
+            if(descriptor != null)
+                descriptor.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -84,7 +91,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
     public boolean removeDescriptor(String id) {
         for(D descriptor : descriptors){
             if(descriptor.getId().equals(id))
-                return descriptors.remove(descriptor);
+                return removeDescriptor(descriptor);
         }
         return false;
     }
@@ -99,7 +106,14 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(D descriptor) {
-        return descriptors.remove(descriptor);
+        if(descriptors.remove(descriptor)){
+            //Se descriptor existe, retira o seu parentesco
+            if(descriptor != null)
+                descriptor.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -145,7 +159,14 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * @see TreeSet#add
      */
     public boolean addBind(B bind) {
-        return binds.add(bind);
+        if(binds.add(bind)){
+            //Se bind existe, atribui este como seu parente
+            if(bind != null)
+                bind.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -158,7 +179,14 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * @see TreeSet#remove
      */
     public boolean removeBind(B bind) {
-        return binds.remove(bind);
+        if(binds.remove(bind)){
+            //Se bind existe, retira o seu parentesco
+            if(bind != null)
+                bind.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -289,19 +317,19 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
                 }
             }
             else if(localName.equals("bindRule")){
-                NCLBindRule b = new NCLBindRule(getReader(), this);
-                b.startElement(uri, localName, qName, attributes);
-                addBind((B) b); //TODO: retirar o cast. Como melhorar isso?
+                B child = createBindRule();
+                child.startElement(uri, localName, qName, attributes);
+                addBind(child);
             }
             else if(localName.equals("descriptor")){
-                NCLDescriptor d = new NCLDescriptor(getReader(), this);
-                d.startElement(uri, localName, qName, attributes);
-                addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
+                D child = createDescriptor();
+                child.startElement(uri, localName, qName, attributes);
+                addDescriptor(child);
             }
             else if(localName.equals("defaultDescriptor")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("descriptor"))
-                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));
+                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
         }
@@ -350,5 +378,29 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
         }
 
         addWarning("Could not find descriptor in descriptorSwitch with id: " + getDefaultDescriptor().getId());
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>bindRule</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>bindRule</i>.
+     */
+    protected B createBindRule() {
+        return (B) new NCLBindRule(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>descriptor</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>descriptor</i>.
+     */
+    protected D createDescriptor() {
+        return (D) new NCLDescriptor(getReader(), this);
     }
 }

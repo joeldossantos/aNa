@@ -72,7 +72,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#add
      */
     public boolean addPort(Pt port) {
-        return ports.add(port);
+        if(ports.add(port)){
+            //Se port existe, atribui este como seu parente
+            if(port != null)
+                port.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -89,7 +96,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
     public boolean removePort(String id) {
         for(Pt port : ports){
             if(port.getId().equals(id))
-                return ports.remove(port);
+                return removePort(port);
         }
         return false;
     }
@@ -106,7 +113,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#remove
      */
     public boolean removePort(Pt port) {
-        return ports.remove(port);
+        if(ports.remove(port)){
+            //Se port existe, retira o seu parentesco
+            if(port != null)
+                port.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -173,7 +187,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#add
      */
     public boolean addProperty(Pp property) {
-        return properties.add(property);
+        if(properties.add(property)){
+            //Se property existe, atribui este como seu parente
+            if(property != null)
+                property.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -190,7 +211,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
     public boolean removeProperty(String name) {
         for(Pp property : properties){
             if(property.getId().equals(name))
-                return properties.remove(property);
+                return removeProperty(property);
         }
         return false;
     }
@@ -207,7 +228,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#remove
      */
     public boolean removeProperty(Pp property) {
-        return properties.remove(property);
+        if(properties.remove(property)){
+            //Se property existe, retira o seu parentesco
+            if(property != null)
+                property.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -274,7 +302,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#add
      */
     public boolean addNode(N node) {
-        return nodes.add(node);
+        if(nodes.add(node)){
+            //Se node existe, atribui este como seu parente
+            if(node != null)
+                node.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -291,7 +326,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
     public boolean removeNode(String id) {
         for(N node : nodes){
             if(node.getId().equals(id))
-                return nodes.remove(node);
+                return removeNode(node);
         }
         return false;
     }
@@ -308,7 +343,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#remove
      */
     public boolean removeNode(N node) {
-        return nodes.remove(node);
+        if(nodes.remove(node)){
+            //Se node existe, retira o seu parentesco
+            if(node != null)
+                node.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -375,7 +417,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#add
      */
     public boolean addLink(L link) {
-        return links.add(link);
+        if(links.add(link)){
+            //Se link existe, atribui este como seu parente
+            if(link != null)
+                link.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -390,7 +439,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#remove
      */
     public boolean removeLink(L link) {
-        return links.remove(link);
+        if(links.remove(link)){
+            //Se link existe, retira o seu parentesco
+            if(link != null)
+                link.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -440,7 +496,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#add
      */
     public boolean addMeta(M meta) {
-        return metas.add(meta);
+        if(metas.add(meta)){
+            //Se meta existe, atribui este como seu parente
+            if(meta != null)
+                meta.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -455,7 +518,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#remove
      */
     public boolean removeMeta(M meta) {
-        return metas.remove(meta);
+        if(metas.remove(meta)){
+            //Se meta existe, retira o seu parentesco
+            if(meta != null)
+                meta.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -505,7 +575,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#add
      */
     public boolean addMetadata(MT metadata) {
-        return metadatas.add(metadata);
+        if(metadatas.add(metadata)){
+            //Se metadata existe, atribui este como seu parente
+            if(metadata != null)
+                metadata.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -520,7 +597,14 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @see TreeSet#remove
      */
     public boolean removeMetadata(MT metadata) {
-        return metadatas.remove(metadata);
+        if(metadatas.remove(metadata)){
+            //Se metadata existe, retira o seu parentesco
+            if(metadata != null)
+                metadata.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -658,44 +742,44 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
                 }
             }
             else if(localName.equals("meta")){
-                NCLMeta m = new NCLMeta(getReader(), this);
-                m.startElement(uri, localName, qName, attributes);
-                addMeta((M) m); //TODO: retirar o cast. Como melhorar isso?
+                M child = createMeta();
+                child.startElement(uri, localName, qName, attributes);
+                addMeta(child);
             }
             else if(localName.equals("metadata")){
-                NCLMetadata m = new NCLMetadata(getReader(), this);
-                m.startElement(uri, localName, qName, attributes);
-                addMetadata((MT) m); //TODO: retirar o cast. Como melhorar isso?
+                MT child = createMetadata();
+                child.startElement(uri, localName, qName, attributes);
+                addMetadata(child);
             }
             else if(localName.equals("port")){
-                NCLPort p = new NCLPort(getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addPort((Pt) p); //TODO: retirar o cast. Como melhorar isso?
+                Pt child = createPort();
+                child.startElement(uri, localName, qName, attributes);
+                addPort(child);
             }
             else if(localName.equals("property")){
-                NCLProperty p = new NCLProperty(getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addProperty((Pp) p); //TODO: retirar o cast. Como melhorar isso?
+                Pp child = createProperty();
+                child.startElement(uri, localName, qName, attributes);
+                addProperty(child);
             }
             else if(localName.equals("media")){
-                NCLMedia m = new NCLMedia(getReader(), this);
-                m.startElement(uri, localName, qName, attributes);
-                addNode((N) m); //TODO: retirar o cast. Como melhorar isso?
+                N child = createMedia();
+                child.startElement(uri, localName, qName, attributes);
+                addNode(child);
             }
             else if(localName.equals("context")){
-                NCLContext c = new NCLContext(getReader(), this);
-                c.startElement(uri, localName, qName, attributes);
-                addNode((N) c); //TODO: retirar o cast. Como melhorar isso?
+                N child = createContext();
+                child.startElement(uri, localName, qName, attributes);
+                addNode(child);
             }
             else if(localName.equals("switch")){
-                NCLSwitch s = new NCLSwitch(getReader(), this);
-                s.startElement(uri, localName, qName, attributes);
-                addNode((N) s); //TODO: retirar o cast. Como melhorar isso?
+                N child = createSwitch();
+                child.startElement(uri, localName, qName, attributes);
+                addNode(child);
             }
             else if(localName.equals("link")){
-                NCLLink l = new NCLLink(getReader(), this);
-                l.startElement(uri, localName, qName, attributes);
-                addLink((L) l); //TODO: retirar o cast. Como melhorar isso?
+                L child = createLink();
+                child.startElement(uri, localName, qName, attributes);
+                addLink(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -748,5 +832,101 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
                 addError(link.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>meta</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>meta</i>.
+     */
+    protected M createMeta() {
+        return (M) new NCLMeta(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>metadata</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>metadata</i>.
+     */
+    protected MT createMetadata() {
+        return (MT) new NCLMetadata(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>port</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>port</i>.
+     */
+    protected Pt createPort() {
+        return (Pt) new NCLPort(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>property</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>property</i>.
+     */
+    protected Pp createProperty() {
+        return (Pp) new NCLProperty(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>media</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>media</i>.
+     */
+    protected N createMedia() {
+        return (N) new NCLMedia(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>context</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>context</i>.
+     */
+    protected N createContext() {
+        return (N) new NCLContext(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>switch</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>switch</i>.
+     */
+    protected N createSwitch() {
+        return (N) new NCLSwitch(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>link</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>link</i>.
+     */
+    protected L createLink() {
+        return (L) new NCLLink(getReader(), this);
     }
 }

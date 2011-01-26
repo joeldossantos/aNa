@@ -92,7 +92,14 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      *          elemento representando o cabeçalho do documento NCL.
      */
     public void setHead(H head) {
+        //Retira o parentesco do head atual
+        if(this.head != null)
+            this.head.setParent(null);
+
         this.head = head;
+        //Se head existe, atribui este como seu parente
+        if(this.head != null)
+            this.head.setParent(this);
     }
 
 
@@ -114,7 +121,14 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      *          elemento representando o corpo do documento NCL.
      */
     public void setBody(B body) {
+        //Retira o parentesco do body atual
+        if(this.body != null)
+            this.body.setParent(null);
+
         this.body = body;
+        //Se body existe, atribui este como seu parente
+        if(this.body != null)
+            this.body.setParent(this);
     }
 
 
@@ -238,11 +252,11 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
                 }
             }
             else if(localName.equals("head")){
-                setHead((H) new NCLHead(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+                setHead(createHead());
                 getHead().startElement(uri, localName, qName, attributes);
             }
             else if(localName.equals("body")){
-                setBody((B) new NCLBody(getReader(), this)); //TODO: retirar o cast. Como melhorar isso?
+                setBody(createBody());
                 getBody().startElement(uri, localName, qName, attributes);
             }
         }
@@ -264,5 +278,29 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
             addWarning(getBody().getWarnings());
             addError(getBody().getErrors());
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>head</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>head</i>.
+     */
+    protected H createHead() {
+        return (H) new NCLHead(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>body</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>body</i>.
+     */
+    protected B createBody() {
+        return (B) new NCLBody(getReader(), this);
     }
 }

@@ -63,7 +63,14 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
      * @see TreeSet#add(java.lang.Object)
      */
     public boolean addCausalConnector(C connector) {
-        return connectors.add(connector);        
+        if(connectors.add(connector)){
+            //Se connector existe, atribui este como seu parente
+            if(connector != null)
+                connector.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -78,7 +85,14 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
      * @see TreeSet#remove(java.lang.Object)
      */    
     public boolean removeCausalConnector(C connector) {
-        return connectors.remove(connector);        
+        if(connectors.remove(connector)){
+            //Se connector existe, retira o seu parentesco
+            if(connector != null)
+                connector.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -126,7 +140,14 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
      * @see TreeSet#add
      */
     public boolean addImportBase(I importBase) {
-        return imports.add(importBase);
+        if(imports.add(importBase)){
+            //Se importBase existe, atribui este como seu parente
+            if(importBase != null)
+                importBase.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -139,7 +160,14 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
      * @see TreeSet#remove
      */
     public boolean removeImportBase(I importBase) {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            //Se importBase existe, retira o seu parentesco
+            if(importBase != null)
+                importBase.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -241,18 +269,14 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
                 }
             }
             else if(localName.equals("importBase")){
-                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
-                i.startElement(uri, localName, qName, attributes);
-                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
-                addWarning(i.getWarnings());
-                addError(i.getErrors());
+                I child = createImportBase();
+                child.startElement(uri, localName, qName, attributes);
+                addImportBase(child);
             }
             else if(localName.equals("causalConnector")){
-                NCLCausalConnector c = new NCLCausalConnector(getReader(), this);
-                c.startElement(uri, localName, qName, attributes);
-                addCausalConnector((C) c); //TODO: retirar o cast. Como melhorar isso?
-                addWarning(c.getWarnings());
-                addError(c.getErrors());
+                C child = createCausalConnector();
+                child.startElement(uri, localName, qName, attributes);
+                addCausalConnector(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -277,5 +301,29 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
                 addError(connector.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importBase</i>.
+     */
+    protected I createImportBase() {
+        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>causalConnector</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>causalConnector</i>.
+     */
+    protected C createCausalConnector() {
+        return (C) new NCLCausalConnector(getReader(), this);
     }
 }

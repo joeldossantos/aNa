@@ -62,7 +62,14 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * @see TreeSet#add
      */
     public boolean addDescriptor(D descriptor) {
-        return descriptors.add(descriptor);
+        if(descriptors.add(descriptor)){
+            //Se descriptor existe, atribui este como seu parente
+            if(descriptor != null)
+                descriptor.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -79,7 +86,7 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
     public boolean removeDescriptor(String id) {
         for(D descriptor : descriptors){
             if(descriptor.getId().equals(id))
-                return descriptors.remove(descriptor);
+                return removeDescriptor(descriptor);
         }
         return false;
     }
@@ -94,7 +101,14 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(D descriptor) {
-        return descriptors.remove(descriptor);
+        if(descriptors.remove(descriptor)){
+            //Se descriptor existe, retira o seu parentesco
+            if(descriptor != null)
+                descriptor.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -140,7 +154,14 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * @see TreeSet#add
      */
     public boolean addImportBase(I importBase) {
-        return imports.add(importBase);
+        if(imports.add(importBase)){
+            //Se importBase existe, atribui este como seu parente
+            if(importBase != null)
+                importBase.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -153,7 +174,14 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * @see TreeSet#remove
      */
     public boolean removeImportBase(I importBase) {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            //Se importBase existe, retira o seu parentesco
+            if(importBase != null)
+                importBase.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -257,25 +285,19 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
                 }
             }
             else if(localName.equals("importBase")){
-                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
-                i.startElement(uri, localName, qName, attributes);
-                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
-                addWarning(i.getWarnings());
-                addError(i.getErrors());
+                I child = createImportBase();
+                child.startElement(uri, localName, qName, attributes);
+                addImportBase(child);
             }
             else if(localName.equals("descriptor")){
-                NCLDescriptor d = new NCLDescriptor(getReader(), this);
-                d.startElement(uri, localName, qName, attributes);
-                addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
-                addWarning(d.getWarnings());
-                addError(d.getErrors());
+                D child = createDescriptor();
+                child.startElement(uri, localName, qName, attributes);
+                addDescriptor(child);
             }
             else if(localName.equals("descriptorSwitch")){
-                NCLDescriptorSwitch d = new NCLDescriptorSwitch(getReader(), this);
-                d.startElement(uri, localName, qName, attributes);
-                addDescriptor((D) d); //TODO: retirar o cast. Como melhorar isso?
-                addWarning(d.getWarnings());
-                addError(d.getErrors());
+                D child = createDescriptorSwitch();
+                child.startElement(uri, localName, qName, attributes);
+                addDescriptor(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -300,5 +322,41 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
                 addError(descriptor.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importBase</i>.
+     */
+    protected I createImportBase() {
+        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>descriptor</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>descriptor</i>.
+     */
+    protected D createDescriptor() {
+        return (D) new NCLDescriptor(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>descriptorSwitch</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>descriptorSwitch</i>.
+     */
+    protected D createDescriptorSwitch() {
+        return (D) new NCLDescriptorSwitch(getReader(), this);
     }
 }

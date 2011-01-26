@@ -92,7 +92,14 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @see TreeSet#add
      */
     public boolean addCondition(C condition) {
-        return conditions.add(condition);
+        if(conditions.add(condition)){
+            //Se condition existe, atribui este como seu parente
+            if(condition != null)
+                condition.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -107,7 +114,14 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @see TreeSet#remove
      */
     public boolean removeCondition(C condition) {
-        return conditions.remove(condition);
+        if(conditions.remove(condition)){
+            //Se condition existe, retira o seu parentesco
+            if(condition != null)
+                condition.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
     
@@ -157,7 +171,14 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @see TreeSet#add
      */
     public boolean addStatement(S statement) {
-        return statements.add(statement);
+        if(statements.add(statement)){
+            //Se statement existe, atribui este como seu parente
+            if(statement != null)
+                statement.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -172,7 +193,14 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @see TreeSet#remove
      */
     public boolean removeStatement(S statement) {
-        return statements.remove(statement);
+        if(statements.remove(statement)){
+            //Se statement existe, retira o seu parentesco
+            if(statement != null)
+                statement.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -384,7 +412,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
                         String var = attributes.getValue(i);
                         if(var.contains("$")){
                             var = var.substring(1);
-                            setDelay((P) new NCLConnectorParam(var));
+                            setDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                         }
                         else{
                             var = var.substring(0, var.length() - 1);
@@ -394,24 +422,24 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
                 }
             }
             else if(localName.equals("simpleCondition")){
-                NCLSimpleCondition c = new NCLSimpleCondition(getReader(), this);
-                c.startElement(uri, localName, qName, attributes);
-                addCondition((C) c); //TODO: retirar o cast. Como melhorar isso?
+                C child = createSimpleCondition();
+                child.startElement(uri, localName, qName, attributes);
+                addCondition(child);
             }
             else if(localName.equals("compoundCondition") && insideCondition){
-                NCLCompoundCondition c = new NCLCompoundCondition(getReader(), this);
-                c.startElement(uri, localName, qName, attributes);
-                addCondition((C) c); //TODO: retirar o cast. Como melhorar isso?
+                C child = createCompoundCondition();
+                child.startElement(uri, localName, qName, attributes);
+                addCondition(child);
             }
             else if(localName.equals("assessmentStatement")){
-                NCLAssessmentStatement a = new NCLAssessmentStatement(getReader(), this);
-                a.startElement(uri, localName, qName, attributes);
-                addStatement((S) a); //TODO: retirar o cast. Como melhorar isso?
+                S child = createAssessmentStatement();
+                child.startElement(uri, localName, qName, attributes);
+                addStatement(child);
             }
             else if(localName.equals("compoundStatement")){
-                NCLCompoundStatement a = new NCLCompoundStatement(getReader(), this);
-                a.startElement(uri, localName, qName, attributes);
-                addStatement((S) a); //TODO: retirar o cast. Como melhorar isso?
+                S child = createCompoundStatement();
+                child.startElement(uri, localName, qName, attributes);
+                addStatement(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -463,5 +491,53 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
 
         addWarning("Could not find connectorParam in connector with id: " + id);
         return null;
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>simpleCondition</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>simpleCondition</i>.
+     */
+    protected C createSimpleCondition() {
+        return (C) new NCLSimpleCondition(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compoundCondition</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compoundCondition</i>.
+     */
+    protected C createCompoundCondition() {
+        return (C) new NCLCompoundCondition(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>assessmentStatement</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>assessmentStatement</i>.
+     */
+    protected S createAssessmentStatement() {
+        return (S) new NCLAssessmentStatement(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compoundStatement</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compoundStatement</i>.
+     */
+    protected S createCompoundStatement() {
+        return (S) new NCLCompoundStatement(getReader(), this);
     }
 }

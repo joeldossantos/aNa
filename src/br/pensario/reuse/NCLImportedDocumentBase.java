@@ -58,7 +58,14 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
      * @see TreeSet#add
      */
     public boolean addImportNCL(I importNCL) {
-        return imports.add(importNCL);
+        if(imports.add(importNCL)){
+            //Se importNCL existe, atribui este como seu parente
+            if(importNCL != null)
+                importNCL.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -71,7 +78,14 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
      * @see TreeSet#remove
      */
     public boolean removeImportNCL(I importNCL) {
-        return imports.remove(importNCL);
+        if(imports.remove(importNCL)){
+            //Se importNCL existe, retira o seu parentesco
+            if(importNCL != null)
+                importNCL.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -155,9 +169,9 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
                 }
             }
             else if(localName.equals("importNCL")){
-                NCLImport i = new NCLImport(NCLImportType.NCL, getReader(), this);
-                i.startElement(uri, localName, qName, attributes);
-                addImportNCL((I) i); //TODO: retirar o cast. Como melhorar isso?
+                I child = createImportNCL();
+                child.startElement(uri, localName, qName, attributes);
+                addImportNCL(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -175,5 +189,17 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
                 addError(imp.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importNCL</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importNCL</i>.
+     */
+    protected I createImportNCL() {
+        return (I) new NCLImport(NCLImportType.NCL, getReader(), this);
     }
 }

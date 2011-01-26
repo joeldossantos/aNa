@@ -65,7 +65,14 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          Se o role for uma String vazia.
      */
     public void setRole(R role) {
+        //Retira o parentesco do role atual
+        if(this.role != null)
+            this.role.setParent(null);
+
         this.role = role;
+        //Se role existe, atribui este como seu parente
+        if(this.role != null)
+            this.role.setParent(this);
     }
     
     
@@ -338,12 +345,12 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("role"))
-                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
+                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: precisa retirar cast?
                 else if(attributes.getLocalName(i).equals("key")){
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setKey((P) new NCLConnectorParam(value));
+                        setKey((P) new NCLConnectorParam(value));//TODO: precisa retirar cast?
                     }
                     else{
                         for(NCLKey k : NCLKey.values()){
@@ -356,7 +363,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setOffset((P) new NCLConnectorParam(value));
+                        setOffset((P) new NCLConnectorParam(value));//TODO: precisa retirar cast?
                     }
                     else
                         setOffset(new Integer(value));

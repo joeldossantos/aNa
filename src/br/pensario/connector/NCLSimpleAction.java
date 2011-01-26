@@ -199,7 +199,14 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          elemento representando o nome do papel.
      */
     public void setRole(R role) {
+        //Retira o parentesco do role atual
+        if(this.role != null)
+            this.role.setParent(null);
+
         this.role = role;
+        //Se role existe, atribui este como seu parente
+        if(this.role != null)
+            this.role.setParent(this);
     }
 
 
@@ -706,12 +713,12 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("role"))
-                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: criar sem fazer cast
+                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: precisa retirar cast?
                 else if(attributes.getLocalName(i).equals("value")){
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setValue((P) new NCLConnectorParam(var));
+                        setValue((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                     }
                     else
                         setValue(var);
@@ -720,7 +727,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setDelay((P) new NCLConnectorParam(var));
+                        setDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -757,7 +764,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setRepeat((P) new NCLConnectorParam(var));
+                        setRepeat((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                     }
                     else
                         setRepeat(new Integer(var));
@@ -766,7 +773,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setRepeatDelay((P) new NCLConnectorParam(var));
+                        setRepeatDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -777,7 +784,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setDuration((P) new NCLConnectorParam(var));
+                        setDuration((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -788,7 +795,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setBy((P) new NCLConnectorParam(var));
+                        setBy((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                     }
                     else
                         setBy(new Integer(var));

@@ -155,9 +155,9 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("rule"))
-                    setRule((R) new NCLRule(attributes.getValue(i)));
+                    setRule((R) new NCLRule(attributes.getValue(i)));//TODO: precisa retirar cast?
                 else if(attributes.getLocalName(i).equals("constituent"))
-                    setConstituent((D) new NCLDescriptor(attributes.getValue(i)));
+                    setConstituent((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
             }
         }
         catch(NCLInvalidIdentifierException ex){

@@ -1,5 +1,7 @@
 package br.pensario;
 
+import org.xml.sax.Attributes;
+
 
 /**
  * Esta interface define a interface básica dos elementos da <i>Nested Context Language</i> (NCL).<br>
@@ -134,6 +136,20 @@ public interface Element {
      * Limpa a lista de mensagens de erro.
      */
     public void cleanErrors();
+
+
+    /**
+     * Implementa o método startElement do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    public void startElement(String uri, String localName, String qName, Attributes attributes);
+
+
+    /**
+     * Implementa o método endElement do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    public void endElement(String uri, String localName, String qName);
 
 
     /**

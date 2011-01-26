@@ -111,7 +111,14 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      * @see TreeSet#add
      */
     public boolean addStatement(S statement) {
-        return statements.add(statement);
+        if(statements.add(statement)){
+            //Se statement existe, atribui este como seu parente
+            if(statement != null)
+                statement.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -126,7 +133,14 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      * @see TreeSet#remove
      */
     public boolean removeStatement(S statement) {
-        return statements.remove(statement);
+        if(statements.remove(statement)){
+            //Se statement existe, retira o seu parentesco
+            if(statement != null)
+                statement.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -275,14 +289,14 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
             }
         }
         else if(localName.equals("assessmentStatement")){
-            NCLAssessmentStatement s = new NCLAssessmentStatement(getReader(), this);
-            s.startElement(uri, localName, qName, attributes);
-            addStatement((S) s); //TODO: retirar o cast. Como melhorar isso?
+            S child = createAssessmentStatement();
+            child.startElement(uri, localName, qName, attributes);
+            addStatement(child);
         }
         else if(localName.equals("compoundStatement") && insideStatement){
-            NCLCompoundStatement s = new NCLCompoundStatement(getReader(), this);
-            s.startElement(uri, localName, qName, attributes);
-            addStatement((S) s); //TODO: retirar o cast. Como melhorar isso?
+            S child = createCompoundStatement();
+            child.startElement(uri, localName, qName, attributes);
+            addStatement(child);
         }
     }
 
@@ -296,5 +310,29 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
                 addError(statement.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>assessmentStatement</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>assessmentStatement</i>.
+     */
+    protected S createAssessmentStatement() {
+        return (S) new NCLAssessmentStatement(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compoundStatement</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compoundStatement</i>.
+     */
+    protected S createCompoundStatement() {
+        return (S) new NCLCompoundStatement(getReader(), this);
     }
 }

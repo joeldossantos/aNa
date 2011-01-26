@@ -254,7 +254,14 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see TreeSet#add
      */
     public boolean addArea(A area) {
-        return areas.add(area);
+        if(areas.add(area)){
+            //Se area existe, atribui este como seu parente
+            if(area != null)
+                area.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -271,7 +278,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public boolean removeArea(String id) {
         for(A area : areas){
             if(area.getId().equals(id))
-                return areas.remove(area);
+                return removeArea(area);
         }
         return false;
     }
@@ -288,7 +295,14 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see TreeSet#add
      */
     public boolean removeArea(A area) {
-        return areas.remove(area);
+        if(areas.remove(area)){
+            //Se area existe, retira o seu parentesco
+            if(area != null)
+                area.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -355,7 +369,14 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see TreeSet#add
      */
     public boolean addProperty(P property) {
-        return properties.add(property);
+        if(properties.add(property)){
+            //Se property existe, atribui este como seu parente
+            if(property != null)
+                property.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -372,7 +393,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public boolean removeProperty(String name) {
         for(P property : properties){
             if(property.getId().equals(name))
-                return properties.remove(property);
+                return removeProperty(property);
         }
         return false;
     }
@@ -389,7 +410,14 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * @see TreeSet#remove
      */
     public boolean removeProperty(P property) {
-        return properties.remove(property);
+        if(properties.remove(property)){
+            //Se property existe, retira o seu parentesco
+            if(property != null)
+                property.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -545,9 +573,9 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
                         }
                     }
                     else if(attributes.getLocalName(i).equals("descriptor"))
-                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((M) new NCLMedia(attributes.getValue(i)));
+                        setRefer((M) new NCLMedia(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("instance")){
                         for(NCLInstanceType in : NCLInstanceType.values()){
                             if(in.toString().equals(attributes.getValue(i)))
@@ -557,14 +585,14 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
                 }
             }
             else if(localName.equals("area")){
-                NCLArea a = new NCLArea(getReader(), this);
-                a.startElement(uri, localName, qName, attributes);
-                addArea((A) a); //TODO: retirar o cast. Como melhorar isso?
+                A child = createArea();
+                child.startElement(uri, localName, qName, attributes);
+                addArea(child);
             }
             else if(localName.equals("property")){
-                NCLProperty p = new NCLProperty(getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addProperty((P) p); //TODO: retirar o cast. Como melhorar isso?
+                P child = createProperty();
+                child.startElement(uri, localName, qName, attributes);
+                addProperty(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -680,5 +708,29 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
 
         addWarning("Could not find media with id: " + getRefer().getId());
         return null;
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>area</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>area</i>.
+     */
+    protected A createArea() {
+        return (A) new NCLArea(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>property</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>property</i>.
+     */
+    protected P createProperty() {
+        return (P) new NCLProperty(getReader(), this);
     }
 }

@@ -490,15 +490,22 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * Adiciona uma região filha à região. A região filha é considerada uma região interna
      * tendo seus parâmetros relativos a esta região.
      *
-     * @param child
+     * @param region
      *          elemento representando a região a ser adicionada.
      * @return
      *          verdadeiro se a região foi adicionada.
      *
      * @see TreeSet#add
      */
-    public boolean addRegion(R child) {
-        return regions.add(child);
+    public boolean addRegion(R region) {
+        if(regions.add(region)){
+            //Se region existe, atribui este como seu parente
+            if(region != null)
+                region.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -515,7 +522,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     public boolean removeRegion(String id) {
         for(R region : regions){
             if(region.getId().equals(id))
-                return regions.remove(region);
+                return removeRegion(region);
         }
         return false;
     }
@@ -532,7 +539,14 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @see TreeSet#remove
      */
     public boolean removeRegion(R region) {
-        return regions.remove(region);
+        if(regions.remove(region)){
+            //Se region existe, retira o seu parentesco
+            if(region != null)
+                region.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -719,9 +733,9 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             }
             else{
                 // Region e um elemento interno
-                NCLRegion r = new NCLRegion(getReader(), this);
-                r.startElement(uri, localName, qName, attributes);
-                addRegion((R) r); //TODO: retirar o cast. Como melhorar isso?
+                R child = createRegion();
+                child.startElement(uri, localName, qName, attributes);
+                addRegion(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -739,5 +753,17 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
                 addError(region.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>region</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>region</i>.
+     */
+    protected R createRegion() {
+        return (R) new NCLRegion(getReader(), this);
     }
 }

@@ -130,7 +130,14 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      * @see TreeSet#add
      */
     public boolean addRegion(R region) {
-        return regions.add(region);
+        if(regions.add(region)){
+            //Se region existe, atribui este como seu parente
+            if(region != null)
+                region.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -147,7 +154,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
     public boolean removeRegion(String id) {
         for(R region : regions){
             if(region.getId().equals(id))
-                return regions.remove(region);
+                return removeRegion(region);
         }
         return false;
     }
@@ -164,7 +171,14 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      * @see TreeSet#remove
      */
     public boolean removeRegion(R region) {
-        return regions.remove(region);        
+        if(regions.remove(region)){
+            //Se region existe, retira o seu parentesco
+            if(region != null)
+                region.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -216,7 +230,14 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      * @see TreeSet#add
      */
     public boolean addImportBase(I importBase) {
-        return imports.add(importBase);
+        if(imports.add(importBase)){
+            //Se importBase existe, atribui este como seu parente
+            if(importBase != null)
+                importBase.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -229,7 +250,14 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      * @see TreeSet#remove
      */
     public boolean removeImportBase(I importBase) {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            //Se importBase existe, retira o seu parentesco
+            if(importBase != null)
+                importBase.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -336,18 +364,18 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
                     else if(attributes.getLocalName(i).equals("device"))
                         setDevice(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("region"))
-                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));
+                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
             else if(localName.equals("importBase")){
-                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
-                i.startElement(uri, localName, qName, attributes);
-                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+                I child = createImportBase();
+                child.startElement(uri, localName, qName, attributes);
+                addImportBase(child);
             }
             else if(localName.equals("region")){
-                NCLRegion r = new NCLRegion(getReader(), this);
-                r.startElement(uri, localName, qName, attributes);
-                addRegion((R) r); //TODO: retirar o cast. Como melhorar isso?
+                R child = createRegion();
+                child.startElement(uri, localName, qName, attributes);
+                addRegion(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -395,5 +423,29 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
         addWarning("Could not find region in regionBase with id: " + getParentRegion().getId());
         return null;
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importBase</i>.
+     */
+    protected I createImportBase() {
+        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>region</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>region</i>.
+     */
+    protected R createRegion() {
+        return (R) new NCLRegion(getReader(), this);
     }
 }

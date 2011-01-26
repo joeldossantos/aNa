@@ -66,7 +66,14 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
      * @see TreeSet#add
      */
     public boolean addMapping(M mapping) {
-        return mappings.add(mapping);
+        if(mappings.add(mapping)){
+            //Se mapping existe, atribui este como seu parente
+            if(mapping != null)
+                mapping.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -81,7 +88,14 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
      * @see TreeSet#remove
      */
     public boolean removeMapping(M mapping) {
-        return mappings.remove(mapping);
+        if(mappings.remove(mapping)){
+            //Se mapping existe, retira o seu parentesco
+            if(mapping != null)
+                mapping.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -181,9 +195,9 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
                 }
             }
             else if(localName.equals("mapping")){
-                NCLMapping m = new NCLMapping(getReader(), this);
-                m.startElement(uri, localName, qName, attributes);
-                addMapping((M) m); //TODO: retirar o cast. Como melhorar isso?
+                M child = createMapping();
+                child.startElement(uri, localName, qName, attributes);
+                addMapping(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -201,5 +215,17 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
                 addError(mapping.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>mapping</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>mapping</i>.
+     */
+    protected M createMapping() {
+        return (M) new NCLMapping(getReader(), this);
     }
 }

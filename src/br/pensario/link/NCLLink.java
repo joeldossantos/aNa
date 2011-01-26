@@ -90,7 +90,14 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @see TreeSet#add
      */
     public boolean addLinkParam(P param) {
-        return linkParams.add(param);
+        if(linkParams.add(param)){
+            //Se param existe, atribui este como seu parente
+            if(param != null)
+                param.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -105,7 +112,14 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @see TreeSet#remove
      */
     public boolean removeLinkParam(P param) {
-        return linkParams.remove(param);
+        if(linkParams.remove(param)){
+            //Se param existe, retira o seu parentesco
+            if(param != null)
+                param.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -155,7 +169,14 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @see TreeSet#add
      */
     public boolean addBind(B bind) {
-        return binds.add(bind);
+        if(binds.add(bind)){
+            //Se bind existe, atribui este como seu parente
+            if(bind != null)
+                bind.setParent(this);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -170,7 +191,14 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @see TreeSet#remove
      */
     public boolean removeBind(B bind) {
-        return binds.remove(bind);
+        if(binds.remove(bind)){
+            //Se bind existe, retira o seu parentesco
+            if(bind != null)
+                bind.setParent(null);
+
+            return true;
+        }
+        return false;
     }
     
     
@@ -249,10 +277,11 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
     public int compareTo(L other) {
         int comp = 0;
 
-        String this_link, other_link;
-
         // Compara pelo xconnector
-        comp = getXconnector().compareTo(other.getXconnector());
+        if(getXconnector() != null)
+            comp = getXconnector().compareTo(other.getXconnector());
+        else
+            comp = 1;
 
         // Compara o número de parâmetros
         if(comp == 0)
@@ -320,18 +349,18 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("xconnector"))
-                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));
+                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
             else if(localName.equals("linkParam")){
-                NCLParam p = new NCLParam(NCLParamInstance.LINKPARAM, getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addLinkParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+                P child = createLinkParam();
+                child.startElement(uri, localName, qName, attributes);
+                addLinkParam(child);
             }
             else if(localName.equals("bind")){
-                NCLBind b = new NCLBind(getReader(), this);
-                b.startElement(uri, localName, qName, attributes);
-                addBind((B) b);//TODO: retirar o cast. Como melhorar isso?
+                B child = createBind();
+                child.startElement(uri, localName, qName, attributes);
+                addBind(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -404,5 +433,29 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
         }
 
         addWarning("Could not find connector in connectorBase with id: " + getXconnector().getId());
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>linkParam</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>linkParam</i>.
+     */
+    protected P createLinkParam() {
+        return (P) new NCLParam(NCLParamInstance.LINKPARAM, getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>bind</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>bind</i>.
+     */
+    protected B createBind() {
+        return (B) new NCLBind(getReader(), this);
     }
 }

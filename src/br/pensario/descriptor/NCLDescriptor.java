@@ -497,7 +497,14 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      * @see TreeSet#add
      */
     public boolean addDescriptorParam(P descriptorParam) {
-        return params.add(descriptorParam);
+        if(params.add(descriptorParam)){
+            //Se descriptorParam existe, atribui este como seu parente
+            if(descriptorParam != null)
+                descriptorParam.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -510,7 +517,14 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      * @see TreeSet#remove
      */
     public boolean removeDescriptorParam(P descriptorParam) {
-        return params.remove(descriptorParam);
+        if(params.remove(descriptorParam)){
+            //Se descriptorParam existe, retira o seu parentesco
+            if(descriptorParam != null)
+                descriptorParam.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -642,7 +656,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("region"))
-                        setRegion((R) new NCLRegion(attributes.getValue(i)));
+                        setRegion((R) new NCLRegion(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("explicitDur")){
                         String value = attributes.getValue(i);
                         if(value.contains("s"))
@@ -654,22 +668,22 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                     else if(attributes.getLocalName(i).equals("player"))
                         setPlayer(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("moveLeft")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveLeft((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveRight")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveRight((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveDown")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveDown((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveUp")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveUp((D) d);
                     }
@@ -700,15 +714,15 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                         }
                     }
                     else if(attributes.getLocalName(i).equals("transIn"))
-                        setTransIn((T) new NCLTransition(attributes.getValue(i)));
+                        setTransIn((T) new NCLTransition(attributes.getValue(i)));//TODO: precisa retirar cast?
                     else if(attributes.getLocalName(i).equals("transOut"))
-                        setTransOut((T) new NCLTransition(attributes.getValue(i)));
+                        setTransOut((T) new NCLTransition(attributes.getValue(i)));//TODO: precisa retirar cast?
                 }
             }
             else if(localName.equals("descriptorParam")){
-                NCLDescriptorParam p = new NCLDescriptorParam(getReader(), this);
-                p.startElement(uri, localName, qName, attributes);
-                addDescriptorParam((P) p); //TODO: retirar o cast. Como melhorar isso?
+                P child = createDescriptorParam();
+                child.startElement(uri, localName, qName, attributes);
+                addDescriptorParam(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -858,5 +872,17 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
 
         addWarning("Could not find transition in transitionBase with id: " + transition.getId());
         return null;
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>descriptorParam</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>descriptorParam</i>.
+     */
+    protected P createDescriptorParam() {
+        return (P) new NCLDescriptorParam(getReader(), this);
     }
 }

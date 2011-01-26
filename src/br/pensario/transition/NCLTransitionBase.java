@@ -62,7 +62,14 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * @see TreeSet#add
      */
     public boolean addTransition(T transition) {
-        return transitions.add(transition);
+        if(transitions.add(transition)){
+            //Se transition existe, atribui este como seu parente
+            if(transition != null)
+                transition.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -77,7 +84,14 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * @see TreeSet#remove
      */
     public boolean removeTransition(T transition) {
-        return transitions.remove(transition);
+        if(transitions.remove(transition)){
+            //Se transition existe, retira o seu parentesco
+            if(transition != null)
+                transition.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -125,7 +139,14 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * @see TreeSet#add
      */
     public boolean addImportBase(I importBase) {
-        return imports.add(importBase);
+        if(imports.add(importBase)){
+            //Se importBase existe, atribui este como seu parente
+            if(importBase != null)
+                importBase.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -138,7 +159,14 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * @see TreeSet#remove
      */
     public boolean removeImportBase(I importBase) {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            //Se importBase existe, retira o seu parentesco
+            if(importBase != null)
+                importBase.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -242,14 +270,14 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
                 }
             }
             else if(localName.equals("importBase")){
-                NCLImport i = new NCLImport(NCLImportType.BASE, getReader(), this);
-                i.startElement(uri, localName, qName, attributes);
-                addImportBase((I) i); //TODO: retirar o cast. Como melhorar isso?
+                I child = createImportBase();
+                child.startElement(uri, localName, qName, attributes);
+                addImportBase(child);
             }
             else if(localName.equals("transition")){
-                NCLTransition t = new NCLTransition(getReader(), this);
-                t.startElement(uri, localName, qName, attributes);
-                addTransition((T) t); //TODO: retirar o cast. Como melhorar isso?
+                T child = createTransition();
+                child.startElement(uri, localName, qName, attributes);
+                addTransition(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -274,5 +302,29 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
                 addError(transition.getErrors());
             }
         }
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>importBase</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>importBase</i>.
+     */
+    protected I createImportBase() {
+        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>transition</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>transition</i>.
+     */
+    protected T createTransition() {
+        return (T) new NCLTransition(getReader(), this);
     }
 }

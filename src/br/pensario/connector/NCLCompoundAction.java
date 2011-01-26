@@ -91,7 +91,14 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      * @see TreeSet#add(java.lang.Object) 
      */
     public boolean addAction(A action) {
-        return actions.add(action);
+        if(actions.add(action)){
+            //Se metadata existe, atribui este como seu parente
+            if(action != null)
+                action.setParent(this);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -106,7 +113,14 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      * @see TreeSet#remove(java.lang.Object)
      */
     public boolean removeAction(A action) {
-        return actions.remove(action);
+        if(actions.remove(action)){
+            //Se action existe, retira o seu parentesco
+            if(action != null)
+                action.setParent(null);
+
+            return true;
+        }
+        return false;
     }
 
 
@@ -295,7 +309,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
                         String var = attributes.getValue(i);
                         if(var.contains("$")){
                             var = var.substring(1);
-                            setDelay((P) new NCLConnectorParam(var));
+                            setDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
                         }
                         else{
                             var = var.substring(0, var.length() - 1);
@@ -305,14 +319,14 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
                 }
             }
             else if(localName.equals("simpleAction")){
-                NCLSimpleAction a = new NCLSimpleAction(getReader(), this);
-                a.startElement(uri, localName, qName, attributes);
-                addAction((A) a); //TODO: retirar o cast. Como melhorar isso?
+                A child = createSimpleAction();
+                child.startElement(uri, localName, qName, attributes);
+                addAction(child);
             }
             else if(localName.equals("compoundAction") && insideAction){
-                NCLCompoundAction a = new NCLCompoundAction(getReader(), this);
-                a.startElement(uri, localName, qName, attributes);
-                addAction((A) a); //TODO: retirar o cast. Como melhorar isso?
+                A child = createCompoundAction();
+                child.startElement(uri, localName, qName, attributes);
+                addAction(child);
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -357,5 +371,29 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
 
         addWarning("Could not find connectorParam in connector with id: " + id);
         return null;
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>simpleAction</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>simpleAction</i>.
+     */
+    protected A createSimpleAction() {
+        return (A) new NCLSimpleAction(getReader(), this);
+    }
+
+
+    /**
+     * Função de criação do elemento filho <i>compoundAction</i>.
+     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     *
+     * @return
+     *          elemento representando o elemento filho <i>compoundAction</i>.
+     */
+    protected A createCompoundAction() {
+        return (A) new NCLCompoundAction(getReader(), this);
     }
 }
