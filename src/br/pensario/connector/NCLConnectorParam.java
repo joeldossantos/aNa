@@ -135,8 +135,15 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
 
 
     public boolean validate() {
-        return (getName() != null);
-        //TODO validar o type (?)
+        cleanWarnings();
+        cleanErrors();
+
+        if(getName() == null){
+            addError("Elemento não atributo obrigatório name.");
+            return false;
+        }
+
+        return true;
     }
 
 

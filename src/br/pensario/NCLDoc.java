@@ -183,15 +183,28 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
         // Documento nao pode ser vazio
-        valid &= (getHead() != null || getBody() != null);
+        if(getHead() == null && getBody() == null){
+            addWarning("Documento NCL vazio.");
+            valid = false;
+        }
         
-        if(getHead() != null)
+        
+        if(getHead() != null){
             valid &= getHead().validate();
-        if(getBody() != null)
+            addWarning(getHead().getWarnings());
+            addError(getHead().getErrors());
+        }
+        if(getBody() != null){
             valid &= getBody().validate();
+            addWarning(getBody().getWarnings());
+            addError(getBody().getErrors());
+        }
 
         return valid;
     }

@@ -73,6 +73,22 @@ public class NCLRole {
         if(name != null && "".equals(name.trim()))
             throw new IllegalArgumentException("Empty name String");
 
+        
+        if(name != null){
+            for(NCLDefaultConditionRole role : NCLDefaultConditionRole.values()){
+                if(name.equals(role.toString())){
+                    setName(role);
+                    return;
+                }
+            }
+            for(NCLDefaultActionRole role : NCLDefaultActionRole.values()){
+                if(name.equals(role.toString())){
+                    setName(role);
+                    return;
+                }
+            }
+        }
+
         this.name = name;
         this.cname = null;
         this.aname = null;

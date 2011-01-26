@@ -328,12 +328,48 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getRole() != null);
-        valid &= (getEventType() != null);
-        //TODO validar o attributetype com relacao ao eventtype (?)
-        //TODO validar o key (se é para ser usado
+        if(getRole() == null){
+            addError("Elemento não possui atributo obrigatório role.");
+            valid = false;
+        }
+        if(getEventType() == null){
+            addError("Elemento não possui atributo obrigatório eventType.");
+            valid = false;
+        }
+        if(getEventType() != null){
+            switch(getEventType()){
+                case SELECTION:
+                    if(getKey() == null && getParamKey() == null){
+                        addWarning("O atributo key deve ser especificado.");
+                        valid = false;
+                    }
+                    if( !(getAttributeType() == NCLAttributeType.OCCURRENCES || getAttributeType() == NCLAttributeType.STATE) ){
+                        addWarning("O atributo attributeType deve ser igual a occurrences ou state.");
+                        valid = false;
+                    }
+                    break;
+                case PRESENTATION:
+                    if(getKey() != null || getParamKey() != null){
+                        addWarning("O atributo key não deve ser especificado.");
+                        valid = false;
+                    }
+                    if( !(getAttributeType() == NCLAttributeType.OCCURRENCES || getAttributeType() == NCLAttributeType.REPETITIONS || getAttributeType() == NCLAttributeType.STATE) ){
+                        addWarning("O atributo attributeType deve ser igual a occurrences, repetitions ou state.");
+                        valid = false;
+                    }
+                    break;
+                case ATTRIBUTION:
+                    if(getKey() != null || getParamKey() != null){
+                        addWarning("O atributo key não deve ser especificado.");
+                        valid = false;
+                    }
+            }
+        }
 
         return valid;
     }

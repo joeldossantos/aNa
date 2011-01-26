@@ -3,6 +3,7 @@ package br.pensario.connector;
 import br.pensario.NCLElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLActionOperator;
+import br.pensario.NCLValues.NCLDefaultActionRole;
 import br.pensario.NCLValues.NCLEventAction;
 import br.pensario.NCLValues.NCLEventType;
 import org.xml.sax.Attributes;
@@ -697,10 +698,74 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getRole() != null);
-        //TODO validar as relações entre os atributos
+        if(getRole() == null){
+            addError("Elemento não possui atributo obrigatório role.");
+            valid = false;
+        }
+        
+
+        if(getRole() != null && getRole().getActionName() != null){
+            if(getRole().getActionName().equals(NCLDefaultActionRole.SET)){
+                if(getValue() == null && getParamValue() == null){
+                    addError("O atributo value deve ser especificado.");
+                    valid = false;
+                }
+            }
+            else{
+                if(getValue() != null || getParamValue() != null){
+                    addWarning("O atributo value não deve ser especificado.");
+                    valid = false;
+                }
+            }
+        }
+        else{
+            if(getEventType() == null || getActionType() == null){
+                addError("Os atributos eventType e actionType devem ser especificados.");
+                valid = false;
+            }
+            else if(getEventType().equals(NCLEventType.ATTRIBUTION)){
+                if(getValue() == null && getParamValue() == null){
+                    addError("O atributo value deve ser especificado.");
+                    valid = false;
+                }
+            }
+            else{
+                if(getValue() != null || getParamValue() != null){
+                    addWarning("O atributo value não deve ser especificado.");
+                    valid = false;
+                }
+                if(getDuration() != null || getParamDuration() != null || getBy() != null || getParamBy() != null){
+                    addWarning("Os atributos duration e by não devem ser especificados.");
+                    valid = false;
+                }
+            }
+
+        }
+
+        if((getRepeatDelay() != null || getParamRepeatDelay() != null) && (getRepeat() == null && getParamRepeat() == null)){
+            addWarning("O atributo repeatDelay deve ser especificado em conjunto com o atributo repeat.");
+            valid = false;
+        }
+
+        if((getDuration() == null && getParamDuration() == null) || (getBy() == null && getParamBy() == null)){
+            addWarning("Os atributos duration e by devem ser especificados em conjunto.");
+            valid = false;
+        }
+
+        if(getMax() == 1 && getQualifier() != null){
+            addWarning("O atributo qualifier não deve ser especificado");
+            valid = false;
+        }
+        else if(getMax() != 1 && getQualifier() == null){
+            addWarning("O atributo qualifier deve ser especificado");
+            valid = false;
+        }
+
 
         return valid;
     }

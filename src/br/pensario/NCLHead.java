@@ -439,31 +439,62 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
         // Cabecalho nao pode ser vazio
-        valid &= (getImportedDocumentBase() != null || getRuleBase() != null || getTransitionBase() != null ||
-                getRegionBase() != null || getDescriptorBase() != null || getConnectorBase() != null || hasMeta() || hasMetadata());
+        if(getImportedDocumentBase() == null && getRuleBase() == null && getTransitionBase() == null &&
+                getRegionBase() == null && getDescriptorBase() == null && getConnectorBase() == null && !hasMeta() && !hasMetadata()){
+            addWarning("Cabeçalho do documento NCL vazio.");
+            valid = false;
+        }
 
-        if(getImportedDocumentBase() != null)
+
+        if(getImportedDocumentBase() != null){
             valid &= getImportedDocumentBase().validate();
-        if(getRuleBase() != null)
+            addWarning(getImportedDocumentBase().getWarnings());
+            addError(getImportedDocumentBase().getErrors());
+        }
+        if(getRuleBase() != null){
             valid &= getRuleBase().validate();
-        if(getTransitionBase() != null)
+            addWarning(getRuleBase().getWarnings());
+            addError(getRuleBase().getErrors());
+        }
+        if(getTransitionBase() != null){
             valid &= getTransitionBase().validate();
-        if(getRegionBase() != null)
+            addWarning(getTransitionBase().getWarnings());
+            addError(getTransitionBase().getErrors());
+        }
+        if(getRegionBase() != null){
             valid &= getRegionBase().validate();
-        if(getDescriptorBase() != null)
+            addWarning(getRegionBase().getWarnings());
+            addError(getRegionBase().getErrors());
+        }
+        if(getDescriptorBase() != null){
             valid &= getDescriptorBase().validate();
-        if(getConnectorBase() != null)
+            addWarning(getDescriptorBase().getWarnings());
+            addError(getDescriptorBase().getErrors());
+        }
+        if(getConnectorBase() != null){
             valid &= getConnectorBase().validate();
+            addWarning(getConnectorBase().getWarnings());
+            addError(getConnectorBase().getErrors());
+        }
         if(hasMeta()){
-            for(M meta : metas)
+            for(M meta : metas){
                 valid &= meta.validate();
+                addWarning(meta.getWarnings());
+                addError(meta.getErrors());
+            }
         }
         if(hasMetadata()){
-            for(MT metadata : metadatas)
+            for(MT metadata : metadatas){
                 valid &= metadata.validate();
+                addWarning(metadata.getWarnings());
+                addError(metadata.getErrors());
+            }
         }
 
         return valid;

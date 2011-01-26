@@ -699,31 +699,53 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
         boolean valid = true;
 
         // Documento nao pode ser vazio
-        valid &= (hasMeta() || hasMetadata() || hasPort() || hasProperty() || hasNode() || hasLink());
+        if(!hasMeta() && !hasMetadata() && !hasPort() && !hasProperty() && !hasNode() && !hasLink()){
+            addWarning("Corpo do documento NCL vazio.");
+            valid = false;
+        }
+
 
         if(hasMeta()){
-            for(M meta : metas)
+            for(M meta : metas){
                 valid &= meta.validate();
+                addWarning(meta.getWarnings());
+                addError(meta.getErrors());
+            }
         }
         if(hasMetadata()){
-            for(MT metadata : metadatas)
+            for(MT metadata : metadatas){
                 valid &= metadata.validate();
+                addWarning(metadata.getWarnings());
+                addError(metadata.getErrors());
+            }
         }
         if(hasPort()){
-            for(Pt port : ports)
+            for(Pt port : ports){
                 valid &= port.validate();
+                addWarning(port.getWarnings());
+                addError(port.getErrors());
+            }
         }
         if(hasProperty()){
-            for(Pp property : properties)
+            for(Pp property : properties){
                 valid &= property.validate();
+                addWarning(property.getWarnings());
+                addError(property.getErrors());
+            }
         }
         if(hasNode()){
-            for(N node : nodes)
+            for(N node : nodes){
                 valid &= node.validate();
+                addWarning(node.getWarnings());
+                addError(node.getErrors());
+            }
         }
         if(hasLink()){
-            for(L link : links)
+            for(L link : links){
                 valid &= link.validate();
+                addWarning(link.getWarnings());
+                addError(link.getErrors());
+            }
         }
 
         return valid;

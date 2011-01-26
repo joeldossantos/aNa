@@ -1,6 +1,7 @@
 package br.pensario.connector;
 
 import br.pensario.NCLElement;
+import br.pensario.NCLValues.NCLAttributeType;
 import br.pensario.NCLValues.NCLComparator;
 import java.util.Iterator;
 import java.util.Set;
@@ -275,10 +276,23 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getComparator() != null);
-        valid &= (attributeAssessments.size() == 2 || (attributeAssessments.size() == 1 && getValueAssessment() != null));
+        if(getComparator() == null){
+            addError("Elemento não possui atributo obrigatório comparator.");
+            valid = false;
+        }
+           
+        
+        if( !(attributeAssessments.size() == 2 || (attributeAssessments.size() == 1 && getValueAssessment() != null)) ){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir dois attributeAssessment ou um attributeAssessment e um valueAssessment.");
+            valid = false;
+        }
+
+        //@todo: comparar os tipos de attributeAssessment e valueAssessment ou dos dois attributeAssessment
 
         return valid;
     }

@@ -191,7 +191,15 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
 
 
     public boolean validate() {
-        return (getValue() != null || getParamValue() != null);
+        cleanWarnings();
+        cleanErrors();
+
+        if(getValue() == null && getParamValue() == null){
+            addError("Elemento não possui atributo obrigatório value.");
+            return false;
+        }
+
+        return true;
     }
 
 

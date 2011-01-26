@@ -258,14 +258,26 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getOperator() != null);
-        valid &= hasStatement();
+        if(getOperator() == null){
+            addError("Elemento não possui atributo obrigatório operator.");
+            valid = false;
+        }
+        if(!hasStatement()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir pelo menos uma expressão de comparação.");
+            valid = false;
+        }
 
         if(hasStatement()){
-            for(S statement : statements)
+            for(S statement : statements){
                 valid &= statement.validate();
+                addWarning(statement.getWarnings());
+                addError(statement.getErrors());
+            }
         }
 
         return valid;
