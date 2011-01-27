@@ -137,12 +137,24 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getRule() != null);
-        valid &= (getConstituent() != null);
+        if(getRule() == null){
+            addError("Elemento não possui atributo obrigatório rule.");
+            valid = false;
+        }
+        if(getConstituent() == null){
+            addError("Elemento não possui atributo obrigatório constituent.");
+            valid = false;
+        }
 
-        //TODO validar se o constituent é do mesmo switch
+        if(getConstituent() != null && !((NCLSwitch) getParent()).hasNode(getConstituent())){
+            addError("Atributo constituent deve fazer referência a um descritor contido no switch.");
+            valid = false;
+        }
 
         return valid;
     }

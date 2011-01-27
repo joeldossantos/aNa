@@ -638,7 +638,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
 
         boolean valid = true;
 
-        if(getId() != null){
+        if(getId() == null){
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }

@@ -292,7 +292,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
 
         boolean valid = true;
 
-        if(getId() != null){
+        if(getId() == null){
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }

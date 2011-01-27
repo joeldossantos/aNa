@@ -6,6 +6,7 @@ import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLInstanceType;
+import br.pensario.NCLValues.NCLMediaType;
 import br.pensario.NCLValues.NCLMimeType;
 import br.pensario.NCLValues.NCLUriType;
 import br.pensario.descriptor.NCLDescriptor;
@@ -471,6 +472,102 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public Iterable<P> getProperties() {
         return properties;
     }
+
+
+    /**
+     * Retorna o tipo da mídia de acordo com seu tipo especificado ou sua URL.
+     *
+     * @return
+     *          elemento representando o tipo da mídia.
+     */
+    public NCLMediaType getMediaType() {
+        if(getType() != null){
+            boolean status = false;
+
+            status |= (getType() == NCLMimeType.APPLICATION_X_GINGA_NCLET);
+            status |= (getType() == NCLMimeType.APPLICATION_X_GINGA_NCLUA);
+            if(status)
+                return NCLMediaType.PROCEDURAL;
+
+            status |= (getType() == NCLMimeType.AUDIO_BASIC);
+            status |= (getType() == NCLMimeType.AUDIO_MP2);
+            status |= (getType() == NCLMimeType.AUDIO_MP3);
+            status |= (getType() == NCLMimeType.AUDIO_MPEG);
+            status |= (getType() == NCLMimeType.AUDIO_MPEG4);
+            if(status)
+                return NCLMediaType.AUDIO;
+
+            status |= (getType() == NCLMimeType.IMAGE_BMP);
+            status |= (getType() == NCLMimeType.IMAGE_GIF);
+            status |= (getType() == NCLMimeType.IMAGE_JPEG);
+            status |= (getType() == NCLMimeType.IMAGE_PNG);
+            if(status)
+                return NCLMediaType.IMAGE;
+
+            status |= (getType() == NCLMimeType.VIDEO_MPEG);
+            if(status)
+                return NCLMediaType.VIDEO;
+
+            status |= (getType() == NCLMimeType.TEXT_CSS);
+            status |= (getType() == NCLMimeType.TEXT_HTML);
+            status |= (getType() == NCLMimeType.TEXT_PLAIN);
+            status |= (getType() == NCLMimeType.TEXT_XML);
+            if(status)
+                return NCLMediaType.TEXT;
+        }
+
+        if(getSrc() != null){
+            boolean status = false;
+            String ext = getSrc().substring(getSrc().lastIndexOf("."));
+
+            status |= ext.contentEquals(".html");
+            status |= ext.contentEquals(".html");
+            status |= ext.contentEquals(".xhtml");
+            status |= ext.contentEquals(".css");
+            status |= ext.contentEquals(".xml");
+            status |= ext.contentEquals(".txt");
+            if(status)
+                return NCLMediaType.TEXT;
+
+            status |= ext.contentEquals(".bmp");
+            status |= ext.contentEquals(".png");
+            status |= ext.contentEquals(".gif");
+            status |= ext.contentEquals(".jpg");
+            status |= ext.contentEquals(".jpeg");
+            status |= ext.contentEquals(".jpe");
+            if(status)
+                return NCLMediaType.IMAGE;
+
+            status |= ext.contentEquals(".ua");
+            status |= ext.contentEquals(".wav");
+            status |= ext.contentEquals(".mp1");
+            status |= ext.contentEquals(".mp2");
+            status |= ext.contentEquals(".mp3");
+            status |= ext.contentEquals(".mp4");
+            status |= ext.contentEquals(".mpg4");
+            if(status)
+                return NCLMediaType.AUDIO;
+
+            status |= ext.contentEquals(".mpeg");
+            status |= ext.contentEquals(".mpg");
+            status |= ext.contentEquals(".mpe");
+            status |= ext.contentEquals(".mng");
+            status |= ext.contentEquals(".qt");
+            status |= ext.contentEquals(".mov");
+            status |= ext.contentEquals(".avi");
+            if(status)
+                return NCLMediaType.VIDEO;
+
+            status |= ext.contentEquals(".class");
+            status |= ext.contentEquals(".xlet");
+            status |= ext.contentEquals(".xlt");
+            status |= ext.contentEquals(".lua");
+            if(status)
+                return NCLMediaType.PROCEDURAL;
+        }
+
+        return NCLMediaType.OTHER;
+    }
     
     
     public String parse(int ident) {
@@ -528,21 +625,38 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        if(getRefer() != null)
-            valid &= (getRefer().compareTo(this) != 0);
-        //TODO: validar o src com o type (?)
-        //TODO: validar refer e instance (?)
+        if(getId() == null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
+        if(getRefer() != null && getRefer().compareTo(this) == 0){
+            addError("Elemento não pode fazer referência a si mesmo.");
+            valid = false;
+        }
+
+        if(getInstance() != null && getRefer() == null){
+            addWarning("Atributo instance deve ser referênciado junto com atributo refer.");
+            valid = false;
+        }
 
         if(hasArea()){
-            for(A area : areas)
+            for(A area : areas){
                 valid &= area.validate();
+                addWarning(area.getWarnings());
+                addError(area.getErrors());
+            }
         }
         if(hasProperty()){
-            for(P prop : properties)
+            for(P prop : properties){
                 valid &= prop.validate();
+                addWarning(prop.getWarnings());
+                addError(prop.getErrors());
+            }
         }
 
         return valid;

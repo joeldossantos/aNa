@@ -365,11 +365,11 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
 
         boolean valid = true;
 
-        if(getId() != null){
+        if(getId() == null){
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }
-        if(getType() != null){
+        if(getType() == null){
             addError("Elemento não possui atributo obrigatório type.");
             valid = false;
         }

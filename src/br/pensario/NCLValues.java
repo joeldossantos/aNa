@@ -164,6 +164,20 @@ public abstract class NCLValues {
         public String toString() { return name; }
     }
 
+
+    /**
+     * Tipos de mídia da <i>Nested Context Language</i> (NCL).
+     */
+    public enum NCLMediaType {
+
+        TEXT,
+        IMAGE,
+        AUDIO,
+        VIDEO,
+        PROCEDURAL,
+        OTHER;
+    }
+
     
     /**
      * Nomes das variáveis de sistema (que não tem argumento) da <i>Nested Context Language</i> (NCL).

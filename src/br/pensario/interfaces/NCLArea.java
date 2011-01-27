@@ -3,6 +3,9 @@ package br.pensario.interfaces;
 import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
+import br.pensario.NCLValues.NCLMediaType;
+import br.pensario.NCLValues.NCLMimeType;
+import br.pensario.node.NCLMedia;
 import java.util.Vector;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -335,12 +338,66 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        //TODO validar begin com end (?)
-        //TODO validar text com position (?)
-        //TODO validar first com last (?)
+        if(getId() == null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
+
+        if(getPosition() != null && getText() == null){
+            addWarning("Atributo position deve ser especificado em conjunto com atributo text.");
+            valid = false;
+        }
+
+
+        int i = 0;
+        if(getCoords() != null){
+            i++;
+            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.IMAGE) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
+                addWarning("Elemento media não suporta âncora espacial.");
+                valid = false;
+            }
+        }
+        if(getBegin() != null || getEnd() != null){
+            i++;
+            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.AUDIO) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
+                addWarning("Elemento media não suporta âncora temporal.");
+                valid = false;
+            }
+        }
+        if(getText() != null || getPosition() != null){
+            i++;
+            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.TEXT)){
+                addWarning("Elemento media não suporta âncora textual.");
+                valid = false;
+            }
+        }
+        if(getFirst() != null || getLast() != null){
+            i++;
+            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.AUDIO) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
+                addWarning("Elemento media não suporta âncora temporal.");
+                valid = false;
+            }
+        }
+        if(getLabel() != null){
+            i++;
+            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.PROCEDURAL)){
+                addWarning("Elemento media não suporta âncora pocedural.");
+                valid = false;
+            }
+        }
+        if(i > 1){
+            addWarning("A âncora não pode ter mais de um tipo.");
+            valid = false;
+        }
+
+
+        //@todo: validar begin com end
+        //@todo: validar first com last
 
         return valid;
     }

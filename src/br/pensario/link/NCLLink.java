@@ -319,20 +319,37 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getXconnector() != null);
-        valid &= (binds.size() >= 2);
+        if(getXconnector() == null){
+            addError("Elemento não possui atriuto obrigatório xconnector.");
+            valid = false;
+        }
+        if(binds.size() < 2){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir pelo menos dois binds.");
+            valid = false;
+        }
 
         if(hasLinkParam()){
             for(P param : linkParams){
+                if(!param.getType().equals(NCLParamInstance.LINKPARAM)){
+                    addError("Link não pode possuir parâmetros que não sejam linkParam.");
+                    valid = false;
+                }
                 valid &= param.validate();
-                valid &= (param.getType().equals(NCLParamInstance.LINKPARAM));
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
             }
         }
         if(hasBind()){
-            for(B bind : binds)
+            for(B bind : binds){
                 valid &= bind.validate();
+                addWarning(bind.getWarnings());
+                addError(bind.getErrors());
+            }
         }
 
         return valid;

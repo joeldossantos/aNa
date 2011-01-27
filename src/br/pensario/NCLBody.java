@@ -696,6 +696,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+        
         boolean valid = true;
 
         // Documento nao pode ser vazio

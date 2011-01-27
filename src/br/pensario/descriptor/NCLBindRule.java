@@ -142,16 +142,16 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
 
         boolean valid = true;
 
-        if(getRule() != null){
+        if(getRule() == null){
             addError("Elemento não possui atributo obrigatório rule.");
             valid = false;
         }
-        if(getConstituent() != null){
+        if(getConstituent() == null){
             addError("Elemento não possui atributo obrigatório constituent.");
             valid = false;
         }
 
-        if(getConstituent() != null && getConstituent().compareTo((NCLDescriptorSwitch) getParent()) != 0){
+        if(getConstituent() != null && !((NCLDescriptorSwitch) getParent()).hasDescriptor(getConstituent())){
             addError("Atributo constituent deve fazer referência a um descritor contido no descriptorSwitch.");
             valid = false;
         }

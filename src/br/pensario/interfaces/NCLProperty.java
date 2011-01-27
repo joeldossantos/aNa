@@ -167,10 +167,15 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        //TODO validar o valor com o nome (?)
+        if(getName() != null){
+            addError("Elemento não possui atributo obrigatório name.");
+            valid = false;
+        }
 
         return valid;
     }

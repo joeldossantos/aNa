@@ -136,40 +136,82 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        valid &= (getComponent() != null);
+        if(getId() == null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
+        if(getComponent() == null){
+            addError("Elemento não possui atributo obrigatório component.");
+            valid = false;
+        }
 
-        //testa se o no contem a interface
-        if(valid && getInterface() != null){
+        if(getComponent() != null){
+            if(getComponent().compareTo(getParent()) == 0){
+                addError("Atributo component deve referênciar elemento interno ao contexto.");
+                valid = false;
+            }
+
+            if(getParent() instanceof NCLContext && !((NCLContext) getParent()).hasNode(getComponent())){
+                addError("Atributo component deve referênciar elemento interno ao contexto.");
+                valid = false;
+            }
+            else if(getParent() instanceof NCLBody && !((NCLBody) getParent()).hasNode(getComponent())){
+                addError("Atributo component deve referênciar elemento interno ao corpo do documento.");
+                valid = false;
+            }
+            else if(!(getParent() instanceof NCLContext) || !(getParent() instanceof NCLBody)){
+                addError("Atributo component deve referênciar elemento interno a composição.");
+                valid = false;
+            }
+        }
+
+        if(getInterface() != null && getComponent() != null){
             if(getComponent() instanceof NCLMedia){
-                if(getInterface() instanceof NCLArea)
-                    valid &= ((NCLMedia) getComponent()).hasArea((NCLArea) getInterface());
-                else if(getInterface() instanceof NCLProperty)
-                    valid &= ((NCLMedia) getComponent()).hasProperty((NCLProperty) getInterface());
-                else
+                if(getInterface() instanceof NCLArea && !((NCLMedia) getComponent()).hasArea((NCLArea) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
                     valid = false;
+                }
+                else if(getInterface() instanceof NCLProperty && !((NCLMedia) getComponent()).hasProperty((NCLProperty) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
+                else if(!(getInterface() instanceof NCLProperty) && !(getInterface() instanceof NCLArea)){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
             }
             else if(getComponent() instanceof NCLContext){
-                if(getInterface() instanceof NCLPort)
-                    valid &= ((NCLContext) getComponent()).hasPort((NCLPort) getInterface());
-                else if(getInterface() instanceof NCLProperty)
-                    valid &= ((NCLContext) getComponent()).hasProperty((NCLProperty) getInterface());
-                else
+                if(getInterface() instanceof NCLPort && !((NCLContext) getComponent()).hasPort((NCLPort) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
                     valid = false;
+                }
+                else if(getInterface() instanceof NCLProperty && !((NCLContext) getComponent()).hasProperty((NCLProperty) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
+                else if(!(getInterface() instanceof NCLProperty) && !(getInterface() instanceof NCLPort)){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
             }
             else if(getComponent() instanceof NCLSwitch){
-                if(getInterface() instanceof NCLSwitchPort)
-                    valid &= ((NCLSwitch) getComponent()).hasPort((NCLSwitchPort) getInterface());
-                else
+                if(getInterface() instanceof NCLSwitchPort && !((NCLSwitch) getComponent()).hasPort((NCLSwitchPort) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
                     valid = false;
+                }
+                else if(!(getInterface() instanceof NCLProperty)){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
             }
             else
                 valid = false;
         }
-        //TODO: testar a composicionalidade
-        //TODO: testar se a interface é a mesma porta ou uma porta irma dessa porta
 
         return valid;
     }

@@ -665,7 +665,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
 
         boolean valid = true;
 
-        if(getId() != null){
+        if(getId() == null){
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }

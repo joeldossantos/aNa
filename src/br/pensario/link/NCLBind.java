@@ -344,45 +344,98 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getRole() != null);
-        valid &= (getComponent() != null);
-        //TODO validar o papel com o conector utilizado no link
+        if(getRole() == null){
+            addError("Elemento não possui atributo obrigatório role.");
+            valid = false;
+        }
+        if(getComponent() == null){
+            addError("Elemento não possui atributo obrigatório component.");
+            valid = false;
+        }
 
-        //testa se o no contem a interface
-        if(valid && getInterface() != null){
+        //@todo: validar o papel com o conector utilizado no link
+        if(!roleReference()){
+            addError("Atributo role deve referenciar um papel especificado pelo conector utilizado no link.");
+            valid = false;
+        }
+
+        if(getComponent() != null && getParent().getParent() != null){
+            if(getComponent().compareTo(getParent().getParent()) == 0){
+                addError("Atributo component deve referênciar elemento interno a composição.");
+                valid = false;
+            }
+
+            if(getParent().getParent() instanceof NCLContext && !((NCLContext) getParent().getParent()).hasNode(getComponent())){
+                addError("Atributo component deve referênciar elemento interno ao contexto.");
+                valid = false;
+            }
+            else if(getParent().getParent() instanceof NCLBody && !((NCLBody) getParent().getParent()).hasNode(getComponent())){
+                addError("Atributo component deve referênciar elemento interno ao corpo do documento.");
+                valid = false;
+            }
+            else if(!(getParent().getParent() instanceof NCLContext) || !(getParent().getParent() instanceof NCLBody)){
+                addError("Atributo component deve referênciar elemento interno a composição.");
+                valid = false;
+            }
+        }
+
+        if(getInterface() != null && getComponent() != null){
             if(getComponent() instanceof NCLMedia){
-                if(getInterface() instanceof NCLArea)
-                    valid &= ((NCLMedia) getComponent()).hasArea((NCLArea) getInterface());
-                else if(getInterface() instanceof NCLProperty)
-                    valid &= ((NCLMedia) getComponent()).hasProperty((NCLProperty) getInterface());
-                else
+                if(getInterface() instanceof NCLArea && !((NCLMedia) getComponent()).hasArea((NCLArea) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
                     valid = false;
+                }
+                else if(getInterface() instanceof NCLProperty && !((NCLMedia) getComponent()).hasProperty((NCLProperty) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
+                else if(!(getInterface() instanceof NCLProperty) && !(getInterface() instanceof NCLArea)){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
             }
             else if(getComponent() instanceof NCLContext){
-                if(getInterface() instanceof NCLPort)
-                    valid &= ((NCLContext) getComponent()).hasPort((NCLPort) getInterface());
-                else if(getInterface() instanceof NCLProperty)
-                    valid &= ((NCLContext) getComponent()).hasProperty((NCLProperty) getInterface());
-                else
+                if(getInterface() instanceof NCLPort && !((NCLContext) getComponent()).hasPort((NCLPort) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
                     valid = false;
+                }
+                else if(getInterface() instanceof NCLProperty && !((NCLContext) getComponent()).hasProperty((NCLProperty) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
+                else if(!(getInterface() instanceof NCLProperty) && !(getInterface() instanceof NCLPort)){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
             }
             else if(getComponent() instanceof NCLSwitch){
-                if(getInterface() instanceof NCLSwitchPort)
-                    valid &= ((NCLSwitch) getComponent()).hasPort((NCLSwitchPort) getInterface());
-                else
+                if(getInterface() instanceof NCLSwitchPort && !((NCLSwitch) getComponent()).hasPort((NCLSwitchPort) getInterface())){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
                     valid = false;
+                }
+                else if(!(getInterface() instanceof NCLProperty)){
+                    addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");
+                    valid = false;
+                }
             }
             else
                 valid = false;
         }
-        //TODO: testar a composicionalidade
 
         if(hasBindParam()){
             for(P param : bindParams){
+                if(!param.getType().equals(NCLParamInstance.BINDPARAM)){
+                    addError("Bind não pode possuir parâmetros que não sejam bindParam.");
+                    valid = false;
+                }
                 valid &= param.validate();
-                valid &= (param.getType().equals(NCLParamInstance.BINDPARAM));
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
             }
         }
 
@@ -442,26 +495,32 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
     }
 
 
-    private void roleReference() {
+    private boolean roleReference() {
         //Search for the role inside the connector
         if(((NCLLink) getParent()).getXconnector() == null){
             addWarning("Could not find a connector");
-            return;
+            return false;
         }
 
         NCLCondition cond = ((NCLLink) getParent()).getXconnector().getCondition();
         if(cond != null){
             NCLRole r = findRole(cond);
-            if(r != null)
+            if(r != null){
                 setRole((R) r);
+                return true;
+            }
         }
 
         NCLAction act = ((NCLLink) getParent()).getXconnector().getAction();
         if(act != null){
             NCLRole r = findRole(act);
-            if(r != null)
+            if(r != null){
                 setRole((R) r);
+                return true;
+            }
         }
+
+        return false;
     }
 
 
