@@ -12,13 +12,26 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
- * Regions definem as regiões da tela dos dispositivos de saída onde os nós de mídia poderão ser exibidos.
+ * Regions definem as regioes da tela dos dispositivos de saida onde os nos de midia poderao ser exibidos. Uma regiao pode ser definida
+ * com relaco a area total associada aop dispositivo correspondente a uma base de regioes, ou aninhada a uma outra região, recursivamente.
+ *Os atributos de região definem suas coordenadas espacias e podem ser definidos em numeros absolutos, representando a quantidade de pixels, ou em porcentagem, relativa a região pai. São eles:
+ * <i>left</i> - coordenada x tomando como origem a extremidade esquerda da tela,com relação a area total do dispositivo ou (no caso da regiao estar aninhada) com a cordenada x esquerda da região pai.
+ * <i>top</i> - coordenada y tomando como origem a extremidade superior da tela, com relação a area total ou a coordenada y superior da regiao pai.
+ * <i>right</i> - semelhante ao atributo <i>left</i>, mas com a origem do eixo localizada na fronteira direita da tela.
+ * <i>bottom</i> - semelhante ao atributo <i>top</i>, mas tendo a origem do eixo localizada na fronteira inferior da tela.
+ * <i>width</i> - dimensão horizontal da região, podendo ser expressa em pixels ou em porcentagem, relativa a regiao pai.
+ * <i>height</i> - dimensão vertical da regiao, podendo ser expressa em pixels ou em porcentagem, relativa a pai.
+ * <i>zIndex</i> - Coordenada z, tomando como o origem o plano da tela e crescente no sentido "para fora da tela". Esta coordenada serve para definir o critério de sobreposição de midias que
+ * ocupem espaços coincidente na tela do dispositivo de saída. Quanto maior o valor do <i>zIndex</i>, maior a prioridade na sobreposição.
+ *
  *
  * @see <a href="
 http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
       ABNT NBR 15606-2:2007</a>
  *
  *@see <a href="../../README.html">Detalhes da API NCL</a>
+ *
+ * @see br.pensario.region.NCLRegionBase
  *
  */
 public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement implements Comparable<R> {
@@ -79,7 +92,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * Atribui um título para a região.
      * 
      * @param title
-     *          String representando o títuloo da região.
+     *          String representando o título da região.
      * @throws java.lang.IllegalArgumentException
      *          se o título for uma String vazia.
      */
@@ -95,7 +108,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * Retorna o título da região.
      * 
      * @return
-     *          String representando o títuloo da região.
+     *          String representando o título da região.
      */
     public String getTitle() {
         return title;

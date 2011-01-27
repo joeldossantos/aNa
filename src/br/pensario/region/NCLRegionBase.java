@@ -14,13 +14,13 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
- * NCL nos permite definir onde cada nó de mídia será apresentado, tanto em que classe de dispositivos como em qual região
- * de apresentação de cada dispositivo. Para cada classe de dispositivos de saída definimos, no cabeçalho do documento ( dentro do  elemento <i>head</i>),
- * uma coleção de regiões através do elemento <i>regionBase</i>.
- * Dentro de uma base de regiões definimos os elementos <i>region</i> que especificam
- * em que regiões da tela do dispositivo de saída serão exibidos os nós de conteúdo. Alem de elementos <i>region</i>, uma base de regiões também pode
+ * NCL nos permite definir onde cada no de midia sera apresentado, tanto em que classe de dispositivos como em qual regiao
+ * de apresentaçao de cada dispositivo. Para cada classe de dispositivos de saida definimos, no cabeçalho do documento ( dentro do  elemento <i>head</i>),
+ * uma colecao de regioes atraves do elemento <i>regionBase</i>.
+ * Dentro de uma base de regioes definimos os elementos <i>region</i> que especificam
+ * em que regioes da tela do dispositivo de saida serao exibidos os nos de conteudo. Alem de elementos <i>region</i>, uma base de regioes tambem pode
  * conter elementos <i>importBase</i> para importar uma base definida em outro documento NCL. Ela ainda pode conter o atributo device, que especifica o dispositivo
- * de exibição relacionado aquela base.<br>
+ * de exibicao relacionado aquela base.<br>
  *
  * 
  * @see br.pensario.region.NCLRegion
@@ -65,12 +65,12 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Define um dispositivo de exibição associado ao elemento <i>regionBase</i>. Ou seja, esse método determina para qual
-     * dispositivo as regiões contidas naquela base serão válidas.
+     * Define um dispositivo de exibicao associado ao elemento <i>regionBase</i>. Ou seja, esse metodo determina para qual
+     * dispositivo as regioes contidas naquela base serao validas.
      * @param device
-     *          O método recebe como parâmetro um String representando o dispositivo de exibição a que se quer relacionar a base de regiões atual.
+     *          O metodo recebe como parametro um String representando o dispositivo de exibicao a que se quer relacionar a base de regioes atual.
      * @throws java.lang.IllegalArgumentException
-     *          O método dispara uma exceção caso o usuário passe uma string vazia como parâmetro.
+     *          O metodo dispara uma excecao caso o usuario passe uma string vazia como parametro.
      */
     public void setDevice(String device) throws IllegalArgumentException {
         if(device != null && "".equals(device.trim()))
@@ -81,10 +81,10 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Método de acesso ao elemento device de uma base de regiões.
+     * Metodo de acesso ao elemento device de uma base de regioes.
      * 
      * @return
-     *          Retorna uma String representando o elemento device associado a <i>regionBase</i> em questão.
+     *          Retorna uma String representando o elemento device associado a <i>regionBase</i> em questao.
      */
     public String getDevice() {
         return device;
@@ -92,11 +92,11 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * NCL permite que regiões sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma região filha pode ser relativa a uma região pai
-     * e expressa como porcentagem. Esse método atribui a <i>regionBase</i> a região pai, ou seja, a região mais externa do aninhamento
+     * NCL permite que regioes sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma regiao filha pode ser relativa a uma regiao pai
+     * e expressa como porcentagem. Esse metodo atribui a <i>regionBase</i> a regiao pai, ou seja, a regiao mais externa do aninhamento
      * 
      * @param region
-     *          Elemento representando a região a ser utilizada como pai.
+     *          Elemento representando a regiao a ser utilizada como pai.
      */
     public void setParentRegion(R region) {
         this.parent_region = region;
@@ -104,12 +104,12 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * NCL permite que regiões sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma região filha pode ser relativa a uma região pai
-     * e expressa como porcentagem. Esse método atribui a <i>regionBase</i> a região pai, ou seja, a região mais externa do aninhamento.
-     * Esse método retorna a região pai da base de regiões.
+     * NCL permite que regioes sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma regiao filha pode ser relativa a uma regiao pai
+     * e expressa como porcentagem. Esse metodo atribui a <i>regionBase</i> a regiao pai, ou seja, a regiao imediatamente acima no aninhamento.
+     * Esse método retorna a região pai da base de regioes.
      * 
      * @return
-     *          elemento representando a região pai de uma base de regiões.
+     *          elemento representando a regiao pai de uma base de regioes.
      */
     public NCLRegion getParentRegion() {
         return parent_region;
@@ -117,15 +117,15 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Uma base de regiões pode conter como filhos elementos <i>region</i> e elementos <i>importBase</i>. Este método adiciona a base uma
-     * um elemento <i>region</i>, uma região da tela do dispositivo relacionado a esta base.
+     * Uma base de regioes pode conter como filhos elementos <i>region</i> e elementos <i>importBase</i>. Este metodo adiciona a base uma
+     * um elemento <i>region</i>, uma regiao da tela do dispositivo relacionado a esta base.
      *
      * @see br.pensario.region.NCLRegion
      * 
      * @param region
-     *          O método recebe como parâmetro um elemento <i>region</i> a ser adicionado.
+     *          O método recebe como parametro um elemento <i>region</i> a ser adicionado.
      * @return
-     *          Retorna verdadeiro se a região for adicionada com sucesso.
+     *          Retorna verdadeiro se a regiao for adicionada com sucesso.
      *
      * @see TreeSet#add
      */
@@ -142,12 +142,12 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Este método remove um elemento <i>region</i> da base. Nesta implementação, o método recebe o identificador da região a ser removida.
+     * Este metodo remove um elemento <i>region</i> da base. Nesta implementacao, o metodo recebe o identificador da regiao a ser removida.
      *
      * @param id
-     *          O método recebe com parametro uma string representando o  identificador da região a ser removida.
+     *          O metodo recebe com parametro uma string representando o  identificador da regiao a ser removida.
      * @return
-     *          Retorna verdadeiro se a região for removida com sucesso.
+     *          Retorna verdadeiro se a regiao for removida com sucesso.
      *
      * @see TreeSet#remove
      */
@@ -161,12 +161,12 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Remove uma região da base de regiões. Nesta implementação, o metodo recebe como parâmetro um objeto <i>region</i> a ser retirado da base.
+     * Remove uma regiao da base de regioes. Nesta implementacao, o metodo recebe como parametro um objeto <i>region</i> a ser retirado da base.
      * 
      * @param region
      *          Recebe como parametro o proprio elemento region a ser removido.
      * @return
-     *          Retorna verdadeiro se a região for removida com sucesso.
+     *          Retorna verdadeiro se a regiao for removida com sucesso.
      *
      * @see TreeSet#remove
      */
@@ -183,13 +183,13 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Verifica se uma região pertence a base.
+     * Verifica se uma regiao pertence a base.
      * 
      * @param region
-     *          elemento representando a região a ser verificada.
+     *          elemento representando a regiao a ser verificada.
      * @return
-     *           Verdadeiro caso a base contenha a região.
-     *           Falso caso a base não contenha a região.
+     *           Verdadeiro caso a base contenha a regiao.
+     *           Falso caso a base não contenha a regiao.
      *          
      */    
     public boolean hasRegion(R region) {
@@ -198,11 +198,11 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Verifica se a base de regiões possui alguma região.
+     * Verifica se a base de regioes possui alguma regiao.
      * 
      * @return
-     *          Verdadeiro caso a base possua, pelo menos, uma  região.
-     *          Falso caso a base não possua elementos <i>region</i>
+     *          Verdadeiro caso a base possua, pelo menos, uma  regiao.
+     *          Falso caso a base nao possua elementos <i>region</i>
      */
     public boolean hasRegion() {
         return regions.size() > 0;        
@@ -210,10 +210,10 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Retorna a coleção de regiões da base.
+     * Retorna a coleção de regioes da base.
      *
      * @return
-     *          objeto Iterable contendo as regiões da base de regiões.
+     *          objeto Iterable contendo as regioes da base de regioes.
      */
     public Iterable<R> getRegions() {
         return regions;        
@@ -221,11 +221,11 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Adiciona um elemento importBase a base de regiões. O elemento <i>importBase</i>, permite ao documento importar uma base de regiões
+     * Adiciona um elemento importBase a base de regioes. O elemento <i>importBase</i>, permite ao documento importar uma base de regioes
      * pertencente a outro documento NCL.
      *
      * @param importBase
-     *          O método recebe como parâmetro um elemento <i>importBase</i> a ser adicionado.
+     *          O método recebe como parametro um elemento <i>importBase</i> a ser adicionado.
      *
      * @see TreeSet#add
      */
@@ -242,10 +242,10 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Remove um elemento <i>importBase</i> da base de regiões.
+     * Remove um elemento <i>importBase</i> da base de regioes.
      *
      * @param importBase
-     *           O método recebe como parâmetro um elemento <i>importBase</i> a ser removido.
+     *           O metodo recebe como parâmetro um elemento <i>importBase</i> a ser removido.
      *
      * @see TreeSet#remove
      */
@@ -262,7 +262,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Verifica se a base de regiões contém um determinado elemento <i>importBase</i>.
+     * Verifica se a base de regioes contem um determinado elemento <i>importBase</i>.
      *
      * @param importBase
      *          Elemento representando o importador a ser verificado.
@@ -273,11 +273,11 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     /**
-     * Verifica se a base de regiões possui algum importador de regiões.
+     * Verifica se a base de regioes possui algum importador de regioes.
      *
      * @return
-     *          Verdadeiro se a base de regiões possuir algum elemento <i>importBase</i>.
-     *          Falso se a base de regiões não possuir nenhum elemento <i>importBase</i>.
+     *          Verdadeiro se a base de regioes possuir algum elemento <i>importBase</i>.
+     *          Falso se a base de regioes não possuir nenhum elemento <i>importBase</i>.
      */
     public boolean hasImportBase() {
         return !imports.isEmpty();
