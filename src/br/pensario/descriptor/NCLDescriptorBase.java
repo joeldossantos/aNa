@@ -256,17 +256,29 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (hasImportBase() || hasDescriptor());
+        if(!hasImportBase() && !hasDescriptor()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um descritor ou importBase.");
+            valid = false;
+        }
 
         if(hasImportBase()){
-            for(I imp : imports)
+            for(I imp : imports){
                 valid &= imp.validate();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
         }
         if(hasDescriptor()){
-            for(D descriptor : descriptors)
+            for(D descriptor : descriptors){
                 valid &= descriptor.validate();
+                addWarning(descriptor.getWarnings());
+                addError(descriptor.getErrors());
+            }
         }
 
         return valid;

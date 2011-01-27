@@ -241,17 +241,29 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (hasImportBase() || hasTransition());
+        if(!hasImportBase() && !hasTransition()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um transition ou importBase.");
+            valid = false;
+        }
 
         if(hasImportBase()){
-            for(I imp : imports)
+            for(I imp : imports){
                 valid &= imp.validate();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
         }
         if(hasTransition()){
-            for(T transition : transitions)
+            for(T transition : transitions){
                 valid &= transition.validate();
+                addWarning(transition.getWarnings());
+                addError(transition.getErrors());
+            }
         }
 
         return valid;

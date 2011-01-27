@@ -633,13 +633,22 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
+        if(getId() != null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
 
         if(hasDescriptorParam()){
-            for(P param : params)
+            for(P param : params){
                 valid &= param.validate();
+                addWarning(param.getWarnings());
+                addError(param.getErrors());
+            }
         }
 
         return valid;

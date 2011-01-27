@@ -100,7 +100,15 @@ public class NCLMetadata<M extends NCLMetadata> extends NCLElement implements Co
 
     
     public boolean validate() {
-        return (getRDFTree() != null);
+        cleanWarnings();
+        cleanErrors();
+
+        if(getRDFTree() == null){
+            addWarning("Elemento vazio.");
+            return false;
+        }
+
+        return true;
     }
 
 

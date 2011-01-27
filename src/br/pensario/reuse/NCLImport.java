@@ -178,7 +178,21 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
 
 
     public boolean validate() {
-        return (getAlias() != null && getDocumentURI() != null);
+        cleanWarnings();
+        cleanErrors();
+
+        boolean valid = true;
+
+        if(getAlias() == null){
+            addError("Elemento não possui atributo obrigatório alias.");
+            valid = false;
+        }
+        if(getDocumentURI() == null){
+            addError("Elemento não possui atributo obrigatório documentURI.");
+            valid = false;
+        }
+
+        return valid;
     }
     
 

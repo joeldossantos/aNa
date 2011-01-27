@@ -153,7 +153,25 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
 
 
     public boolean validate() {
-        return hasImportNCL();
+        cleanWarnings();
+        cleanErrors();
+
+        boolean valid = true;
+
+        if(!hasImportNCL()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um importNCL.");
+            valid = false;
+        }
+
+        if(hasImportNCL()){
+            for(NCLImport imp : imports){
+                valid &= imp.validate();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
+        }
+
+        return valid;
     }
 
 

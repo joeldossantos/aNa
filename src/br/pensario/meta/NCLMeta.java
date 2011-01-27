@@ -130,7 +130,21 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
 
 
     public boolean validate() {
-        return (getName() != null && getContent() != null);
+        cleanWarnings();
+        cleanErrors();
+
+        boolean valid = true;
+
+        if(getName() == null){
+            addError("Elemento não possui atributo obrigatório name.");
+            valid = false;
+        }
+        if(getContent() == null){
+            addError("Elemento não possui atributo obrigatório content.");
+            valid = false;
+        }
+
+        return valid;
     }
 
 

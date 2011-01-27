@@ -126,10 +126,20 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getName() != null && getValue() != null);
-        //TODO validar o valor com relacao ao nome (?)
+        if(getName() == null){
+            addError("Elemento não possui atributo obrigatório name");
+            valid = false;
+        }
+        if(getValue() == null){
+            addError("Elemento não possui atributo obrigatório value");
+            valid = false;
+        }
+        //@todo: validar o valor com relacao ao nome
 
         return valid;
     }

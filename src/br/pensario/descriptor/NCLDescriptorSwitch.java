@@ -287,18 +287,44 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        valid &= (hasDescriptor() && hasBind());
+        if(getId() != null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
+        if(!hasDescriptor() && !hasBind()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um descritor e um bindRule.");
+            valid = false;
+        }
 
         if(hasBind()){
-            for(B bind : binds)
+            for(B bind : binds){
                 valid &= bind.validate();
+                addWarning(bind.getWarnings());
+                addError(bind.getErrors());
+            }
         }
         if(hasDescriptor()){
-            for(D desc : descriptors)
+            for(D desc : descriptors){
                 valid &= desc.validate();
+                addWarning(desc.getWarnings());
+                addError(desc.getErrors());
+            }
+        }
+
+        if(getDefaultDescriptor() != null){
+            if(!(getDefaultDescriptor().getParent() instanceof NCLDescriptorSwitch)){
+                addError("Atributo descriptor do elemento defaultDescriptor deve referênciar um descritor contido no descriptorSwitch.");
+                valid = false;
+            }
+            else if(((NCLDescriptorSwitch) getDefaultDescriptor().getParent()).compareTo(this) != 0){
+                addError("Atributo descriptor do elemento defaultDescriptor deve referênciar um descritor contido no descriptorSwitch.");
+                valid = false;
+            }
         }
 
         return valid;

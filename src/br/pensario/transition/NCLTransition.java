@@ -360,12 +360,46 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        valid &= (getType() != null);
-        //TODO validar o subtipo com o tipo
-        //TODO validar o fadecolor com o tipo
+        if(getId() != null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
+        if(getType() != null){
+            addError("Elemento não possui atributo obrigatório type.");
+            valid = false;
+        }
+
+        if(getSubtype() != null){
+            if(getType() != null){
+                if(!getSubtype().getType().equals(getType())){
+                    addError("Tipo e subtipo da transição não estão corretos.");
+                    valid = false;
+                }
+            }
+            else{
+                addError("Atributo subType não deve ser especificado sem o atributo type.");
+                valid = false;
+            }
+        }
+
+        if(getType() != null && getType().equals(NCLTransitionType.FADE) && getSubtype() != null && 
+                (getSubtype().equals(NCLTransitionSubtype.FADE_FROM_COLOR) || getSubtype().equals(NCLTransitionSubtype.FADE_FROM_COLOR))){
+            if(getFadeColor() == null){
+                addWarning("Atributo fadeColor deve ser especificado.");
+                valid = false;
+            }
+        }
+        else{
+            if(getFadeColor() != null){
+                addWarning("Atributo fadeColor não deve ser especificado.");
+                valid = false;
+            }
+        }
 
         return valid;
     }

@@ -241,17 +241,29 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (hasImportBase() || hasRule());
+        if(!hasImportBase() && !hasRule()){
+            addWarning("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos uma regra ou importBase.");
+            valid = false;
+        }
 
         if(hasImportBase()){
-            for(I imp : imports)
+            for(I imp : imports){
                 valid &= imp.validate();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
         }
         if(hasRule()){
-            for(T rule : rules)
+            for(T rule : rules){
                 valid &= rule.validate();
+                addWarning(rule.getWarnings());
+                addError(rule.getErrors());
+            }
         }
 
         return valid;

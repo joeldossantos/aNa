@@ -517,33 +517,35 @@ public abstract class NCLValues {
      */
     public enum NCLTransitionSubtype {
         
-        LEFT_TO_RIGHT("leftToRight"),
-        TOP_TO_BOTTOM("topToBottom"),
+        LEFT_TO_RIGHT("leftToRight", NCLTransitionType.BAR),
+        TOP_TO_BOTTOM("topToBottom", NCLTransitionType.BAR),
         
-        RECTANGLE("rectangle"),
-        DIAMOND("diamond"),
+        RECTANGLE("rectangle", NCLTransitionType.IRIS),
+        DIAMOND("diamond", NCLTransitionType.IRIS),
         
-        CLOCKWISE_TWELVE("clockwiseTwelve"),
-        CLOCKWISE_THREE("clockwiseThree"),
-        CLOCKWISE_SIX("clockwiseSix"),
-        CLOCKWISE_NINE("clockwiseNine"),
+        CLOCKWISE_TWELVE("clockwiseTwelve", NCLTransitionType.CLOCK),
+        CLOCKWISE_THREE("clockwiseThree", NCLTransitionType.CLOCK),
+        CLOCKWISE_SIX("clockwiseSix", NCLTransitionType.CLOCK),
+        CLOCKWISE_NINE("clockwiseNine", NCLTransitionType.CLOCK),
         
-        TOP_LEFT_HORIZONTAL("topLeftHorizontal"),
-        TOP_LEFT_VERTICAL("topLeftVertical"),
-        TOP_LEFT_DIAGONAL("topLeftDiagonal"),
-        TOP_RIGHT_DIAGONAL("topRightDiagonal"),
-        BOTTOM_RIGHT_DIAGONAL("bottomRightDiagonal"),
-        BOTTOM_LEFT_DIAGONAL("bottomLeftDiagonal"),
+        TOP_LEFT_HORIZONTAL("topLeftHorizontal", NCLTransitionType.SNAKE),
+        TOP_LEFT_VERTICAL("topLeftVertical", NCLTransitionType.SNAKE),
+        TOP_LEFT_DIAGONAL("topLeftDiagonal", NCLTransitionType.SNAKE),
+        TOP_RIGHT_DIAGONAL("topRightDiagonal", NCLTransitionType.SNAKE),
+        BOTTOM_RIGHT_DIAGONAL("bottomRightDiagonal", NCLTransitionType.SNAKE),
+        BOTTOM_LEFT_DIAGONAL("bottomLeftDiagonal", NCLTransitionType.SNAKE),
         
-        CROSSFADE("crossfade"),
-        FADE_TO_COLOR("fadeToColor"),
-        FADE_FROM_COLOR("fadeFromColor");
+        CROSSFADE("crossfade", NCLTransitionType.FADE),
+        FADE_TO_COLOR("fadeToColor", NCLTransitionType.FADE),
+        FADE_FROM_COLOR("fadeFromColor", NCLTransitionType.FADE);
 
 
         private String name;
-        private NCLTransitionSubtype(String name) { this.name = name;}
+        private NCLTransitionType type;
+        private NCLTransitionSubtype(String name, NCLTransitionType type) { this.name = name; this.type = type;}
         @Override
         public String toString() { return name; }
+        public NCLTransitionType getType() { return type; }
     }
     
     

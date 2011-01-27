@@ -335,17 +335,29 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (hasImportBase() || hasRegion());
+        if(!hasImportBase() && !hasRegion()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um region ou importBase.");
+            valid = false;
+        }
 
         if(hasImportBase()){
-            for(I imp : imports)
+            for(I imp : imports){
                 valid &= imp.validate();
+                addWarning(imp.getWarnings());
+                addError(imp.getErrors());
+            }
         }
         if(hasRegion()){
-            for(R region : regions)
+            for(R region : regions){
                 valid &= region.validate();
+                addWarning(region.getWarnings());
+                addError(region.getErrors());
+            }
         }
 
         return valid;

@@ -199,15 +199,30 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
 
 
     public boolean validate() {
+        cleanWarnings();
+        cleanErrors();
+
         boolean valid = true;
 
-        valid &= (getId() != null);
-        valid &= (getOperator() != null);
-        valid &= (hasRule());
+        if(getId() == null){
+            addError("Elemento não possui atributo obrigatório id.");
+            valid = false;
+        }
+        if(getOperator() == null){
+            addError("Elemento não possui atributo obrigatório operator.");
+            valid = false;
+        }
+        if(!hasRule()){
+            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos uma regra.");
+            valid = false;
+        }
 
         if(hasRule()){
-            for(T rule : rules)
+            for(T rule : rules){
                 valid &= rule.validate();
+                addWarning(rule.getWarnings());
+                addError(rule.getErrors());
+            }
         }
 
         return valid;
