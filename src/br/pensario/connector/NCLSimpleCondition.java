@@ -300,7 +300,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
-            content += " delay='$" + getParamDelay() + "'";
+            content += " delay='$" + getParamDelay().getId() + "'";
         if(getMin() != null)
             content += " min='" + getMin() + "'";        
         if(getMax() != null){

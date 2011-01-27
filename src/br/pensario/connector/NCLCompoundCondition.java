@@ -281,7 +281,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
         if(getDelay() != null)
             content += " delay='" + getDelay() + "s'";
         if(getParamDelay() != null)
-            content += " delay='$" + getParamDelay() + "'";
+            content += " delay='$" + getParamDelay().getId() + "'";
         content += ">\n";
 
         if(hasCondition()){
