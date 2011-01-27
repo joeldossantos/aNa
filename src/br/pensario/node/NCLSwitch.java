@@ -15,14 +15,12 @@ import org.xml.sax.XMLReader;
  * Esta classe define o elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
  * Este elemento é o elemento que define a apresentação de conteudos alternativos em um documento NCL.<br>
  *
- * @see <a
- *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
- *      NBR 15606-5:2008</a>
+ * @see <a href="
+http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+      ABNT NBR 15606-2:2007</a>
  *
+ *@see <a href="../../README.html">Detalhes da API NCL</a>
  *
- * @version 1.0.0
- * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
- * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
 public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwitchPort, B extends NCLBindRule> extends NCLIdentifiableElement implements NCLNode<N> {
 

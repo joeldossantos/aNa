@@ -22,16 +22,16 @@ import org.xml.sax.XMLReader;
  * conter elementos <i>importBase</i> para importar uma base definida em outro documento NCL. Ela ainda pode conter o atributo device, que especifica o dispositivo
  * de exibição relacionado aquela base.<br>
  *
- * @see <a
- *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
- *      NBR 15606-5:2008</a>
+ * 
  * @see br.pensario.region.NCLRegion
  *
+ *@see <a href="
+http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+      ABNT NBR 15606-2:2007</a>
  *
+ *@see <a href="../../README.html">Detalhes da API NCL</a>
  *
- * @version 1.0.0
- * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
- * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
+ * 
  */
 public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCLIdentifiableElement {
 

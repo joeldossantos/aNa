@@ -9,13 +9,12 @@ import org.xml.sax.XMLReader;
 /**
  * Esta classe implementa a interface do tratador de erros do parser SAX.<br>
  *
- * @see <a
- *      href="http://download.oracle.com/javase/1.4.2/docs/api/org/xml/sax/ErrorHandler.html">Error Handler</a>
+ * @see <a href="
+http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+      ABNT NBR 15606-2:2007</a>
  *
+ * @see <a href="../README.html">Detalhes da API NCL</a>
  *
- * @version 1.0.0
- * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
- * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
  */
 public class NCLParsingErrorHandler implements ErrorHandler {
 

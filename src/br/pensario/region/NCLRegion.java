@@ -12,16 +12,14 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento define uma região de exibição de conteúdo.<br>
+ * Regions definem as regiões da tela dos dispositivos de saída onde os nós de mídia poderão ser exibidos.
  *
- * @see <a
- *      href="http://www.abnt.org.br/imagens/Normalizacao_TV_Digital/ABNTNBR15606-5_2008Ed1.pdf">ABNT
- *      NBR 15606-5:2008</a>
+ * @see <a href="
+http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+      ABNT NBR 15606-2:2007</a>
  *
+ *@see <a href="../../README.html">Detalhes da API NCL</a>
  *
- * @version 1.0.0
- * @author <a href="http://www.cos.ufrj.br/~schau/">Wagner Schau<a/>
- * @author <a href="http://joel.dossantos.eng.br">Joel dos Santos<a/>
  */
 public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement implements Comparable<R> {
 
