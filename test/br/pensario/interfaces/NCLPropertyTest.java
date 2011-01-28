@@ -5,7 +5,6 @@
 
 package br.pensario.interfaces;
 
-import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLSystemVariable;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -103,6 +102,55 @@ public class NCLPropertyTest {
             String result = instance.parse(0);
             //System.out.println(result);
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLProperty instance = new NCLProperty(reader, null);
+            String xml = "<property/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLProperty instance = new NCLProperty(reader, null);
+            String xml = "<property name='interacao' value='nao'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            boolean result = instance.validate();
+
+            for(String msg : instance.getWarnings())
+                System.out.println(msg);
+            for(String msg : instance.getErrors())
+                System.out.println(msg);
+
+            assertTrue(result);
         }
         catch(SAXException ex){
             fail(ex.getMessage());

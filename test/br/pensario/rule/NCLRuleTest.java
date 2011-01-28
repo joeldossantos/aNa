@@ -87,4 +87,109 @@ public class NCLRuleTest {
             fail(ex.getMessage());
         }
     }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRule instance = new NCLRule(reader, null);
+            String xml = "<rule id='r1' var='legenda' value='ligada'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRule instance = new NCLRule(reader, null);
+            String xml = "<rule id='r1' var='legenda' value='ligada'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRule instance = new NCLRule(reader, null);
+            String xml = "<rule var='legenda' comparator='eq' value='ligada'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRule instance = new NCLRule(reader, null);
+            String xml = "<rule id='r1' var='legenda' comparator='eq'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao5() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLRule instance = new NCLRule(reader, null);
+            String xml = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
 }

@@ -7,7 +7,6 @@ package br.pensario.descriptor;
 
 import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLParsingErrorHandler;
 import br.pensario.NCLValues.NCLAttributes;
 import br.pensario.NCLValues.NCLColor;
 import br.pensario.region.NCLRegion;
@@ -316,6 +315,97 @@ public class NCLDescriptorTest {
             String result = ((NCLDescriptor) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getMoveDown().getPlayer();
             //System.out.println(result);
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDescriptor instance = new NCLDescriptor(reader, null);
+            String xml = "<descriptor/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDescriptor instance = new NCLDescriptor(reader, null);
+            String xml = "<descriptor id='dp'><descriptorParam value='base'/></descriptor>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDescriptor instance = new NCLDescriptor(reader, null);
+            String xml = "<descriptor id='dp'><descriptorParam name='top'/></descriptor>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDescriptor instance = new NCLDescriptor(reader, null);
+            String xml = "<descriptor id='dp'><descriptorParam name='top' value='20'/></descriptor>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            boolean result = instance.validate();
+
+            for(String msg : instance.getWarnings())
+                System.out.println(msg);
+            for(String msg : instance.getErrors())
+                System.out.println(msg);
+
+            assertTrue(result);
         }
         catch(SAXException ex){
             fail(ex.getMessage());

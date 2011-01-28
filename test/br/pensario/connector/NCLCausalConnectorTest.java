@@ -5,7 +5,6 @@
 
 package br.pensario.connector;
 
-import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLActionOperator;
 import br.pensario.NCLValues.NCLAttributeType;
@@ -154,8 +153,7 @@ public class NCLCausalConnectorTest {
     }
 
     @Test
-    public void test3() {
-        String expResult, result;
+    public void test3a() {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
@@ -180,14 +178,47 @@ public class NCLCausalConnectorTest {
 
             NCLCompoundCondition cond = (NCLCompoundCondition) instance.getCondition();
 
-            expResult = "teste";
-            result = cond.getParamDelay().getType();
+            String expResult = "teste";
+            String result = cond.getParamDelay().getType();
             //System.out.println(result);
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
 
+    public void test3b() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='$val'>\n"+
+                "\t\t<simpleCondition role='startSel' key='A' delay='6s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
+                "\t\t\t<valueAssessment value='1'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='$val'>\n"+
+                "\t\t<simpleAction role='seta2x' value='value0' delay='0s' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='2' repeatDelay='2s' duration='20s' by='2'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            String expResult = "teste";
+            
             NCLCompoundAction act = (NCLCompoundAction) instance.getAction();
 
-            result = act.getParamDelay().getType();
+            String result = act.getParamDelay().getType();
             //System.out.println(result);
             assertEquals(expResult, result);
         }
@@ -200,7 +231,7 @@ public class NCLCausalConnectorTest {
     }
 
     @Test
-    public void test4() {
+    public void test4a() {
         String expResult, result;
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -231,18 +262,208 @@ public class NCLCausalConnectorTest {
 
             result = sact.getParamDelay().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4b() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='A' delay='6s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
+                "\t\t\t<valueAssessment value='1'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='$val' delay='$val' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='$val' repeatDelay='$val' duration='$val' by='$val'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundAction cact = (NCLCompoundAction) instance.getAction();
+            NCLSimpleAction sact = (NCLSimpleAction) cact.getActions().iterator().next();
+
+            expResult = "teste";
 
             result = sact.getParamValue().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4c() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='A' delay='6s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
+                "\t\t\t<valueAssessment value='1'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='$val' delay='$val' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='$val' repeatDelay='$val' duration='$val' by='$val'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundAction cact = (NCLCompoundAction) instance.getAction();
+            NCLSimpleAction sact = (NCLSimpleAction) cact.getActions().iterator().next();
+
+            expResult = "teste";
 
             result = sact.getParamRepeat().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4d() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='A' delay='6s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
+                "\t\t\t<valueAssessment value='1'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='$val' delay='$val' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='$val' repeatDelay='$val' duration='$val' by='$val'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundAction cact = (NCLCompoundAction) instance.getAction();
+            NCLSimpleAction sact = (NCLSimpleAction) cact.getActions().iterator().next();
+
+            expResult = "teste";
 
             result = sact.getParamRepeatDelay().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4e() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='A' delay='6s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
+                "\t\t\t<valueAssessment value='1'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='$val' delay='$val' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='$val' repeatDelay='$val' duration='$val' by='$val'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundAction cact = (NCLCompoundAction) instance.getAction();
+            NCLSimpleAction sact = (NCLSimpleAction) cact.getActions().iterator().next();
+
+            expResult = "teste";
 
             result = sact.getParamDuration().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test4f() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='A' delay='6s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
+                "\t\t\t<valueAssessment value='1'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='$val' delay='$val' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='$val' repeatDelay='$val' duration='$val' by='$val'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundAction cact = (NCLCompoundAction) instance.getAction();
+            NCLSimpleAction sact = (NCLSimpleAction) cact.getActions().iterator().next();
+
+            expResult = "teste";
 
             result = sact.getParamBy().getType();
             assertEquals(expResult, result);
@@ -256,7 +477,7 @@ public class NCLCausalConnectorTest {
     }
 
     @Test
-    public void test5() {
+    public void test5a() {
         String expResult, result;
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -289,15 +510,175 @@ public class NCLCausalConnectorTest {
 
             result = scond.getParamDelay().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5b() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='$val' delay='$val' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='$val' attributeType='occurrences' offset='$val'/>\n"+
+                "\t\t\t<valueAssessment value='$val'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='value0' delay='0s' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='2' repeatDelay='2s' duration='20s' by='2'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundCondition ccond = (NCLCompoundCondition) instance.getCondition();
+            NCLSimpleCondition scond = (NCLSimpleCondition) ccond.getConditions().iterator().next();
+            NCLAssessmentStatement ass = (NCLAssessmentStatement) ccond.getStatements().iterator().next();
+            NCLAttributeAssessment att = (NCLAttributeAssessment) ass.getAttributeAssessments().iterator().next();
+
+            expResult = "teste";
 
             result = scond.getParamKey().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5c() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='$val' delay='$val' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='$val' attributeType='occurrences' offset='$val'/>\n"+
+                "\t\t\t<valueAssessment value='$val'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='value0' delay='0s' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='2' repeatDelay='2s' duration='20s' by='2'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundCondition ccond = (NCLCompoundCondition) instance.getCondition();
+            NCLSimpleCondition scond = (NCLSimpleCondition) ccond.getConditions().iterator().next();
+            NCLAssessmentStatement ass = (NCLAssessmentStatement) ccond.getStatements().iterator().next();
+            NCLAttributeAssessment att = (NCLAttributeAssessment) ass.getAttributeAssessments().iterator().next();
+
+            expResult = "teste";
 
             result = att.getParamKey().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5d() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='$val' delay='$val' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='$val' attributeType='occurrences' offset='$val'/>\n"+
+                "\t\t\t<valueAssessment value='$val'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='value0' delay='0s' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='2' repeatDelay='2s' duration='20s' by='2'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundCondition ccond = (NCLCompoundCondition) instance.getCondition();
+            NCLSimpleCondition scond = (NCLSimpleCondition) ccond.getConditions().iterator().next();
+            NCLAssessmentStatement ass = (NCLAssessmentStatement) ccond.getStatements().iterator().next();
+            NCLAttributeAssessment att = (NCLAttributeAssessment) ass.getAttributeAssessments().iterator().next();
+
+            expResult = "teste";
 
             result = att.getParamOffset().getType();
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test5e() {
+        String expResult, result;
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>\n"+
+                "\t<connectorParam name='val' type='teste'/>\n"+
+                "\t<compoundCondition operator='and' delay='5s'>\n"+
+                "\t\t<simpleCondition role='startSel' key='$val' delay='$val' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<assessmentStatement comparator='eq'>\n"+
+                "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='$val' attributeType='occurrences' offset='$val'/>\n"+
+                "\t\t\t<valueAssessment value='$val'/>\n"+
+                "\t\t</assessmentStatement>\n"+
+                "\t</compoundCondition>\n"+
+                "\t<compoundAction operator='seq' delay='1s'>\n"+
+                "\t\t<simpleAction role='seta2x' value='value0' delay='0s' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='2' repeatDelay='2s' duration='20s' by='2'/>\n"+
+                "\t\t<simpleAction role='stop'/>\n"+
+                "\t</compoundAction>\n"+
+                "</causalConnector>\n";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            NCLCompoundCondition ccond = (NCLCompoundCondition) instance.getCondition();
+            NCLSimpleCondition scond = (NCLSimpleCondition) ccond.getConditions().iterator().next();
+            NCLAssessmentStatement ass = (NCLAssessmentStatement) ccond.getStatements().iterator().next();
+            NCLAttributeAssessment att = (NCLAttributeAssessment) ass.getAttributeAssessments().iterator().next();
+
+            expResult = "teste";
 
             result = ass.getValueAssessment().getParamValue().getType();
             assertEquals(expResult, result);
@@ -309,8 +690,6 @@ public class NCLCausalConnectorTest {
             fail(ex.getMessage());
         }
     }
-
-
 
     @Test
     public void test6() {
@@ -339,6 +718,47 @@ public class NCLCausalConnectorTest {
             String expResult = xml;
             String result = instance.parse(0);
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validate() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
+            String xml = "<causalConnector id='conn1'>"+
+                "<connectorParam name='val' type='teste'/>"+
+                "<compoundCondition operator='and' delay='$val'>"+
+                "<simpleCondition role='onBegin'/>"+
+                "<assessmentStatement comparator='eq'>"+
+                "<attributeAssessment role='testeOccurences' eventType='selection' key='$val' attributeType='occurrences' offset='$val'/>"+
+                "<valueAssessment value='$val'/>"+
+                "</assessmentStatement>"+
+                "</compoundCondition>"+
+                "<compoundAction operator='seq' delay='$val'>"+
+                "<simpleAction role='start'/>"+
+                "<simpleAction role='stop'/>"+
+                "</compoundAction>"+
+                "</causalConnector>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            boolean result = instance.validate();
+
+            for(String msg : instance.getWarnings())
+                System.out.println(msg);
+            for(String msg : instance.getErrors())
+                System.out.println(msg);
+
+            assertTrue(result);
         }
         catch(SAXException ex){
             fail(ex.getMessage());

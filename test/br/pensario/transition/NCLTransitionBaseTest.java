@@ -94,4 +94,74 @@ public class NCLTransitionBaseTest {
             fail(ex.getMessage());
         }
     }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
+            String xml = "<transitionBase id='tb'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
+            String xml = "<transitionBase><importNCL alias='base' documentURI='base.ncl'/></transitionBase>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
+            String xml = "<transitionBase><importBase alias='base' documentURI='base.ncl'/><transition id='tr1' type='fade'/></transitionBase>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            boolean result = instance.validate();
+
+            for(String msg : instance.getWarnings())
+                System.out.println(msg);
+            for(String msg : instance.getErrors())
+                System.out.println(msg);
+
+            assertTrue(result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
 }

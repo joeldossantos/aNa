@@ -11,8 +11,6 @@ import br.pensario.NCLValues.NCLOperator;
 import br.pensario.interfaces.NCLProperty;
 import java.io.IOException;
 import java.io.StringReader;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -62,6 +60,69 @@ public class NCLCompositeRuleTest {
 
             String result = rule.parse(0);
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCompositeRule instance = new NCLCompositeRule(reader, null);
+            String xml = "<compositeRule operator='and'></compositeRule>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCompositeRule instance = new NCLCompositeRule(reader, null);
+            String xml = "<compositeRule id='crule'></compositeRule>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLCompositeRule instance = new NCLCompositeRule(reader, null);
+            String xml = "<compositeRule id='crule' operator='and'></compositeRule>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
         }
         catch(SAXException ex){
             fail(ex.getMessage());

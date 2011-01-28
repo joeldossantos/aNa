@@ -7,7 +7,6 @@ package br.pensario.node;
 
 import br.pensario.NCLDoc;
 import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLParsingErrorHandler;
 import br.pensario.rule.NCLRule;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -169,6 +168,261 @@ public class NCLSwitchTest {
             String result = ((NCLMedia) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getRefer().getNodes().iterator().next()).getId();
             //System.out.println(result);
             assertEquals(expResult, result);
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao2() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao3() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<bindRule rule='rpt' constituent='dpt'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao4() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<bindRule constituent='dpt'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao5() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<bindRule rule='rpt'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao6() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<bindRule rule='rpt' constituent='dpa'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao7() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<bindRule rule='rpt' constituent='dpt'/>"+
+                    "<defaultComponent component='dpb'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao8() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda' refer='dLegenda'>"+
+                    "<bindRule rule='rpt' constituent='dpt'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao9() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda' refer='interno'>"+
+                    "<bindRule rule='rpt' constituent='dpt'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "<switch id='interno'>"+
+                    "<bindRule rule='rpt' constituent='dpa'/>"+
+                    "<media id='dpa'/>"+
+                    "</switch>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_validacao10() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLSwitch instance = new NCLSwitch(reader, null);
+            String xml = "<switch id='dLegenda'>"+
+                    "<bindRule rule='rpt' constituent='dpt'/>"+
+                    "<defaultComponent component='dpt'/>"+
+                    "<media id='dpt'/>"+
+                    "</switch>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            boolean result = instance.validate();
+
+            for(String msg : instance.getWarnings())
+                System.out.println(msg);
+            for(String msg : instance.getErrors())
+                System.out.println(msg);
+
+            assertTrue(result);
         }
         catch(SAXException ex){
             fail(ex.getMessage());

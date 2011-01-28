@@ -62,4 +62,26 @@ public class NCLDocTest {
             fail(ex.getMessage());
         }
     }
+
+    @Test
+    public void test_validacao1() {
+        try{
+            XMLReader reader = XMLReaderFactory.createXMLReader();
+
+            NCLDoc instance = new NCLDoc();
+            instance.setReader(reader);
+            String xml = "<ncl id='tb'/>";
+
+            reader.setContentHandler(instance);
+            reader.parse(new InputSource(new StringReader(xml)));
+
+            assertFalse(instance.validate());
+        }
+        catch(SAXException ex){
+            fail(ex.getMessage());
+        }
+        catch(IOException ex){
+            fail(ex.getMessage());
+        }
+    }
 }

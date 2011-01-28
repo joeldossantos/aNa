@@ -3,10 +3,8 @@
  * and open the template in the editor.
  */
 
-package br.pensario.reuse;
+package br.pensario.connector;
 
-import br.pensario.NCLDoc;
-import br.pensario.NCLValues.NCLImportType;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -20,43 +18,15 @@ import static org.junit.Assert.*;
  *
  * @author joel
  */
-public class NCLImportTest {
-
-    @Test
-    public void test1() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLDoc instance = new NCLDoc();
-            instance.setReader(reader);
-            String xml = "<ncl><head><regionBase>"+
-                    "<importBase alias='base' documentURI='base.ncl' region='rgTV'/>"+
-                    "<region id='rgTV' title='teste'/>"+
-                    "</regionBase></head></ncl>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            String expResult = "teste";
-            String result = ((NCLImport) instance.getHead().getRegionBase().getImportBases().iterator().next()).getRegion().getTitle();
-            //System.out.println(result);
-            assertEquals(expResult, result);
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
+public class NCLCompoundConditionTest {
 
     @Test
     public void test_validacao1() {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLImport instance = new NCLImport(NCLImportType.BASE, reader, null);
-            String xml = "<importBase documentURI='base.ncl'/>";
+            NCLCompoundCondition instance = new NCLCompoundCondition(reader, null);
+            String xml = "<compoundCondition/>";
 
             reader.setContentHandler(instance);
             reader.parse(new InputSource(new StringReader(xml)));
@@ -72,12 +42,12 @@ public class NCLImportTest {
     }
 
     @Test
-    public void test_validacao2() {
+    public void test_validacao() {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLImport instance = new NCLImport(NCLImportType.BASE, reader, null);
-            String xml = "<importBase alias='base'/>";
+            NCLCompoundCondition instance = new NCLCompoundCondition(reader, null);
+            String xml = "<compoundCondition operator='and'/>";
 
             reader.setContentHandler(instance);
             reader.parse(new InputSource(new StringReader(xml)));
@@ -93,12 +63,15 @@ public class NCLImportTest {
     }
 
     @Test
-    public void test_validacao3() {
+    public void test_validacao4() {
         try{
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            NCLImport instance = new NCLImport(NCLImportType.BASE, reader, null);
-            String xml = "<importBase alias='base' documentURI='base.ncl'/>";
+            NCLCompoundCondition instance = new NCLCompoundCondition(reader, null);
+            String xml = "<compoundCondition operator='or'>"+
+                    "<simpleCondition role='onBegin'/>"+
+                    "<simpleCondition role='onEnd'/>"+
+                    "</compoundCondition>";
 
             reader.setContentHandler(instance);
             reader.parse(new InputSource(new StringReader(xml)));
