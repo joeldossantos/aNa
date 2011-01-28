@@ -138,9 +138,10 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
 
         if(getComponent() == null){
             addError("Elemento não possui atributo obrigatório component.");
+            valid = false;
         }
 
-        if(getComponent() != null && getParent().getParent() != null){
+        if(getComponent() != null && getParent() != null && getParent().getParent() != null){
             if(getComponent().compareTo(getParent().getParent()) == 0){
                 addError("Atributo component deve referênciar elemento interno ao switch.");
                 valid = false;
@@ -152,7 +153,7 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
             }
         }
 
-        if(getInterface() != null && getComponent() != null && getParent().getParent() != null){
+        if(getInterface() != null && getComponent() != null && getParent() != null && getParent().getParent() != null){
             if(getComponent() instanceof NCLMedia){
                 if(getInterface() instanceof NCLArea && !((NCLMedia) getComponent()).hasArea((NCLArea) getInterface())){
                     addError("Atributo interface deve referênciar interface contida no elemento referênciado em component.");

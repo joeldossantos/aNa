@@ -127,7 +127,8 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      *          Lista contendo mensagens de aviso.
      */
     public void addWarning(Iterable<String> warnings) {
-        this.warnings.addAll((Collection<? extends String>) warnings);
+        for(String warning : warnings)
+            addWarning(warning);
     }
 
 
@@ -174,7 +175,8 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      *          Lista contendo mensagens de erro.
      */
     public void addError(Iterable<String> errors) {
-        this.errors.addAll((Collection<? extends String>) errors);
+        for(String error : errors)
+            addError(error);
     }
 
 

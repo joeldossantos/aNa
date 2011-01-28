@@ -148,8 +148,8 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
             valid = false;
         }
 
-        if(getComponent() != null){
-            if(getComponent().compareTo(getParent()) == 0){
+        if(getComponent() != null && getParent() != null){
+            if(getParent() instanceof NCLNode && getComponent() instanceof NCLNode && getComponent().compareTo(getParent()) == 0){
                 addError("Atributo component deve referênciar elemento interno ao contexto.");
                 valid = false;
             }
@@ -160,10 +160,6 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
             }
             else if(getParent() instanceof NCLBody && !((NCLBody) getParent()).hasNode(getComponent())){
                 addError("Atributo component deve referênciar elemento interno ao corpo do documento.");
-                valid = false;
-            }
-            else if(!(getParent() instanceof NCLContext) || !(getParent() instanceof NCLBody)){
-                addError("Atributo component deve referênciar elemento interno a composição.");
                 valid = false;
             }
         }

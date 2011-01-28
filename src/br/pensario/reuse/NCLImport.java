@@ -190,6 +190,23 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
             valid = false;
         }
 
+        if(getParent() != null){
+            switch(type){
+                case BASE:
+                    if(getParent() instanceof NCLImportedDocumentBase){
+                        addError("Elemento importBase não é um elemento filho desta base.");
+                        valid = false;
+                    }
+                    break;
+                case NCL:
+                    if(!(getParent() instanceof NCLImportedDocumentBase)){
+                        addError("Elemento importNCL não é um elemento filho desta base.");
+                        valid = false;
+                    }
+                    break;
+            }
+        }
+
         return valid;
     }
     

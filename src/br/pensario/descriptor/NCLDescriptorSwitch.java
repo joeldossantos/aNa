@@ -295,7 +295,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }
-        if(!hasDescriptor() && !hasBind()){
+        if(!hasDescriptor() || !hasBind()){
             addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um descritor e um bindRule.");
             valid = false;
         }

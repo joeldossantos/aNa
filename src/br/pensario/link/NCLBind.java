@@ -355,14 +355,8 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             valid = false;
         }
 
-        //@todo: validar o papel com o conector utilizado no link
-        if(!roleReference()){
-            addError("Atributo role deve referenciar um papel especificado pelo conector utilizado no link.");
-            valid = false;
-        }
-
-        if(getComponent() != null && getParent().getParent() != null){
-            if(getComponent().compareTo(getParent().getParent()) == 0){
+        if(getComponent() != null && getParent() != null && getParent().getParent() != null){
+            if(getParent().getParent() instanceof NCLNode && getComponent() instanceof NCLNode && getComponent().compareTo(getParent().getParent()) == 0){
                 addError("Atributo component deve referênciar elemento interno a composição.");
                 valid = false;
             }
@@ -373,10 +367,6 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             }
             else if(getParent().getParent() instanceof NCLBody && !((NCLBody) getParent().getParent()).hasNode(getComponent())){
                 addError("Atributo component deve referênciar elemento interno ao corpo do documento.");
-                valid = false;
-            }
-            else if(!(getParent().getParent() instanceof NCLContext) || !(getParent().getParent() instanceof NCLBody)){
-                addError("Atributo component deve referênciar elemento interno a composição.");
                 valid = false;
             }
         }

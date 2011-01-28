@@ -4,7 +4,6 @@ import br.pensario.NCLElement;
 import br.pensario.NCLIdentifiableElement;
 import br.pensario.NCLInvalidIdentifierException;
 import br.pensario.NCLValues.NCLMediaType;
-import br.pensario.NCLValues.NCLMimeType;
 import br.pensario.node.NCLMedia;
 import java.util.Vector;
 import org.xml.sax.Attributes;
@@ -355,35 +354,35 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
         int i = 0;
         if(getCoords() != null){
             i++;
-            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.IMAGE) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
+            if(getParent() != null && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.IMAGE) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
                 addWarning("Elemento media não suporta âncora espacial.");
                 valid = false;
             }
         }
         if(getBegin() != null || getEnd() != null){
             i++;
-            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.AUDIO) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
+            if(getParent() != null && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.AUDIO) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
                 addWarning("Elemento media não suporta âncora temporal.");
                 valid = false;
             }
         }
         if(getText() != null || getPosition() != null){
             i++;
-            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.TEXT)){
+            if(getParent() != null && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.TEXT)){
                 addWarning("Elemento media não suporta âncora textual.");
                 valid = false;
             }
         }
         if(getFirst() != null || getLast() != null){
             i++;
-            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.AUDIO) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
+            if(getParent() != null && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.AUDIO) && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.VIDEO)){
                 addWarning("Elemento media não suporta âncora temporal.");
                 valid = false;
             }
         }
         if(getLabel() != null){
             i++;
-            if(!((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.PROCEDURAL)){
+            if(getParent() != null && !((NCLMedia)getParent()).getMediaType().equals(NCLMediaType.PROCEDURAL)){
                 addWarning("Elemento media não suporta âncora pocedural.");
                 valid = false;
             }

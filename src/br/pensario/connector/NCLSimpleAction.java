@@ -750,16 +750,16 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             valid = false;
         }
 
-        if((getDuration() == null && getParamDuration() == null) || (getBy() == null && getParamBy() == null)){
+        if((getDuration() != null || getParamDuration() != null) && (getBy() == null && getParamBy() == null)){
             addWarning("Os atributos duration e by devem ser especificados em conjunto.");
             valid = false;
         }
 
-        if(getMax() == 1 && getQualifier() != null){
+        if(getMax() != null && getMax() == 1 && getQualifier() != null){
             addWarning("O atributo qualifier não deve ser especificado");
             valid = false;
         }
-        else if(getMax() != 1 && getQualifier() == null){
+        else if(getMax() != null && getMax() != 1 && getQualifier() == null){
             addWarning("O atributo qualifier deve ser especificado");
             valid = false;
         }

@@ -749,7 +749,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }
-        if(getRefer() != null && getRefer().compareTo(this) == 0){
+        if(getRefer() != null && (getRefer().compareTo(this) == 0 || findContext(nodes) != null)){
             addError("Elemento não pode fazer referência a si mesmo.");
             valid = false;
         }

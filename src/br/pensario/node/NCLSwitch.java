@@ -472,11 +472,11 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             addError("Elemento não possui atributo obrigatório id.");
             valid = false;
         }
-        if(getRefer() != null && getRefer().compareTo(this) == 0){
-            addError("Elemento não pode fazer referência a si mesmo.");
+        if(getRefer() != null && (getRefer().compareTo(this) == 0 || findSwitch(nodes) != null)){
+            addError("Elemento não pode fazer referência a si mesmo ou a um elemento interno.");
             valid = false;
         }
-        if(!hasNode() && !hasBind()){
+        if(!hasNode() || !hasBind()){
             addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um nó e um bindRule.");
             valid = false;
         }
@@ -579,13 +579,10 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
 
     @Override
     public void endDocument() {
-        if(getParent() != null){
-            if(getDefaultComponent() != null)
-                defaultComponentReference();
-
-            if(getRefer() != null)
+        if(getDefaultComponent() != null)
+            defaultComponentReference();
+        if(getParent() != null && getRefer() != null)
                 switchReference();
-        }
 
         if(hasBind()){
             for(B bind : binds){

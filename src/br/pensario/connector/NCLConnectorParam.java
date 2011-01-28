@@ -138,7 +138,7 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
         cleanErrors();
 
         if(getName() == null){
-            addError("Elemento não atributo obrigatório name.");
+            addError("Elemento não possui atributo obrigatório name.");
             return false;
         }
 

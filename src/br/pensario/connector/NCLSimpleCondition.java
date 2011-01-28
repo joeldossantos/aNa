@@ -462,11 +462,11 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
 
         }
 
-        if(getMax() == 1 && getQualifier() != null){
+        if(getMax() != null && getMax() == 1 && getQualifier() != null){
             addWarning("O atributo qualifier não deve ser especificado");
             valid = false;
         }
-        else if(getMax() != 1 && getQualifier() == null){
+        else if(getMax() != null && getMax() != 1 && getQualifier() == null){
             addWarning("O atributo qualifier deve ser especificado");
             valid = false;
         }

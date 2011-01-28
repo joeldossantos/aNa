@@ -170,7 +170,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
 
         boolean valid = true;
 
-        if(getName() != null){
+        if(getName() == null){
             addError("Elemento não possui atributo obrigatório name.");
             valid = false;
         }
