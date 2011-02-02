@@ -72,6 +72,15 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
         if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
+        if(value != null){
+            for(NCLDefaultValueAssessment def : NCLDefaultValueAssessment.values()){
+                if(value.equals(def.toString())){
+                    setValue(def);
+                    return;
+                }
+            }
+        }
+
         this.value = value;
         this.defValue = null;
         this.parValue = null;
@@ -105,7 +114,8 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
     
 
     /**
-     * Retorna o valor da assetiva do conector.
+     * Retorna o valor da assetiva do conector. Retorna a String que representa um valor
+     * padrao caso o valor tenha sido determinado desta forma.
      *
      * @return
      *          String contendo o valor da assertiva.
@@ -119,7 +129,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
 
 
     /**
-     * Retorna o valor da assetiva do conector.
+     * Retorna o valor da assetiva do conector caso este tenha sido determinado como um valor padrao.
      *
      * @return
      *          elemento representando o valor da assertiva.

@@ -120,7 +120,8 @@ public class NCLRole {
     
     
     /**
-     * Retorna o nome do papel
+     * Retorna o nome do papel. Retorna a String que representa um papel padrao
+     * caso o nome do papel tenha sido determinado desta forma.
      *
      * @return
      *          String com o nome do papel.
@@ -136,7 +137,7 @@ public class NCLRole {
 
 
     /**
-     * Retorna o nome do papel
+     * Retorna o nome do papel caso este tenha sido determinado como uma condicao padrao.
      *
      * @return
      *          NCLDefaultConditionRole representando o nome do papel
@@ -147,7 +148,7 @@ public class NCLRole {
 
 
     /**
-     * Retorna o nome do papel
+     * Retorna o nome do papel caso este tenha sido determinado como uma acao padrao.
      *
      * @return
      *          NCLDefaultActionRole representando o nome do papel
