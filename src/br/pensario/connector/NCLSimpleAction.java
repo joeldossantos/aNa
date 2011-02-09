@@ -152,8 +152,8 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
     public void setMax(Integer max) {
         if(max != null && max < 0)
             this.max = -1;
-        
-        this.max = max;
+        else
+            this.max = max;
     }
 
 
@@ -406,10 +406,15 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      * Determina o passo da ação de atribuição.
      *
      * @param by
-     *          inteiro representando o passo da atribuição.
+     *          inteiro positivo representando o passo da atribuição ou negativo
+     *          caso o passo seja definido como a String "indefinite".
      */
     public void setBy(Integer by) {
-        this.by = by;
+        if(by != null && by < 0)
+            this.by = -1;
+        else
+            this.by = by;
+        
         this.parBy = null;
     }
 
@@ -430,7 +435,8 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      * Retorna o passo da ação de atribuição.
      *
      * @return
-     *          inteiro representando o passo da atribuição.
+     *          inteiro representando o passo da atribuição. Retorna -1 se o
+     *          o passo for "indefinite".
      */
     public Integer getBy() {
         return by;
@@ -521,8 +527,12 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             content += " duration='" + getDuration() + "s'";
         if(getParamDuration() != null)
             content += " duration='$" + getParamDuration().getId() + "'";
-        if(getBy() != null)
-            content += " by='" + getBy() + "'";
+        if(getBy() != null){
+            if(getBy() < 0)
+                content += " by='indefinite'";
+            else
+                content += " by='" + getBy() + "'";
+        }
         if(getParamBy() != null)
             content += " by='$" + getParamBy().getId() + "'";
         content += "/>\n";
