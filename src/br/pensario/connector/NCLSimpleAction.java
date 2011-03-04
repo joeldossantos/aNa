@@ -785,13 +785,15 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             cleanWarnings();
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("role"))
-                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: precisa retirar cast?
+                if(attributes.getLocalName(i).equals("role")){
+                    R child = createRole(attributes.getValue(i));
+                    setRole(child);
+                }
                 else if(attributes.getLocalName(i).equals("value")){
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setValue((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setValue((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else
                         setValue(var);
@@ -800,7 +802,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setDelay((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -837,7 +839,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setRepeat((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setRepeat((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else
                         setRepeat(new Integer(var));
@@ -846,7 +848,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setRepeatDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setRepeatDelay((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -857,7 +859,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setDuration((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setDuration((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else{
                         var = var.substring(0, var.length() - 1);
@@ -868,7 +870,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setBy((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setBy((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else
                         setBy(new Integer(var));
@@ -920,5 +922,10 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
 
         addWarning("Could not find connectorParam in connector with id: " + id);
         return null;
+    }
+
+
+    protected R createRole(String name) {
+        return (R) new NCLRole(name);
     }
 }

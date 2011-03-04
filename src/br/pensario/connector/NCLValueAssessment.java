@@ -221,7 +221,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
                     String var = attributes.getValue(i);
                     if(var.contains("$")){
                         var = var.substring(1);
-                        setValue((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                        setValue((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                     }
                     else{
                         setValue(var);

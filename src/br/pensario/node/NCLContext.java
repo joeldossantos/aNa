@@ -812,7 +812,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((C) new NCLContext(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setRefer((C) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("meta")){

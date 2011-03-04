@@ -319,7 +319,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
                         String var = attributes.getValue(i);
                         if(var.contains("$")){
                             var = var.substring(1);
-                            setDelay((P) new NCLConnectorParam(var));//TODO: precisa retirar cast?
+                            setDelay((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
                         }
                         else{
                             var = var.substring(0, var.length() - 1);

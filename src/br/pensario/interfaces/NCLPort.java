@@ -220,9 +220,9 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
                 if(attributes.getLocalName(i).equals("id"))
                     setId(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("component"))
-                    setComponent((N) new NCLContext(attributes.getValue(i)));//TODO: precisa retirar cast?
+                    setComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
                 else if(attributes.getLocalName(i).equals("interface"))
-                    setInterface((I) new NCLPort(attributes.getValue(i)));//TODO: precisa retirar cast?
+                    setInterface((I) new NCLPort(attributes.getValue(i)));//cast retirado na correcao das referencias
             }
         }
         catch(NCLInvalidIdentifierException ex){

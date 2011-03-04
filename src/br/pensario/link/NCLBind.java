@@ -438,13 +438,13 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
                 cleanErrors();
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("role"))
-                        setRole((R) new NCLRole(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setRole((R) new NCLRole(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("component"))
-                        setComponent((N) new NCLContext(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("interface"))
-                        setInterface((I) new NCLPort(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setInterface((I) new NCLPort(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("descriptor"))
-                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("bindParam")){

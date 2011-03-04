@@ -685,9 +685,9 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
                         }
                     }
                     else if(attributes.getLocalName(i).equals("descriptor"))
-                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((M) new NCLMedia(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setRefer((M) new NCLMedia(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("instance")){
                         for(NCLInstanceType in : NCLInstanceType.values()){
                             if(in.toString().equals(attributes.getValue(i)))

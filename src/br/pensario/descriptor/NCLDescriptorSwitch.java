@@ -354,7 +354,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
             else if(localName.equals("defaultDescriptor")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("descriptor"))
-                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
         }

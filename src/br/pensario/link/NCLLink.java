@@ -364,7 +364,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("xconnector"))
-                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("linkParam")){

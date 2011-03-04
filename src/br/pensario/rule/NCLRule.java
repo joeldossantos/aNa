@@ -215,7 +215,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
                 if(attributes.getLocalName(i).equals("id"))
                     setId(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("var"))
-                    setVar((P) new NCLProperty(attributes.getValue(i)));//TODO: precisa retirar cast?
+                    setVar((P) new NCLProperty(attributes.getValue(i)));//cast retirado na correcao das referencias
                 else if(attributes.getLocalName(i).equals("comparator")){
                     for(NCLComparator c : NCLComparator.values()){
                         if(c.toString().equals(attributes.getValue(i)))

@@ -529,7 +529,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("refer"))
-                        setRefer((S) new NCLSwitch(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setRefer((S) new NCLSwitch(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("bindRule")){
@@ -540,7 +540,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             else if(localName.equals("defaultComponent")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("component"))
-                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setDefaultComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("switchPort")){

@@ -186,7 +186,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
                 if(attributes.getLocalName(i).equals("name"))
-                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//TODO: precisa retirar cast?
+                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//cast retirado na correcao das referencias
                 else if(attributes.getLocalName(i).equals("value"))
                     setValue(attributes.getValue(i));
             }

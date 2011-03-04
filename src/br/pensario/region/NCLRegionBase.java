@@ -376,7 +376,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
                     else if(attributes.getLocalName(i).equals("device"))
                         setDevice(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("region"))
-                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("importBase")){

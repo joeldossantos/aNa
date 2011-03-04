@@ -663,7 +663,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                     if(attributes.getLocalName(i).equals("id"))
                         setId(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("region"))
-                        setRegion((R) new NCLRegion(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("explicitDur")){
                         String value = attributes.getValue(i);
                         if(value.contains("s"))
@@ -675,22 +675,22 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                     else if(attributes.getLocalName(i).equals("player"))
                         setPlayer(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("moveLeft")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveLeft((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveRight")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveRight((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveDown")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveDown((D) d);
                     }
                     else if(attributes.getLocalName(i).equals("moveUp")){
-                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//TODO: precisa retirar cast?
+                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
                         d.setFocusIndex(new Integer(attributes.getValue(i)));
                         setMoveUp((D) d);
                     }
@@ -721,9 +721,9 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                         }
                     }
                     else if(attributes.getLocalName(i).equals("transIn"))
-                        setTransIn((T) new NCLTransition(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setTransIn((T) new NCLTransition(attributes.getValue(i)));//cast retirado na correcao das referencias
                     else if(attributes.getLocalName(i).equals("transOut"))
-                        setTransOut((T) new NCLTransition(attributes.getValue(i)));//TODO: precisa retirar cast?
+                        setTransOut((T) new NCLTransition(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
             else if(localName.equals("descriptorParam")){

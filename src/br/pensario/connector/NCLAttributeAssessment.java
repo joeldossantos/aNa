@@ -378,13 +378,15 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
             cleanWarnings();
             cleanErrors();
             for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("role"))
-                    setRole((R) new NCLRole(attributes.getValue(i)));//TODO: precisa retirar cast?
+                if(attributes.getLocalName(i).equals("role")){
+                    R child = createRole(attributes.getValue(i));
+                    setRole(child);
+                }
                 else if(attributes.getLocalName(i).equals("key")){
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setKey((P) new NCLConnectorParam(value));//TODO: precisa retirar cast?
+                        setKey((P) new NCLConnectorParam(value));//cast retirado na correcao das referencias
                     }
                     else{
                         for(NCLKey k : NCLKey.values()){
@@ -397,7 +399,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
                     String value = attributes.getValue(i);
                     if(value.contains("$")){
                         value = value.substring(1);
-                        setOffset((P) new NCLConnectorParam(value));//TODO: precisa retirar cast?
+                        setOffset((P) new NCLConnectorParam(value));//cast retirado na correcao das referencias
                     }
                     else
                         setOffset(new Integer(value));
@@ -453,5 +455,10 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
 
         addWarning("Could not find connectorParam in connector with id: " + id);
         return null;
+    }
+
+
+    protected R createRole(String name) {
+        return (R) new NCLRole(name);
     }
 }
