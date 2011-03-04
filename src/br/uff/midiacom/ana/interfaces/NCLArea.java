@@ -1,10 +1,10 @@
-package br.pensario.interfaces;
+package br.uff.midiacom.ana.interfaces;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLMediaType;
-import br.pensario.node.NCLMedia;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLMediaType;
+import br.uff.midiacom.ana.node.NCLMedia;
 import java.util.Vector;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -12,14 +12,10 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma âncora de um nó.<br>
+ * Este elemento é o elemento que define uma âncora de um nó.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
 

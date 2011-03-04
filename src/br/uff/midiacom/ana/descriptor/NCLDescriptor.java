@@ -1,12 +1,12 @@
-package br.pensario.descriptor;
+package br.uff.midiacom.ana.descriptor;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLHead;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLColor;
-import br.pensario.region.NCLRegion;
-import br.pensario.transition.NCLTransition;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLHead;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLColor;
+import br.uff.midiacom.ana.region.NCLRegion;
+import br.uff.midiacom.ana.transition.NCLTransition;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
@@ -17,14 +17,10 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>descriptor</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um descritor em um documento NCL.<br>
+ * Este elemento é o elemento que define um descritor em um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L extends NCLLayoutDescriptor, T extends NCLTransition, P extends NCLDescriptorParam> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
 

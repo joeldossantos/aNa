@@ -1,4 +1,4 @@
-package br.pensario;
+package br.uff.midiacom.ana;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,14 +6,10 @@ import java.util.regex.Pattern;
 
 /**
  * Esta classe define um elemento identificável da <i>Nested Context Language</i> (NCL), isto é,
- * um elemento que possui um identificador único (atributo <i>id</i> ou <i>name</i>.<br>
+ * um elemento que possui um identificador único (atributo <i>id</i> ou <i>name</i>.<br/>
  *
- *@see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- * @see <a href="../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public abstract class NCLIdentifiableElement extends NCLElement implements IdentifiableElement {
     

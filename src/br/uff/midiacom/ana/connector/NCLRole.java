@@ -1,19 +1,15 @@
-package br.pensario.connector;
+package br.uff.midiacom.ana.connector;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLValues.NCLDefaultActionRole;
-import br.pensario.NCLValues.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLValues.NCLDefaultActionRole;
+import br.uff.midiacom.ana.NCLValues.NCLDefaultConditionRole;
 
 
 /**
- * Esta classe define um papel de conector da <i>Nested Context Language</i> (NCL).<br>
+ * Esta classe define um papel de conector da <i>Nested Context Language</i> (NCL).<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLRole {
 

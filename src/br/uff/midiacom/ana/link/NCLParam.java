@@ -1,22 +1,19 @@
-package br.pensario.link;
+package br.uff.midiacom.ana.link;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLParamInstance;
-import br.pensario.connector.NCLConnectorParam;
+import br.uff.midiacom.ana.connector.NCLConnectorParam;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define um parâmetro interno a um elemento <i>link</i> ou <i>bind</i>
- * da <i>Nested Context Language</i> (NCL).<br>
+ * da <i>Nested Context Language</i> (NCL).<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends NCLElement implements Comparable<P>{
 

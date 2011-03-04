@@ -1,22 +1,18 @@
-package br.pensario.interfaces;
+package br.uff.midiacom.ana.interfaces;
 
 import java.util.Vector;
 
 
 /**
- * Esta classe define um indicador temporal da <i>Nested Context Language</i> (NCL).<br>
- * O indicador pode ter um dos seguintes formatos:<br>
- *    - ano:mês:dia:hora:minuto:segundo.fração<br>
- *    - hora:minuto:segundo.fração<br>
- *    - segundo.fração<br>
- *    - segundos<br>
+ * Esta classe define um indicador temporal da <i>Nested Context Language</i> (NCL).<br/>
+ * O indicador pode ter um dos seguintes formatos:<br/>
+ *    - ano:mês:dia:hora:minuto:segundo.fração<br/>
+ *    - hora:minuto:segundo.fração<br/>
+ *    - segundo.fração<br/>
+ *    - segundos<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLTime {
 

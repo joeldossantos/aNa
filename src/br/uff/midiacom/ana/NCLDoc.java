@@ -1,27 +1,23 @@
-package br.pensario;
+package br.uff.midiacom.ana;
 
-import br.pensario.NCLValues.NCLNamespace;
+import br.uff.midiacom.ana.NCLValues.NCLNamespace;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.xml.sax.Attributes;
+import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**
  * Esta classe define o elemento <i>ncl</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento raiz de um documento NCL.<br>
+ * Este elemento é o elemento raiz de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- * @see <a href="../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiableElement {
 

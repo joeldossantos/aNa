@@ -1,27 +1,22 @@
-package br.pensario.descriptor;
+package br.uff.midiacom.ana.descriptor;
 
-import br.pensario.NCLElement;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLImportType;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;
-
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLImportType;
-import br.pensario.reuse.NCLImport;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define o elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma base de descritores de um documento NCL.<br>
+ * Este elemento é o elemento que define uma base de descritores de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImport> extends NCLIdentifiableElement {
 

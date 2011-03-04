@@ -1,17 +1,16 @@
-package br.pensario.node;
+package br.uff.midiacom.ana.node;
 
-import br.pensario.NCLBody;
-import br.pensario.NCLDoc;
-import br.pensario.NCLElement;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLInstanceType;
-import br.pensario.NCLValues.NCLMediaType;
-import br.pensario.NCLValues.NCLMimeType;
-import br.pensario.NCLValues.NCLUriType;
-import br.pensario.descriptor.NCLDescriptor;
-import br.pensario.interfaces.*;
-
+import br.uff.midiacom.ana.descriptor.NCLDescriptor;
+import br.uff.midiacom.ana.interfaces.*;
+import br.uff.midiacom.ana.NCLBody;
+import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLInstanceType;
+import br.uff.midiacom.ana.NCLValues.NCLMediaType;
+import br.uff.midiacom.ana.NCLValues.NCLMimeType;
+import br.uff.midiacom.ana.NCLValues.NCLUriType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
@@ -22,14 +21,10 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>media</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um conteúdo de um documento NCL.<br>
+ * Este elemento é o elemento que define um conteúdo de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLDescriptor, M extends NCLMedia>
         extends NCLIdentifiableElement implements NCLNode<N> {

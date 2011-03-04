@@ -1,7 +1,7 @@
-package br.pensario.connector;
+package br.uff.midiacom.ana.connector;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLValues.NCLOperator;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLValues.NCLOperator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,14 +11,10 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma assertiva composta de um conector de um documento NCL.<br>
+ * Este elemento é o elemento que define uma assertiva composta de um conector de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement implements NCLStatement<S> {
 

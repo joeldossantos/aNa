@@ -1,21 +1,17 @@
-package br.pensario.descriptor;
+package br.uff.midiacom.ana.descriptor;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLValues.NCLAttributes;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLValues.NCLAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define o elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parametro de descritor em um documento NCL.<br>
+ * Este elemento é o elemento que define um parametro de descritor em um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement implements Comparable<P> {
 

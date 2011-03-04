@@ -1,29 +1,25 @@
-package br.pensario.rule;
+package br.uff.midiacom.ana.rule;
 
-import br.pensario.NCLDoc;
-import br.pensario.NCLElement;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLComparator;
-import br.pensario.NCLValues.NCLMimeType;
-import br.pensario.interfaces.NCLProperty;
-import br.pensario.node.NCLContext;
-import br.pensario.node.NCLMedia;
-import br.pensario.node.NCLNode;
-import br.pensario.node.NCLSwitch;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLComparator;
+import br.uff.midiacom.ana.NCLValues.NCLMimeType;
+import br.uff.midiacom.ana.node.NCLContext;
+import br.uff.midiacom.ana.node.NCLMedia;
+import br.uff.midiacom.ana.node.NCLNode;
+import br.uff.midiacom.ana.node.NCLSwitch;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
- * Esta classe define uma regra de teste da <i>Nested Context Language</i> (NCL).<br>
+ * Esta classe define uma regra de teste da <i>Nested Context Language</i> (NCL).<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLIdentifiableElement implements NCLTestRule<T> {
 

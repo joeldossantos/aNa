@@ -1,13 +1,13 @@
-package br.pensario;
+package br.uff.midiacom.ana;
 
-import br.pensario.connector.NCLConnectorBase;
-import br.pensario.descriptor.NCLDescriptorBase;
-import br.pensario.meta.NCLMeta;
-import br.pensario.meta.NCLMetadata;
-import br.pensario.region.NCLRegionBase;
-import br.pensario.reuse.NCLImportedDocumentBase;
-import br.pensario.rule.NCLRuleBase;
-import br.pensario.transition.NCLTransitionBase;
+import br.uff.midiacom.ana.connector.NCLConnectorBase;
+import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
+import br.uff.midiacom.ana.meta.NCLMeta;
+import br.uff.midiacom.ana.meta.NCLMetadata;
+import br.uff.midiacom.ana.region.NCLRegionBase;
+import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
+import br.uff.midiacom.ana.rule.NCLRuleBase;
+import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -16,14 +16,10 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>head</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define o cabeçalho de um documento NCL.<br>
+ * Este elemento é o elemento que define o cabeçalho de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- * @see <a href="../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase, TB extends NCLTransitionBase, RB extends NCLRegionBase,
         DB extends NCLDescriptorBase, CB extends NCLConnectorBase, M extends NCLMeta, MT extends NCLMetadata> extends NCLElement {

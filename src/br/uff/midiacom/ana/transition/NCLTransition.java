@@ -1,26 +1,22 @@
-package br.pensario.transition;
+package br.uff.midiacom.ana.transition;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLColor;
-import br.pensario.NCLValues.NCLTransitionDirection;
-import br.pensario.NCLValues.NCLTransitionSubtype;
-import br.pensario.NCLValues.NCLTransitionType;
-import br.pensario.interfaces.NCLTime;
+import br.uff.midiacom.ana.interfaces.NCLTime;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLColor;
+import br.uff.midiacom.ana.NCLValues.NCLTransitionDirection;
+import br.uff.midiacom.ana.NCLValues.NCLTransitionSubtype;
+import br.uff.midiacom.ana.NCLValues.NCLTransitionType;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
- * Esta classe define uma transição da <i>Nested Context Language</i> (NCL).<br>
+ * Esta classe define uma transição da <i>Nested Context Language</i> (NCL).<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableElement implements Comparable<T> {
 

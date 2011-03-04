@@ -1,4 +1,4 @@
-package br.pensario;
+package br.uff.midiacom.ana;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -7,14 +7,10 @@ import org.xml.sax.XMLReader;
 
 
 /**
- * Esta classe implementa a interface do tratador de erros do parser SAX.<br>
+ * Esta classe implementa a interface do tratador de erros do parser SAX.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- * @see <a href="../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLParsingErrorHandler implements ErrorHandler {
 

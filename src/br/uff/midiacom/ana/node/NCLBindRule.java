@@ -1,24 +1,20 @@
-package br.pensario.node;
+package br.uff.midiacom.ana.node;
 
-import br.pensario.NCLDoc;
-import br.pensario.NCLElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.rule.NCLRule;
-import br.pensario.rule.NCLTestRule;
+import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.rule.NCLRule;
+import br.uff.midiacom.ana.rule.NCLTestRule;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define o elemento <i>bindRule</i> de um switch da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um bind de um switch de um documento NCL.<br>
+ * Este elemento é o elemento que define um bind de um switch de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
 

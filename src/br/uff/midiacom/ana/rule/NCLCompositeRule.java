@@ -1,9 +1,9 @@
-package br.pensario.rule;
+package br.uff.midiacom.ana.rule;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLOperator;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLOperator;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -11,14 +11,10 @@ import org.xml.sax.XMLReader;
 
 
 /**
- * Esta classe define uma regra de teste composta da <i>Nested Context Language</i> (NCL).<br>
+ * Esta classe define uma regra de teste composta da <i>Nested Context Language</i> (NCL).<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElement implements NCLTestRule<T> {
 

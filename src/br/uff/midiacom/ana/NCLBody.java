@@ -1,15 +1,14 @@
-package br.pensario;
+package br.uff.midiacom.ana;
 
-import br.pensario.node.NCLNode;
-import br.pensario.interfaces.NCLPort;
-import br.pensario.interfaces.NCLProperty;
-import br.pensario.link.NCLLink;
-import br.pensario.meta.NCLMeta;
-import br.pensario.meta.NCLMetadata;
-import br.pensario.node.NCLContext;
-import br.pensario.node.NCLMedia;
-import br.pensario.node.NCLSwitch;
-
+import br.uff.midiacom.ana.interfaces.NCLPort;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.link.NCLLink;
+import br.uff.midiacom.ana.meta.NCLMeta;
+import br.uff.midiacom.ana.meta.NCLMetadata;
+import br.uff.midiacom.ana.node.NCLContext;
+import br.uff.midiacom.ana.node.NCLMedia;
+import br.uff.midiacom.ana.node.NCLNode;
+import br.uff.midiacom.ana.node.NCLSwitch;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -18,14 +17,10 @@ import org.xml.sax.XMLReader;
 
 /**
  * Esta classe define o elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define o corpo de um documento NCL.<br>
+ * Este elemento é o elemento que define o corpo de um documento NCL.<br/>
  *
- *@see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- * @see <a href="../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata> extends NCLIdentifiableElement {
 

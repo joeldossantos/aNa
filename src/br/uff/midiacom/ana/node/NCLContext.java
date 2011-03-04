@@ -1,31 +1,26 @@
-package br.pensario.node;
+package br.uff.midiacom.ana.node;
 
-import br.pensario.NCLBody;
-import br.pensario.NCLElement;
-import br.pensario.NCLIdentifiableElement;
-import br.pensario.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.interfaces.NCLPort;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.link.NCLLink;
+import br.uff.midiacom.ana.meta.NCLMeta;
+import br.uff.midiacom.ana.meta.NCLMetadata;
+import br.uff.midiacom.ana.NCLBody;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import java.util.Set;
 import java.util.TreeSet;
-
-import br.pensario.interfaces.NCLProperty;
-import br.pensario.interfaces.NCLPort;
-import br.pensario.link.NCLLink;
-import br.pensario.meta.NCLMeta;
-import br.pensario.meta.NCLMetadata;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define o elemento <i>context</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um contexto de um documento NCL.<br>
+ * Este elemento é o elemento que define um contexto de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata>
         extends NCLIdentifiableElement implements NCLNode<N> {

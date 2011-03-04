@@ -1,26 +1,22 @@
-package br.pensario.connector;
+package br.uff.midiacom.ana.connector;
 
-import br.pensario.NCLElement;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLConditionOperator;
-import br.pensario.NCLValues.NCLDefaultConditionRole;
-import br.pensario.NCLValues.NCLEventTransition;
-import br.pensario.NCLValues.NCLEventType;
-import br.pensario.NCLValues.NCLKey;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
+import br.uff.midiacom.ana.NCLValues.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.NCLValues.NCLEventTransition;
+import br.uff.midiacom.ana.NCLValues.NCLEventType;
+import br.uff.midiacom.ana.NCLValues.NCLKey;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define o elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma condição simples de um conector de um documento NCL.<br>
+ * Este elemento é o elemento que define uma condição simples de um conector de um documento NCL.<br/>
  *
- * @see <a href="
-http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
-      ABNT NBR 15606-2:2007</a>
- *
- *@see <a href="../../README.html">Detalhes da API NCL</a>
- *
+ * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
+ *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P extends NCLConnectorParam> extends NCLElement implements NCLCondition<C, P> {
 
