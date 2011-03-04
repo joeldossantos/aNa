@@ -1,18 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package br.pensario.interfaces;
+package br.uff.midiacom.ana.interfaces;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author joel
- */
+
 public class NCLTimeTest {
 
     static NCLTime t1, t2, t3, t4;

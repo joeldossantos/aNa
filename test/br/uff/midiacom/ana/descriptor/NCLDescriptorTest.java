@@ -1,20 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana.descriptor;
 
-package br.pensario.descriptor;
-
-import br.pensario.NCLDoc;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLAttributes;
-import br.pensario.NCLValues.NCLColor;
-import br.pensario.region.NCLRegion;
-import br.pensario.transition.NCLTransition;
+import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLAttributes;
+import br.uff.midiacom.ana.NCLValues.NCLColor;
+import br.uff.midiacom.ana.region.NCLRegion;
+import br.uff.midiacom.ana.transition.NCLTransition;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -22,10 +16,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-/**
- *
- * @author joel
- */
+
 public class NCLDescriptorTest {
 
     @Test

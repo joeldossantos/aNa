@@ -1,20 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana.connector;
 
-package br.pensario.connector;
-
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLActionOperator;
-import br.pensario.NCLValues.NCLAttributeType;
-import br.pensario.NCLValues.NCLComparator;
-import br.pensario.NCLValues.NCLConditionOperator;
-import br.pensario.NCLValues.NCLDefaultActionRole;
-import br.pensario.NCLValues.NCLEventAction;
-import br.pensario.NCLValues.NCLEventTransition;
-import br.pensario.NCLValues.NCLEventType;
-import br.pensario.NCLValues.NCLKey;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLActionOperator;
+import br.uff.midiacom.ana.NCLValues.NCLAttributeType;
+import br.uff.midiacom.ana.NCLValues.NCLComparator;
+import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
+import br.uff.midiacom.ana.NCLValues.NCLDefaultActionRole;
+import br.uff.midiacom.ana.NCLValues.NCLEventAction;
+import br.uff.midiacom.ana.NCLValues.NCLEventTransition;
+import br.uff.midiacom.ana.NCLValues.NCLEventType;
+import br.uff.midiacom.ana.NCLValues.NCLKey;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -24,10 +19,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author joel
- */
+
 public class NCLCausalConnectorTest {
 
     @Test

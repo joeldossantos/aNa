@@ -1,20 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana.link;
 
-package br.pensario.link;
-
-import br.pensario.NCLDoc;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLParamInstance;
-import br.pensario.connector.NCLCausalConnector;
-import br.pensario.connector.NCLConnectorParam;
-import br.pensario.connector.NCLRole;
-import br.pensario.node.NCLMedia;
+import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
+import br.uff.midiacom.ana.connector.NCLConnectorParam;
+import br.uff.midiacom.ana.connector.NCLRole;
+import br.uff.midiacom.ana.node.NCLMedia;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -22,10 +16,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-/**
- *
- * @author joel
- */
+
 public class NCLLinkTest {
 
     @Test

@@ -1,16 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana.transition;
 
-package br.pensario.transition;
-
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.NCLValues.NCLColor;
-import br.pensario.NCLValues.NCLTransitionDirection;
-import br.pensario.NCLValues.NCLTransitionSubtype;
-import br.pensario.NCLValues.NCLTransitionType;
-import br.pensario.interfaces.NCLTime;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLColor;
+import br.uff.midiacom.ana.NCLValues.NCLTransitionDirection;
+import br.uff.midiacom.ana.NCLValues.NCLTransitionSubtype;
+import br.uff.midiacom.ana.NCLValues.NCLTransitionType;
+import br.uff.midiacom.ana.interfaces.NCLTime;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -20,10 +15,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author joel
- */
+
 public class NCLTransitionTest {
 
     @Test

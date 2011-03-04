@@ -1,21 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana;
 
-package br.pensario;
-
-import br.pensario.connector.NCLConnectorBase;
-import br.pensario.descriptor.NCLDescriptorBase;
-import br.pensario.meta.NCLMeta;
-import br.pensario.meta.NCLMetadata;
-import br.pensario.region.NCLRegionBase;
-import br.pensario.reuse.NCLImportedDocumentBase;
-import br.pensario.rule.NCLRuleBase;
-import br.pensario.transition.NCLTransitionBase;
+import br.uff.midiacom.ana.connector.NCLConnectorBase;
+import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
+import br.uff.midiacom.ana.meta.NCLMeta;
+import br.uff.midiacom.ana.meta.NCLMetadata;
+import br.uff.midiacom.ana.region.NCLRegionBase;
+import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
+import br.uff.midiacom.ana.rule.NCLRuleBase;
+import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -23,10 +17,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-/**
- *
- * @author joel
- */
+
 public class NCLHeadTest {
 
     @Test

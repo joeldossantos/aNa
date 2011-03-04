@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana;
 
-package br.pensario;
-
-import br.pensario.interfaces.NCLPort;
-import br.pensario.meta.NCLMeta;
-import br.pensario.node.NCLMedia;
+import br.uff.midiacom.ana.interfaces.NCLPort;
+import br.uff.midiacom.ana.meta.NCLMeta;
+import br.uff.midiacom.ana.node.NCLMedia;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -18,10 +12,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-/**
- *
- * @author joel
- */
+
 public class NCLBodyTest {
 
     @Test

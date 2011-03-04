@@ -1,17 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package br.uff.midiacom.ana.interfaces;
 
-package br.pensario.interfaces;
-
-import br.pensario.NCLDoc;
-import br.pensario.NCLInvalidIdentifierException;
-import br.pensario.node.NCLMedia;
-import br.pensario.node.NCLSwitch;
+import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.node.NCLMedia;
+import br.uff.midiacom.ana.node.NCLSwitch;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
@@ -19,10 +13,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-/**
- *
- * @author joel
- */
+
 public class NCLSwitchPortTest {
 
     @Test

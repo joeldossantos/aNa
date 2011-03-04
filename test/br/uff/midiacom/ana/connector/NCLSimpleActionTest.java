@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package br.pensario.connector;
+package br.uff.midiacom.ana.connector;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -14,10 +9,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author joel
- */
+
 public class NCLSimpleActionTest {
 
     @Test
