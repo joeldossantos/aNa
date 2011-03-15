@@ -1,5 +1,6 @@
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -83,5 +84,50 @@ public class NCLCompoundActionTest {
         catch(IOException ex){
             fail(ex.getMessage());
         }
+    }
+
+    @Test
+    public void test_roleset() throws NCLInvalidIdentifierException, Exception {
+        NCLCompoundAction nclel1, nclel2, nclel3, nclel4;
+        NCLSimpleAction nclela, nclelb, nclelc, ncleld;
+        boolean result = true;
+
+        NCLCausalConnector con = new NCLCausalConnector("teste");
+
+        NCLCompoundAction ccon = new NCLCompoundAction();
+
+        nclel1 = new NCLCompoundAction();
+        nclela = new NCLSimpleAction();
+        nclela.setRole(new NCLRole("R1"));
+        nclel1.addAction(nclela);
+
+        nclel2 = new NCLCompoundAction();
+        nclelb = new NCLSimpleAction();
+        nclelb.setRole(new NCLRole("R2"));
+        nclel2.addAction(nclelb);
+
+        nclel3 = new NCLCompoundAction();
+        nclelc = new NCLSimpleAction();
+        nclelc.setRole(new NCLRole("R3"));
+        nclel3.addAction(nclelc);
+
+        nclel4 = new NCLCompoundAction();
+        ncleld = new NCLSimpleAction();
+        ncleld.setRole(new NCLRole("R4"));
+        nclel4.addAction(ncleld);
+
+        ccon.addAction(nclel1);
+        ccon.addAction(nclel2);
+        ccon.addAction(nclel3);
+        ccon.addAction(nclel4);
+
+        con.setAction(ccon);
+
+        result &= ccon.hasAction(nclel1);
+        result &= ccon.hasAction(nclel2);
+        result &= ccon.hasAction(nclel3);
+        result &= ccon.hasAction(nclel4);
+
+        assertTrue(result);
     }
 }

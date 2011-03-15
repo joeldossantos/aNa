@@ -1,5 +1,6 @@
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -323,5 +324,50 @@ public class NCLAssessmentStatementTest {
         catch(IOException ex){
             fail(ex.getMessage());
         }
+    }
+
+    @Test
+    public void test_roleset() throws NCLInvalidIdentifierException, Exception {
+        NCLAssessmentStatement nclel1, nclel2, nclel3, nclel4;
+        NCLAttributeAssessment nclela, nclelb, nclelc, ncleld;
+        boolean result = true;
+
+        NCLCausalConnector con = new NCLCausalConnector("teste");
+
+        NCLCompoundCondition ccon = new NCLCompoundCondition();
+
+        nclel1 = new NCLAssessmentStatement();
+        nclela = new NCLAttributeAssessment();
+        nclela.setRole(new NCLRole("R1"));
+        nclel1.addAttributeAssessment(nclela);
+
+        nclel2 = new NCLAssessmentStatement();
+        nclelb = new NCLAttributeAssessment();
+        nclelb.setRole(new NCLRole("R2"));
+        nclel2.addAttributeAssessment(nclelb);
+
+        nclel3 = new NCLAssessmentStatement();
+        nclelc = new NCLAttributeAssessment();
+        nclelc.setRole(new NCLRole("R3"));
+        nclel3.addAttributeAssessment(nclelc);
+
+        nclel4 = new NCLAssessmentStatement();
+        ncleld = new NCLAttributeAssessment();
+        ncleld.setRole(new NCLRole("R4"));
+        nclel4.addAttributeAssessment(ncleld);
+
+        ccon.addStatement(nclel1);
+        ccon.addStatement(nclel2);
+        ccon.addStatement(nclel3);
+        ccon.addStatement(nclel4);
+
+        con.setCondition(ccon);
+
+        result &= ccon.hasStatement(nclel1);
+        result &= ccon.hasStatement(nclel2);
+        result &= ccon.hasStatement(nclel3);
+        result &= ccon.hasStatement(nclel4);
+
+        assertTrue(result);
     }
 }

@@ -1,5 +1,6 @@
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -269,5 +270,41 @@ public class NCLSimpleActionTest {
         catch(IOException ex){
             fail(ex.getMessage());
         }
+    }
+
+    @Test
+    public void test_roleset() throws NCLInvalidIdentifierException, Exception {
+        NCLSimpleAction nclel1, nclel2, nclel3, nclel4;
+        boolean result = true;
+
+        NCLCausalConnector con = new NCLCausalConnector("teste");
+
+        NCLCompoundAction ca = new NCLCompoundAction();
+
+        nclel1 = new NCLSimpleAction();
+        nclel1.setRole(new NCLRole("R1"));
+
+        nclel2 = new NCLSimpleAction();
+        nclel2.setRole(new NCLRole("R2"));
+
+        nclel3 = new NCLSimpleAction();
+        nclel3.setRole(new NCLRole("R3"));
+
+        nclel4 = new NCLSimpleAction();
+        nclel4.setRole(new NCLRole("R4"));
+
+        ca.addAction(nclel1);
+        ca.addAction(nclel2);
+        ca.addAction(nclel3);
+        ca.addAction(nclel4);
+
+        con.setAction(ca);
+
+        result &= ca.hasAction(nclel1);
+        result &= ca.hasAction(nclel2);
+        result &= ca.hasAction(nclel3);
+        result &= ca.hasAction(nclel4);
+
+        assertTrue(result);
     }
 }

@@ -1,5 +1,6 @@
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -227,5 +228,41 @@ public class NCLSimpleConditionTest {
         catch(IOException ex){
             fail(ex.getMessage());
         }
+    }
+
+    @Test
+    public void test_roleset() throws NCLInvalidIdentifierException {
+        NCLSimpleCondition scon1, scon2, scon3, scon4;
+        boolean result = true;
+
+        NCLCausalConnector con = new NCLCausalConnector("teste");
+
+        NCLCompoundCondition ccon = new NCLCompoundCondition();
+
+        scon1 = new NCLSimpleCondition();
+        scon1.setRole(new NCLRole("R1"));
+
+        scon2 = new NCLSimpleCondition();
+        scon2.setRole(new NCLRole("R2"));
+
+        scon3 = new NCLSimpleCondition();
+        scon3.setRole(new NCLRole("R3"));
+
+        scon4 = new NCLSimpleCondition();
+        scon4.setRole(new NCLRole("R4"));
+
+        ccon.addCondition(scon1);
+        ccon.addCondition(scon2);
+        ccon.addCondition(scon3);
+        ccon.addCondition(scon4);
+
+        con.setCondition(ccon);
+
+        result &= ccon.hasCondition(scon1);
+        result &= ccon.hasCondition(scon2);
+        result &= ccon.hasCondition(scon3);
+        result &= ccon.hasCondition(scon4);
+
+        assertTrue(result);
     }
 }

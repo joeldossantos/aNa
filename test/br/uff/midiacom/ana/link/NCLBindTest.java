@@ -407,4 +407,36 @@ public class NCLBindTest {
             fail(ex.getMessage());
         }
     }
+
+    @Test
+    public void test_roleset() throws NCLInvalidIdentifierException, Exception {
+        NCLBind nclel1, nclel2, nclel3, nclel4;
+        boolean result = true;
+
+        NCLLink con = new NCLLink();
+
+        nclel1 = new NCLBind();
+        nclel1.setRole(new NCLRole("R1"));
+
+        nclel2 = new NCLBind();
+        nclel2.setRole(new NCLRole("R2"));
+
+        nclel3 = new NCLBind();
+        nclel3.setRole(new NCLRole("R3"));
+
+        nclel4 = new NCLBind();
+        nclel4.setRole(new NCLRole("R4"));
+
+        con.addBind(nclel1);
+        con.addBind(nclel2);
+        con.addBind(nclel3);
+        con.addBind(nclel4);
+
+        result &= con.hasBind(nclel1);
+        result &= con.hasBind(nclel2);
+        result &= con.hasBind(nclel3);
+        result &= con.hasBind(nclel4);
+
+        assertTrue(result);
+    }
 }
