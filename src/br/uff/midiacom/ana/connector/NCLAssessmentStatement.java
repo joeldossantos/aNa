@@ -39,9 +39,9 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLValues.NCLComparator;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -59,7 +59,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
     private NCLComparator comparator;
     
     private V valueAssessment;
-    private Set<A> attributeAssessments = new TreeSet<A>();
+    private List<A> attributeAssessments = new ArrayList<A>();
     
 
     /**
@@ -149,16 +149,15 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * @throws java.lang.Exception
      *          se o número máximo de atributos for ultrapassado.
      *
-     * @see TreeSet#add
+     * @see ArrayList#add
      */
     public boolean addAttributeAssessment(A attribute) throws Exception {
         if(attributeAssessments.size() == 2)
             throw new Exception("can't have more than two attributes");
         
-        if(attributeAssessments.add(attribute)){
-            //Se attribute existe, atribui este como seu parente
-            if(attribute != null)
-                attribute.setParent(this);
+        if(attribute != null && attributeAssessments.add(attribute)){
+            //atribui este como parente do atributo
+            attribute.setParent(this);
 
             return true;
         }
@@ -174,7 +173,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * @return
      *          verdadeiro se o atributo for removido.
      *
-     * @see TreeSet#remove
+     * @see ArrayList#remove
      */
     public boolean removeAttributeAssessment(A attribute) {
         if(attributeAssessments.remove(attribute)){
@@ -253,7 +252,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
     }
     
     
-    public int compareTo(S other) {//@todo: fazer o compareTo simétrico
+    public int compareTo(S other) {
         int comp = 0;
 
         String this_stat, other_stat;
@@ -274,7 +273,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
 
         // Compara o número de attributeAssessment
         if(comp == 0)
-            comp = attributeAssessments.size() - ((Set) other_asses.getAttributeAssessments()).size();
+            comp = attributeAssessments.size() - ((List) other_asses.getAttributeAssessments()).size();
 
         // Compara os attributeAssessment
         if(comp == 0){
@@ -293,15 +292,15 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
                 comp = 0;
             else if(getValueAssessment() != null && other_asses.getValueAssessment() != null)
                 comp = getValueAssessment().compareTo(other_asses.getValueAssessment());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getValueAssessment() == null)
+                comp = -1;
             else
                 comp = 1;
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

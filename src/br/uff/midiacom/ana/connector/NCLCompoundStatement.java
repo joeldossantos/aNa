@@ -39,9 +39,9 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLValues.NCLOperator;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -58,7 +58,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
     private NCLOperator operator;
     private Boolean isNegated;
     
-    private Set<S> statements = new TreeSet<S>();
+    private List<S> statements = new ArrayList<S>();
 
     private boolean insideStatement;
 
@@ -139,13 +139,12 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      * @return
      *          verdadeiro se a assertiva foi adicionada.
      *
-     * @see TreeSet#add
+     * @see ArrayList#add
      */
     public boolean addStatement(S statement) {
-        if(statements.add(statement)){
-            //Se statement existe, atribui este como seu parente
-            if(statement != null)
-                statement.setParent(this);
+        if(statement!= null && statements.add(statement)){
+            //atribui este como parente do atributo
+            statement.setParent(this);
 
             return true;
         }
@@ -161,7 +160,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      * @return
      *          verdadeiro se a assertiva foi removida.
      *
-     * @see TreeSet#remove
+     * @see ArrayList#remove
      */
     public boolean removeStatement(S statement) {
         if(statements.remove(statement)){
@@ -239,7 +238,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
     }
     
     
-    public int compareTo(S other) {//@todo: fazer o compareTo simétrico
+    public int compareTo(S other) {
         int comp = 0;
 
         String this_stat, other_stat;
@@ -267,7 +266,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
 
         // Compara o número de statements
         if(comp == 0)
-            comp = statements.size() - ((Set) other_comp.getStatements()).size();
+            comp = statements.size() - ((List) other_comp.getStatements()).size();
 
         // Compara as statements
         if(comp == 0){
@@ -281,10 +280,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

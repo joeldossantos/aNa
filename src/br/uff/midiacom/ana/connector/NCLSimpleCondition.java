@@ -352,8 +352,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
     }
 
     
-    public int compareTo(C other) {//@todo: fazer o compareTo simétrico
-        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
+    public int compareTo(C other) {
         int comp = 0;
 
         String this_cond, other_cond;
@@ -400,6 +399,9 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
                 comp = 0;
             else if(getParamDelay() != null && other_simp.getParamDelay() != null)
                 comp = getParamDelay().compareTo(other_simp.getParamDelay());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamDelay() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -424,6 +426,9 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
                 comp = 0;
             else if(getParamKey() != null && other_simp.getParamKey() != null)
                 comp = getParamKey().compareTo(other_simp.getParamKey());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamKey() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -443,10 +448,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

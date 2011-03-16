@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -56,7 +58,7 @@ import org.xml.sax.XMLReader;
 public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule, L extends NCLLayoutDescriptor> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
 
     private Set<D> descriptors = new TreeSet<D>();
-    private Set<B> binds = new TreeSet<B>();
+    private List<B> binds = new ArrayList<B>();
     private D defaultDescriptor;
 
 
@@ -187,13 +189,12 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * @param bind
      *          elemento representando o bind a ser adicionado.
      *
-     * @see TreeSet#add
+     * @see ArrayList#add
      */
     public boolean addBind(B bind) {
-        if(binds.add(bind)){
-            //Se bind existe, atribui este como seu parente
-            if(bind != null)
-                bind.setParent(this);
+        if(bind != null && binds.add(bind)){
+            //atribui este como parente do bind
+            bind.setParent(this);
 
             return true;
         }
@@ -207,7 +208,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * @param bind
      *          elemento representando o bind a ser removido.
      *
-     * @see TreeSet#remove
+     * @see ArrayList#remove
      */
     public boolean removeBind(B bind) {
         if(binds.remove(bind)){

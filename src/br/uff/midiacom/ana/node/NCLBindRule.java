@@ -148,22 +148,24 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
     }
 
 
-    public int compareTo(B other) {//@todo: fazer o compareTo simétrico
-        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
+    public int compareTo(B other) {
         int comp = 0;
 
         // Compara pela regra
-        comp = getRule().compareTo(other.getRule());
+        if(getRule() != null)
+            comp = getRule().compareTo(other.getRule());
+        else
+            comp = -1;
 
         // Compara pelo constituent
         if(comp == 0){
-            comp = getConstituent().compareTo(other.getConstituent());
+            if(getConstituent() != null)
+                comp = getConstituent().compareTo(other.getConstituent());
+            else
+                comp = -1;
         }
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

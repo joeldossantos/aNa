@@ -43,7 +43,9 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -62,7 +64,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
     private C xconnector;
     
     private Set<P> linkParams = new TreeSet<P>();
-    private Set<B> binds = new TreeSet<B>();
+    private List<B> binds = new ArrayList<B>();
     
 
     /**
@@ -196,13 +198,12 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @return
      *          verdadeiro se o bind for adicionado.
      *
-     * @see TreeSet#add
+     * @see ArrayList#add
      */
     public boolean addBind(B bind) {
-        if(binds.add(bind)){
-            //Se bind existe, atribui este como seu parente
-            if(bind != null)
-                bind.setParent(this);
+        if(bind != null && binds.add(bind)){
+            //atribui este como parente do bind
+            bind.setParent(this);
 
             return true;
         }
@@ -218,7 +219,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @return
      *          verdadeiro se o bind for removido.
      *
-     * @see TreeSet#remove
+     * @see ArrayList#remove
      */
     public boolean removeBind(B bind) {
         if(binds.remove(bind)){

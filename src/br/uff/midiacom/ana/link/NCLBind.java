@@ -302,7 +302,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
     }
     
     
-    public int compareTo(B other) {//@todo: fazer o compareTo simétrico
+    public int compareTo(B other) {
         int comp = 0;
 
         String this_bind, other_bind;
@@ -317,7 +317,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             if(getComponent() != null)
                 comp = getComponent().compareTo(other.getComponent());
             else
-                comp = 1;
+                comp = -1;
         }
 
         // Compara pela interface
@@ -325,7 +325,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             if(getInterface() != null)
                 comp = getInterface().compareTo(other.getInterface());
             else
-                comp = 1;
+                comp = -1;
         }
 
         // Compara pelo descritor
@@ -333,7 +333,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             if(getDescriptor() != null)
                 comp = getDescriptor().compareTo(other.getDescriptor());
             else
-                comp = 1;
+                comp = -1;
         }
 
         // Compara o número de parâmetros
@@ -352,10 +352,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

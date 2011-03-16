@@ -291,7 +291,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
     }
 
     
-    public int compareTo(A other) {//@todo: fazer o compareTo simétrico
+    public int compareTo(A other) {
         int comp = 0;
 
         String this_att, other_att;
@@ -329,6 +329,9 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
                 comp = 0;
             else if(getParamOffset() != null && other.getParamOffset() != null)
                 comp = getParamOffset().compareTo(other.getParamOffset());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamOffset() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -346,15 +349,15 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
                 comp = 0;
             else if(getParamKey() != null && other.getParamKey() != null)
                 comp = getParamKey().compareTo(other.getParamKey());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamKey() == null)
+                comp = -1;
             else
                 comp = 1;
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

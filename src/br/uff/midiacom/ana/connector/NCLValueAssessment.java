@@ -205,7 +205,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
     }
 
 
-    public int compareTo(V other) {//@todo: fazer o compareTo simétrico
+    public int compareTo(V other) {
         int comp = 0;
 
         String this_stat, other_stat;
@@ -219,15 +219,14 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
                 comp = 0;
             else if(getParamValue() != null && other.getParamValue() != null)
                 comp = getParamValue().compareTo(other.getParamValue());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamValue() == null)
+                comp = -1;
             else
                 comp = 1;
         }
 
-
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

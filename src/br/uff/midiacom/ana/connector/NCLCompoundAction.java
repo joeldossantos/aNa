@@ -40,9 +40,9 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLActionOperator;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -60,7 +60,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
     private Integer delay;
     private P parDelay;
     
-    private Set<A> actions = new TreeSet<A>();
+    private List<A> actions = new ArrayList<A>();
 
     private boolean insideAction;
 
@@ -119,13 +119,12 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      * @return
      *          verdadeiro se a ação foi adicionada.
      *
-     * @see TreeSet#add(java.lang.Object) 
+     * @see ArrayList#add(java.lang.Object)
      */
     public boolean addAction(A action) {
-        if(actions.add(action)){
-            //Se metadata existe, atribui este como seu parente
-            if(action != null)
-                action.setParent(this);
+        if(action != null && actions.add(action)){
+            //atribui este como parente da acao
+            action.setParent(this);
 
             return true;
         }
@@ -141,7 +140,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      * @return
      *          verdadeiro se a ação foi removida.
      *
-     * @see TreeSet#remove(java.lang.Object)
+     * @see ArrayList#remove(java.lang.Object)
      */
     public boolean removeAction(A action) {
         if(actions.remove(action)){
@@ -246,8 +245,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
     }
 
 
-    public int compareTo(A other) {//@todo: fazer o compareTo simétrico
-        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
+    public int compareTo(A other) {
         int comp = 0;
 
         String this_act, other_act;
@@ -280,13 +278,16 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
                 comp = 0;
             else if(getParamDelay() != null && other_comp.getParamDelay() != null)
                 comp = getParamDelay().compareTo(other_comp.getParamDelay());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamDelay() == null)
+                comp = -1;
             else
                 comp = 1;
         }
 
         // Compara o número de acoes
         if(comp == 0)
-            comp = actions.size() - ((Set) other_comp.getActions()).size();
+            comp = actions.size() - ((List) other_comp.getActions()).size();
 
         // Compara as acoes
         if(comp == 0){
@@ -300,10 +301,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
         }
 
         
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

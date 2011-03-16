@@ -574,8 +574,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
     }
 
 
-    public int compareTo(A other) {//@todo: fazer o compareTo simétrico
-        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
+    public int compareTo(A other) {
         int comp = 0;
 
         String this_act, other_act;
@@ -620,6 +619,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                 comp = 0;
             else if(getParamDelay() != null && other_simp.getParamDelay() != null)
                 comp = getParamDelay().compareTo(other_simp.getParamDelay());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamDelay() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -644,6 +646,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                 comp = 0;
             else if(getParamValue() != null && other_simp.getParamValue() != null)
                 comp = getParamValue().compareTo(other_simp.getParamValue());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamValue() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -675,6 +680,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                 comp = 0;
             else if(getParamRepeat() != null && other_simp.getParamRepeat() != null)
                 comp = getParamRepeat().compareTo(other_simp.getParamRepeat());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamRepeat() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -692,6 +700,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                 comp = 0;
             else if(getParamRepeatDelay() != null && other_simp.getParamRepeatDelay() != null)
                 comp = getParamRepeatDelay().compareTo(other_simp.getParamRepeatDelay());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamRepeatDelay() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -709,6 +720,9 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                 comp = 0;
             else if(getParamDuration() != null && other_simp.getParamDuration() != null)
                 comp = getParamDuration().compareTo(other_simp.getParamDuration());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamDuration() == null)
+                comp = -1;
             else
                 comp = 1;
         }
@@ -726,15 +740,15 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
                 comp = 0;
             else if(getParamBy() != null && other_simp.getParamBy() != null)
                 comp = getParamBy().compareTo(other_simp.getParamBy());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamBy() == null)
+                comp = -1;
             else
                 comp = 1;
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 

@@ -40,9 +40,9 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -58,8 +58,8 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
     
     private NCLConditionOperator operator;
     
-    private Set<C> conditions = new TreeSet<C>();
-    private Set<S> statements = new TreeSet<S>();
+    private List<C> conditions = new ArrayList<C>();
+    private List<S> statements = new ArrayList<S>();
     private Integer delay;
     private P parDelay;
 
@@ -120,13 +120,12 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @return
      *          verdadeiro se a condição foi adicionada.
      *
-     * @see TreeSet#add
+     * @see ArrayList#add
      */
     public boolean addCondition(C condition) {
-        if(conditions.add(condition)){
-            //Se condition existe, atribui este como seu parente
-            if(condition != null)
-                condition.setParent(this);
+        if(condition != null && conditions.add(condition)){
+            //atribui este como parente da condicao
+            condition.setParent(this);
 
             return true;
         }
@@ -142,7 +141,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @return
      *          verdadeiro se a condição foi removida.
      *
-     * @see TreeSet#remove
+     * @see ArrayList#remove
      */
     public boolean removeCondition(C condition) {
         if(conditions.remove(condition)){
@@ -199,13 +198,12 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @return
      *          verdadeiro se a assertiva foi adicionada.
      *
-     * @see TreeSet#add
+     * @see ArrayList#add
      */
     public boolean addStatement(S statement) {
-        if(statements.add(statement)){
-            //Se statement existe, atribui este como seu parente
-            if(statement != null)
-                statement.setParent(this);
+        if(statement != null && statements.add(statement)){
+            //atribui este como parente do statement
+            statement.setParent(this);
 
             return true;
         }
@@ -221,7 +219,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * @return
      *          verdadeiro se a assertiva foi removida.
      *
-     * @see TreeSet#remove
+     * @see ArrayList#remove
      */
     public boolean removeStatement(S statement) {
         if(statements.remove(statement)){
@@ -330,8 +328,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
     }
     
     
-    public int compareTo(C other) {//@todo: fazer o compareTo simétrico
-        //retorna 0 se forem iguais e 1 se forem diferentes (mantem a ordem de insercao)
+    public int compareTo(C other) {
         int comp = 0;
 
         String this_cond, other_cond;
@@ -364,13 +361,16 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
                 comp = 0;
             else if(getParamDelay() != null && other_comp.getParamDelay() != null)
                 comp = getParamDelay().compareTo(other_comp.getParamDelay());
+            // so um dos dois tem parametro, o que tiver vem depois
+            else if(getParamDelay() == null)
+                comp = -1;
             else
                 comp = 1;
         }
 
         // Compara o número de condicoes
         if(comp == 0)
-            comp = conditions.size() - ((Set) other_comp.getConditions()).size();
+            comp = conditions.size() - ((List) other_comp.getConditions()).size();
 
         // Compara as condicoes
         if(comp == 0){
@@ -385,7 +385,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
 
         // Compara o número de statements
         if(comp == 0)
-            comp = statements.size() - ((Set) other_comp.getStatements()).size();
+            comp = statements.size() - ((List) other_comp.getStatements()).size();
 
         // Compara as statements
         if(comp == 0){
@@ -399,10 +399,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
         }
 
 
-        if(comp != 0)
-            return 1;
-        else
-            return 0;
+        return comp;
     }
 
 
