@@ -16,8 +16,8 @@
  *
  *  * All advertising materials mentioning features or use of this software must
  *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa, developed
- *        by MídiaCom Lab (www.midiacom.uff.br) and its contributors.
+ *        This product includes the Api for NCL Authoring - aNa
+ *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
