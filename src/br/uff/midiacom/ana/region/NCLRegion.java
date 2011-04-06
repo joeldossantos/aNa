@@ -406,7 +406,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param relativeLeft
      *          booleano indicando se a posição a esquerda da região é uma porcentagem.
      */
-    private void setRelativeLeft(boolean relativeLeft) {
+    public void setRelativeLeft(boolean relativeLeft) {
         this.relativeLeft = relativeLeft;
     }
 
@@ -417,7 +417,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @return
      *          booleano indicando se a posição a esquerda da região é uma porcentagem.
      */
-    private boolean isRelativeLeft() {
+    public boolean isRelativeLeft() {
         return relativeLeft;
     }
 
@@ -428,7 +428,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param relativeRight
      *          booleano indicando se a posição a direita da região é uma porcentagem.
      */
-    private void setRelativeRight(boolean relativeRight) {
+    public void setRelativeRight(boolean relativeRight) {
         this.relativeRight = relativeRight;
     }
 
@@ -439,7 +439,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @return
      *          booleano indicando se a posição a direita da região é uma porcentagem.
      */
-    private boolean isRelativeRight() {
+    public boolean isRelativeRight() {
         return relativeRight;
     }
 
@@ -450,7 +450,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param relativeTop
      *          booleano indicando se a posição de topo da região é uma porcentagem.
      */
-    private void setRelativeTop(boolean relativeTop) {
+    public void setRelativeTop(boolean relativeTop) {
         this.relativeTop = relativeTop;
     }
 
@@ -461,7 +461,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @return
      *          booleano indicando se a posição de topo da região é uma porcentagem.
      */
-    private boolean isRelativeTop() {
+    public boolean isRelativeTop() {
         return relativeTop;
     }
 
@@ -472,7 +472,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param relativeBottom
      *          booleano indicando se a posição inferior da região é uma porcentagem.
      */
-    private void setRelativeBottom(boolean relativeBottom) {
+    public void setRelativeBottom(boolean relativeBottom) {
         this.relativeBottom = relativeBottom;
     }
 
@@ -483,7 +483,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @return
      *          booleano indicando se a posição inferior da região é uma porcentagem.
      */
-    private boolean isRelativeBottom() {
+    public boolean isRelativeBottom() {
         return relativeBottom;
     }
 
@@ -494,7 +494,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param relativeHeight
      *          booleano indicando se a altura da região é uma porcentagem.
      */
-    private void setRelativeHeight(boolean relativeHeight) {
+    public void setRelativeHeight(boolean relativeHeight) {
         this.relativeHeight = relativeHeight;
     }
 
@@ -505,7 +505,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @return
      *          booleano indicando se a altura da região é uma porcentagem.
      */
-    private boolean isRelativeHeight() {
+    public boolean isRelativeHeight() {
         return relativeHeight;
     }
 
@@ -516,7 +516,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param relativeWidth
      *          booleano indicando se a largura da região é uma porcentagem.
      */
-    private void setRelativeWidth(boolean relativeWidth) {
+    public void setRelativeWidth(boolean relativeWidth) {
         this.relativeWidth = relativeWidth;
     }
 
@@ -527,7 +527,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @return
      *          booleano indicando se a largura da região é uma porcentagem.
      */
-    private boolean isRelativeWidth() {
+    public boolean isRelativeWidth() {
         return relativeWidth;
     }
 
