@@ -18,7 +18,7 @@ Criadores
 Contribuidores
 --------------
 
-- Flávia Silva
+- https://github.com/flaviasilva
 
 _(Se você foi esquecido, por favor nos informe!)_
 
