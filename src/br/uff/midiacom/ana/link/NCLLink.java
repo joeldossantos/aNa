@@ -320,7 +320,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
 
         // Compara o número de binds
         if(comp == 0)
-            comp = binds.size() - ((Set) other.getBinds()).size();
+            comp = binds.size() - ((List) other.getBinds()).size();
 
         // Compara os parâmetros
         if(comp == 0){
