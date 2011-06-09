@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -259,7 +260,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
             return;
         }
 
-        Iterable<C> params = ((NCLLink) link).getXconnector().getConnectorParams();
+        Set<C> params = ((NCLLink) link).getXconnector().getConnectorParams();
 
         for(C param : params){
             if(param.getName().equals(getName().getName())){

@@ -227,9 +227,9 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * Retorna os importadores de base da base de transições.
      *
      * @return
-     *          objeto Iterable contendo os importadores de base da base de transições.
+     *          lista contendo os importadores de base da base de transições.
      */
-    public Iterable<I> getImportBases() {
+    public Set<I> getImportBases() {
         return imports;
     }
 

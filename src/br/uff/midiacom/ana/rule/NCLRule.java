@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -295,11 +296,11 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
     }
 
 
-    private P findProperty(Iterable<NCLNode> nodes) {
+    private P findProperty(Set<NCLNode> nodes) {
         for(NCLNode n : nodes){
             if(n instanceof NCLMedia){
                 if( ((NCLMedia) n).hasProperty()){
-                    Iterable<P> properties = ((NCLMedia) n).getProperties();
+                    Set<P> properties = ((NCLMedia) n).getProperties();
                     for(P prop : properties){
                         if(prop.getName().equals(getVar().getName()))
                             return prop;
@@ -308,7 +309,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
             }
             else if(n instanceof NCLContext){
                 if( ((NCLContext) n).hasNode()){
-                    Iterable<NCLNode> cnodes = ((NCLContext) n).getNodes();
+                    Set<NCLNode> cnodes = ((NCLContext) n).getNodes();
                     NCLProperty p = findProperty(cnodes);
                     if(p != null)
                         return (P) p;
@@ -316,7 +317,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
             }
             else if(n instanceof NCLSwitch){
                 if( ((NCLSwitch) n).hasNode()){
-                    Iterable<NCLNode> snodes = ((NCLSwitch) n).getNodes();
+                    Set<NCLNode> snodes = ((NCLSwitch) n).getNodes();
                     NCLProperty p = findProperty(snodes);
                     if(p != null)
                         return (P) p;

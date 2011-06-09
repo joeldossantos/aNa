@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -279,7 +280,7 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
 
     private void componentReference() {
         //Search for a component node in its parent
-        Iterable<N> nodes;
+        Set<N> nodes;
         
         if(getParent() instanceof NCLBody)
             nodes = ((NCLBody) getParent()).getNodes();
@@ -299,7 +300,7 @@ public class NCLPort<N extends NCLNode, I extends NCLInterface> extends NCLIdent
 
     private void interfaceReference() {
         //Search for the interface inside the node
-        Iterable<I> ifaces;
+        Set<I> ifaces;
 
         if(getComponent() instanceof NCLMedia){
             ifaces = ((NCLMedia) getComponent()).getAreas();

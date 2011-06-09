@@ -50,6 +50,7 @@ import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -256,9 +257,9 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      * Retorna os parâmetros do bind.
      *
      * @return
-     *          objeto Iterable contendo os parâmetros do bind.
+     *          lista contendo os parâmetros do bind.
      */
-    public Iterable<P> getBindParams() {
+    public Set<P> getBindParams() {
         return bindParams;
     }
     
@@ -533,13 +534,13 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
                 return (R) ((NCLSimpleCondition) cond).getRole();
         }
         else if(cond instanceof NCLCompoundCondition){
-            Iterable<NCLCondition> conditions = ((NCLCompoundCondition)cond).getConditions();
+            List<NCLCondition> conditions = ((NCLCompoundCondition)cond).getConditions();
             for(NCLCondition c : conditions){
                 NCLRole r = findRole(c);
                 if(r != null)
                     return (R) r;
             }
-            Iterable<NCLStatement> statements = ((NCLCompoundCondition)cond).getStatements();
+            List<NCLStatement> statements = ((NCLCompoundCondition)cond).getStatements();
             for(NCLStatement s : statements){
                 NCLRole r = findRole(s);
                 if(r != null)
@@ -554,14 +555,14 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
 
     private R findRole(NCLStatement stat) {
         if(stat instanceof NCLAssessmentStatement){
-            Iterable<NCLAttributeAssessment> attributes = ((NCLAssessmentStatement) stat).getAttributeAssessments();
+            List<NCLAttributeAssessment> attributes = ((NCLAssessmentStatement) stat).getAttributeAssessments();
             for(NCLAttributeAssessment at : attributes){
                 if(at.getRole().getName().equals(getRole().getName()))
                     return (R) at.getRole();
             }
         }
         else if(stat instanceof NCLCompoundStatement){
-            Iterable<NCLStatement> statements = ((NCLCompoundStatement)stat).getStatements();
+            List<NCLStatement> statements = ((NCLCompoundStatement)stat).getStatements();
             for(NCLStatement s : statements){
                 NCLRole r = findRole(s);
                 if(r != null)
@@ -580,7 +581,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
                 return (R) ((NCLSimpleAction) act).getRole();
         }
         else if(act instanceof NCLCompoundAction){
-            Iterable<NCLAction> actions = ((NCLCompoundAction)act).getActions();
+            List<NCLAction> actions = ((NCLCompoundAction)act).getActions();
             for(NCLAction a : actions){
                 NCLRole r = findRole(a);
                 if(r != null)
@@ -600,7 +601,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             return;
         }
 
-        Iterable<N> nodes;
+        Set<N> nodes;
         if(getParent().getParent() instanceof NCLBody)
             nodes = ((NCLBody) getParent().getParent()).getNodes();
         else
@@ -619,7 +620,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
 
     private void interfaceReference() {
         //Search for the interface inside the node
-        Iterable<I> ifaces;
+        Set<I> ifaces;
         if(getComponent() instanceof NCLMedia){
             ifaces = ((NCLMedia) getComponent()).getAreas();
             for(I iface : ifaces){
@@ -666,7 +667,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
     }
 
 
-    private Iterable<D> getDescriptors() {
+    private Set<D> getDescriptors() {
         NCLElement root = getParent();
 
         while(!(root instanceof NCLDoc)){
@@ -692,7 +693,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
 
     private void descriptorReference() {
         //Search for the descriptor inside the node
-        Iterable<D> descriptors = getDescriptors();
+        Set<D> descriptors = getDescriptors();
         for(D desc : descriptors){
             if(desc.getId().equals(getDescriptor().getId())){
                 setDescriptor(desc);

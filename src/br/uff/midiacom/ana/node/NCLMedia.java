@@ -382,9 +382,9 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *  Retorna as âncoras da mídia.
      *
      * @return
-     *          objeto Iterable contendo as âncoras da mídia.
+     *          lista contendo as âncoras da mídia.
      */
-    public Iterable<A> getAreas() {
+    public Set<A> getAreas() {
         return areas;
     }
     
@@ -497,9 +497,9 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      * Retorna as propriedades da mídia.
      *
      * @return
-     *          objeto Iterable contendo as propriedades da mídia.
+     *          lista contendo as propriedades da mídia.
      */
-    public Iterable<P> getProperties() {
+    public Set<P> getProperties() {
         return properties;
     }
 
@@ -771,7 +771,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     }
 
 
-    private Iterable<D> getDescriptors() {
+    private Set<D> getDescriptors() {
         NCLElement root = getParent();
 
         while(!(root instanceof NCLDoc)){
@@ -797,7 +797,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
 
     private void descriptorReference() {
         //Search for the interface inside the node
-        Iterable<D> descriptors = getDescriptors();
+        Set<D> descriptors = getDescriptors();
         for(D desc : descriptors){
             if(desc.getId().equals(getDescriptor().getId())){
                 setDescriptor(desc);
@@ -826,7 +826,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     }
 
 
-    private M findMedia(Iterable<N> nodes) {
+    private M findMedia(Set<N> nodes) {
         for(N n : nodes){
             if(n instanceof NCLMedia){
                 if(n.getId().equals(getRefer().getId()))
@@ -834,7 +834,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             }
             else if(n instanceof NCLContext){
                 if( ((NCLContext) n).hasNode()){
-                    Iterable<N> cnodes = ((NCLContext) n).getNodes();
+                    Set<N> cnodes = ((NCLContext) n).getNodes();
                     M m = findMedia(cnodes);
                     if(m != null)
                         return (M) m;
@@ -842,7 +842,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             }
             else if(n instanceof NCLSwitch){
                 if( ((NCLSwitch) n).hasNode()){
-                    Iterable<N> snodes = ((NCLSwitch) n).getNodes();
+                    Set<N> snodes = ((NCLSwitch) n).getNodes();
                     M m = findMedia(snodes);
                     if(m != null)
                         return (M) m;
