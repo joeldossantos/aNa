@@ -297,12 +297,13 @@ public class NCLTime {
      * Atribui um valor de fração de segundo ao indicador temporal.
      *
      * @param fraction
-     *          inteiro que determina o valor da parte de fração de segundo. Deve ser um inteiro positivo.
+     *          inteiro que determina o valor da parte de fração de segundo.
+     *          Deve ser um inteiro positivo entre 0 e 9.
      * @throws java.lang.IllegalArgumentException
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setFraction(Integer fraction) throws IllegalArgumentException {
-        if(fraction != null && fraction < 0)
+        if(fraction != null && fraction < 0 && fraction > 9)
             throw new IllegalArgumentException("Invalid fraction");
 
         this.fraction = fraction;
@@ -315,6 +316,7 @@ public class NCLTime {
      *
      * @return
      *          Inteiro que determina o valor da parte de fração de segundo.
+     *          É um interio positivo entre 0 e 9.
      */
     public Integer getFraction() {
         return fraction;

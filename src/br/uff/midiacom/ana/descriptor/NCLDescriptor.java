@@ -817,24 +817,26 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             return;
         }
 
-        setRegion(findRegion(((NCLHead) head).getRegionBase().getRegions()));
+        R reg = findRegion(((NCLHead) head).getRegionBase().getRegions());
+        if(reg == null)
+            addWarning("Could not find region in regionBase with id: " + getRegion().getId());
+
+        setRegion(reg);
     }
 
 
     private R findRegion(Iterable<R> regions) {
         for(R reg : regions){
-            if(reg.hasRegion()){
-                NCLRegion r = findRegion(reg.getRegions());
+            if(reg.getId().equals(getRegion().getId()))
+                return (R) reg;
+            else if(reg.hasRegion())
+            {
+                R r = findRegion(reg.getRegions());
                 if(r != null)
                     return (R) r;
             }
-            else{
-                if(reg.getId().equals(getRegion().getId()))
-                    return (R) reg;
-            }
         }
 
-        addWarning("Could not find region in regionBase with id: " + getRegion().getId());
         return null;
     }
 
