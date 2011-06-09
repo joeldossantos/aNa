@@ -319,9 +319,9 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      * Retorna os elementos <i>importBase</i> da base de regiões.
      *
      * @return
-     *          Objeto Iterable contendo os elementos <i>importBase</i> da base de regiões.
+     *          lista contendo os elementos <i>importBase</i> da base de regiões.
      */
-    public Iterable<I> getImportBases() {
+    public Set<I> getImportBases() {
         return imports;
     }
 

@@ -307,7 +307,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
     }
 
 
-    private R findRegion(Iterable<R> regions) {
+    private R findRegion(Set<R> regions) {
         for(R reg : regions){
             if(reg.getId().equals(getRegion().getId()))
                 return (R) reg;

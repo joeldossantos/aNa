@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -183,9 +184,9 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * Retorna as condições da condição composta.
      *
      * @return
-     *          objeto Iterable contendo as condições da condição composta.
+     *          list contendo as condições da condição composta.
      */
-    public Iterable<C> getConditions() {
+    public List<C> getConditions() {
         return conditions;
     }
 
@@ -261,9 +262,9 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      * Retorna as assertivas da condição composta.
      *
      * @return
-     *          objeto Iterable contendo as assertivas da condição composta.
+     *          lista contendo as assertivas da condição composta.
      */
-    public Iterable<S> getStatements() {
+    public List<S> getStatements() {
         return statements;
     }
 
@@ -532,7 +533,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             }
         }
 
-        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
         for(P param : params){
             if(param.getId().equals(id))
                 return param;

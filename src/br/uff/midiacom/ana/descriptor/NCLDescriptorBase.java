@@ -168,9 +168,9 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * Retorna os descritores da base de descritores.
      *
      * @return
-     *          objeto Iterable contendo os descritores da base de descritores.
+     *          lista contendo os descritores da base de descritores.
      */
-    public Iterable<D> getDescriptors() {
+    public Set<D> getDescriptors() {
         return descriptors;
     }
 
@@ -241,9 +241,9 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * Retorna os importadores de base da base de descritores.
      *
      * @return
-     *          objeto Iterable contendo os importadores de base da base de descritores.
+     *          lista contendo os importadores de base da base de descritores.
      */
-    public Iterable<I> getImportBases() {
+    public Set<I> getImportBases() {
         return imports;
     }
 

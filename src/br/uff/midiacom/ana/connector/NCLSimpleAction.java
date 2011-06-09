@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLValues.NCLActionOperator;
 import br.uff.midiacom.ana.NCLValues.NCLDefaultActionRole;
 import br.uff.midiacom.ana.NCLValues.NCLEventAction;
 import br.uff.midiacom.ana.NCLValues.NCLEventType;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -961,7 +962,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
             }
         }
 
-        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
         for(P param : params){
             if(param.getId().equals(id))
                 return param;

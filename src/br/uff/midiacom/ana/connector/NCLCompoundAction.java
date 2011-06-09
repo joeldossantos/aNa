@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLValues.NCLActionOperator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -182,9 +183,9 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      * Retorna as ações da ação composta.
      *
      * @return
-     *          objeto Iterable contendo as ações da ação composta.
+     *          lista contendo as ações da ação composta.
      */
-    public Iterable<A> getActions() {
+    public List<A> getActions() {
         return actions;
     }
 
@@ -404,7 +405,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
             }
         }
 
-        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
         for(P param : params){
             if(param.getId().equals(id))
                 return param;

@@ -215,9 +215,9 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * Retorna os atributos da assertiva.
      *
      * @return
-     *          objeto Iterable contendo os atributos da assertiva.
+     *          lista contendo os atributos da assertiva.
      */
-    public Iterable<A> getAttributeAssessments() {
+    public List<A> getAttributeAssessments() {
         return attributeAssessments;
     }
     

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import java.util.List;
 import org.xml.sax.Attributes;
 
 
@@ -110,7 +111,7 @@ public interface Element {
      * @param warnings
      *          Lista contendo mensagens de aviso.
      */
-    public void addWarning(Iterable<String> warnings);
+    public void addWarning(List<String> warnings);
 
 
     /**
@@ -121,7 +122,7 @@ public interface Element {
      * @return
      *          lista de mensagens de aviso.
      */
-    public Iterable<String> getWarnings();
+    public List<String> getWarnings();
 
 
     /**
@@ -149,7 +150,7 @@ public interface Element {
      * @param errors
      *          Lista contendo mensagens de erro.
      */
-    public void addError(Iterable<String> errors);
+    public void addError(List<String> errors);
 
 
     /**
@@ -160,7 +161,7 @@ public interface Element {
      * @return
      *          lista de mensagens de erro.
      */
-    public Iterable<String> getErrors();
+    public List<String> getErrors();
 
 
     /**

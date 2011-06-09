@@ -154,9 +154,9 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * Retorna as regras da base de regras.
      *
      * @return
-     *          objeto Iterable contendo as regras da base de regras.
+     *          lista contendo as regras da base de regras.
      */
-    public Iterable<T> getRules() {
+    public Set<T> getRules() {
         return rules;
     }
 
@@ -227,9 +227,9 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * Retorna os importadores de base da base de regras.
      *
      * @return
-     *          objeto Iterable contendo os importadores de base da base de regras.
+     *          lista contendo os importadores de base da base de regras.
      */
-    public Iterable<I> getImportBases() {
+    public Set<I> getImportBases() {
         return imports;
     }
 

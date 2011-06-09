@@ -624,9 +624,9 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * Retorna as regiões internas a região.
      *
      * @return
-     *          objeto Iterable contendo as regiões internas.
+     *          lista contendo as regiões internas.
      */
-    public Iterable<R> getRegions() {
+    public Set<R> getRegions() {
         return regions;
     }
     

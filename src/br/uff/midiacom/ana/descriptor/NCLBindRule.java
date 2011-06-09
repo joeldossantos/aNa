@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -224,7 +225,7 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
     }
 
 
-    private Iterable<R> getRules() {
+    private Set<R> getRules() {
         NCLElement head = getParent();
 
         while(!(head instanceof NCLHead)){
@@ -246,7 +247,7 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
 
     private void constituentReference() {
         //Search for a component node in its parent
-        Iterable<D> descriptors = ((NCLDescriptorSwitch) getParent()).getDescriptors();
+        Set<D> descriptors = ((NCLDescriptorSwitch) getParent()).getDescriptors();
 
         for(D descriptor : descriptors){
             if(descriptor.getId().equals(getConstituent().getId())){
@@ -261,7 +262,7 @@ public class NCLBindRule<B extends NCLBindRule, D extends NCLDescriptor, R exten
 
     private void ruleReference() {
         //Search for the interface inside the node
-        Iterable<R> rules = getRules();
+        Set<R> rules = getRules();
         if(rules == null)
             return;
 
