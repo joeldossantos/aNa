@@ -229,9 +229,9 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * Retorna as portas do switch.
      *
      * @return
-     *          objeto Iterable contendo as portas do switch.
+     *          lista contendo as portas do switch.
      */
-    public Iterable<P> getPorts() {
+    public Set<P> getPorts() {
         return ports;
     }
 
@@ -323,9 +323,9 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * Retorna os binds do switch.
      *
      * @return
-     *          objeto Iterable contendo os binds do switch.
+     *          lista contendo os binds do switch.
      */
-    public Iterable<B> getBinds() {
+    public List<B> getBinds() {
         return binds;
     }
 
@@ -438,9 +438,9 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * Retorna os nós do switch.
      *
      * @return
-     *          objeto Iterable contendo os nós do switch.
+     *          lista contendo os nós do switch.
      */
-    public Iterable<N> getNodes() {
+    public Set<N> getNodes() {
         return nodes;
     }
 
@@ -671,11 +671,11 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     }
 
 
-    private S findSwitch(Iterable<N> nodes) {
+    private S findSwitch(Set<N> nodes) {
         for(N n : nodes){
             if(n instanceof NCLContext){
                 if( ((NCLContext) n).hasNode()){
-                    Iterable<N> cnodes = ((NCLContext) n).getNodes();
+                    Set<N> cnodes = ((NCLContext) n).getNodes();
                         S s = findSwitch(cnodes);
                         if(s != null)
                             return (S) s;
@@ -685,7 +685,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
                 if(n.getId().equals(getRefer().getId()))
                     return (S) n;
                 else if( ((NCLSwitch) n).hasNode()){
-                    Iterable<N> snodes = ((NCLSwitch) n).getNodes();
+                    Set<N> snodes = ((NCLSwitch) n).getNodes();
                     S s = findSwitch(snodes);
                     if(s != null)
                         return (S) s;

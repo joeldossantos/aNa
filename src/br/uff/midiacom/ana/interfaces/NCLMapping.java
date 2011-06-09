@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -271,7 +272,7 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
             return;
         }
 
-        Iterable<N> nodes = ((NCLSwitch) getParent().getParent()).getNodes();
+        Set<N> nodes = ((NCLSwitch) getParent().getParent()).getNodes();
 
         for(N node : nodes){
             if(node.getId().equals(getComponent().getId())){
@@ -286,7 +287,7 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
 
     private void interfaceReference() {
         //Search for the interface inside the node
-        Iterable<I> ifaces;
+        Set<I> ifaces;
         if(getComponent() instanceof NCLMedia){
             ifaces = ((NCLMedia) getComponent()).getAreas();
             for(I iface : ifaces){

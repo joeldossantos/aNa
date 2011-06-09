@@ -186,9 +186,9 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
      * Retorna as regras da regra composta.
      *
      * @return
-     *          objeto Iterable contendo as regras da regra composta.
+     *          lista contendo as regras da regra composta.
      */
-    public Iterable<T> getRules() {
+    public Set<T> getRules() {
         return rules;
     }
 

@@ -158,9 +158,9 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
      * Retorna os mapeamentos da porta de switch.
      *
      * @return
-     *          objeto Iterable contendo os mapeamentos da porta de switch.
+     *          lista contendo os mapeamentos da porta de switch.
      */
-    public Iterable<M> getMappings() {
+    public Set<M> getMappings() {
         return mappings;
     }
 

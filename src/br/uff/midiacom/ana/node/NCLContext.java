@@ -234,9 +234,9 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * Retorna as portas do contexto.
      *
      * @return
-     *          objeto Iterable contendo as portas do contexto.
+     *          lista contendo as portas do contexto.
      */
-    public Iterable<Pt> getPorts() {
+    public Set<Pt> getPorts() {
         return ports;
     }
 
@@ -349,9 +349,9 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * Retorna as propriedades do contexto.
      *
      * @return
-     *          objeto Iterable contendo as propriedades do contexto.
+     *          lista contendo as propriedades do contexto.
      */
-    public Iterable<Pp> getProperties() {
+    public Set<Pp> getProperties() {
         return properties;
     }
 
@@ -464,9 +464,9 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * Retorna os nós do contexto.
      *
      * @return
-     *          objeto Iterable contendo os nós do contexto.
+     *          lista contendo os nós do contexto.
      */
-    public Iterable<N> getNodes() {
+    public Set<N> getNodes() {
         return nodes;
     }
 
@@ -543,9 +543,9 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * Retorna os links do contexto.
      *
      * @return
-     *          objeto Iterable contendo os links do contexto.
+     *          lista contendo os links do contexto.
      */
-    public Iterable<L> getLinks() {
+    public Set<L> getLinks() {
         return links;
     }
 
@@ -622,9 +622,9 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     *          lista contendo os metadados do cabeçalho do documento NCL.
      */
-    public Iterable<M> getMetas() {
+    public Set<M> getMetas() {
         return metas;
     }
 
@@ -701,9 +701,9 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     *          lista contendo os metadados do cabeçalho do documento NCL.
      */
-    public Iterable<MT> getMetadatas() {
+    public Set<MT> getMetadatas() {
         return metadatas;
     }
     
@@ -962,13 +962,13 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
     }
 
 
-    private C findContext(Iterable<N> nodes) {
+    private C findContext(Set<N> nodes) {
         for(N n : nodes){
             if(n instanceof NCLContext){
                 if(n.getId().equals(getRefer().getId()))
                     return (C) n;
                 else if( ((NCLContext) n).hasNode()){
-                    Iterable<N> cnodes = ((NCLContext) n).getNodes();
+                    Set<N> cnodes = ((NCLContext) n).getNodes();
                     C c = findContext(cnodes);
                     if(c != null)
                         return (C) c;
@@ -976,7 +976,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             }
             else if(n instanceof NCLSwitch){
                 if( ((NCLSwitch) n).hasNode()){
-                    Iterable<N> snodes = ((NCLSwitch) n).getNodes();
+                    Set<N> snodes = ((NCLSwitch) n).getNodes();
                     C c = findContext(snodes);
                     if(c != null)
                         return (C) c;
