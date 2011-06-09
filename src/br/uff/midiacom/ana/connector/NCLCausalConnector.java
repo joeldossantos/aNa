@@ -241,9 +241,9 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      * Retorna os parâmetros do conector.
      *
      * @return
-     *          objeto Iterable contendo os parâmetros do conector.
+     *          lista contendo os parâmetros do conector.
      */
-    public Iterable<P> getConnectorParams() {
+    public Set<P> getConnectorParams() {
         return conn_params;
     }
 

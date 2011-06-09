@@ -154,9 +154,9 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * Retorna as transições da base de transições.
      *
      * @return
-     *          objeto Iterable contendo as transições da base de transições.
+     *          lista contendo as transições da base de transições.
      */
-    public Iterable<T> getTransitions() {
+    public Set<T> getTransitions() {
         return transitions;
     }
 

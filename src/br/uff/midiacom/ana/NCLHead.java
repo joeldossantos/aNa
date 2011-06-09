@@ -392,9 +392,9 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     *          conjunto contendo os metadados do cabeçalho do documento NCL.
      */
-    public Iterable<M> getMetas() {
+    public Set<M> getMetas() {
         return metas;
     }
 
@@ -471,9 +471,9 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     *          conjunto contendo os metadados do cabeçalho do documento NCL.
      */
-    public Iterable<MT> getMetadatas() {
+    public Set<MT> getMetadatas() {
         return metadatas;
     }
     

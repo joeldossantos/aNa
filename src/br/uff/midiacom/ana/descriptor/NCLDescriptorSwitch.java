@@ -176,9 +176,9 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * Retorna os descritores do switch de descritor.
      *
      * @return
-     *          objeto Iterable contendo os descritores do switch de descritor.
+     *          lista contendo os descritores do switch de descritor.
      */
-    public Iterable<D> getDescriptors() {
+    public Set<D> getDescriptors() {
         return descriptors;
     }
 
@@ -248,9 +248,9 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      * Retorna os binds do switch de descritor.
      *
      * @return
-     *          objeto Iterable contendo os binds do switch de descritor.
+     *          lista contendo os binds do switch de descritor.
      */
-    public Iterable<B> getBinds() {
+    public List<B> getBinds() {
         return binds;
     }
 

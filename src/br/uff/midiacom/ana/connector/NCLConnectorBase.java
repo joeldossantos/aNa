@@ -155,9 +155,9 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
      * Retorna os conectores da base de conectores.
      * 
      * @return
-     *          objeto Iterable contendo os conectores da base de conectores.
+     *          lista contendo os conectores da base de conectores.
      */
-    public Iterable<C> getCausalConnectors() {
+    public Set<C> getCausalConnectors() {
         return connectors;        
     }
 
@@ -228,9 +228,9 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
      * Retorna os importadores de base da base de conectores.
      *
      * @return
-     *          objeto Iterable contendo os importadores de base da base de conectores.
+     *          lista contendo os importadores de base da base de conectores.
      */
-    public Iterable<I> getImportBases() {
+    public Set<I> getImportBases() {
         return imports;
     }
     

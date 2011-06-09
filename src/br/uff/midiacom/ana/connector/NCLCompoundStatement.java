@@ -202,9 +202,9 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      * Retorna as assertivas da assertiva composta.
      *
      * @return
-     *          objeto Iterable contendo as assertivas da assertiva composta.
+     *          lista contendo as assertivas da assertiva composta.
      */
-    public Iterable<S> getStatements() {
+    public List<S> getStatements() {
         return statements;
     }
     
