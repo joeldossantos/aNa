@@ -146,9 +146,9 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
      * Retorna os importadores de documento da base de documentos importados.
      *
      * @return
-     *          objeto Iterable contendo os importadores de documento da base de documentos importados.
+     *          lista contendo os importadores de documento da base de documentos importados.
      */
-    public Iterable<I> getImportNCLs() {
+    public Set<I> getImportNCLs() {
         return imports;
     }
 

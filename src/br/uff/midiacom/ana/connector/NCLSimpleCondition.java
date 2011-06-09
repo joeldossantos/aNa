@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.NCLValues.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.NCLValues.NCLEventTransition;
 import br.uff.midiacom.ana.NCLValues.NCLEventType;
 import br.uff.midiacom.ana.NCLValues.NCLKey;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -601,7 +602,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
             }
         }
 
-        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
         for(P param : params){
             if(param.getId().equals(id))
                 return param;

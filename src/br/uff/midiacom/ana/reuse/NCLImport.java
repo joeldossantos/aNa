@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.NCLValues.NCLImportType;
 import br.uff.midiacom.ana.region.NCLRegion;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -298,7 +299,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
     }
 
 
-    private R findRegion(Iterable<R> regions) {
+    private R findRegion(Set<R> regions) {
         for(R reg : regions){
             if(reg.hasRegion()){
                 NCLRegion r = findRegion(reg.getRegions());

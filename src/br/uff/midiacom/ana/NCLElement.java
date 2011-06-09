@@ -158,7 +158,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      * @param warnings
      *          Lista contendo mensagens de aviso.
      */
-    public void addWarning(Iterable<String> warnings) {
+    public void addWarning(List<String> warnings) {
         for(String warning : warnings)
             addWarning(warning);
     }
@@ -172,7 +172,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      * @return
      *          lista de mensagens de aviso.
      */
-    public Iterable<String> getWarnings() {
+    public List<String> getWarnings() {
         return warnings;
     }
 
@@ -206,7 +206,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      * @param errors
      *          Lista contendo mensagens de erro.
      */
-    public void addError(Iterable<String> errors) {
+    public void addError(List<String> errors) {
         for(String error : errors)
             addError(error);
     }
@@ -220,7 +220,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      * @return
      *          lista de mensagens de erro.
      */
-    public Iterable<String> getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 

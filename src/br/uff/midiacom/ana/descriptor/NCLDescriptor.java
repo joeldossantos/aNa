@@ -585,9 +585,9 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      * Retorna os parâmetros do descritor.
      *
      * @return
-     *          objeto Iterable contendo os parâmetros do descritor.
+     *          lista contendo os parâmetros do descritor.
      */
-    public Iterable<P> getDescriptorParams() {
+    public Set<P> getDescriptorParams() {
         return params;
     }
 
@@ -825,7 +825,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
     }
 
 
-    private R findRegion(Iterable<R> regions) {
+    private R findRegion(Set<R> regions) {
         for(R reg : regions){
             if(reg.getId().equals(getRegion().getId()))
                 return (R) reg;
@@ -868,7 +868,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
     }
 
 
-    private D findDescriptor(Iterable<NCLLayoutDescriptor> descriptors, D move) {
+    private D findDescriptor(Set<NCLLayoutDescriptor> descriptors, D move) {
         for(NCLLayoutDescriptor descriptor : descriptors){
             if(descriptor instanceof NCLDescriptorSwitch){
                 NCLDescriptor desc = findDescriptor(((NCLDescriptorSwitch)descriptor).getDescriptors(), move);
@@ -906,7 +906,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             return null;
         }
 
-        Iterable<T> transitions = ((NCLHead) head).getTransitionBase().getTransitions();
+        Set<T> transitions = ((NCLHead) head).getTransitionBase().getTransitions();
         for(T trans : transitions){
             if(trans.getId().equals(transition.getId()))
              return (T) trans;

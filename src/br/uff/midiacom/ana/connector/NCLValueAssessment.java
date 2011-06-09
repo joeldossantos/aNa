@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLDefaultValueAssessment;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -293,7 +294,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
             }
         }
 
-        Iterable<P> params = ((NCLCausalConnector) connector).getConnectorParams();
+        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
         for(P param : params){
             if(param.getId().equals(id))
                 return param;

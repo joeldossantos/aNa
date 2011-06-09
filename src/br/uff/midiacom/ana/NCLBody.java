@@ -199,9 +199,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * Retorna as portas do corpo do documento NCL.
      * 
      * @return
-     *          objeto Iterable contendo as portas do corpo do documento NCL.
+     *          lista contendo as portas do corpo do documento NCL.
      */
-    public Iterable<Pt> getPorts() {
+    public Set<Pt> getPorts() {
         return ports;
     }
     
@@ -314,9 +314,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * Retorna as propriedades do corpo do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo as propriedades do corpo do documento NCL.
+     *          lista contendo as propriedades do corpo do documento NCL.
      */
-    public Iterable<Pp> getProperties() {
+    public Set<Pp> getProperties() {
         return properties;
     }
     
@@ -429,9 +429,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * Retorna os nós do corpo do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os nós do corpo do documento NCL.
+     *          lista contendo os nós do corpo do documento NCL.
      */
-    public Iterable<N> getNodes() {
+    public Set<N> getNodes() {
         return nodes;
     }
     
@@ -508,9 +508,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * Retorna os links do corpo do documento NCL.
      * 
      * @return
-     *          objeto Iterable contendo os links do corpo do documento NCL.
+     *          lista contendo os links do corpo do documento NCL.
      */
-    public Iterable<L> getLinks() {
+    public Set<L> getLinks() {
         return links;
     }
 
@@ -587,9 +587,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     *          lista contendo os metadados do cabeçalho do documento NCL.
      */
-    public Iterable<M> getMetas() {
+    public Set<M> getMetas() {
         return metas;
     }
 
@@ -666,9 +666,9 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          objeto Iterable contendo os metadados do cabeçalho do documento NCL.
+     *          lista contendo os metadados do cabeçalho do documento NCL.
      */
-    public Iterable<MT> getMetadatas() {
+    public Set<MT> getMetadatas() {
         return metadatas;
     }
     
