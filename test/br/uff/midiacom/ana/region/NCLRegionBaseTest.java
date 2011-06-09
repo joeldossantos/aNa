@@ -142,7 +142,7 @@ public class NCLRegionBaseTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLRegion) doc.getHead().getRegionBase().getRegions().iterator().next()).getTitle();
+            String result = ((NCLRegion) ((NCLRegionBase) doc.getHead().getRegionBases().iterator().next()).getRegions().iterator().next()).getTitle();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

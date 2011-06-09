@@ -64,7 +64,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
     private IB importedDocumentBase;
     private RLB ruleBase;
     private TB transitionBase;
-    private RB regionBase;
+    private Set<RB> regionBases = new TreeSet<RB>();
     private DB descriptorBase;
     private CB connectorBase;
     private Set<M> metas = new TreeSet<M>();
@@ -184,32 +184,81 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
 
     /**
-     * Atribui uma base de regiões ao cabeçalho do documento NCL.
+     * Adiciona uma base de regiões ao cabeçalho do documento NCL.
      *
      * @param regionBase
-     *          elemento representando a base de regiões NCL a ser utilizada pelo cabeçalho.
+     *          elemento representando a base de regiões NCL a ser adicionada ao cabeçalho.
+     * @return
+     *          Verdadeiro se a base de regiões foi adicionada.
+     *
+     * @see TreeSet#add
      */
-    public void setRegionBase(RB regionBase) {
-        //Retira o parentesco do regionBase atual
-        if(this.regionBase != null)
-            this.regionBase.setParent(null);
+    public boolean addRegionBase(RB regionBase) {
+        if(regionBases.add(regionBase)){
+            //Se base de regiões existe, atribui este como seu parente
+            if(regionBase != null)
+                regionBase.setParent(this);
 
-        this.regionBase = regionBase;
-        //Se regionBase existe, atribui este como seu parente
-        if(this.regionBase != null)
-            this.regionBase.setParent(this);
+            return true;
+        }
+        return false;
     }
 
 
     /**
-     * Retorna a base de regiões utilizada pelo cabeçalho do documento NCL.
+     * Remove uma base de regiões do cabeçalho do documento NCL.
+     *
+     * @param meta
+     *          elemento representando uma base de regiões a ser removida.
+     * @return
+     *          Verdadeiro se uma base de regiões foi removida.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeRegionBase(RB regionBase) {
+        if(regionBases.remove(regionBase)){
+            //Se meta existe, retira o seu parentesco
+            if(regionBase != null)
+                regionBase.setParent(null);
+
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Verifica se o cabeçalho do documento NCL possui uma base de regiões.
+     *
+     * @param meta
+     *          elemento representando a base de regiões a ser verificado.
+     * @return
+     *          verdadeiro se a base de regiões existir.
+     */
+    public boolean hasRegionBase(RB regionBase) {
+        return regionBases.contains(regionBase);
+    }
+
+
+    /**
+     * Verifica se o cabeçalho do documento NCL possui alguma base de regiões.
      *
      * @return
-     *          elemento representando a base de regiões NCL a ser utilizada pelo cabeçalho.
+     *          verdadeiro se o cabeçalho do documento NCL possuir alguma base de regiões.
      */
-    
-    public RB getRegionBase() {
-        return regionBase;
+    public boolean hasRegionBase() {
+        return !regionBases.isEmpty();
+    }
+
+
+    /**
+     * Retorna as bases de regiões do cabeçalho do documento NCL.
+     *
+     * @return
+     *          conjunto contendo as bases de regiões do cabeçalho do documento NCL.
+     */
+    public Set<RB> getRegionBases() {
+        return regionBases;
     }
 
 
@@ -448,8 +497,10 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             content += getRuleBase().parse(ident + 1);
         if(getTransitionBase() != null)
             content += getTransitionBase().parse(ident + 1);
-        if(getRegionBase() != null)
-            content += getRegionBase().parse(ident + 1);
+        if(hasRegionBase()){
+            for(RB base : regionBases)
+                content += base.parse(ident + 1);
+        }
         if(getDescriptorBase() != null)
             content += getDescriptorBase().parse(ident + 1);
         if(getConnectorBase() != null)
@@ -477,7 +528,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
         // Cabecalho nao pode ser vazio
         if(getImportedDocumentBase() == null && getRuleBase() == null && getTransitionBase() == null &&
-                getRegionBase() == null && getDescriptorBase() == null && getConnectorBase() == null && !hasMeta() && !hasMetadata()){
+                getRegionBases() == null && getDescriptorBase() == null && getConnectorBase() == null && !hasMeta() && !hasMetadata()){
             addWarning("Cabeçalho do documento NCL vazio.");
             valid = false;
         }
@@ -498,10 +549,12 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             addWarning(getTransitionBase().getWarnings());
             addError(getTransitionBase().getErrors());
         }
-        if(getRegionBase() != null){
-            valid &= getRegionBase().validate();
-            addWarning(getRegionBase().getWarnings());
-            addError(getRegionBase().getErrors());
+        if(hasRegionBase()){
+            for(RB base : regionBases){
+                valid &= base.validate();
+                addWarning(base.getWarnings());
+                addError(base.getErrors());
+            }
         }
         if(getDescriptorBase() != null){
             valid &= getDescriptorBase().validate();
@@ -551,8 +604,9 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             getTransitionBase().startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("regionBase")){
-            setRegionBase(createRegionBase());
-            getRegionBase().startElement(uri, localName, qName, attributes);
+            RB base = createRegionBase();
+            addRegionBase(base);
+            base.startElement(uri, localName, qName, attributes);
         }
         else if(localName.equals("descriptorBase")){
             setDescriptorBase(createDescriptorBase());
@@ -592,10 +646,12 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             addWarning(getTransitionBase().getWarnings());
             addError(getTransitionBase().getErrors());
         }
-        if(getRegionBase() != null){
-            getRegionBase().endDocument();
-            addWarning(getRegionBase().getWarnings());
-            addError(getRegionBase().getErrors());
+        if(hasRegionBase()){
+            for(RB base : regionBases){
+                base.endDocument();
+                addWarning(base.getWarnings());
+                addError(base.getErrors());
+            }
         }
         if(getDescriptorBase() != null){
             getDescriptorBase().endDocument();

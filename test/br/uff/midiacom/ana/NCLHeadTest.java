@@ -63,7 +63,7 @@ public class NCLHeadTest {
         h.setImportedDocumentBase(new NCLImportedDocumentBase());
         h.setRuleBase(new NCLRuleBase());
         h.setTransitionBase(new NCLTransitionBase());
-        h.setRegionBase(new NCLRegionBase());
+        h.addRegionBase(new NCLRegionBase());
         h.setDescriptorBase(new NCLDescriptorBase());
         h.setConnectorBase(new NCLConnectorBase());
 

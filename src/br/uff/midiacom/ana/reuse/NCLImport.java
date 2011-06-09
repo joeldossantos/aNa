@@ -42,8 +42,10 @@ import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLImportType;
 import br.uff.midiacom.ana.region.NCLRegion;
+import br.uff.midiacom.ana.region.NCLRegionBase;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -290,28 +292,33 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
             }
         }
 
-        if(((NCLHead) head).getRegionBase() == null){
+        if(!((NCLHead) head).hasRegionBase()){
             addWarning("Could not find a regionBase");
         }
 
-        setRegion(findRegion(((NCLHead) head).getRegionBase().getRegions()));
+        R reg = null;
+        for(NCLRegionBase base : (Set<NCLRegionBase>) ((NCLHead) head).getRegionBases()){
+            reg = findRegion(base.getRegions());
+        }
+        if(reg == null)
+            addWarning("Could not find region in regionBase with id: " + getRegion().getId());
+
+        setRegion(reg);
     }
 
 
     private R findRegion(Iterable<R> regions) {
         for(R reg : regions){
-            if(reg.hasRegion()){
-                NCLRegion r = findRegion(reg.getRegions());
+            if(reg.getId().equals(getRegion().getId()))
+                return (R) reg;
+            else if(reg.hasRegion())
+            {
+                R r = findRegion(reg.getRegions());
                 if(r != null)
                     return (R) r;
             }
-            else{
-                if(reg.getId().equals(getRegion().getId()))
-                    return (R) reg;
-            }
         }
 
-        addWarning("Could not find region in regionBase with id: " + getRegion().getId());
         return null;
     }
 }

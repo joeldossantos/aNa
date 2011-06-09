@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.reuse;
 
+import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLValues.NCLImportType;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class NCLImportTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLImport) instance.getHead().getRegionBase().getImportBases().iterator().next()).getRegion().getTitle();
+            String result = ((NCLImport) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion().getTitle();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

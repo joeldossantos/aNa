@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLColor;
 import br.uff.midiacom.ana.region.NCLRegion;
+import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -812,12 +813,14 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             }
         }
 
-        if(((NCLHead) head).getRegionBase() == null){
+        if(!((NCLHead) head).hasRegionBase()){
             addWarning("Could not find a regionBase");
-            return;
         }
 
-        R reg = findRegion(((NCLHead) head).getRegionBase().getRegions());
+        R reg = null;
+        for(NCLRegionBase base : (Set<NCLRegionBase>) ((NCLHead) head).getRegionBases()){
+            reg = findRegion(base.getRegions());
+        }
         if(reg == null)
             addWarning("Could not find region in regionBase with id: " + getRegion().getId());
 
