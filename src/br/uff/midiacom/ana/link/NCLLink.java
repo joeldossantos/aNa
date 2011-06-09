@@ -183,9 +183,9 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * Retorna os parâmetros do link.
      * 
      * @return
-     *          objeto Iterable contendo os parâmetros do link.
+     *          lista contendo os parâmetros do link.
      */
-    public Iterable<P> getLinkParams() {
+    public Set<P> getLinkParams() {
         return linkParams;
     }
     
@@ -261,9 +261,9 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * Retorna os binds do link
      * 
      * @return
-     *          objeto Iterable contendo os binds do link.
+     *          lista contendo os binds do link.
      */
-    public Iterable<B> getBinds() {
+    public List<B> getBinds() {
         return binds;
     }
     
@@ -441,7 +441,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
     }
 
 
-    private Iterable<C> getConnectors() {
+    private Set<C> getConnectors() {
         NCLElement root = getParent();
 
         while(!(root instanceof NCLDoc)){
@@ -467,7 +467,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
 
     private void connectorReference() {
         //Search for the connector inside the base
-        Iterable<C> connectors = getConnectors();
+        Set<C> connectors = getConnectors();
         if(connectors == null){
             addWarning("Could not find connector in connectorBase with id: " + getXconnector().getId());
             return;

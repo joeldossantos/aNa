@@ -244,9 +244,9 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      * Retorna a coleção de regioes da base.
      *
      * @return
-     *          objeto Iterable contendo as regioes da base de regioes.
+     *          lista contendo as regioes da base de regioes.
      */
-    public Iterable<R> getRegions() {
+    public Set<R> getRegions() {
         return regions;        
     }
 
@@ -451,7 +451,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
     }
 
    
-    private R findRegion(Iterable<R> regions) {
+    private R findRegion(Set<R> regions) {
         for(R reg : regions){
             if(reg.hasRegion()){
                 NCLRegion r = findRegion(reg.getRegions());
