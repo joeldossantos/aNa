@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLValues.NCLAttributes;
 import br.uff.midiacom.ana.NCLValues.NCLColor;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.region.NCLRegionBase;
@@ -761,7 +762,8 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                 }
             }
             else if(localName.equals("descriptorParam")){
-                P child = createDescriptorParam();
+                P child = createParamByType(attributes);
+                //@todo verificar o nome para definir o tipo do parâmetro
                 child.startElement(uri, localName, qName, attributes);
                 addDescriptorParam(child);
             }
@@ -797,6 +799,80 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                 addWarning(param.getWarnings());
                 addError(param.getErrors());
             }
+        }
+    }
+
+
+    private P createParamByType(Attributes attributes) {
+        NCLAttributes att = NCLAttributes.DEFAULT;
+        for(int i = 0; i < attributes.getLength(); i++){
+            if(attributes.getLocalName(i).equals("name")){
+                for(NCLAttributes a : NCLAttributes.values()){
+                    if(a.toString().equals(attributes.getValue(i)))
+                        att = a;
+                }
+            }
+        }
+
+        switch(att){
+            case TOP:
+                return null;
+            case LEFT:
+                return null;
+            case BOTTOM:
+                return null;
+            case RIGHT:
+                return null;
+            case WIDTH:
+                return null;
+            case HEIGHT:
+                return null;
+            case LOCATION:
+                return null;
+            case SIZE:
+                return null;
+            case BOUNDS:
+                return null;
+            case BACKGROUND:
+                return null;
+            case VISIBLE:
+                return null;
+            case TRANSPARENCY:
+                return null;
+            case FIT:
+                return null;
+            case SCROLL:
+                return null;
+            case STYLE:
+                return null;
+            case SOUND_LEVEL:
+                return null;
+            case BALANCE_LEVEL:
+                return null;
+            case TREBLE_LEVEL:
+                return null;
+            case BASS_LEVEL:
+                return null;
+            case ZINDEX:
+                return null;
+            case FONT_FAMILY:
+                return null;
+            case FONT_STYLE:
+                return null;
+            case FONT_SIZE:
+                return null;
+            case FONT_VARIANT:
+                return null;
+            case FONT_WEIGHT:
+                return null;
+            case FONT_COLOR:
+                return null;
+            case REUSE_PLAYER:
+                return null;
+            case PLAYER_LIFE:
+                return null;
+            default:
+                return createStringDescriptorParam();
         }
     }
 
@@ -927,7 +1003,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      * @return
      *          elemento representando o elemento filho <i>descriptorParam</i>.
      */
-    protected P createDescriptorParam() {
-        return (P) new NCLDescriptorParam(getReader(), this);
+    protected P createStringDescriptorParam() {
+        return (P) new NCLStringDescriptorParam(getReader(), this);
     }
 }

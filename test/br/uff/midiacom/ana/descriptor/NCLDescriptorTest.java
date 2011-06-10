@@ -95,7 +95,7 @@ public class NCLDescriptorTest {
     @Test
     public void test2() throws NCLInvalidIdentifierException, URISyntaxException {
         NCLDescriptor descriptor = new NCLDescriptor("dTV");
-        NCLDescriptorParam param = new NCLDescriptorParam();
+        NCLStringDescriptorParam param = new NCLStringDescriptorParam();
         param.setName(NCLAttributes.TOP);
         param.setValue("100");
         descriptor.addDescriptorParam(param);

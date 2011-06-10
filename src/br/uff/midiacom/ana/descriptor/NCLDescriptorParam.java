@@ -50,10 +50,10 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement implements Comparable<P> {
+public abstract class NCLDescriptorParam<P extends NCLDescriptorParam, V> extends NCLElement implements Comparable<P> {
 
     private NCLAttributes name;
-    private String value;
+    private V value;
 
 
     /**
@@ -104,14 +104,11 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
      * Atribui um valor ao parâmetro.
      *
      * @param value
-     *          String representando o valor do parâmetro.
+     *          valor do parâmetro.
      * @throws IllegalArgumentException
-     *          se a String for vazia.
+     *          se o valor não estiver de acordo com o esperado.
      */
-    public void setValue(String value) throws IllegalArgumentException {
-        if(value != null && "".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
-
+    public void setValue(V value) throws IllegalArgumentException {
         this.value = value;
     }
 
@@ -120,9 +117,9 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
      * Retorna o valor do parâmetro.
      *
      * @return
-     *          String representando o valor do parâmetro.
+     *          valor do parâmetro.
      */
-    public String getValue() {
+    public V getValue() {
         return value;
     }
 
@@ -144,7 +141,7 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
         if(getName() != null)
             content += " name='" + getName().toString() + "'";
         if(getValue() != null)
-            content += " value='" + getValue() + "'";
+            content += " value='" + getParamValue() + "'";
         content += "/>\n";
 
         return content;
@@ -188,7 +185,13 @@ public class NCLDescriptorParam<P extends NCLDescriptorParam> extends NCLElement
                     }
                 }
             else if(attributes.getLocalName(i).equals("value"))
-                setValue(attributes.getValue(i));
+                setParamValue(attributes.getValue(i));
         }
     }
+
+
+    protected abstract void setParamValue(String value);
+
+
+    protected abstract String getParamValue();
 }
