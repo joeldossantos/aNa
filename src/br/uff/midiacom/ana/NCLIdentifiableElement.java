@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.NCLValues.NCLElementAttributes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +65,8 @@ public abstract class NCLIdentifiableElement extends NCLElement implements Ident
     public void setId(String id) throws NCLInvalidIdentifierException {
         if(!validate(id))
             throw new NCLInvalidIdentifierException("Invalid identifier");
-    
+
+        notifyAltered(NCLElementAttributes.ZINDEX, this.id, id);
         this.id = id;
     }
     

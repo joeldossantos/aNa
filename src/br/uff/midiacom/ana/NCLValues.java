@@ -642,7 +642,8 @@ public abstract class NCLValues {
         FONT_WEIGHT("fontWeight"),
         FONT_COLOR("fontColor"),
         REUSE_PLAYER("reusePlayer"),
-        PLAYER_LIFE("playerLife");
+        PLAYER_LIFE("playerLife"),
+        DEFAULT("");
 
 
         private String name;
@@ -677,6 +678,173 @@ public abstract class NCLValues {
 
         private String name;
         private NCLImportType(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Nomes dos atributos dos elementos NCL
+     */
+    public enum NCLElementAttributes {
+
+//        ACTION("action"),
+//        ACTIONTYPE("actionType"),
+//        ALIAS("alias"),
+//        ANAME("aname"),
+//        ATTRIBUTETYPE("attributeType"),
+//        BEGIN("begin"),
+//        BODY("body"),
+//        BORDERCOLOR("borderColor"),
+//        BORDERWIDTH("borderWidth"),
+//        BOTTOM("bottom"),
+//        BY("by"),
+//        CNAME("cname"),
+//        COMPARATOR("comparator"),
+//        COMPONENT("component"),
+//        CONDITION("condition"),
+//        CONNECTORBASE("connectorBase"),
+//        CONSTITUENT("constituent"),
+//        COORDS("coords"),
+//        DAY("day"),
+//        DEFAULTCOMPONENT("defaultComponent"),
+//        DEFAULTDESCRIPTOR("defaultDescriptor"),
+//        DEFVALUE("defValue"),
+//        DELAY("delay"),
+//        DESCRIPTOR("descriptor"),
+//        DESCRIPTORBASE("descriptorBase"),
+//        DEVICE("device"),
+//        DIRECTION("direction"),
+//        DOCUMENTURI("documentURI"),
+//        DUR("dur"),
+//        DURATION("duration"),
+//        END("end"),
+//        ENDPROGRESS("endProgress"),
+//        EVENTTYPE("eventType"),
+//        EXPLICITDUR("explicitDur"),
+//        FADECOLOR("fadeColor"),
+//        FIRST("first"),
+//        FOCUSBORDERCOLOR("focusBorderColor"),
+//        FOCUSBORDERTRANSPARENCY("focusBorderTransparency"),
+//        FOCUSBORDERWIDTH("focusBorderWidth"),
+//        FOCUSINDEX("focusIndex"),
+//        FOCUSSELSRC("focusSelSrc"),
+//        FOCUSSRC("focusSrc"),
+//        FRACTION("fraction"),
+//        FREEZE("freeze"),
+//        HEAD("head"),
+//        HEIGHT("height"),
+//        HORREPEAT("horRepeat"),
+//        HOUR("hour"),
+//        ID("id"),
+//        IMPORTEDDOCUMENTBASE("importedDocumentBase"),
+//        INSTANCE("instance"),
+//        INTERFACE("interface"),
+//        ISNEGATED("isNegated"),
+//        KEY("key"),
+//        LABEL("label"),
+//        LAST("last"),
+//        LEFT("left"),
+//        MAX("max"),
+//        MCONTENT("mcontent"),
+//        MIN("min"),
+//        MINUTE("minute"),
+//        MONTH("month"),
+//        MOVEDOWN("moveDown"),
+//        MOVELEFT("moveLeft"),
+//        MOVERIGHT("moveRight"),
+//        MOVEUP("moveUp"),
+//        NAME("name"),
+//        OFFSET("offset"),
+//        OPERATOR("operator"),
+//        PARAMTYPE("paramType"),
+//        PARBY("parBy"),
+//        PARDELAY("parDelay"),
+//        PARDURATION("parDuration"),
+//        PARENT_REGION("parent_region"),
+//        PARKEY("parKey"),
+//        PAROFFSET("parOffset"),
+//        PARREPEAT("parRepeat"),
+//        PARREPEATDELAY("parRepeatDelay"),
+//        PARVALUE("parValue"),
+//        PLAYER("player"),
+//        POSITION("position"),
+//        QUALIFIER("qualifier"),
+//        RDFTREE("rdfTree"),
+//        REFER("refer"),
+//        REGION("region"),
+//        REGIONBASE("regionBase"),
+//        RELATIVEBOTTOM("relativeBottom"),
+//        RELATIVEHEIGHT("relativeHeight"),
+//        RELATIVELEFT("relativeLeft"),
+//        RELATIVERIGHT("relativeRight"),
+//        RELATIVETOP("relativeTop"),
+//        RELATIVEWIDTH("relativeWidth"),
+//        REPEAT("repeat"),
+//        REPEATDELAY("repeatDelay"),
+//        RIGHT("right"),
+//        ROLE("role"),
+//        RULE("rule"),
+//        RULEBASE("ruleBase"),
+//        SECOND("second"),
+//        SELBORDERCOLOR("selBorderColor"),
+//        SRC("src"),
+//        STARTPROGRESS("startProgress"),
+//        SUBTYPE("subType"),
+//        TEXT("text"),
+//        TITLE("title"),
+//        TOP("top"),
+//        TRANSIN("transIn"),
+//        TRANSITION("transition"),
+//        TRANSITIONBASE("transitionBase"),
+//        TRANSOUT("transOut"),
+//        TYPE("type"),
+//        VALUE("value"),
+//        VALUEASSESSMENT("valueAssessment"),
+//        VAR("var"),
+//        VERTREPEAT("vertRepeat"),
+//        WIDTH("width"),
+//        XCONNECTOR("xconnector"),
+//        XMLNS("xmlns"),
+//        YEAR("year"),
+        ZINDEX("zIndex");
+
+        private String name;
+        private NCLElementAttributes(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Nomes dos conjuntos dos elementos NCL
+     */
+    public enum NCLElementSets {
+
+//        ACTIONS("actions"),
+//        AREAS("areas"),
+//        ATTRIBUTEASSESSMENTS("attributeAssessments"),
+//        BINDPARAMS("bindParams"),
+//        BINDS("binds"),
+//        CONDITIONS("conditions"),
+//        CONNECTORS("connectors"),
+//        CONNECTOR_PARAMS("connector_params"),
+//        DESCRIPTORS("descriptors"),
+//        IMPORTS("imports"),
+//        LINKPARAMS("linkParams"),
+//        LINKS("links"),
+//        MAPPINGS("mappings"),
+//        METADATAS("metadatas"),
+//        METAS("metas"),
+//        PORTS("ports"),
+//        PROPERTIES("properties"),
+//        REGIONS("regions"),
+//        RULES("rules"),
+//        STATEMENTS("statements"),
+        TRANSITIONS("transitions");
+
+        private String name;
+        private NCLElementSets(String name) { this.name = name;}
         @Override
         public String toString() { return name;}
     }

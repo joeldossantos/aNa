@@ -37,8 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.NCLValues.NCLElementAttributes;
+import br.uff.midiacom.ana.NCLValues.NCLElementSets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.XMLReader;
@@ -54,6 +58,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
 
     private NCLElement parent;
     private XMLReader reader;
+    private NCLModificationListener listener;
     private List<String> warnings = new ArrayList<String>();
     private List<String> errors = new ArrayList<String>();
 
@@ -111,6 +116,30 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     public XMLReader getReader() {
         return reader;
+    }
+
+
+    /**
+     * Atribui um ouvinte para notificações de mudança do elemento. Caso o
+     * argumento seja nulo, não utilizará nenhum ouvinte.
+     *
+     * @param listener
+     *          objeto que receberá as notificações.
+     */
+    public void setModificationListener(NCLModificationListener listener) {
+        this.listener = listener;
+    }
+
+
+    /**
+     * Retorna o ouvinte para notificações de mudança do elemento.
+     *
+     * @return
+     *          objeto que recebe as notificações ou null se nenhum ouvinte
+     *          estiver assiciado.
+     */
+    public NCLModificationListener getModificationListener() {
+        return listener;
     }
 
 
@@ -258,4 +287,89 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     @Override
     public void endDocument() {}
+
+
+    /**
+     * Notify the listener about a child node inserted.
+     *
+     * @param setName
+     *          name of the child set.
+     * @param inserted
+     *          element inserted.
+     */
+    protected void notifyInserted(NCLElementSets setName, NCLElement inserted) {
+        if(listener != null)
+            (new notifier(1, this, setName, inserted)).start();
+    }
+
+
+    /**
+     * Notify the listener about a child node removed.
+     *
+     * @param setName
+     *          name of the child set.
+     * @param inserted
+     *          element removed.
+     */
+    protected void notifyRemoved(NCLElementSets setName, NCLElement removed) {
+        if(listener != null)
+            (new notifier(1, this, setName, removed)).start();
+    }
+
+
+    /**
+     * Notify the listener about an attribute changed.
+     *
+     * @param attributeName
+     *          the attribute changed.
+     * @param oldValue
+     *          the attribute old value.
+     * @param newValue
+     *          the attribute new value.
+     */
+    protected void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
+        if(listener != null)
+            (new notifier(this, attributeName, oldValue, newValue)).start();
+    }
+
+
+    private class notifier extends Thread {
+        private NCLElement source, other;
+        private NCLElementSets setName;
+        private NCLElementAttributes attName;
+        private Object oldV, newV;
+        private int type;
+
+        public notifier(int type, NCLElement source, NCLElementSets setName, NCLElement other) {
+            super();
+            this.type = type;
+            this.source = source;
+            this.setName = setName;
+            this.other = other;
+        }
+
+        public notifier(NCLElement source, NCLElementAttributes attName, Object oldV, Object newV) {
+            super();
+            this.type = 2;
+            this.source = source;
+            this.attName = attName;
+            this.oldV = oldV;
+            this.newV = newV;
+        }
+
+        @Override
+        public void run() {
+            switch(type){
+                case 0:
+                    listener.insertedElement(source, setName, other);
+                    return;
+                case 1:
+                    listener.removedElement(source, setName, other);
+                    return;
+                case 2:
+                    listener.alteredElement(source, attName, oldV, newV);
+                    return;
+            }
+        }
+    }
 }
