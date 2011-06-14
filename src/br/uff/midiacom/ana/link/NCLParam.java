@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;

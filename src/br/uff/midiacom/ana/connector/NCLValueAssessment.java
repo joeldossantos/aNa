@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLDefaultValueAssessment;
+import br.uff.midiacom.ana.datatype.NCLDefaultValueAssessment;
 import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;

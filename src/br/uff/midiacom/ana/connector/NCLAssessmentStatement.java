@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLValues.NCLComparator;
+import br.uff.midiacom.ana.datatype.NCLComparator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

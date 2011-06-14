@@ -38,8 +38,8 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLComparator;
-import br.uff.midiacom.ana.NCLValues.NCLOperator;
+import br.uff.midiacom.ana.datatype.NCLComparator;
+import br.uff.midiacom.ana.datatype.NCLOperator;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import java.io.IOException;
 import java.io.StringReader;

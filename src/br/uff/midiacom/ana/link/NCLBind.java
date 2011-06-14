@@ -44,7 +44,7 @@ import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;

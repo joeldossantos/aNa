@@ -35,9 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.interfaces;
-
-import br.uff.midiacom.ana.NCLValues.NCLSampleType;
+package br.uff.midiacom.ana.datatype;
 
 
 /**

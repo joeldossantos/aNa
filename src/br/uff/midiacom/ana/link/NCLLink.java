@@ -42,7 +42,7 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

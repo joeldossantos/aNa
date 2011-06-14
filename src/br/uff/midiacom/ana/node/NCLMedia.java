@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.datatype.NCLTime;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLBody;
@@ -44,10 +45,10 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLInstanceType;
-import br.uff.midiacom.ana.NCLValues.NCLMediaType;
-import br.uff.midiacom.ana.NCLValues.NCLMimeType;
-import br.uff.midiacom.ana.NCLValues.NCLUriType;
+import br.uff.midiacom.ana.datatype.NCLInstanceType;
+import br.uff.midiacom.ana.datatype.NCLMediaType;
+import br.uff.midiacom.ana.datatype.NCLMimeType;
+import br.uff.midiacom.ana.datatype.NCLUriType;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -178,7 +179,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          String contendo a URI do conteúdo da mídia.
      *
      * @see NCLMedia#setSrc(java.lang.String)
-     * @see NCLMedia#setSrc(br.pensario.NCLValues.NCLUriType, java.lang.String)
+     * @see NCLMedia#setSrc(br.pensario.datatype.NCLUriType, java.lang.String)
      * @see NCLMedia#setSrc(br.pensario.interfaces.NCLTime)
      */
     public String getSrc() {

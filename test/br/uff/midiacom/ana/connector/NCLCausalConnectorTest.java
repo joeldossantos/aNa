@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLActionOperator;
-import br.uff.midiacom.ana.NCLValues.NCLAttributeType;
-import br.uff.midiacom.ana.NCLValues.NCLComparator;
-import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
-import br.uff.midiacom.ana.NCLValues.NCLDefaultActionRole;
-import br.uff.midiacom.ana.NCLValues.NCLEventAction;
-import br.uff.midiacom.ana.NCLValues.NCLEventTransition;
-import br.uff.midiacom.ana.NCLValues.NCLEventType;
-import br.uff.midiacom.ana.NCLValues.NCLKey;
+import br.uff.midiacom.ana.datatype.NCLActionOperator;
+import br.uff.midiacom.ana.datatype.NCLAttributeType;
+import br.uff.midiacom.ana.datatype.NCLComparator;
+import br.uff.midiacom.ana.datatype.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.NCLDefaultActionRole;
+import br.uff.midiacom.ana.datatype.NCLEventAction;
+import br.uff.midiacom.ana.datatype.NCLEventTransition;
+import br.uff.midiacom.ana.datatype.NCLEventType;
+import br.uff.midiacom.ana.datatype.NCLKey;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;

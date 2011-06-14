@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.NCLValues.NCLImportType;
+import br.uff.midiacom.ana.datatype.NCLImportType;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;

@@ -37,10 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.datatype.NCLSample;
+import br.uff.midiacom.ana.datatype.NCLTime;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLMediaType;
+import br.uff.midiacom.ana.datatype.NCLMediaType;
 import br.uff.midiacom.ana.node.NCLMedia;
 import java.util.Vector;
 import org.xml.sax.Attributes;

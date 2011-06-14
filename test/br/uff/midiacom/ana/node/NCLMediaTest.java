@@ -39,8 +39,8 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLInstanceType;
-import br.uff.midiacom.ana.NCLValues.NCLMimeType;
+import br.uff.midiacom.ana.datatype.NCLInstanceType;
+import br.uff.midiacom.ana.datatype.NCLMimeType;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.interfaces.NCLProperty;

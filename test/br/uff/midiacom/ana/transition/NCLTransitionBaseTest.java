@@ -38,8 +38,8 @@
 package br.uff.midiacom.ana.transition;
 
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLImportType;
-import br.uff.midiacom.ana.NCLValues.NCLTransitionType;
+import br.uff.midiacom.ana.datatype.NCLImportType;
+import br.uff.midiacom.ana.datatype.NCLTransitionType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.io.IOException;
 import java.io.StringReader;

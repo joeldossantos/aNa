@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLImportType;
+import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;

@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLImportType;
+import br.uff.midiacom.ana.datatype.NCLImportType;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.connector.NCLRole;

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.NCLNamespace;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class NCLDocTest {
     @Test
     public void test1() throws NCLInvalidIdentifierException {
         NCLDoc d = new NCLDoc();
-        d.setXmlns(NCLValues.NCLNamespace.EDTV);
+        d.setXmlns(NCLNamespace.EDTV);
         d.setId("meudoc");
         d.setTitle("documento de teste");
         d.setHead(new NCLHead());

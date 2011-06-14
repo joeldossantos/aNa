@@ -37,8 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.datatype.NCLSample;
+import br.uff.midiacom.ana.datatype.NCLTime;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLSampleType;
+import br.uff.midiacom.ana.datatype.NCLSampleType;
 import br.uff.midiacom.ana.node.NCLMedia;
 import org.junit.Test;
 import static org.junit.Assert.*;

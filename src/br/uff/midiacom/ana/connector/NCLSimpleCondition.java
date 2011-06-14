@@ -39,11 +39,11 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
-import br.uff.midiacom.ana.NCLValues.NCLDefaultConditionRole;
-import br.uff.midiacom.ana.NCLValues.NCLEventTransition;
-import br.uff.midiacom.ana.NCLValues.NCLEventType;
-import br.uff.midiacom.ana.NCLValues.NCLKey;
+import br.uff.midiacom.ana.datatype.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.datatype.NCLEventTransition;
+import br.uff.midiacom.ana.datatype.NCLEventType;
+import br.uff.midiacom.ana.datatype.NCLKey;
 import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;

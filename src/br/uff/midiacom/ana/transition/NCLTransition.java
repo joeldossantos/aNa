@@ -37,14 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
-import br.uff.midiacom.ana.interfaces.NCLTime;
+import br.uff.midiacom.ana.datatype.NCLTime;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLColor;
-import br.uff.midiacom.ana.NCLValues.NCLTransitionDirection;
-import br.uff.midiacom.ana.NCLValues.NCLTransitionSubtype;
-import br.uff.midiacom.ana.NCLValues.NCLTransitionType;
+import br.uff.midiacom.ana.datatype.NCLTransitionDirection;
+import br.uff.midiacom.ana.datatype.NCLTransitionSubtype;
+import br.uff.midiacom.ana.datatype.NCLTransitionType;
+import br.uff.midiacom.ana.datatype.NCLColor;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 

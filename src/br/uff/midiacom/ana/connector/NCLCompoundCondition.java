@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.NCLValues.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.NCLConditionOperator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

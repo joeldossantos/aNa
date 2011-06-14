@@ -37,12 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.NCLValues.NCLNamespace;
+import br.uff.midiacom.ana.datatype.NCLNamespace;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
@@ -250,19 +249,15 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      * @throws NCLParsingException
      *          se algum erro ocorrer durante a recuperação do arquivo.
      */
-    public void loadXML(String path) throws NCLParsingException {
+    public void loadXML(File xmlFile) throws NCLParsingException {
         try{
-            URI fileURI = new URI(path);
             setReader(XMLReaderFactory.createXMLReader());
 
             getReader().setContentHandler(this);
             getReader().setErrorHandler(new NCLParsingErrorHandler(getReader()));
 
-            FileReader r = new FileReader(fileURI.toString());
+            FileReader r = new FileReader(xmlFile);
             getReader().parse(new InputSource(r));
-        }
-        catch(URISyntaxException ex){
-            throw new NCLParsingException(ex.getMessage());
         }
         catch(SAXException ex){
             throw new NCLParsingException(ex.getMessage());

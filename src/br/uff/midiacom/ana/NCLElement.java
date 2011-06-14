@@ -37,12 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.NCLValues.NCLElementAttributes;
-import br.uff.midiacom.ana.NCLValues.NCLElementSets;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
+import br.uff.midiacom.ana.datatype.NCLNotifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.XMLReader;
@@ -299,7 +298,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     protected void notifyInserted(NCLElementSets setName, NCLElement inserted) {
         if(listener != null)
-            (new notifier(1, this, setName, inserted)).start();
+            (new NCLNotifier(1, listener, this, setName, inserted)).start();
     }
 
 
@@ -313,7 +312,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     protected void notifyRemoved(NCLElementSets setName, NCLElement removed) {
         if(listener != null)
-            (new notifier(1, this, setName, removed)).start();
+            (new NCLNotifier(1, listener, this, setName, removed)).start();
     }
 
 
@@ -329,47 +328,6 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     protected void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
         if(listener != null)
-            (new notifier(this, attributeName, oldValue, newValue)).start();
-    }
-
-
-    private class notifier extends Thread {
-        private NCLElement source, other;
-        private NCLElementSets setName;
-        private NCLElementAttributes attName;
-        private Object oldV, newV;
-        private int type;
-
-        public notifier(int type, NCLElement source, NCLElementSets setName, NCLElement other) {
-            super();
-            this.type = type;
-            this.source = source;
-            this.setName = setName;
-            this.other = other;
-        }
-
-        public notifier(NCLElement source, NCLElementAttributes attName, Object oldV, Object newV) {
-            super();
-            this.type = 2;
-            this.source = source;
-            this.attName = attName;
-            this.oldV = oldV;
-            this.newV = newV;
-        }
-
-        @Override
-        public void run() {
-            switch(type){
-                case 0:
-                    listener.insertedElement(source, setName, other);
-                    return;
-                case 1:
-                    listener.removedElement(source, setName, other);
-                    return;
-                case 2:
-                    listener.alteredElement(source, attName, oldV, newV);
-                    return;
-            }
-        }
+            (new NCLNotifier(listener, this, attributeName, oldValue, newValue)).start();
     }
 }

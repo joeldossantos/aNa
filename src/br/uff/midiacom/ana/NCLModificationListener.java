@@ -37,8 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.NCLValues.NCLElementAttributes;
-import br.uff.midiacom.ana.NCLValues.NCLElementSets;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 
 
 /*******************************************************************************
