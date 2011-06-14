@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.NCLValues.NCLInstanceType;
 import br.uff.midiacom.ana.NCLValues.NCLMediaType;
 import br.uff.midiacom.ana.NCLValues.NCLMimeType;
 import br.uff.midiacom.ana.NCLValues.NCLUriType;
+import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
@@ -63,7 +64,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLDescriptor, M extends NCLMedia>
+public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLLayoutDescriptor, M extends NCLMedia>
         extends NCLIdentifiableElement implements NCLNode<N> {
 
     private String src;

@@ -107,7 +107,7 @@ public class NCLDescriptorSwitchTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLDescriptorBindRule) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getBinds().iterator().next()).getConstituent().getPlayer();
+            String result = ((NCLDescriptor) ((NCLDescriptorBindRule) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getBinds().iterator().next()).getConstituent()).getPlayer();
             //System.out.println(result);
             assertEquals(expResult, result);
         }
@@ -163,7 +163,7 @@ public class NCLDescriptorSwitchTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getDefaultDescriptor().getPlayer();
+            String result = ((NCLDescriptor) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getDefaultDescriptor()).getPlayer();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

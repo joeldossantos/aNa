@@ -173,7 +173,7 @@ public class NCLMediaTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLMedia) instance.getBody().getNodes().iterator().next()).getDescriptor().getPlayer();
+            String result = ((NCLDescriptor) ((NCLMedia) instance.getBody().getNodes().iterator().next()).getDescriptor()).getPlayer();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

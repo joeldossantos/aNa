@@ -189,7 +189,7 @@ public class NCLBindTest {
             String expResult = "teste";
             NCLLink link = (NCLLink) instance.getBody().getLinks().iterator().next();
             NCLBind bind = (NCLBind) link.getBinds().iterator().next();
-            String result = bind.getDescriptor().getPlayer();
+            String result = ((NCLDescriptor) bind.getDescriptor()).getPlayer();
             //System.out.println(result);
             assertEquals(expResult, result);
         }
