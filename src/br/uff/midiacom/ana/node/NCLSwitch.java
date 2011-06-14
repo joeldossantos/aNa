@@ -57,7 +57,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwitchPort, B extends NCLBindRule> extends NCLIdentifiableElement implements NCLNode<N> {
+public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwitchPort, B extends NCLSwitchBindRule> extends NCLIdentifiableElement implements NCLNode<N> {
 
     private S refer;
     private N defaultComponent;
@@ -706,7 +706,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      *          elemento representando o elemento filho <i>bindRule</i>.
      */
     protected B createBindRule() {
-        return (B) new NCLBindRule(getReader(), this);
+        return (B) new NCLSwitchBindRule(getReader(), this);
     }
 
 

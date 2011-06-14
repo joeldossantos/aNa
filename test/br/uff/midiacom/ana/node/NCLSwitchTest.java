@@ -56,7 +56,7 @@ public class NCLSwitchTest {
     public void test1() throws NCLInvalidIdentifierException {
         NCLSwitch s = new NCLSwitch("escolhe");
         NCLMedia med = new NCLMedia("m1");
-        NCLBindRule bind = new NCLBindRule();
+        NCLSwitchBindRule bind = new NCLSwitchBindRule();
             bind.setRule(new NCLRule("rpt"));
             bind.setConstituent(med);
         s.addBind(bind);
@@ -107,7 +107,7 @@ public class NCLSwitchTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "media.png";
-            String result = ((NCLMedia) ((NCLBindRule) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getBinds().iterator().next()).getConstituent()).getSrc();
+            String result = ((NCLMedia) ((NCLSwitchBindRule) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getBinds().iterator().next()).getConstituent()).getSrc();
             //System.out.println(result);
             assertEquals(expResult, result);
         }
@@ -136,7 +136,7 @@ public class NCLSwitchTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLRule) ((NCLBindRule) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getBinds().iterator().next()).getRule()).getValue();
+            String result = ((NCLRule) ((NCLSwitchBindRule) ((NCLSwitch) instance.getBody().getNodes().iterator().next()).getBinds().iterator().next()).getRule()).getValue();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

@@ -56,7 +56,7 @@ public class NCLDescriptorSwitchTest {
     public void test1() throws NCLInvalidIdentifierException {
         NCLDescriptorSwitch ds = new NCLDescriptorSwitch("dLegenda");
         NCLDescriptor desc = new NCLDescriptor("dpt");
-            NCLBindRule bind = new NCLBindRule();
+            NCLDescriptorBindRule bind = new NCLDescriptorBindRule();
             bind.setRule(new NCLRule("rpt"));
             bind.setConstituent(desc);
         ds.addBind(bind);
@@ -107,7 +107,7 @@ public class NCLDescriptorSwitchTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLBindRule) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getBinds().iterator().next()).getConstituent().getPlayer();
+            String result = ((NCLDescriptorBindRule) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getBinds().iterator().next()).getConstituent().getPlayer();
             //System.out.println(result);
             assertEquals(expResult, result);
         }
@@ -135,7 +135,7 @@ public class NCLDescriptorSwitchTest {
             reader.parse(new InputSource(new StringReader(xml)));
 
             String expResult = "teste";
-            String result = ((NCLRule) ((NCLBindRule) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getBinds().iterator().next()).getRule()).getValue();
+            String result = ((NCLRule) ((NCLDescriptorBindRule) ((NCLDescriptorSwitch) instance.getHead().getDescriptorBase().getDescriptors().iterator().next()).getBinds().iterator().next()).getRule()).getValue();
             //System.out.println(result);
             assertEquals(expResult, result);
         }

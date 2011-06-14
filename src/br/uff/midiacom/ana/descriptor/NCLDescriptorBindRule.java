@@ -35,10 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.node;
+package br.uff.midiacom.ana.descriptor;
 
-import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
@@ -48,22 +48,22 @@ import org.xml.sax.XMLReader;
 
 
 /**
- * Esta classe define o elemento <i>bindRule</i> de um switch da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um bind de um switch de um documento NCL.<br/>
+ * Esta classe define o elemento <i>bindRule</i> de um switch de descritor da <i>Nested Context Language</i> (NCL).
+ * Este elemento é o elemento que define um bind de um switch de descritor de um documento NCL.<br/>
  *
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
+public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NCLDescriptor, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
 
-    private N constituent;
+    private D constituent;
     private R rule;
 
 
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLBindRule() {}
+    public NCLDescriptorBindRule() {}
 
 
     /**
@@ -74,21 +74,21 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLBindRule(XMLReader reader, NCLElement parent) {
+    public NCLDescriptorBindRule(XMLReader reader, NCLElement parent) {
         setReader(reader);
         setParent(parent);
 
         getReader().setContentHandler(this);
     }
 
-    
+
     /**
      * Atribui um constituent ao bind.
      *
      * @param constituent
-     *          elemento representando o nó mapeado pelo bind.
+     *          elemento representando o descritor mapeado pelo bind.
      */
-    public void setConstituent(N constituent) {
+    public void setConstituent(D constituent) {
         this.constituent = constituent;
     }
 
@@ -97,9 +97,9 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
      * Retorna o constituent do bind.
      *
      * @return
-     *          elemento representando o nó mapeado pelo bind.
+     *          elemento representando o descritor mapeado pelo bind.
      */
-    public N getConstituent() {
+    public D getConstituent() {
         return constituent;
     }
 
@@ -117,7 +117,7 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
 
     /**
      * Retorna a regra de avaliação do bind.
-     *
+     * 
      * @return
      *          elemento representando a regra de avaliação do bind.
      */
@@ -185,8 +185,8 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
             valid = false;
         }
 
-        if(getConstituent() != null && !((NCLSwitch) getParent()).hasNode(getConstituent())){
-            addError("Atributo constituent deve fazer referência a um descritor contido no switch.");
+        if(getConstituent() != null && !((NCLDescriptorSwitch) getParent()).hasDescriptor(getConstituent())){
+            addError("Atributo constituent deve fazer referência a um descritor contido no descriptorSwitch.");
             valid = false;
         }
 
@@ -203,7 +203,7 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
                 if(attributes.getLocalName(i).equals("rule"))
                     setRule((R) new NCLRule(attributes.getValue(i)));//cast retirado na correcao das referencias
                 else if(attributes.getLocalName(i).equals("constituent"))
-                    setConstituent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
+                    setConstituent((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -226,41 +226,37 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
 
 
     private Set<R> getRules() {
-        NCLElement root = getParent();
+        NCLElement head = getParent();
 
-        while(!(root instanceof NCLDoc)){
-            root = root.getParent();
-            if(root == null){
-                addWarning("Could not find root element");
+        while(!(head instanceof NCLHead)){
+            head = head.getParent();
+            if(head == null){
+                addWarning("Could not find a head");
                 return null;
             }
         }
 
-        if(((NCLDoc) root).getHead() == null){
-            addWarning("Could not find a head");
-            return null;
-        }
-        if(((NCLDoc) root).getHead().getRuleBase() == null){
+        if(((NCLHead) head).getRuleBase() == null){
             addWarning("Could not find a ruleBase");
             return null;
         }
 
-        return ((NCLDoc) root).getHead().getRuleBase().getRules();
+        return ((NCLHead) head).getRuleBase().getRules();
     }
 
 
     private void constituentReference() {
         //Search for a component node in its parent
-        Set<N> nodes = ((NCLSwitch) getParent()).getNodes();
+        Set<D> descriptors = ((NCLDescriptorSwitch) getParent()).getDescriptors();
 
-        for(N node : nodes){
-            if(node.getId().equals(getConstituent().getId())){
-                setConstituent(node);
+        for(D descriptor : descriptors){
+            if(descriptor.getId().equals(getConstituent().getId())){
+                setConstituent(descriptor);
                 return;
             }
         }
 
-        addWarning("Could not find node in switch with id: " + getConstituent().getId());
+        addWarning("Could not find descriptor in descriptorSwitch with id: " + getConstituent().getId());
     }
 
 
@@ -269,7 +265,7 @@ public class NCLBindRule<B extends NCLBindRule, N extends NCLNode, R extends NCL
         Set<R> rules = getRules();
         if(rules == null)
             return;
-        
+
         for(R rul : rules){
             if(rul.getId().equals(getRule().getId())){
                 setRule(rul);

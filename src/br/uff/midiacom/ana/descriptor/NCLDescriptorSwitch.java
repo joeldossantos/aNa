@@ -55,7 +55,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule, L extends NCLLayoutDescriptor> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
+public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLDescriptorBindRule, L extends NCLLayoutDescriptor> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
 
     private Set<D> descriptors = new TreeSet<D>();
     private List<B> binds = new ArrayList<B>();
@@ -447,7 +447,7 @@ public class NCLDescriptorSwitch<D extends NCLDescriptor, B extends NCLBindRule,
      *          elemento representando o elemento filho <i>bindRule</i>.
      */
     protected B createBindRule() {
-        return (B) new NCLBindRule(getReader(), this);
+        return (B) new NCLDescriptorBindRule(getReader(), this);
     }
 
 
