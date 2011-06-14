@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.descriptor;
+package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLValues.NCLAttributes;
@@ -190,8 +190,22 @@ public abstract class NCLDescriptorParam<P extends NCLDescriptorParam, V> extend
     }
 
 
+    /**
+     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
+     * de forma a atribuir o valor do tipo correto para cada parâmetro de
+     * descritor.
+     *
+     * @param value
+     *          String representando o valor do parâmetro de descritor.
+     */
     protected abstract void setParamValue(String value);
 
 
+    /**
+     * Retorna o valor do parâmetro como uma String.
+     *
+     * @return
+     *          String representando o valor do parâmetro do descritor.
+     */
     protected abstract String getParamValue();
 }

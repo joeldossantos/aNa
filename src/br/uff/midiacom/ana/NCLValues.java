@@ -636,7 +636,6 @@ public abstract class NCLValues {
         BASS_LEVEL("bassLevel"),
         ZINDEX("zIndex"),
         FONT_FAMILY("fontFamily"),
-        FONT_STYLE("fontStyle"),
         FONT_SIZE("fontSize"),
         FONT_VARIANT("fontVariant"),
         FONT_WEIGHT("fontWeight"),
@@ -678,6 +677,87 @@ public abstract class NCLValues {
 
         private String name;
         private NCLImportType(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Valores do parâmetro player life
+     */
+    public enum NCLPlayerLife {
+
+        CLOSE("close"),
+        KEEP("keep");
+
+        private String name;
+        private NCLPlayerLife(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Valores do parâmetro fit
+     */
+    public enum NCLFit {
+
+        FIT("fill"),
+        HIDDEN("hidden"),
+        MEET("meet"),
+        MEET_BEST("meetBest"),
+        SLICE("slice");
+
+        private String name;
+        private NCLFit(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Valores do parâmetro scroll
+     */
+    public enum NCLScroll {
+
+        NONE("none"),
+        HORIZONTAL("horizontal"),
+        VERTICAL("vertical"),
+        BOTH("both"),
+        AUTOMATIC("automatic");
+
+        private String name;
+        private NCLScroll(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Valores do parâmetro font variant
+     */
+    public enum NCLFontVariant {
+
+        NORMAL("normal"),
+        SMALL_CAPS("small-caps");
+
+        private String name;
+        private NCLFontVariant(String name) { this.name = name;}
+        @Override
+        public String toString() { return name;}
+    }
+
+
+    /**
+     * Valores do parâmetro font weight
+     */
+    public enum NCLFontWeight {
+
+        NORMAL("normal"),
+        BOLD("bold");
+
+        private String name;
+        private NCLFontWeight(String name) { this.name = name;}
         @Override
         public String toString() { return name;}
     }

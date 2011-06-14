@@ -528,7 +528,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
 
         // Cabecalho nao pode ser vazio
         if(getImportedDocumentBase() == null && getRuleBase() == null && getTransitionBase() == null &&
-                getRegionBases() == null && getDescriptorBase() == null && getConnectorBase() == null && !hasMeta() && !hasMetadata()){
+                !hasRegionBase() && getDescriptorBase() == null && getConnectorBase() == null && !hasMeta() && !hasMetadata()){
             addWarning("Cabeçalho do documento NCL vazio.");
             valid = false;
         }

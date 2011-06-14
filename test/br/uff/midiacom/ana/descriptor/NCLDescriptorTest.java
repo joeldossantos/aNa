@@ -37,10 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
+import br.uff.midiacom.ana.descriptor.param.NCLStringDescriptorParam;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLAttributes;
 import br.uff.midiacom.ana.NCLValues.NCLColor;
+import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import java.net.URISyntaxException;
@@ -95,9 +97,9 @@ public class NCLDescriptorTest {
     @Test
     public void test2() throws NCLInvalidIdentifierException, URISyntaxException {
         NCLDescriptor descriptor = new NCLDescriptor("dTV");
-        NCLStringDescriptorParam param = new NCLStringDescriptorParam();
+        NCLDoubleDescriptorParam param = new NCLDoubleDescriptorParam();
         param.setName(NCLAttributes.TOP);
-        param.setValue("100");
+        param.setValue(new Double(100));
         descriptor.addDescriptorParam(param);
 
         String expResult = "<descriptor id='dTV'>\n\t<descriptorParam name='top' value='100'/>\n</descriptor>\n";

@@ -35,42 +35,79 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.descriptor;
+package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLValues.NCLAttributes;
+import br.uff.midiacom.ana.NCLValues.NCLColor;
 import org.xml.sax.XMLReader;
 
 
 /**
  * Esta classe define o elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parametro de descritor do tipo String
+ * Este elemento é o elemento que define um parametro de descritor do tipo cor
  * em um documento NCL.<br/>
  *
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLStringDescriptorParam extends NCLDescriptorParam<NCLDescriptorParam, String> {
+public class NCLColorDescriptorParam extends NCLDescriptorParam<NCLDescriptorParam, NCLColor> {
 
 
-    public NCLStringDescriptorParam() {
+    private Boolean isTransparent;
+
+
+    public NCLColorDescriptorParam() {
         super();
     }
 
 
-    public NCLStringDescriptorParam(XMLReader reader, NCLElement parent) {
+    public NCLColorDescriptorParam(XMLReader reader, NCLElement parent) {
         super(reader, parent);
     }
 
 
     @Override
-    protected void setParamValue(String value) {
-        setValue(value);
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        if(!name.equals(NCLAttributes.BACKGROUND) && !name.equals(NCLAttributes.FONT_COLOR))
+            throw new IllegalArgumentException("This parameter type can not be used with this name.");
+
+        super.setName(name);
     }
 
-    
+
+    @Override
+    protected void setParamValue(String value) {
+        for(NCLColor color : NCLColor.values()){
+            if(value.equals(color.toString()))
+                setValue(color);
+        }
+
+        if(value.equals("transparent"))
+            setIsTransparent(true);
+        
+        setValue(null);
+    }
+
+
     @Override
     protected String getParamValue() {
-        return getValue();
+        if(getIsTransparent())
+            return "transparent";
+        
+        return getValue().toString();
     }
 
+
+    public void setIsTransparent(Boolean isTransparent) throws IllegalArgumentException {
+        if(!getName().equals(NCLAttributes.BACKGROUND))
+            throw new IllegalArgumentException("This value can not be used with this parameter.");
+
+        this.isTransparent = isTransparent;
+    }
+
+
+    public Boolean getIsTransparent() {
+        return isTransparent;
+    }
 }

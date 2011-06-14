@@ -37,12 +37,23 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
+import br.uff.midiacom.ana.descriptor.param.NCLStringDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLValues.NCLAttributes;
 import br.uff.midiacom.ana.NCLValues.NCLColor;
+import br.uff.midiacom.ana.descriptor.param.NCLBooleanDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLColorDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLFitDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLFontVariantDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLFontWeightDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLPercentDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLPlayerLifeDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLScrollDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.transition.NCLTransition;
@@ -706,7 +717,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
                         setExplicitDur(new Integer(value));
                     }
                     else if(attributes.getLocalName(i).equals("freeze"))
-                        setFreeze(new Boolean(attributes.getValue(i)));
+                        setFreeze(Boolean.valueOf(attributes.getValue(i)));
                     else if(attributes.getLocalName(i).equals("player"))
                         setPlayer(attributes.getValue(i));
                     else if(attributes.getLocalName(i).equals("moveLeft")){
@@ -816,61 +827,59 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
 
         switch(att){
             case TOP:
-                return null;
+                return createDoubleDescriptorParam();
             case LEFT:
-                return null;
+                return createDoubleDescriptorParam();
             case BOTTOM:
-                return null;
+                return createDoubleDescriptorParam();
             case RIGHT:
-                return null;
+                return createDoubleDescriptorParam();
             case WIDTH:
-                return null;
+                return createDoubleDescriptorParam();
             case HEIGHT:
-                return null;
+                return createDoubleDescriptorParam();
             case LOCATION:
-                return null;
+                return createStringDescriptorParam();
             case SIZE:
-                return null;
+                return createStringDescriptorParam();
             case BOUNDS:
-                return null;
+                return createStringDescriptorParam();
             case BACKGROUND:
-                return null;
+                return createColorDescriptorParam();
             case VISIBLE:
-                return null;
+                return createBooleanDescriptorParam();
             case TRANSPARENCY:
-                return null;
+                return createPercentDescriptorParam();
             case FIT:
-                return null;
+                return createFitDescriptorParam();
             case SCROLL:
-                return null;
+                return createScrollDescriptorParam();
             case STYLE:
-                return null;
+                return createStringDescriptorParam();
             case SOUND_LEVEL:
-                return null;
+                return createPercentDescriptorParam();
             case BALANCE_LEVEL:
-                return null;
+                return createPercentDescriptorParam();
             case TREBLE_LEVEL:
-                return null;
+                return createPercentDescriptorParam();
             case BASS_LEVEL:
-                return null;
+                return createPercentDescriptorParam();
             case ZINDEX:
-                return null;
+                return createDoubleDescriptorParam();
             case FONT_FAMILY:
-                return null;
-            case FONT_STYLE:
-                return null;
+                return createStringDescriptorParam();
             case FONT_SIZE:
-                return null;
+                return createDoubleDescriptorParam();
             case FONT_VARIANT:
-                return null;
+                return createFontVariantDescriptorParam();
             case FONT_WEIGHT:
-                return null;
+                return createFontWeightDescriptorParam();
             case FONT_COLOR:
-                return null;
+                return createColorDescriptorParam();
             case REUSE_PLAYER:
-                return null;
+                return createBooleanDescriptorParam();
             case PLAYER_LIFE:
-                return null;
+                return createPlayerLifeDescriptorParam();
             default:
                 return createStringDescriptorParam();
         }
@@ -1005,5 +1014,50 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      */
     protected P createStringDescriptorParam() {
         return (P) new NCLStringDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createDoubleDescriptorParam() {
+        return (P) new NCLDoubleDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createBooleanDescriptorParam() {
+        return (P) new NCLBooleanDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createColorDescriptorParam() {
+        return (P) new NCLColorDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createPercentDescriptorParam() {
+        return (P) new NCLPercentDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createFitDescriptorParam() {
+        return (P) new NCLFitDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createScrollDescriptorParam() {
+        return (P) new NCLScrollDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createFontVariantDescriptorParam() {
+        return (P) new NCLFontVariantDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createFontWeightDescriptorParam() {
+        return (P) new NCLFontWeightDescriptorParam(getReader(), this);
+    }
+
+
+    protected P createPlayerLifeDescriptorParam() {
+        return (P) new NCLPlayerLifeDescriptorParam(getReader(), this);
     }
 }
