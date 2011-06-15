@@ -39,7 +39,6 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.NCLImportType;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -71,76 +70,6 @@ public class NCLImportTest {
             String result = ((NCLImport) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion().getTitle();
             //System.out.println(result);
             assertEquals(expResult, result);
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
-
-    @Test
-    public void test_validacao1() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLImport instance = new NCLImport(NCLImportType.BASE, reader, null);
-            String xml = "<importBase documentURI='base.ncl'/>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            assertFalse(instance.validate());
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
-
-    @Test
-    public void test_validacao2() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLImport instance = new NCLImport(NCLImportType.BASE, reader, null);
-            String xml = "<importBase alias='base'/>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            assertFalse(instance.validate());
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
-
-    @Test
-    public void test_validacao3() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLImport instance = new NCLImport(NCLImportType.BASE, reader, null);
-            String xml = "<importBase alias='base' documentURI='base.ncl'/>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            boolean result = instance.validate();
-
-            for(String msg : instance.getWarnings())
-                System.out.println(msg);
-            for(String msg : instance.getErrors())
-                System.out.println(msg);
-
-            assertTrue(result);
         }
         catch(SAXException ex){
             fail(ex.getMessage());

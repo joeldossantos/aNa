@@ -755,45 +755,4 @@ public class NCLCausalConnectorTest {
             fail(ex.getMessage());
         }
     }
-
-    @Test
-    public void test_validate() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLCausalConnector instance = new NCLCausalConnector(reader, null);
-            String xml = "<causalConnector id='conn1'>"+
-                "<connectorParam name='val' type='teste'/>"+
-                "<compoundCondition operator='and' delay='$val'>"+
-                "<simpleCondition role='onBegin'/>"+
-                "<assessmentStatement comparator='eq'>"+
-                "<attributeAssessment role='testeOccurences' eventType='selection' key='$val' attributeType='occurrences' offset='$val'/>"+
-                "<valueAssessment value='$val'/>"+
-                "</assessmentStatement>"+
-                "</compoundCondition>"+
-                "<compoundAction operator='seq' delay='$val'>"+
-                "<simpleAction role='start'/>"+
-                "<simpleAction role='stop'/>"+
-                "</compoundAction>"+
-                "</causalConnector>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            boolean result = instance.validate();
-
-            for(String msg : instance.getWarnings())
-                System.out.println(msg);
-            for(String msg : instance.getErrors())
-                System.out.println(msg);
-
-            assertTrue(result);
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
 }

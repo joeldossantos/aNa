@@ -108,26 +108,4 @@ public class NCLHeadTest {
             fail(ex.getMessage());
         }
     }
-
-    @Test
-    public void test_validacao1() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLHead instance = new NCLHead();
-            instance.setReader(reader);
-            String xml = "<head/>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            assertFalse(instance.validate());
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
 }

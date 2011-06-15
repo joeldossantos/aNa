@@ -96,26 +96,4 @@ public class NCLBodyTest {
             fail(ex.getMessage());
         }
     }
-
-    @Test
-    public void test_validacao1() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLBody instance = new NCLBody();
-            instance.setReader(reader);
-            String xml = "<body/>";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(xml)));
-
-            assertFalse(instance.validate());
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
 }
