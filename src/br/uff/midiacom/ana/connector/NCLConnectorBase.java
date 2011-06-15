@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
@@ -99,6 +100,7 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
             if(connector != null)
                 connector.setParent(this);
 
+            notifyInserted(NCLElementSets.CONNECTORS, connector);
             return true;
         }
         return false;
@@ -121,6 +123,7 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
             if(connector != null)
                 connector.setParent(null);
 
+            notifyRemoved(NCLElementSets.CONNECTORS, connector);
             return true;
         }
         return false;
@@ -176,6 +179,7 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
             if(importBase != null)
                 importBase.setParent(this);
 
+            notifyInserted(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;
@@ -196,6 +200,7 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
             if(importBase != null)
                 importBase.setParent(null);
 
+            notifyRemoved(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;

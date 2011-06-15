@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLAttributeType;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLEventType;
 import br.uff.midiacom.ana.datatype.NCLKey;
 import java.util.Set;
@@ -101,6 +103,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
         if(this.role != null)
             this.role.setParent(null);
 
+        notifyAltered(NCLElementAttributes.ROLE, this.role, role);
         this.role = role;
         //Se role existe, atribui este como seu parente
         if(this.role != null)
@@ -126,6 +129,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          tipo do evento.
      */
     public void setEventType(NCLEventType eventType) {
+        notifyAltered(NCLElementAttributes.EVENTTYPE, this.eventType, eventType);
         this.eventType = eventType;
     }
     
@@ -148,6 +152,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          elemento representando a tecla.
      */
     public void setKey(NCLKey key) {
+        notifyAltered(NCLElementAttributes.KEY, this.key, key);
         this.key = key;
         this.parKey = null;
     }
@@ -160,6 +165,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          parâmetro representando a tecla.
      */
     public void setKey(P key) {
+        notifyAltered(NCLElementAttributes.KEY, this.key, key);
         this.parKey = key;
         this.key = null;
     }
@@ -194,6 +200,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          elemento representando o tipo do atributo.
      */
     public void setAttributeType(NCLAttributeType attributeType) {
+        notifyAltered(NCLElementAttributes.ATTRIBUTETYPE, this.attributeType, attributeType);
         this.attributeType = attributeType;
     }
     
@@ -220,7 +227,8 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
     public void setOffset(Integer offset) throws IllegalArgumentException {
         if(offset != null && offset < 0)
             throw new IllegalArgumentException("illegal offset");
-        
+
+        notifyAltered(NCLElementAttributes.OFFSET, this.offset, offset);
         this.offset = offset;
         this.parOffset = null;
     }
@@ -233,6 +241,7 @@ public class NCLAttributeAssessment<A extends NCLAttributeAssessment, R extends 
      *          parâmetro representando o valor do offset a ser utilizado no teste.
      */
     public void setOffset(P offset) {
+        notifyAltered(NCLElementAttributes.OFFSET, this.offset, offset);
         this.parOffset = offset;
         this.offset = null;
     }

@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -98,13 +100,17 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      */    
     public void setCondition(Co condition) {
         //Retira o parentesco do condition atual
-        if(this.condition != null)
+        if(this.condition != null){
             this.condition.setParent(null);
+            notifyRemoved(NCLElementSets.CONDITIONS, this.condition);
+        }
 
         this.condition = condition;
         //Se condition existe, atribui este como seu parente
-        if(this.condition != null)
+        if(this.condition != null){
             this.condition.setParent(this);
+            notifyInserted(NCLElementSets.CONDITIONS, condition);
+        }
     }
     
     
@@ -127,13 +133,17 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      */    
     public void setAction(Ac action) {
         //Retira o parentesco do action atual
-        if(this.action != null)
+        if(this.action != null){
             this.action.setParent(null);
+            notifyRemoved(NCLElementSets.ACTIONS, this.action);
+        }
 
         this.action = action;
         //Se action existe, atribui este como seu parente
-        if(this.action != null)
+        if(this.action != null){
             this.action.setParent(this);
+            notifyInserted(NCLElementSets.ACTIONS, action);
+        }
     }
     
     
@@ -164,6 +174,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
             if(param != null)
                 param.setParent(this);
 
+            notifyInserted(NCLElementSets.CONNECTOR_PARAMS, param);
             return true;
         }
         return false;
@@ -202,6 +213,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
             if(param != null)
                 param.setParent(null);
 
+            notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, param);
             return true;
         }
         return false;

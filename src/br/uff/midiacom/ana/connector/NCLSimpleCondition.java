@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.NCLEventType;
 import br.uff.midiacom.ana.datatype.NCLKey;
@@ -102,7 +103,8 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
     public void setMin(Integer min) {
         if(min != null && min < 0)
             throw new IllegalArgumentException("Invalid min");
-        
+
+        notifyAltered(NCLElementAttributes.MIN, this.min, min);
         this.min = min;
     }
 
@@ -126,10 +128,14 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(Integer max) {
-        if(max != null && max < 0)
+        if(max != null && max < 0){
+            notifyAltered(NCLElementAttributes.MAX, this.max, max);
             this.max = -1;
-        
-        this.max = max;
+            
+        }else{
+            notifyAltered(NCLElementAttributes.MAX, this.max, max);
+            this.max = max;
+        }
     }
 
 
@@ -152,6 +158,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          operador lógico que representa como os binds serão avaliados.
      */
     public void setQualifier(NCLConditionOperator qualifier) {
+        notifyAltered(NCLElementAttributes.QUALIFIER, this.qualifier, qualifier);
         this.qualifier = qualifier;
     }
 
@@ -178,6 +185,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         if(this.role != null)
             this.role.setParent(null);
 
+        notifyAltered(NCLElementAttributes.ROLE, this.role, role);
         this.role = role;
         //Se role existe, atribui este como seu parente
         if(this.role != null)
@@ -203,6 +211,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          elemento representando a tecla da condição.
      */
     public void setKey(NCLKey key) {
+        notifyAltered(NCLElementAttributes.KEY, this.key, key);
         this.key = key;
         this.parKey = null;
     }
@@ -215,6 +224,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          parâmetro representando a tecla da condição.
      */
     public void setKey(P key) {
+        notifyAltered(NCLElementAttributes.KEY, this.key, key);
         this.parKey = key;
         this.key = null;
     }
@@ -249,6 +259,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          elemento representando o tipo do evento da condição.
      */
     public void setEventType(NCLEventType eventType) {
+        notifyAltered(NCLElementAttributes.EVENTTYPE, this.eventType, eventType);
         this.eventType = eventType;
     }
 
@@ -271,6 +282,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      *          elemento representando a transição do evento da condição.
      */
     public void setTransition(NCLEventTransition transition) {
+        notifyAltered(NCLElementAttributes.TRANSITION, this.transition, transition);
         this.transition = transition;
     }
 
@@ -290,12 +302,14 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
         if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.delay = delay;
         this.parDelay= null;
     }
 
 
     public void setDelay(P delay) {
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.parDelay = delay;
         this.delay = null;
     }

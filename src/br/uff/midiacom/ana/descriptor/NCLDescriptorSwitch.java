@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -105,6 +107,7 @@ public class NCLDescriptorSwitch<D extends NCLLayoutDescriptor, B extends NCLDes
             if(descriptor != null)
                 descriptor.setParent(this);
 
+            notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
             return true;
         }
         return false;
@@ -144,6 +147,7 @@ public class NCLDescriptorSwitch<D extends NCLLayoutDescriptor, B extends NCLDes
             if(descriptor != null)
                 descriptor.setParent(null);
 
+            notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
             return true;
         }
         return false;
@@ -196,6 +200,7 @@ public class NCLDescriptorSwitch<D extends NCLLayoutDescriptor, B extends NCLDes
             //atribui este como parente do bind
             bind.setParent(this);
 
+            notifyInserted(NCLElementSets.BINDS, bind);
             return true;
         }
         return false;
@@ -216,6 +221,7 @@ public class NCLDescriptorSwitch<D extends NCLLayoutDescriptor, B extends NCLDes
             if(bind != null)
                 bind.setParent(null);
 
+            notifyRemoved(NCLElementSets.BINDS, bind);
             return true;
         }
         return false;
@@ -262,6 +268,7 @@ public class NCLDescriptorSwitch<D extends NCLLayoutDescriptor, B extends NCLDes
      *          elemento representando o descritor padrão.
      */
     public void setDefaultDescriptor(D defaultDescriptor) {
+        notifyAltered(NCLElementAttributes.DESCRIPTOR, this.defaultDescriptor, defaultDescriptor);
         this.defaultDescriptor = defaultDescriptor;
     }
 

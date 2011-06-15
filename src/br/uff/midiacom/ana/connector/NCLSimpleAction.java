@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.NCLDefaultActionRole;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLEventAction;
 import br.uff.midiacom.ana.datatype.NCLEventType;
 import java.util.Set;
@@ -112,6 +113,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
+        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
         this.value = value;
         this.parValue = null;
     }
@@ -124,6 +126,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          Parâmetro representando o valor de atribuição.
      */
     public void setValue(P value) {
+        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
         this.parValue = value;
         this.value = null;
     }
@@ -160,7 +163,8 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
     public void setMin(Integer min) {
         if(min != null && min < 0)
             throw new IllegalArgumentException("Invalid min");
-        
+
+        notifyAltered(NCLElementAttributes.MIN, this.min, min);
         this.min = min;
     }
 
@@ -184,10 +188,13 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(Integer max) {
-        if(max != null && max < 0)
+        if(max != null && max < 0){
+            notifyAltered(NCLElementAttributes.MAX, this.max, max);
             this.max = -1;
-        else
+        }else{
+            notifyAltered(NCLElementAttributes.MAX, this.max, max);
             this.max = max;
+        }
     }
 
 
@@ -210,6 +217,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          operador que representa como os binds serão disparados.
      */
     public void setQualifier(NCLActionOperator qualifier) {
+        notifyAltered(NCLElementAttributes.QUALIFIER, this.qualifier, qualifier);
         this.qualifier = qualifier;
     }
 
@@ -236,6 +244,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         if(this.role != null)
             this.role.setParent(null);
 
+        notifyAltered(NCLElementAttributes.ROLE, this.role, role);
         this.role = role;
         //Se role existe, atribui este como seu parente
         if(this.role != null)
@@ -261,6 +270,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          elemento representando o tipo do evento da ação.
      */
     public void setEventType(NCLEventType eventType) {
+        notifyAltered(NCLElementAttributes.EVENTTYPE, this.eventType, eventType);
         this.eventType = eventType;
     }
 
@@ -283,6 +293,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          elemento representando a ação do evento.
      */
     public void setActionType(NCLEventAction actionType) {
+        notifyAltered(NCLElementAttributes.ACTIONTYPE, this.actionType, actionType);
         this.actionType = actionType;
     }
 
@@ -305,6 +316,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          inteiro representando o número de repetições.
      */
     public void setRepeat(Integer repeat) {
+        notifyAltered(NCLElementAttributes.REPEAT, this.repeat, repeat);
         this.repeat = repeat;
         this.parRepeat = null;
     }
@@ -317,6 +329,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          Parâmetro representando o número de repetições.
      */
     public void setRepeat(P repeat) {
+        notifyAltered(NCLElementAttributes.REPEAT, this.repeat, repeat);
         this.parRepeat = repeat;
         this.repeat = null;
     }
@@ -351,6 +364,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          inteiro representando o delay entre repetições.
      */
     public void setRepeatDelay(Integer repeatDelay) {
+        notifyAltered(NCLElementAttributes.REPEATDELAY, this.repeatDelay, repeatDelay);
         this.repeatDelay = repeatDelay;
         this.parRepeatDelay = null;
     }
@@ -363,6 +377,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          parâmetro representando o delay entre repetições.
      */
     public void setRepeatDelay(P repeatDelay) {
+        notifyAltered(NCLElementAttributes.REPEATDELAY, this.repeatDelay, repeatDelay);
         this.parRepeatDelay = repeatDelay;
         this.repeatDelay = null;
     }
@@ -397,6 +412,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          inteiro representando a duração da atribuição.
      */
     public void setDuration(Integer duration) {
+        notifyAltered(NCLElementAttributes.DURATION, this.duration, duration);
         this.duration = duration;
         this.parDuration = null;
     }
@@ -409,6 +425,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          parâmetro representando a duração da atribuição.
      */
     public void setDuration(P duration) {
+        notifyAltered(NCLElementAttributes.DURATION, this.duration, duration);
         this.parDuration = duration;
         this.duration = null;
     }
@@ -444,10 +461,13 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          caso o passo seja definido como a String "indefinite".
      */
     public void setBy(Integer by) {
-        if(by != null && by < 0)
+        if(by != null && by < 0){
+            notifyAltered(NCLElementAttributes.BY, this.by, by);
             this.by = -1;
-        else
+        }else{
+            notifyAltered(NCLElementAttributes.BY, this.by, by);
             this.by = by;
+        }
         
         this.parBy = null;
     }
@@ -460,6 +480,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      *          parâmetro representando o passo da atribuição.
      */
     public void setBy(P by) {
+        notifyAltered(NCLElementAttributes.BY, this.by, by);
         this.parBy = by;
         this.by = null;
     }
@@ -492,12 +513,14 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
         if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.delay = delay;
         this.parDelay= null;
     }
 
 
     public void setDelay(P delay) {
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.parDelay = delay;
         this.delay = null;
     }

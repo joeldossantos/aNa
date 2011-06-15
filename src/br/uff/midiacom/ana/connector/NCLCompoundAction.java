@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLActionOperator;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,6 +99,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
      *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLActionOperator operator) {
+        notifyAltered(NCLElementAttributes.OPERATOR, this.operator, operator);
         this.operator = operator;
     }
     
@@ -127,6 +130,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
             //atribui este como parente da acao
             action.setParent(this);
 
+            notifyInserted(NCLElementSets.ACTIONS, action);
             return true;
         }
         return false;
@@ -149,6 +153,7 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
             if(action != null)
                 action.setParent(null);
 
+            notifyRemoved(NCLElementSets.ACTIONS, action);
             return true;
         }
         return false;
@@ -194,12 +199,14 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
         if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.delay = delay;
         this.parDelay = null;
     }
 
 
     public void setDelay(P delay) {
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.parDelay = delay;
         this.delay = null;
     }

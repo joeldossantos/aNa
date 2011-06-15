@@ -37,13 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.Element;
 import br.uff.midiacom.ana.NCLModificationListener;
 
 
 public class NCLNotifier extends Thread {
 
-    private NCLElement source, other;
+    private Element source, other;
     private NCLElementSets setName;
     private NCLElementAttributes attName;
     private NCLModificationListener listener;
@@ -51,7 +51,7 @@ public class NCLNotifier extends Thread {
     private int type;
 
 
-    public NCLNotifier(int type, NCLModificationListener listener, NCLElement source, NCLElementSets setName, NCLElement other) {
+    public NCLNotifier(int type, NCLModificationListener listener, Element source, NCLElementSets setName, Element other) {
         super();
         this.type = type;
         this.listener = listener;
@@ -61,7 +61,7 @@ public class NCLNotifier extends Thread {
     }
 
 
-    public NCLNotifier(NCLModificationListener listener, NCLElement source, NCLElementAttributes attName, Object oldV, Object newV) {
+    public NCLNotifier(NCLModificationListener listener, Element source, NCLElementAttributes attName, Object oldV, Object newV) {
         super();
         this.type = 2;
         this.listener = listener;

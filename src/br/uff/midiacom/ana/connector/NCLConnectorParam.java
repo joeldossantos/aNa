@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -96,6 +98,7 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
      *          se o nome do parâmetro for inválido.
      */
     public void setName(String name) throws NCLInvalidIdentifierException {
+        notifyAltered(NCLElementAttributes.NAME, getId(), name);
         setId(name);
     }
     
@@ -123,6 +126,7 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
         if(type != null && "".equals(type.trim()))
             throw new IllegalArgumentException("Empty type String");
 
+        notifyAltered(NCLElementAttributes.TYPE, this.type, type);
         this.type = type;
     }
 

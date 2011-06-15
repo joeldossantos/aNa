@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -135,6 +137,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
         if(title != null && "".equals(title.trim()))
             throw new IllegalArgumentException("Empty title String");
 
+        notifyAltered(NCLElementAttributes.TITLE, this.title, title);
         this.title = title;
     }
 
@@ -167,6 +170,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             throw new IllegalArgumentException("Invalid percentage position value (%left= " +
                     left + "). It must be between 0 and 100.");
 
+        notifyAltered(NCLElementAttributes.LEFT, this.left, left);
         this.left = left;
     }
 
@@ -204,6 +208,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             throw new IllegalArgumentException("Invalid percentage position value (%right= " +
                     right + "). It must be between 0 and 100.");
 
+        notifyAltered(NCLElementAttributes.RIGHT, this.right, right);
         this.right = right;
     }
 
@@ -241,6 +246,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             throw new IllegalArgumentException("Invalid percentage position value (%top= " +
                     top + "). It must be between 0 and 100.");
 
+        notifyAltered(NCLElementAttributes.TOP, this.top, top);
         this.top = top;
     }
 
@@ -278,7 +284,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             throw new IllegalArgumentException("Invalid percentage position value (%bottom= " +
                     bottom + "). It must be between 0 and 100.");
 
-
+        notifyAltered(NCLElementAttributes.BOTTOM, this.bottom, bottom);
         this.bottom = bottom;
     }
 
@@ -316,6 +322,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             throw new IllegalArgumentException("Valor não percentual para atributo relativo de posicionamento (%height= "
                             + height + ")");
 
+        notifyAltered(NCLElementAttributes.HEIGHT, this.height, height);
         this.height = height;
     }
 
@@ -353,6 +360,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             throw new IllegalArgumentException("Valor não porcentual para atributo relativo de posicionamento (%width= "
                             + width + ")");
 
+        notifyAltered(NCLElementAttributes.WIDTH, this.width, width);
         this.width = width;
     }
 
@@ -385,6 +393,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
         if(zIndex != null && zIndex < 0)
             throw new IllegalArgumentException("Illegal index value");
 
+        notifyAltered(NCLElementAttributes.ZINDEX, this.zIndex, zIndex);
         this.zIndex = zIndex;
     }
 
@@ -407,6 +416,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          booleano indicando se a posição a esquerda da região é uma porcentagem.
      */
     public void setRelativeLeft(boolean relativeLeft) {
+        notifyAltered(NCLElementAttributes.RELATIVELEFT, this.relativeLeft, relativeLeft);
         this.relativeLeft = relativeLeft;
     }
 
@@ -429,6 +439,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          booleano indicando se a posição a direita da região é uma porcentagem.
      */
     public void setRelativeRight(boolean relativeRight) {
+        notifyAltered(NCLElementAttributes.RELATIVERIGHT, this.relativeRight, relativeRight);
         this.relativeRight = relativeRight;
     }
 
@@ -451,6 +462,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          booleano indicando se a posição de topo da região é uma porcentagem.
      */
     public void setRelativeTop(boolean relativeTop) {
+        notifyAltered(NCLElementAttributes.RELATIVETOP, this.relativeTop, relativeTop);
         this.relativeTop = relativeTop;
     }
 
@@ -473,6 +485,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          booleano indicando se a posição inferior da região é uma porcentagem.
      */
     public void setRelativeBottom(boolean relativeBottom) {
+        notifyAltered(NCLElementAttributes.RELATIVEBOTTOM, this.relativeBottom, relativeBottom);
         this.relativeBottom = relativeBottom;
     }
 
@@ -495,6 +508,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          booleano indicando se a altura da região é uma porcentagem.
      */
     public void setRelativeHeight(boolean relativeHeight) {
+        notifyAltered(NCLElementAttributes.RELATIVEHEIGHT, this.relativeHeight, relativeHeight);
         this.relativeHeight = relativeHeight;
     }
 
@@ -517,6 +531,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      *          booleano indicando se a largura da região é uma porcentagem.
      */
     public void setRelativeWidth(boolean relativeWidth) {
+        notifyAltered(NCLElementAttributes.RELATIVEWIDTH, this.relativeWidth, relativeWidth);
         this.relativeWidth = relativeWidth;
     }
 
@@ -549,6 +564,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             if(region != null)
                 region.setParent(this);
 
+            notifyInserted(NCLElementSets.REGIONS, region);
             return true;
         }
         return false;
@@ -590,6 +606,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
             if(region != null)
                 region.setParent(null);
 
+            notifyRemoved(NCLElementSets.REGIONS, region);
             return true;
         }
         return false;
