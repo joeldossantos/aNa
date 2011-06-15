@@ -153,26 +153,6 @@ public abstract class NCLDescriptorParam<P extends NCLDescriptorParam, V> extend
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getName() == null){
-            addError("Elemento não possui atributo obrigatório name");
-            valid = false;
-        }
-        if(getValue() == null){
-            addError("Elemento não possui atributo obrigatório value");
-            valid = false;
-        }
-        //@todo: validar o valor com relacao ao nome
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         cleanWarnings();

@@ -231,19 +231,6 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        if(getValue() == null && getParamValue() == null){
-            addError("Elemento não possui atributo obrigatório value.");
-            return false;
-        }
-
-        return true;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

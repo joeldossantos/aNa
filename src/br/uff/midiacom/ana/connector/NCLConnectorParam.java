@@ -165,19 +165,6 @@ public class NCLConnectorParam<P extends NCLConnectorParam> extends NCLIdentifia
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        if(getName() == null){
-            addError("Elemento não possui atributo obrigatório name.");
-            return false;
-        }
-
-        return true;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

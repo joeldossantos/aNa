@@ -199,33 +199,6 @@ public class NCLSwitchPort<I extends NCLInterface, M extends NCLMapping> extends
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não contém atributo obrigatório id.");
-            valid = false;
-        }
-        if(!hasMapping()){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um mapping.");
-            valid = false;
-        }
-
-        if(hasMapping()){
-            for(M mapping : mappings){
-                valid &= mapping.validate();
-                addWarning(mapping.getWarnings());
-                addError(mapping.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

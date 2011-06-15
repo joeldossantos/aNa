@@ -705,29 +705,6 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-
-        if(hasRegion()){
-            for(R region : regions){
-                valid &= region.validate();
-                addWarning(region.getWarnings());
-                addError(region.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

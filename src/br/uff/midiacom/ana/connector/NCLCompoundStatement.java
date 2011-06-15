@@ -282,33 +282,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
 
         return comp;
     }
-
-
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getOperator() == null){
-            addError("Elemento não possui atributo obrigatório operator.");
-            valid = false;
-        }
-        if(!hasStatement()){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir pelo menos uma expressão de comparação.");
-            valid = false;
-        }
-
-        if(hasStatement()){
-            for(S statement : statements){
-                valid &= statement.validate();
-                addWarning(statement.getWarnings());
-                addError(statement.getErrors());
-            }
-        }
-
-        return valid;
-    }
+    
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {

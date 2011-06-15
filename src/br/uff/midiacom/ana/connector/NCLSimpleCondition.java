@@ -453,64 +453,6 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getRole() == null){
-            addError("Elemento não possui atributo obrigatório role.");
-            valid = false;
-        }
-
-        if(getRole() != null && getRole().getConditionName() != null){
-            if(getRole().getConditionName().equals(NCLDefaultConditionRole.ONSELECTION)){
-                if(getKey() == null && getParamKey() == null){
-                    addError("O atributo key deve ser especificado.");
-                    valid = false;
-                }
-            }
-            else{
-                if(getKey() != null || getParamKey() != null){
-                    addWarning("O atributo key não deve ser especificado.");
-                    valid = false;
-                }
-            }
-        }
-        else{
-            if(getEventType() == null || getTransition() == null){
-                addError("Os atributos eventType e transition devem ser especificados.");
-                valid = false;
-            }
-            else if(getEventType().equals(NCLEventType.SELECTION)){
-                if(getKey() == null && getParamKey() == null){
-                    addError("O atributo key deve ser especificado.");
-                    valid = false;
-                }
-            }
-            else{
-                if(getKey() != null || getParamKey() != null){
-                    addWarning("O atributo key não deve ser especificado.");
-                    valid = false;
-                }
-            }
-
-        }
-
-        if(getMax() != null && getMax() == 1 && getQualifier() != null){
-            addWarning("O atributo qualifier não deve ser especificado");
-            valid = false;
-        }
-        else if(getMax() != null && getMax() != 1 && getQualifier() == null){
-            addWarning("O atributo qualifier deve ser especificado");
-            valid = false;
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

@@ -771,68 +771,6 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-        if(getRefer() != null && (getRefer().compareTo(this) == 0 || findContext(nodes) != null)){
-            addError("Elemento não pode fazer referência a si mesmo.");
-            valid = false;
-        }
-
-        if(hasMeta()){
-            for(M meta : metas){
-                valid &= meta.validate();
-                addWarning(meta.getWarnings());
-                addError(meta.getErrors());
-            }
-        }
-        if(hasMetadata()){
-            for(MT metadata : metadatas){
-                valid &= metadata.validate();
-                addWarning(metadata.getWarnings());
-                addError(metadata.getErrors());
-            }
-        }
-        if(hasPort()){
-            for(Pt port : ports){
-                valid &= port.validate();
-                addWarning(port.getWarnings());
-                addError(port.getErrors());
-            }
-        }
-        if(hasProperty()){
-            for(Pp property : properties){
-                valid &= property.validate();
-                addWarning(property.getWarnings());
-                addError(property.getErrors());
-            }
-        }
-        if(hasNode()){
-            for(N node : nodes){
-                valid &= node.validate();
-                addWarning(node.getWarnings());
-                addError(node.getErrors());
-            }
-        }
-        if(hasLink()){
-            for(L link : links){
-                valid &= link.validate();
-                addWarning(link.getWarnings());
-                addError(link.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

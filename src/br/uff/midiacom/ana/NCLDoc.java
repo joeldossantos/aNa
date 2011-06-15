@@ -212,34 +212,6 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        // Documento nao pode ser vazio
-        if(getHead() == null && getBody() == null){
-            addWarning("Documento NCL vazio.");
-            valid = false;
-        }
-        
-        
-        if(getHead() != null){
-            valid &= getHead().validate();
-            addWarning(getHead().getWarnings());
-            addError(getHead().getErrors());
-        }
-        if(getBody() != null){
-            valid &= getBody().validate();
-            addWarning(getBody().getWarnings());
-            addError(getBody().getErrors());
-        }
-
-        return valid;
-    }
-
-
     /**
      * Recupera a estrutura de classes que representam elementos NCL a partir
      * de um arquivo XML especificado de acordo com a linguagem NCL.

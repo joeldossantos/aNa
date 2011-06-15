@@ -676,29 +676,6 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-
-        if(hasDescriptorParam()){
-            for(P param : params){
-                valid &= param.validate();
-                addWarning(param.getWarnings());
-                addError(param.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

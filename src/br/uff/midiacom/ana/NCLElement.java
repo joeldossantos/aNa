@@ -156,16 +156,6 @@ public abstract class NCLElement extends DefaultHandler implements Element {
 
 
     /**
-     * Valida o elemento da <i>Nested Context Language</i> (NCL) criado.<br>
-     * Verifica se o elemento está de acordo com o padrão da linguagem.
-     *
-     * @return
-     *          verdadeiro se o elemento estiver de acordo com o padrão.
-     */
-    public abstract boolean validate();
-
-
-    /**
      * Adiciona uma mensagem de aviso relacionado ao elemento NCL em questão.
      * Uma mensagem será adicionada durante a recuperação do
      * arquivo XML ou da validação feita pela api.

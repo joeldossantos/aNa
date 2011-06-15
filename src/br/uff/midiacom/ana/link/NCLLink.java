@@ -349,44 +349,6 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getXconnector() == null){
-            addError("Elemento não possui atriuto obrigatório xconnector.");
-            valid = false;
-        }
-        if(binds.size() < 2){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir pelo menos dois binds.");
-            valid = false;
-        }
-
-        if(hasLinkParam()){
-            for(P param : linkParams){
-                if(!param.getType().equals(NCLParamInstance.LINKPARAM)){
-                    addError("Link não pode possuir parâmetros que não sejam linkParam.");
-                    valid = false;
-                }
-                valid &= param.validate();
-                addWarning(param.getWarnings());
-                addError(param.getErrors());
-            }
-        }
-        if(hasBind()){
-            for(B bind : binds){
-                valid &= bind.validate();
-                addWarning(bind.getWarnings());
-                addError(bind.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

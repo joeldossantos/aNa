@@ -200,46 +200,6 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-        if(getVar() == null){
-            addError("Elemento não possui atributo obrigatório var.");
-            valid = false;
-        }
-        if(getComparator() == null){
-            addError("Elemento não possui atributo obrigatório comparator.");
-            valid = false;
-        }
-        if(getValue() == null){
-            addError("Elemento não possui atributo obrigatório value.");
-            valid = false;
-        }
-
-        if(getVar() != null){
-            if(getVar().getParent() != null && getVar().getParent() instanceof NCLMedia){
-                if(((NCLMedia)getVar().getParent()).getType() != NCLMimeType.APPLICATION_X_GINGA_SETTINGS){
-                    addWarning("Atributo var deve referenciar um propriedade de um elemento media do tipo settings.");
-                    valid = false;
-                }
-            }
-            else{
-                addWarning("Atributo var deve referenciar um propriedade de um elemento media.");
-                valid = false;
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

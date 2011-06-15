@@ -272,36 +272,6 @@ public class NCLConnectorBase<C extends NCLCausalConnector, I extends NCLImport>
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(!hasImportBase() && !hasCausalConnector()){
-            addWarning("Base de conectores vazia.");
-            valid = false;
-        }
-
-        if(hasImportBase()){
-            for(I imp : imports){
-                valid &= imp.validate();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-        if(hasCausalConnector()){
-            for(C connector: connectors){
-                valid &= connector.validate();
-                addWarning(connector.getWarnings());
-                addError(connector.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

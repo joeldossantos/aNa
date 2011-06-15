@@ -656,45 +656,6 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-        if(getRefer() != null && getRefer().compareTo(this) == 0){
-            addError("Elemento não pode fazer referência a si mesmo.");
-            valid = false;
-        }
-
-        if(getInstance() != null && getRefer() == null){
-            addWarning("Atributo instance deve ser referênciado junto com atributo refer.");
-            valid = false;
-        }
-
-        if(hasArea()){
-            for(A area : areas){
-                valid &= area.validate();
-                addWarning(area.getWarnings());
-                addError(area.getErrors());
-            }
-        }
-        if(hasProperty()){
-            for(P prop : properties){
-                valid &= prop.validate();
-                addWarning(prop.getWarnings());
-                addError(prop.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

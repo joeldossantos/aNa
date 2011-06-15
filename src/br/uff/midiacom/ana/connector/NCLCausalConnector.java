@@ -284,48 +284,6 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-        if(getCondition() == null){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir um elemento simpleCondition ou compoundCondition.");
-            valid = false;
-        }
-        if(getAction() == null){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir um elemento simpleAction ou compoundAction.");
-            valid = false;
-        }
-
-        if(getCondition() != null){
-            valid &= getCondition().validate();
-            addWarning(getCondition().getErrors());
-            addError(getCondition().getErrors());
-        }
-        if(getAction() != null){
-            valid &= getAction().validate();
-            addWarning(getAction().getErrors());
-            addError(getAction().getErrors());
-        }
-
-        if(hasConnectorParam()){
-            for(P connp : conn_params){
-                valid &= connp.validate();
-                addWarning(connp.getErrors());
-                addError(connp.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

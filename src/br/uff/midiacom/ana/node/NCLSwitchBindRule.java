@@ -170,30 +170,6 @@ public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getRule() == null){
-            addError("Elemento não possui atributo obrigatório rule.");
-            valid = false;
-        }
-        if(getConstituent() == null){
-            addError("Elemento não possui atributo obrigatório constituent.");
-            valid = false;
-        }
-
-        if(getConstituent() != null && !((NCLSwitch) getParent()).hasNode(getConstituent())){
-            addError("Atributo constituent deve fazer referência a um descritor contido no switch.");
-            valid = false;
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

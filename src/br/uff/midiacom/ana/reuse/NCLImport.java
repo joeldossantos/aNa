@@ -208,42 +208,6 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
     public int compareTo(I other) {
         return getAlias().compareTo(other.getAlias());
     }
-
-
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getAlias() == null){
-            addError("Elemento não possui atributo obrigatório alias.");
-            valid = false;
-        }
-        if(getDocumentURI() == null){
-            addError("Elemento não possui atributo obrigatório documentURI.");
-            valid = false;
-        }
-
-        if(getParent() != null){
-            switch(type){
-                case BASE:
-                    if(getParent() instanceof NCLImportedDocumentBase){
-                        addError("Elemento importBase não é um elemento filho desta base.");
-                        valid = false;
-                    }
-                    break;
-                case NCL:
-                    if(!(getParent() instanceof NCLImportedDocumentBase)){
-                        addError("Elemento importNCL não é um elemento filho desta base.");
-                        valid = false;
-                    }
-                    break;
-            }
-        }
-
-        return valid;
-    }
     
 
     @Override

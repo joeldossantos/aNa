@@ -306,33 +306,6 @@ public class NCLCompoundAction<A extends NCLAction, P extends NCLConnectorParam>
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getOperator() == null){
-            addError("Elemento não possui atributo obrigatório operator.");
-            valid = false;
-        }
-        if(!hasAction()){
-            addWarning("Elemento deve possuir ao menos uma ação.");
-            valid = false;
-        }
-
-        if(hasAction()){
-            for(A action : actions){
-                valid &= action.validate();
-                addWarning(action.getWarnings());
-                addError(action.getErrors());
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

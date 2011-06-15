@@ -304,43 +304,6 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getComparator() == null){
-            addError("Elemento não possui atributo obrigatório comparator.");
-            valid = false;
-        }
-           
-        
-        if( !(attributeAssessments.size() == 2 || (attributeAssessments.size() == 1 && getValueAssessment() != null)) ){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir dois attributeAssessment ou um attributeAssessment e um valueAssessment.");
-            valid = false;
-        }
-
-        if(getValueAssessment() != null){
-            valid &= getValueAssessment().validate();
-            addWarning(getValueAssessment().getWarnings());
-            addError(getValueAssessment().getErrors());
-        }
-
-        if(hasAttributeAssessment()){
-            for(NCLAttributeAssessment attribute : attributeAssessments){
-                valid &= attribute.validate();
-                addWarning(attribute.getWarnings());
-                addError(attribute.getErrors());
-            }
-        }
-
-        //@todo: comparar os tipos de attributeAssessment e valueAssessment ou dos dois attributeAssessment
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

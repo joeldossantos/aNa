@@ -496,62 +496,6 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getId() == null){
-            addError("Elemento não possui atributo obrigatório id.");
-            valid = false;
-        }
-        if(getRefer() != null && (getRefer().compareTo(this) == 0 || findSwitch(nodes) != null)){
-            addError("Elemento não pode fazer referência a si mesmo ou a um elemento interno.");
-            valid = false;
-        }
-        if(!hasNode() || !hasBind()){
-            addError("Elemento não possui elementos filhos em cardinalidade correta. Deve possuir ao menos um nó e um bindRule.");
-            valid = false;
-        }
-
-        if(hasPort()){
-            for(P port : ports){
-                valid &= port.validate();
-                addWarning(port.getWarnings());
-                addError(port.getErrors());
-            }
-        }
-        if(hasBind()){
-            for(B bind : binds){
-                valid &= bind.validate();
-                addWarning(bind.getWarnings());
-                addError(bind.getErrors());
-            }
-        }
-        if(hasNode()){
-            for(N node : nodes){
-                valid &= node.validate();
-                addWarning(node.getWarnings());
-                addError(node.getErrors());
-            }
-        }
-
-        if(getDefaultComponent() != null){
-            if(!(getDefaultComponent().getParent() instanceof NCLSwitch)){
-                addError("Atributo component do elemento defaultComponent deve referênciar um nó contido no switch.");
-                valid = false;
-            }
-            else if(((NCLSwitch) getDefaultComponent().getParent()).compareTo(this) != 0){
-                addError("Atributo component do elemento defaultComponent deve referênciar um nó contido no switch.");
-                valid = false;
-            }
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

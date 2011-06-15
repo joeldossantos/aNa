@@ -170,30 +170,6 @@ public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NC
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getRule() == null){
-            addError("Elemento não possui atributo obrigatório rule.");
-            valid = false;
-        }
-        if(getConstituent() == null){
-            addError("Elemento não possui atributo obrigatório constituent.");
-            valid = false;
-        }
-
-        if(getConstituent() != null && !((NCLDescriptorSwitch) getParent()).hasDescriptor(getConstituent())){
-            addError("Atributo constituent deve fazer referência a um descritor contido no descriptorSwitch.");
-            valid = false;
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{

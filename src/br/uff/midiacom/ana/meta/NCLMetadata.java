@@ -129,19 +129,6 @@ public class NCLMetadata<M extends NCLMetadata> extends NCLElement implements Co
         return getRDFTree().compareTo(other.getRDFTree());
     }
 
-    
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        if(getRDFTree() == null){
-            addWarning("Elemento vazio.");
-            return false;
-        }
-
-        return true;
-    }
-
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {

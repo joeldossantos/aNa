@@ -186,34 +186,6 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
     }
 
 
-    public boolean validate() {
-        cleanWarnings();
-        cleanErrors();
-
-        boolean valid = true;
-
-        if(getName() == null){
-            addError("Elemento não possui atributo obrigatório name.");
-            valid = false;
-        }
-        if(getValue() == null){
-            addError("Elemento não possui atributo obrigatório value.");
-            valid = false;
-        }
-
-        if(getParent() instanceof NCLLink && ((NCLLink) getParent()).getXconnector() != null && !((NCLLink) getParent()).getXconnector().hasConnectorParam(getName().getName())){
-            addError("Atributo name deve referênciar um parâmetro especificado pelo conector utilizado no link.");
-            valid = false;
-        }
-        else if(getParent().getParent() != null && ((NCLLink) getParent().getParent()).getXconnector() != null && !((NCLLink) getParent().getParent()).getXconnector().hasConnectorParam(getName().getName())){
-            addError("Atributo name deve referênciar um parâmetro especificado pelo conector utilizado no link.");
-            valid = false;
-        }
-
-        return valid;
-    }
-
-
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try{
