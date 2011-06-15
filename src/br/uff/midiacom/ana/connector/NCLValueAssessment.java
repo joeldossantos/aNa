@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLDefaultValueAssessment;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -115,6 +117,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
             }
         }
 
+        notifyAltered(NCLElementAttributes.VALUEASSESSMENT, this.value, value);
         this.value = value;
         this.defValue = null;
         this.parValue = null;
@@ -128,6 +131,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
      *          parâmetro contendo o valor da assertiva.
      */
     public void setValue(P value) {
+        notifyAltered(NCLElementAttributes.VALUEASSESSMENT, this.value, value);
         this.parValue = value;
         this.value = null;
         this.defValue = null;
@@ -141,6 +145,7 @@ public class NCLValueAssessment<V extends NCLValueAssessment, P extends NCLConne
      *          elemento representando o valor da assertiva.
      */
     public void setValue(NCLDefaultValueAssessment value) {
+        notifyAltered(NCLElementAttributes.VALUEASSESSMENT, this.value, value);
         this.defValue = value;
         this.value = null;
         this.parValue = null;

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.link.NCLLink;
@@ -107,6 +108,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(port != null)
                 port.setParent(this);
 
+            notifyInserted(NCLElementSets.PORTS, port);
             return true;
         }
         return false;
@@ -148,6 +150,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(port != null)
                 port.setParent(null);
 
+            notifyRemoved(NCLElementSets.PORTS, port);
             return true;
         }
         return false;
@@ -222,6 +225,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(property != null)
                 property.setParent(this);
 
+            notifyInserted(NCLElementSets.PROPERTIES, property);
             return true;
         }
         return false;
@@ -263,6 +267,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(property != null)
                 property.setParent(null);
 
+            notifyRemoved(NCLElementSets.PROPERTIES, property);
             return true;
         }
         return false;
@@ -337,6 +342,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(node != null)
                 node.setParent(this);
 
+            notifyInserted(NCLElementSets.NODES, node);
             return true;
         }
         return false;
@@ -378,6 +384,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(node != null)
                 node.setParent(null);
 
+            notifyRemoved(NCLElementSets.NODES, node);
             return true;
         }
         return false;
@@ -452,6 +459,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(link != null)
                 link.setParent(this);
 
+            notifyInserted(NCLElementSets.LINKS, link);
             return true;
         }
         return false;
@@ -474,6 +482,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(link != null)
                 link.setParent(null);
 
+            notifyRemoved(NCLElementSets.LINKS, link);
             return true;
         }
         return false;
@@ -531,6 +540,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(meta != null)
                 meta.setParent(this);
 
+            notifyInserted(NCLElementSets.METAS, meta);
             return true;
         }
         return false;
@@ -553,6 +563,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(meta != null)
                 meta.setParent(null);
 
+            notifyRemoved(NCLElementSets.METAS, meta);
             return true;
         }
         return false;
@@ -610,6 +621,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(metadata != null)
                 metadata.setParent(this);
 
+            notifyInserted(NCLElementSets.METADATAS, metadata);
             return true;
         }
         return false;
@@ -632,6 +644,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
             if(metadata != null)
                 metadata.setParent(null);
 
+            notifyRemoved(NCLElementSets.METADATAS, metadata);
             return true;
         }
         return false;

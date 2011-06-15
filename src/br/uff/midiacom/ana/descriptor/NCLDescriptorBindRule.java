@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import java.util.Set;
@@ -89,6 +90,7 @@ public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NC
      *          elemento representando o descritor mapeado pelo bind.
      */
     public void setConstituent(D constituent) {
+        notifyAltered(NCLElementAttributes.CONSTITUENT, this.constituent, constituent);
         this.constituent = constituent;
     }
 
@@ -111,6 +113,7 @@ public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NC
      *          elemento representando a regra de avaliação do bind.
      */
     public void setRule(R rule) {
+        notifyAltered(NCLElementAttributes.RULE, this.rule, rule);
         this.rule = rule;
     }
 

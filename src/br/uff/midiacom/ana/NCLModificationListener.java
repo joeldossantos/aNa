@@ -59,7 +59,7 @@ public interface NCLModificationListener {
      * @param inserted
      *          elemento que foi inserido na lista de elemento filhos (filho).
      **************************************************************************/
-    public void insertedElement(NCLElement source, NCLElementSets setName, NCLElement inserted);
+    public void insertedElement(Element source, NCLElementSets setName, Element inserted);
 
 
     /***************************************************************************
@@ -73,7 +73,7 @@ public interface NCLModificationListener {
      * @param inserted
      *          elemento que foi removido da lista de elemento filhos (filho).
      **************************************************************************/
-    public void removedElement(NCLElement source, NCLElementSets setName, NCLElement removed);
+    public void removedElement(Element source, NCLElementSets setName, Element removed);
 
 
     /***************************************************************************
@@ -89,5 +89,5 @@ public interface NCLModificationListener {
      * @param newValue
      *          valor do atributo após a alteração.
      **************************************************************************/
-    public void alteredElement(NCLElement source, NCLElementAttributes attributeName, Object oldValue, Object newValue);
+    public void alteredElement(Element source, NCLElementAttributes attributeName, Object oldValue, Object newValue);
 }

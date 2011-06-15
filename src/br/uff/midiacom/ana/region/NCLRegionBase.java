@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
@@ -107,6 +109,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
         if(device != null && "".equals(device.trim()))
             throw new IllegalArgumentException("Empty device String");
 
+        notifyAltered(NCLElementAttributes.DEVICE, this.device, device);
         this.device = device;
     }
 
@@ -166,6 +169,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
             if(region != null)
                 region.setParent(this);
 
+            notifyInserted(NCLElementSets.REGIONS, region);
             return true;
         }
         return false;
@@ -207,6 +211,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
             if(region != null)
                 region.setParent(null);
 
+            notifyRemoved(NCLElementSets.REGIONS, region);
             return true;
         }
         return false;
@@ -266,6 +271,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
             if(importBase != null)
                 importBase.setParent(this);
 
+            notifyInserted(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;
@@ -286,6 +292,7 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
             if(importBase != null)
                 importBase.setParent(null);
 
+            notifyRemoved(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;
