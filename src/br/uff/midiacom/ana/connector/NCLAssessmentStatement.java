@@ -39,6 +39,8 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.NCLComparator;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,6 +93,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      *          comparador utilizado pela assertiva.
      */
     public void setComparator(NCLComparator comparator) {
+        notifyAltered(NCLElementAttributes.COMPARATOR, this.comparator, comparator);
         this.comparator = comparator;
     }
     
@@ -118,13 +121,17 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      */
     public void setValueAssessment(V value) {
         //Retira o parentesco do valueAssessment atual
-        if(this.valueAssessment != null)
+        if(this.valueAssessment != null){
             this.valueAssessment.setParent(null);
+            notifyRemoved(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
+        }
 
         this.valueAssessment = value;
         //Set valueAssessment existe, atribui este como seu parente
-        if(this.valueAssessment != null)
+        if(this.valueAssessment != null){
             this.valueAssessment.setParent(this);
+            notifyInserted(NCLElementSets.VALUEASSESSMENT, value);
+        }
     }
     
     
@@ -159,6 +166,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             //atribui este como parente do atributo
             attribute.setParent(this);
 
+            notifyInserted(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
             return true;
         }
         return false;
@@ -181,6 +189,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             if(attribute != null)
                 attribute.setParent(null);
 
+            notifyRemoved(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
             return true;
         }
         return false;

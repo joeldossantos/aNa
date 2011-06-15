@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
@@ -101,13 +102,18 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      */
     public void setImportedDocumentBase(IB importedDocumentBase) {
         //Retira o parentesco do importedDocumentBase atual
-        if(this.importedDocumentBase != null)
+        if(this.importedDocumentBase != null){
             this.importedDocumentBase.setParent(null);
+            notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, this.importedDocumentBase);
+        }
 
         this.importedDocumentBase = importedDocumentBase;
         //Se importedDocumentBase existe, atribui este como seu parente
-        if(this.importedDocumentBase != null)
+        if(this.importedDocumentBase != null){
             this.importedDocumentBase.setParent(this);
+            notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importedDocumentBase);
+        }
+
     }
 
 
@@ -131,13 +137,17 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      */
     public void setRuleBase(RLB ruleBase) {
         //Retira o parentesco do ruleBase atual
-        if(this.ruleBase != null)
+        if(this.ruleBase != null){
             this.ruleBase.setParent(null);
+            notifyRemoved(NCLElementSets.RULEBASE, this.ruleBase);
+        }
 
         this.ruleBase = ruleBase;
         //Se ruleBase existe, atribui este como seu parente
-        if(this.ruleBase != null)
+        if(this.ruleBase != null){
             this.ruleBase.setParent(this);
+            notifyInserted(NCLElementSets.RULEBASE, ruleBase);
+        }
     }
 
 
@@ -161,13 +171,17 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      */
     public void setTransitionBase(TB transitionBase) {
         //Retira o parentesco do transitionBase atual
-        if(this.transitionBase != null)
+        if(this.transitionBase != null){
             this.transitionBase.setParent(null);
+            notifyRemoved(NCLElementSets.TRANSITIONBASE, this.transitionBase);
+        }
 
         this.transitionBase = transitionBase;
         //Se transitionBase existe, atribui este como seu parente
-        if(this.transitionBase != null)
+        if(this.transitionBase != null){
             this.transitionBase.setParent(this);
+            notifyInserted(NCLElementSets.TRANSITIONBASE, transitionBase);
+        }
     }
 
 
@@ -199,6 +213,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             if(regionBase != null)
                 regionBase.setParent(this);
 
+            notifyInserted(NCLElementSets.REGIONBASE, regionBase);
             return true;
         }
         return false;
@@ -221,6 +236,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             if(regionBase != null)
                 regionBase.setParent(null);
 
+            notifyRemoved(NCLElementSets.REGIONBASE, regionBase);
             return true;
         }
         return false;
@@ -270,13 +286,17 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      */    
     public void setDescriptorBase(DB descriptorBase) {
         //Retira o parentesco do descriptorBase atual
-        if(this.descriptorBase != null)
+        if(this.descriptorBase != null){
             this.descriptorBase.setParent(null);
+            notifyRemoved(NCLElementSets.DESCRIPTORBASE, this.descriptorBase);
+        }
 
         this.descriptorBase = descriptorBase;
         //Se descriptorBase existe, atribui este como seu parente
-        if(this.descriptorBase != null)
+        if(this.descriptorBase != null){
             this.descriptorBase.setParent(this);
+            notifyInserted(NCLElementSets.DESCRIPTORBASE, descriptorBase);
+        }
     }
 
     
@@ -299,13 +319,17 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      */
     public void setConnectorBase(CB connectorBase) {
         //Retira o parentesco do connectorBase atual
-        if(this.connectorBase != null)
+        if(this.connectorBase != null){
             this.connectorBase.setParent(null);
+            notifyRemoved(NCLElementSets.CONNECTORBASE, this.connectorBase);
+        }
 
         this.connectorBase = connectorBase;
         //Se connectorBase existe, atribui este como seu parente
-        if(this.connectorBase != null)
+        if(this.connectorBase != null){
             this.connectorBase.setParent(this);
+            notifyInserted(NCLElementSets.CONNECTORBASE, connectorBase);
+        }
     }
 
     
@@ -336,6 +360,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             if(meta != null)
                 meta.setParent(this);
 
+            notifyInserted(NCLElementSets.METAS, meta);
             return true;
         }
         return false;
@@ -358,6 +383,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             if(meta != null)
                 meta.setParent(null);
 
+            notifyRemoved(NCLElementSets.METAS, meta);
             return true;
         }
         return false;
@@ -415,6 +441,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             if(metadata != null)
                 metadata.setParent(this);
 
+            notifyInserted(NCLElementSets.METADATAS, metadata);
             return true;
         }
         return false;
@@ -437,6 +464,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
             if(metadata != null)
                 metadata.setParent(null);
 
+            notifyRemoved(NCLElementSets.METADATAS, metadata);
             return true;
         }
         return false;

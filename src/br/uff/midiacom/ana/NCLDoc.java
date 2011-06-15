@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLNamespace;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,7 +79,7 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
         if(title != null && "".equals(title.trim()))
             throw new IllegalArgumentException("Empty title String");
         
-        
+        notifyAltered(NCLElementAttributes.TITLE, this.title, title);
         this.title = title;
     }
 
@@ -100,6 +102,7 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      *          namespace usado pelo documento NCL.
      */
     public void setXmlns(NCLNamespace xmlns) {
+        notifyAltered(NCLElementAttributes.XMLNS, this.xmlns, xmlns);
         this.xmlns = xmlns;
     }
 
@@ -123,13 +126,17 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      */
     public void setHead(H head) {
         //Retira o parentesco do head atual
-        if(this.head != null)
+        if(this.head != null){
             this.head.setParent(null);
+            notifyRemoved(NCLElementSets.HEAD, this.head);
+        }
 
         this.head = head;
         //Se head existe, atribui este como seu parente
-        if(this.head != null)
+        if(this.head != null){
             this.head.setParent(this);
+            notifyInserted(NCLElementSets.HEAD, head);
+        }
     }
 
 
@@ -152,13 +159,17 @@ public class NCLDoc<H extends NCLHead, B extends NCLBody> extends NCLIdentifiabl
      */
     public void setBody(B body) {
         //Retira o parentesco do body atual
-        if(this.body != null)
+        if(this.body != null){
             this.body.setParent(null);
+            notifyRemoved(NCLElementSets.BODY, this.body);
+        }
 
         this.body = body;
         //Se body existe, atribui este como seu parente
-        if(this.body != null)
+        if(this.body != null){
             this.body.setParent(this);
+            notifyInserted(NCLElementSets.BODY, body);
+        }
     }
 
 

@@ -66,7 +66,7 @@ public abstract class NCLIdentifiableElement extends NCLElement implements Ident
         if(!validate(id))
             throw new NCLInvalidIdentifierException("Invalid identifier");
 
-        notifyAltered(NCLElementAttributes.ZINDEX, this.id, id);
+        notifyAltered(NCLElementAttributes.ID, this.id, id);
         this.id = id;
     }
     

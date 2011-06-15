@@ -45,6 +45,8 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLAttributes;
 import br.uff.midiacom.ana.datatype.NCLColor;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.descriptor.param.NCLBooleanDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLColorDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
@@ -136,6 +138,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         if(player != null && "".equals(player.trim()))
             throw new IllegalArgumentException("Empty player String");
 
+        notifyAltered(NCLElementAttributes.PLAYER, this.player, player);
         this.player = player;
     }
 
@@ -158,6 +161,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          inteiro representando a duração a ser usada pelo descritor em segundos.
      */
     public void setExplicitDur(Integer explicitDur) {
+        notifyAltered(NCLElementAttributes.EXPLICITDUR, this.explicitDur, explicitDur);
         this.explicitDur = explicitDur;
     }
 
@@ -181,6 +185,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          booleano definindo se o último quadro deverá ser exibido continuamente.
      */
     public void setFreeze(Boolean freeze) {
+        notifyAltered(NCLElementAttributes.FREEZE, this.freeze, freeze);
         this.freeze = freeze;
     }
 
@@ -205,6 +210,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveLeft(D descriptor) {
+        notifyAltered(NCLElementAttributes.MOVELEFT, this.moveLeft, moveLeft);
         this.moveLeft = descriptor;
     }
 
@@ -229,6 +235,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveRight(D descriptor) {
+        notifyAltered(NCLElementAttributes.MOVERIGHT, this.moveRight, moveRight);
         this.moveRight = descriptor;
     }
 
@@ -253,6 +260,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveUp(D descriptor) {
+        notifyAltered(NCLElementAttributes.MOVEUP, this.moveUp, moveUp);
         this.moveUp = descriptor;
     }
 
@@ -277,6 +285,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveDown(D descriptor) {
+        notifyAltered(NCLElementAttributes.MOVEDOWN, this.moveDown, moveDown);
         this.moveDown = descriptor;
     }
 
@@ -300,6 +309,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          inteiro representando o índice de foco do descritor.
      */
     public void setFocusIndex(Integer focusIndex) {
+        notifyAltered(NCLElementAttributes.FOCUSINDEX, this.focusIndex, focusIndex);
         this.focusIndex = focusIndex;
     }
 
@@ -322,6 +332,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          cor da borda do descritor.
      */
     public void setFocusBorderColor(NCLColor focusBorderColor) {
+        notifyAltered(NCLElementAttributes.FOCUSBORDERCOLOR, this.focusBorderColor, focusBorderColor);
         this.focusBorderColor = focusBorderColor;
     }
 
@@ -344,6 +355,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          inteiro representando a largura da borda em pixels.
      */
     public void setFocusBorderWidth(Integer focusBorderWidth) {
+        notifyAltered(NCLElementAttributes.FOCUSBORDERWIDTH, this.focusBorderWidth, focusBorderWidth);
         this.focusBorderWidth = focusBorderWidth;
     }
 
@@ -372,6 +384,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         if(focusBorderTransparency != null && (focusBorderTransparency < 0 || focusBorderTransparency > 100))
             throw new IllegalArgumentException("Ilegal value");
 
+        notifyAltered(NCLElementAttributes.FOCUSBORDERTRANSPARENCY, this.focusBorderTransparency, focusBorderTransparency);
         this.focusBorderTransparency = focusBorderTransparency;
     }
 
@@ -402,6 +415,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         if(focusSrc != null)
             this.focusSrc = new URI(focusSrc).toString();
 
+        notifyAltered(NCLElementAttributes.FOCUSSRC, this.focusSrc, focusSrc);
         this.focusSrc = focusSrc;
     }
 
@@ -429,6 +443,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         if(focusSelSrc != null)
             this.focusSelSrc = new URI(focusSelSrc).toString();
 
+        notifyAltered(NCLElementAttributes.FOCUSSELSRC, this.focusSelSrc, focusSelSrc);
         this.focusSelSrc = focusSelSrc;
     }
 
@@ -451,6 +466,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          cor da borda do descritor.
      */
     public void setSelBorderColor(NCLColor selBorderColor) {
+        notifyAltered(NCLElementAttributes.BORDERCOLOR, this.selBorderColor, selBorderColor);
         this.selBorderColor = selBorderColor;
     }
 
@@ -473,6 +489,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando uma transição.
      */
     public void setTransIn(T transIn) {
+        notifyAltered(NCLElementAttributes.TRANSIN, this.transIn, transIn);
         this.transIn = transIn;
     }
 
@@ -495,6 +512,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando uma transição.
      */
     public void setTransOut(T transOut) {
+        notifyAltered(NCLElementAttributes.TRANSOUT, this.transOut, transOut);
         this.transOut = transOut;
     }
 
@@ -517,6 +535,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
      *          elemento representando uma região.
      */
     public void setRegion(R region) {
+        notifyAltered(NCLElementAttributes.REGION, this.region, region);
         this.region = region;
     }
 
@@ -546,6 +565,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             if(descriptorParam != null)
                 descriptorParam.setParent(this);
 
+            notifyInserted(NCLElementSets.DESCRIPTORPARAM, descriptorParam);
             return true;
         }
         return false;
@@ -566,6 +586,7 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
             if(descriptorParam != null)
                 descriptorParam.setParent(null);
 
+            notifyRemoved(NCLElementSets.DESCRIPTORPARAM, descriptorParam);
             return true;
         }
         return false;
