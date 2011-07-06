@@ -51,7 +51,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLScrollDescriptorParam extends NCLDescriptorParam<NCLDescriptorParam, NCLScroll> {
+public class NCLScrollDescriptorParam<P extends NCLDescriptorParam> extends NCLDefaultDescriptorParam<P, NCLScroll> {
 
 
     public NCLScrollDescriptorParam() {

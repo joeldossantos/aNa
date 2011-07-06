@@ -50,7 +50,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLStringDescriptorParam extends NCLDescriptorParam<NCLDescriptorParam, String> {
+public class NCLStringDescriptorParam<P extends NCLDescriptorParam> extends NCLDefaultDescriptorParam<P, String> {
 
 
     public NCLStringDescriptorParam() {

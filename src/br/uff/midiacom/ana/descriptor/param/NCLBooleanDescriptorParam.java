@@ -50,7 +50,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLBooleanDescriptorParam extends NCLDescriptorParam<NCLDescriptorParam, Boolean> {
+public class NCLBooleanDescriptorParam<P extends NCLDescriptorParam> extends NCLDefaultDescriptorParam<P, Boolean> {
 
 
     public NCLBooleanDescriptorParam() {

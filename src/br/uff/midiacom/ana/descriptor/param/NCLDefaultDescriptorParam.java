@@ -37,8 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.Element;
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.NCLAttributes;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -48,7 +50,32 @@ import br.uff.midiacom.ana.datatype.NCLAttributes;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public interface NCLDescriptorParam<P extends NCLDescriptorParam, V> extends Element, Comparable<P> {
+public abstract class NCLDefaultDescriptorParam<P extends NCLDescriptorParam, V> extends NCLElement implements NCLDescriptorParam<P, V> {
+
+    private NCLAttributes name;
+    private V value;
+
+
+    /**
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLDefaultDescriptorParam() {}
+
+
+    /**
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     *
+     * @param reader
+     *          elemento representando o leitor XML do parser SAX.
+     * @param parent
+     *          elemento NCL representando o elemento pai.
+     */
+    public NCLDefaultDescriptorParam(XMLReader reader, NCLElement parent) {
+        setReader(reader);
+        setParent(parent);
+
+        getReader().setContentHandler(this);
+    }
 
 
     /**
@@ -57,7 +84,9 @@ public interface NCLDescriptorParam<P extends NCLDescriptorParam, V> extends Ele
      * @param name
      *          Elemento representando o nome do parâmetro.
      */
-    public void setName(NCLAttributes name);
+    public void setName(NCLAttributes name) {
+        this.name = name;
+    }
 
 
     /**
@@ -66,7 +95,9 @@ public interface NCLDescriptorParam<P extends NCLDescriptorParam, V> extends Ele
      * @return
      *          elemento representando o nome do parâmetro.
      */
-    public NCLAttributes getName();
+    public NCLAttributes getName() {
+        return name;
+    }
 
 
     /**
@@ -77,7 +108,9 @@ public interface NCLDescriptorParam<P extends NCLDescriptorParam, V> extends Ele
      * @throws IllegalArgumentException
      *          se o valor não estiver de acordo com o esperado.
      */
-    public void setValue(V value) throws IllegalArgumentException;
+    public void setValue(V value) throws IllegalArgumentException {
+        this.value = value;
+    }
 
 
     /**
@@ -86,5 +119,73 @@ public interface NCLDescriptorParam<P extends NCLDescriptorParam, V> extends Ele
      * @return
      *          valor do parâmetro.
      */
-    public V getValue();
+    public V getValue() {
+        return value;
+    }
+
+
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<descriptorParam";
+        if(getName() != null)
+            content += " name='" + getName().toString() + "'";
+        if(getValue() != null)
+            content += " value='" + getParamValue() + "'";
+        content += "/>\n";
+
+        return content;
+    }
+
+
+    public int compareTo(P other) {
+        return getName().compareTo(other.getName());
+    }
+
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        cleanWarnings();
+        cleanErrors();
+        for(int i = 0; i < attributes.getLength(); i++){
+            if(attributes.getLocalName(i).equals("name")){
+                    for(NCLAttributes a : NCLAttributes.values()){
+                        if(a.toString().equals(attributes.getValue(i)))
+                            setName(a);
+                    }
+                }
+            else if(attributes.getLocalName(i).equals("value"))
+                setParamValue(attributes.getValue(i));
+        }
+    }
+
+
+    /**
+     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
+     * de forma a atribuir o valor do tipo correto para cada parâmetro de
+     * descritor.
+     *
+     * @param value
+     *          String representando o valor do parâmetro de descritor.
+     */
+    protected abstract void setParamValue(String value);
+
+
+    /**
+     * Retorna o valor do parâmetro como uma String.
+     *
+     * @return
+     *          String representando o valor do parâmetro do descritor.
+     */
+    protected abstract String getParamValue();
 }
