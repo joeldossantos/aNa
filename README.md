@@ -19,6 +19,7 @@ Contribuidores
 --------------
 
 - https://github.com/flaviasilva
+- https://github.com/juliavaranda
 
 _(Se você foi esquecido, por favor nos informe!)_
 
