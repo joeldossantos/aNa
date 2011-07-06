@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
@@ -97,6 +98,7 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
             if(descriptor != null)
                 descriptor.setParent(this);
 
+            notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
             return true;
         }
         return false;
@@ -136,6 +138,7 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
             if(descriptor != null)
                 descriptor.setParent(null);
 
+            notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
             return true;
         }
         return false;
@@ -189,6 +192,7 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
             if(importBase != null)
                 importBase.setParent(this);
 
+            notifyInserted(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;
@@ -209,6 +213,7 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
             if(importBase != null)
                 importBase.setParent(null);
 
+            notifyRemoved(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;

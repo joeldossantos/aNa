@@ -286,7 +286,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      * @param inserted
      *          element inserted.
      */
-    protected void notifyInserted(NCLElementSets setName, NCLElement inserted) {
+    protected void notifyInserted(NCLElementSets setName, Element inserted) {
         if(listener != null)
             (new NCLNotifier(1, listener, this, setName, inserted)).start();
     }
@@ -300,7 +300,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      * @param inserted
      *          element removed.
      */
-    protected void notifyRemoved(NCLElementSets setName, NCLElement removed) {
+    protected void notifyRemoved(NCLElementSets setName, Element removed) {
         if(listener != null)
             (new NCLNotifier(1, listener, this, setName, removed)).start();
     }

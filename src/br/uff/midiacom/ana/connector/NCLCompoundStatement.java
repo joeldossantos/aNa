@@ -38,6 +38,8 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLOperator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -94,6 +96,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLOperator operator) {
+        notifyAltered(NCLElementAttributes.OPERATOR, this.operator, operator);
         this.operator = operator;
     }
     
@@ -116,6 +119,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      *          booleano que define se a assertiva está negada.
      */
     public void setIsNegated(Boolean isNegated) {
+        notifyAltered(NCLElementAttributes.ISNEGATED, this.isNegated, isNegated);
         this.isNegated = isNegated;
     }
     
@@ -146,6 +150,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
             //atribui este como parente do atributo
             statement.setParent(this);
 
+            notifyInserted(NCLElementSets.STATEMENTS, statement);
             return true;
         }
         return false;
@@ -168,6 +173,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
             if(statement != null)
                 statement.setParent(null);
 
+            notifyRemoved(NCLElementSets.STATEMENTS, statement);
             return true;
         }
         return false;

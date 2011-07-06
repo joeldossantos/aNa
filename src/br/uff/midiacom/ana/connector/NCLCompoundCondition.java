@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -98,6 +100,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
      *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLConditionOperator operator) {
+        notifyAltered(NCLElementAttributes.OPERATOR, this.operator, operator);
         this.operator = operator;
     }
     
@@ -128,6 +131,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             //atribui este como parente da condicao
             condition.setParent(this);
 
+            notifyInserted(NCLElementSets.CONDITIONS, condition);
             return true;
         }
         return false;
@@ -150,6 +154,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             if(condition != null)
                 condition.setParent(null);
 
+            notifyRemoved(NCLElementSets.CONDITIONS, condition);
             return true;
         }
         return false;
@@ -206,6 +211,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             //atribui este como parente do statement
             statement.setParent(this);
 
+            notifyInserted(NCLElementSets.STATEMENTS, statement);
             return true;
         }
         return false;
@@ -228,6 +234,7 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
             if(statement != null)
                 statement.setParent(null);
 
+            notifyRemoved(NCLElementSets.STATEMENTS, statement);
             return true;
         }
         return false;
@@ -273,12 +280,14 @@ public class NCLCompoundCondition<C extends NCLCondition, S extends NCLStatement
         if(delay != null && delay < 0)
             throw new IllegalArgumentException("Invalid delay");
 
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.delay = delay;
         this.parDelay= null;
     }
 
 
     public void setDelay(P delay) {
+        notifyAltered(NCLElementAttributes.DELAY, this.delay, delay);
         this.parDelay = delay;
         this.delay = null;
     }
