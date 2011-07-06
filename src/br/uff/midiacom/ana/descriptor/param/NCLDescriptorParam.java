@@ -140,7 +140,7 @@ public abstract class NCLDescriptorParam<P extends NCLDescriptorParam, V> extend
         content = space + "<descriptorParam";
         if(getName() != null)
             content += " name='" + getName().toString() + "'";
-        if(getValue() != null)
+        if((getValue() != null) || (this instanceof NCLColorDescriptorParam && ((NCLColorDescriptorParam)this).getIsTransparent() != null))
             content += " value='" + getParamValue() + "'";
         content += "/>\n";
 
