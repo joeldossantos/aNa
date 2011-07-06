@@ -92,7 +92,7 @@ public class NCLColorDescriptorParam<P extends NCLDescriptorParam> extends NCLDe
 
     @Override
     protected String getParamValue() {
-        if(getIsTransparent())
+        if((getIsTransparent() != null) && (getIsTransparent()))
             return "transparent";
         
         return getValue().toString();

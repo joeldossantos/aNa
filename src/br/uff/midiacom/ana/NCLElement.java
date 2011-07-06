@@ -288,7 +288,7 @@ public abstract class NCLElement extends DefaultHandler implements Element {
      */
     protected void notifyInserted(NCLElementSets setName, Element inserted) {
         if(listener != null)
-            (new NCLNotifier(1, listener, this, setName, inserted)).start();
+            (new NCLNotifier(0, listener, this, setName, inserted)).start();
     }
 
 

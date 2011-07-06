@@ -101,7 +101,10 @@ public class NCLPercentDescriptorParam<P extends NCLDescriptorParam> extends NCL
 
     @Override
     protected String getParamValue() {
-        return getValue().toString();
+        if(relative)
+            return (getValue().toString())+"%";
+        else
+            return getValue().toString();
     }
 
 

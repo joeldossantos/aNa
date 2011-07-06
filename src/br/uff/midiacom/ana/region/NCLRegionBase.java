@@ -66,7 +66,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLRegionBase<RB extends NCLRegionBase, R extends NCLRegion, I extends NCLImport> extends NCLIdentifiableElement implements Comparable<RB> {
 
     private String device;
     private R parent_region;
@@ -467,5 +467,11 @@ public class NCLRegionBase<R extends NCLRegion, I extends NCLImport> extends NCL
      */
     protected R createRegion() {
         return (R) new NCLRegion(getReader(), this);
+    }
+    
+    
+    
+    public int compareTo(RB other) {
+        return getId().compareTo(other.getId());
     }
 }
