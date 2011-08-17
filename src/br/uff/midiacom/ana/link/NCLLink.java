@@ -42,6 +42,8 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -96,6 +98,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      *          conector a ser atribuido ao link.
      */
     public void setXconnector(C xconnector) {
+        notifyAltered(NCLElementAttributes.XCONNECTOR, this.xconnector, xconnector);
         this.xconnector = xconnector;
     }
     
@@ -127,6 +130,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
             if(param != null)
                 param.setParent(this);
 
+            notifyInserted(NCLElementSets.LINKPARAMS, param);
             return true;
         }
         return false;
@@ -149,6 +153,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
             if(param != null)
                 param.setParent(null);
 
+            notifyRemoved(NCLElementSets.LINKPARAMS, param);
             return true;
         }
         return false;
@@ -205,6 +210,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
             //atribui este como parente do bind
             bind.setParent(this);
 
+            notifyInserted(NCLElementSets.BINDS, bind);
             return true;
         }
         return false;
@@ -227,6 +233,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
             if(bind != null)
                 bind.setParent(null);
 
+            notifyRemoved(NCLElementSets.BINDS, bind);
             return true;
         }
         return false;

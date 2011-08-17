@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import java.util.Set;
 import org.xml.sax.Attributes;
@@ -110,6 +111,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
      *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
      */
     public void setName(C connectorParam) {
+        notifyAltered(NCLElementAttributes.NAME, this.name, connectorParam);
         this.name = connectorParam;
     }
     
@@ -137,6 +139,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
         if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
+        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
         this.value = value;
     }
     

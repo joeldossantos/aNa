@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
@@ -98,6 +99,7 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
             if(rule != null)
                 rule.setParent(this);
 
+            notifyInserted(NCLElementSets.RULES, rule);
             return true;
         }
         return false;
@@ -120,6 +122,7 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
             if(rule != null)
                 rule.setParent(null);
 
+            notifyRemoved(NCLElementSets.RULES, rule);
             return true;
         }
         return false;
@@ -175,6 +178,7 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
             if(importBase != null)
                 importBase.setParent(this);
 
+            notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
             return true;
         }
         return false;
@@ -195,6 +199,7 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
             if(importBase != null)
                 importBase.setParent(null);
 
+            notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
             return true;
         }
         return false;

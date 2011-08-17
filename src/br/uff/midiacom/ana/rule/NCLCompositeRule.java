@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLOperator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -99,6 +101,7 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
      *          elemento representando o operador da regra composta.
      */
     public void setOperator(NCLOperator operator) {
+        notifyAltered(NCLElementAttributes.OPERATOR, this.operator, operator);
         this.operator = operator;
     }
 
@@ -130,6 +133,7 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
             if(rule != null)
                 rule.setParent(this);
 
+            notifyInserted(NCLElementSets.RULES, rule);
             return true;
         }
         return false;
@@ -152,6 +156,7 @@ public class NCLCompositeRule<T extends NCLTestRule> extends NCLIdentifiableElem
             if(rule != null)
                 rule.setParent(null);
 
+            notifyRemoved(NCLElementSets.RULES, rule);
             return true;
         }
         return false;

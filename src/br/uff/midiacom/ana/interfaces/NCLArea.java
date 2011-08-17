@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.datatype.NCLTime;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLMediaType;
 import br.uff.midiacom.ana.node.NCLMedia;
 import java.util.Vector;
@@ -114,6 +115,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
             }
         }
 
+        notifyAltered(NCLElementAttributes.COORDS, this.coords, coords);
         this.coords = coords;
     }
     
@@ -139,6 +141,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @see NCLTime
      */
     public void setBegin(NCLTime begin) {
+        notifyAltered(NCLElementAttributes.BEGIN, this.begin, begin);
         this.begin = begin;
     }
     
@@ -164,6 +167,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @see NCLTime
      */
     public void setEnd(NCLTime end) {
+        notifyAltered(NCLElementAttributes.END, this.end, end);
         this.end = end;
     }
     
@@ -191,6 +195,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
         if(text != null && "".equals(text.trim()))
             throw new IllegalArgumentException("Empty value String");
 
+        notifyAltered(NCLElementAttributes.TEXT, this.text, text);
         this.text = text;
     }
     
@@ -218,6 +223,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
         if(position != null && position < 0)
             throw new IllegalArgumentException("Invalid position");
 
+        notifyAltered(NCLElementAttributes.POSITION, this.position, position);
         this.position = position;
     }
     
@@ -242,6 +248,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @see NCLSample
      */
     public void setFirst(NCLSample first) {
+        notifyAltered(NCLElementAttributes.FIRST, this.first, first);
         this.first = first;
     }
     
@@ -266,6 +273,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @see NCLSample
      */
     public void setLast(NCLSample last) {
+        notifyAltered(NCLElementAttributes.LAST, this.last, last);
         this.last = last;
     }
     
@@ -295,6 +303,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
         if(label != null && "".equals(label.trim()))
             throw new IllegalArgumentException("Empty label String");
 
+        notifyAltered(NCLElementAttributes.LABEL, this.label, label);
         this.label = label;
     }
     

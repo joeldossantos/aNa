@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
@@ -98,6 +99,7 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             if(transition != null)
                 transition.setParent(this);
 
+            notifyInserted(NCLElementSets.TRANSITIONS, transition);
             return true;
         }
         return false;
@@ -120,6 +122,7 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             if(transition != null)
                 transition.setParent(null);
 
+            notifyRemoved(NCLElementSets.TRANSITIONS, transition);
             return true;
         }
         return false;
@@ -175,6 +178,7 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             if(importBase != null)
                 importBase.setParent(this);
 
+            notifyInserted(NCLElementSets.TRANSITIONBASE, importBase);
             return true;
         }
         return false;
@@ -195,6 +199,7 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
             if(importBase != null)
                 importBase.setParent(null);
 
+            notifyRemoved(NCLElementSets.TRANSITIONBASE, importBase);
             return true;
         }
         return false;

@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.node;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import java.util.Set;
@@ -89,6 +90,7 @@ public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R
      *          elemento representando o nó mapeado pelo bind.
      */
     public void setConstituent(N constituent) {
+        notifyAltered(NCLElementAttributes.CONSTITUENT, this.constituent, constituent);
         this.constituent = constituent;
     }
 
@@ -111,6 +113,7 @@ public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R
      *          elemento representando a regra de avaliação do bind.
      */
     public void setRule(R rule) {
+        notifyAltered(NCLElementAttributes.RULE, this.rule, rule);
         this.rule = rule;
     }
 
