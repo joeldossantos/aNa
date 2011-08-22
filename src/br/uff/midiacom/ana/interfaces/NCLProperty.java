@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLSystemVariable;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -110,6 +111,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
      *          se o nome da propriedade não for válido.
      */
     public void setName(String name) throws NCLInvalidIdentifierException {
+        notifyAltered(NCLElementAttributes.NAME, getName(), name);
         setId(name);
     }    
 
@@ -126,6 +128,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
         if(name == null)
             throw new NCLInvalidIdentifierException("Invalid name");
 
+        notifyAltered(NCLElementAttributes.NAME, getName(), name);
         setId(name.toString());
     }
     
@@ -153,6 +156,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
         if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
 
+        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
         this.value = value;
     }
     

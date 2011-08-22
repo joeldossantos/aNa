@@ -42,6 +42,8 @@ import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -106,6 +108,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      *          elemento representando o switch a ser reutilizado.
      */
     public void setRefer(S refer) {
+        notifyAltered(NCLElementAttributes.REFER, this.refer, refer);
         this.refer = refer;
     }
 
@@ -137,6 +140,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             if(port != null)
                 port.setParent(this);
 
+            notifyInserted(NCLElementSets.PORTS, port);
             return true;
         }
         return false;
@@ -178,6 +182,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             if(port != null)
                 port.setParent(null);
 
+            notifyRemoved(NCLElementSets.PORTS, port);
             return true;
         }
         return false;
@@ -271,6 +276,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             //atribui este como parente do bind
             bind.setParent(this);
 
+            notifyInserted(NCLElementSets.BINDS, bind);
             return true;
         }
         return false;
@@ -291,6 +297,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             if(bind != null)
                 bind.setParent(null);
 
+            notifyRemoved(NCLElementSets.BINDS, bind);
             return true;
         }
         return false;
@@ -346,6 +353,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             if(node != null)
                 node.setParent(this);
 
+            notifyInserted(NCLElementSets.NODES, node);
             return true;
         }
         return false;
@@ -387,6 +395,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
             if(node != null)
                 node.setParent(null);
 
+            notifyRemoved(NCLElementSets.NODES, node);
             return true;
         }
         return false;

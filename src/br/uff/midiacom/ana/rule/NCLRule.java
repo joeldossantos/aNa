@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.NCLComparator;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLMimeType;
 import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
@@ -102,6 +103,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
      *          elemento representando a propriedade associada ao atributo.
      */
     public void setVar(P var) {
+        notifyAltered(NCLElementAttributes.VAR, this.var, var);
         this.var = var;
     }
 
@@ -124,6 +126,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
      *          elemento representando o comparador da regra.
      */
     public void setComparator(NCLComparator comparator) {
+        notifyAltered(NCLElementAttributes.COMPARATOR, this.comparator, comparator);
         this.comparator = comparator;
     }
 
@@ -152,6 +155,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
         if (value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty String");
 
+        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
         this.value = value;
     }
 

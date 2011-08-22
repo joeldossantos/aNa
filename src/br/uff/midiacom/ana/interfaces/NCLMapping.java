@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
@@ -89,6 +90,7 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
      *          elemento representando o componente mapeado.
      */
     public void setComponent(N component) {
+        notifyAltered(NCLElementAttributes.COMPONENT, this.component, component);
         this.component = component;
     }
 
@@ -111,6 +113,7 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
      *          elemento representando a interface mapeada.
      */
     public void setInterface(I interfac) {
+        notifyAltered(NCLElementAttributes.INTERFACE, this.interfac, interfac);
         this.interfac = interfac;
     }
 

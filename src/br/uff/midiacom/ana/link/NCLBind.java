@@ -44,6 +44,8 @@ import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLParamInstance;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLContext;
@@ -105,6 +107,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      *          elemento representando o papel ao qual o bind será associado.
      */
     public void setRole(R role) {
+        notifyAltered(NCLElementAttributes.ROLE, this.role, role);
         this.role = role;
     }
     
@@ -127,6 +130,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      *          elemento representando o nó mapeado pelo bind.
      */
     public void setComponent(N component) {
+        notifyAltered(NCLElementAttributes.COMPONENT, this.component, component);
         this.component = component;
     }
     
@@ -149,6 +153,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      *          elemento representando a interface do nó.
      */
     public void setInterface(I interfac) {
+        notifyAltered(NCLElementAttributes.INTERFACE, this.interfac, interfac);
         this.interfac = interfac;
     }
     
@@ -171,6 +176,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      *          elemento representando o descritor a ser atribuido.
      */
     public void setDescriptor(D descriptor) {
+        notifyAltered(NCLElementAttributes.DESCRIPTOR, this.descriptor, descriptor);
         this.descriptor = descriptor;
     }
     
@@ -202,6 +208,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             if(param != null)
                 param.setParent(this);
 
+            notifyInserted(NCLElementSets.BINDPARAMS, param);
             return true;
         }
         return false;
@@ -224,6 +231,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
             if(param != null)
                 param.setParent(null);
 
+            notifyRemoved(NCLElementSets.BINDPARAMS, param);
             return true;
         }
         return false;
