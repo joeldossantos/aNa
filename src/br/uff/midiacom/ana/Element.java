@@ -179,4 +179,24 @@ public interface Element {
      * representativos dos elementos NCL a partir de um arquivo XML.
      */
     public void endDocument();
+
+
+    /**
+     * Atribui um ouvinte para notificações de mudança do elemento. Caso o
+     * argumento seja nulo, não utilizará nenhum ouvinte.
+     *
+     * @param listener
+     *          objeto que receberá as notificações.
+     */
+    public void setModificationListener(NCLModificationListener listener);
+
+
+    /**
+     * Retorna o ouvinte para notificações de mudança do elemento.
+     *
+     * @return
+     *          objeto que recebe as notificações ou null se nenhum ouvinte
+     *          estiver assiciado.
+     */
+    public NCLModificationListener getModificationListener();
 }
