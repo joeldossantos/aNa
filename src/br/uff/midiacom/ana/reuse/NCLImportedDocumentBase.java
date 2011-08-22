@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.reuse;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import java.util.Set;
 import java.util.TreeSet;
@@ -94,6 +95,7 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
             if(importNCL != null)
                 importNCL.setParent(this);
 
+            notifyInserted(NCLElementSets.IMPORTS, importNCL);
             return true;
         }
         return false;
@@ -114,6 +116,7 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
             if(importNCL != null)
                 importNCL.setParent(null);
 
+            notifyRemoved(NCLElementSets.IMPORTS, importNCL);
             return true;
         }
         return false;

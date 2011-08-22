@@ -45,6 +45,8 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import br.uff.midiacom.ana.datatype.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.NCLMediaType;
 import br.uff.midiacom.ana.datatype.NCLMimeType;
@@ -120,7 +122,8 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
     public void setSrc(String src) throws URISyntaxException {
         if(src != null)
             this.src = new URI(src).toString();
-        
+
+        notifyAltered(NCLElementAttributes.SRC, this.src, src);
         this.src = src;
     }
     
@@ -168,6 +171,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
         if(!time.isUTC() || getType() != NCLMimeType.APPLICATION_X_GINGA_TIME)
             throw new IllegalArgumentException("Invalid src");
 
+        notifyAltered(NCLElementAttributes.SRC, this.src, src);
         this.src = time.toString();
     }
     
@@ -195,6 +199,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          tipo da mídia.
      */
     public void setType(NCLMimeType type) {
+        notifyAltered(NCLElementAttributes.TYPE, this.type, type);
         this.type = type;
     }
     
@@ -217,6 +222,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          elemento representando o descritor da mídia.
      */
     public void setDescriptor(D descriptor) {
+        notifyAltered(NCLElementAttributes.DESCRIPTOR, this.descriptor, descriptor);
         this.descriptor = descriptor;
     }
     
@@ -239,6 +245,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          elemento representando a media a ser reutilizado.
      */
     public void setRefer(M refer) {
+        notifyAltered(NCLElementAttributes.REFER, this.refer, refer);
         this.refer = refer;
     }
 
@@ -261,6 +268,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          elemento representando o tipo de instancia.
      */
     public void setInstance(NCLInstanceType instance) {
+        notifyAltered(NCLElementAttributes.INSTANCE, this.instance, instance);
         this.instance = instance;
     }
 
@@ -292,6 +300,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             if(area != null)
                 area.setParent(this);
 
+            notifyInserted(NCLElementSets.AREAS, area);
             return true;
         }
         return false;
@@ -333,6 +342,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             if(area != null)
                 area.setParent(null);
 
+            notifyRemoved(NCLElementSets.AREAS, area);
             return true;
         }
         return false;
@@ -407,6 +417,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             if(property != null)
                 property.setParent(this);
 
+            notifyInserted(NCLElementSets.PROPERTIES, property);
             return true;
         }
         return false;
@@ -448,6 +459,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
             if(property != null)
                 property.setParent(null);
 
+            notifyRemoved(NCLElementSets.PROPERTIES, property);
             return true;
         }
         return false;

@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -89,6 +90,7 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
         if (name != null && "".equals(name.trim()))
             throw new IllegalArgumentException("Empty String");
 
+        notifyAltered(NCLElementAttributes.NAME, this.name, name);
         this.name = name;
     }
 

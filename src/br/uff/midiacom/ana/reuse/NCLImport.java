@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.reuse;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.NCLImportType;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.region.NCLRegionBase;
@@ -114,6 +115,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
      *          String representando o alias.
      */
     public void setAlias(String alias) {
+        notifyAltered(NCLElementAttributes.ALIAS, this.alias, alias);
         this.alias = alias;
     }
 
@@ -144,6 +146,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
         if (documentURI != null)
             this.documentURI = new URI(documentURI).toString();
 
+        notifyAltered(NCLElementAttributes.DOCUMENTURI, this.documentURI, documentURI);
         this.documentURI = documentURI;
     }
 
@@ -166,6 +169,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
      *          elemento representando a região associada.
      */
     public void setRegion(R region) {
+        notifyAltered(NCLElementAttributes.REGION, this.region, region);
         this.region = region;
     }
 

@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.datatype.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.NCLTransitionType;
 import br.uff.midiacom.ana.datatype.NCLColor;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -106,6 +107,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          elemento representando o tipo da transição.
      */
     public void setType(NCLTransitionType type) {
+        notifyAltered(NCLElementAttributes.TYPE, this.type, type);
         this.type = type;
     }
 
@@ -128,6 +130,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          elemento representando o subtipo da transição.
      */
     public void setSubtype(NCLTransitionSubtype subtype) {
+        notifyAltered(NCLElementAttributes.SUBTYPE, this.subtype, subtype);
         this.subtype = subtype;
     }
 
@@ -150,6 +153,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          elemento representando a duração da transição.
      */
     public void setDur(NCLTime dur) {
+        notifyAltered(NCLElementAttributes.DUR, this.dur, dur);
         this.dur = dur;
     }
 
@@ -172,6 +176,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          fracionário representando o delay inicial.
      */
     public void setStartProgress(Double startProgress) {
+        notifyAltered(NCLElementAttributes.STARTPROGRESS, this.startProgress, startProgress);
         this.startProgress = startProgress;
     }
 
@@ -194,6 +199,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          fracionário representando o delay final.
      */
     public void setEndProgress(Double endProgress) {
+        notifyAltered(NCLElementAttributes.ENDPROGRESS, this.endProgress, endProgress);
         this.endProgress = endProgress;
     }
 
@@ -216,6 +222,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          elemento representando a direção.
      */
     public void setDirection(NCLTransitionDirection direction) {
+        notifyAltered(NCLElementAttributes.DIRECTION, this.direction, direction);
         this.direction = direction;
     }
 
@@ -238,6 +245,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          cor associada a transição de fade.
      */
     public void setFadeColor(NCLColor fadeColor) {
+        notifyAltered(NCLElementAttributes.FADECOLOR, this.fadeColor, fadeColor);
         this.fadeColor = fadeColor;
     }
 
@@ -260,6 +268,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          inteiro representando o número de repetições.
      */
     public void setHorRepeat(Integer horRepeat) {
+        notifyAltered(NCLElementAttributes.HORREPEAT, this.horRepeat, horRepeat);
         this.horRepeat = horRepeat;
     }
 
@@ -282,6 +291,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          inteiro representando o número de repetições.
      */
     public void setVertRepeat(Integer vertRepeat) {
+        notifyAltered(NCLElementAttributes.VERTREPEAT, this.vertRepeat, vertRepeat);
         this.vertRepeat = vertRepeat;
     }
 
@@ -304,6 +314,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          inteiro representando a largura da borda.
      */
     public void setBorderWidth(Integer borderWidth) {
+        notifyAltered(NCLElementAttributes.BORDERWIDTH, this.borderWidth, borderWidth);
         this.borderWidth = borderWidth;
     }
 
@@ -326,6 +337,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      *          cor da borda.
      */
     public void setBorderColor(NCLColor borderColor) {
+        notifyAltered(NCLElementAttributes.BORDERCOLOR, this.borderColor, borderColor);
         this.borderColor = borderColor;
     }
 

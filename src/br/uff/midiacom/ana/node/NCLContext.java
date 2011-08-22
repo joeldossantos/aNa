@@ -46,6 +46,8 @@ import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.NCLElementSets;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -111,6 +113,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      *          elemento representando o contexto a ser reutilizado.
      */
     public void setRefer(C refer) {
+        notifyAltered(NCLElementAttributes.REFER, this.refer, refer);
         this.refer = refer;
     }
 
@@ -142,6 +145,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(port != null)
                 port.setParent(this);
 
+            notifyInserted(NCLElementSets.PORTS, port);
             return true;
         }
         return false;
@@ -183,6 +187,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(port != null)
                 port.setParent(null);
 
+            notifyRemoved(NCLElementSets.PORTS, port);
             return true;
         }
         return false;
@@ -257,6 +262,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(property != null)
                 property.setParent(this);
 
+            notifyInserted(NCLElementSets.PROPERTIES, property);
             return true;
         }
         return false;
@@ -298,6 +304,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(property != null)
                 property.setParent(null);
 
+            notifyRemoved(NCLElementSets.PROPERTIES, property);
             return true;
         }
         return false;
@@ -372,6 +379,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(node != null)
                 node.setParent(this);
 
+            notifyInserted(NCLElementSets.NODES, node);
             return true;
         }
         return false;
@@ -413,6 +421,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(node != null)
                 node.setParent(null);
 
+            notifyRemoved(NCLElementSets.NODES, node);
             return true;
         }
         return false;
@@ -487,6 +496,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(link != null)
                 link.setParent(this);
 
+            notifyInserted(NCLElementSets.LINKS, link);
             return true;
         }
         return false;
@@ -509,6 +519,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(link != null)
                 link.setParent(null);
 
+            notifyRemoved(NCLElementSets.LINKS, link);
             return true;
         }
         return false;
@@ -566,6 +577,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(meta != null)
                 meta.setParent(this);
 
+            notifyInserted(NCLElementSets.METAS, meta);
             return true;
         }
         return false;
@@ -588,6 +600,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(meta != null)
                 meta.setParent(null);
 
+            notifyRemoved(NCLElementSets.METAS, meta);
             return true;
         }
         return false;
@@ -645,6 +658,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(metadata != null)
                 metadata.setParent(this);
 
+            notifyInserted(NCLElementSets.METADATAS, metadata);
             return true;
         }
         return false;
@@ -667,6 +681,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
             if(metadata != null)
                 metadata.setParent(null);
 
+            notifyRemoved(NCLElementSets.METADATAS, metadata);
             return true;
         }
         return false;
