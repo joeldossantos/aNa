@@ -43,9 +43,9 @@ package br.uff.midiacom.ana.datatype;
  */
 public enum NCLNamespace {
 
-    EDTV("http://www.ncl.org.br/NCL3.0/profiles/NCL30EDTV.xsd"),
-    BDTV("http://www.ncl.org.br/NCL3.0/profiles/NCL30BDTV.xsd"),
-    CAUSAL_CONNECTOR("http://www.ncl.org.br/NCL3.0/profiles/NCL30CausalConnector.xsd");
+    EDTV("http://www.ncl.org.br/NCL3.0/EDTVProfile"),
+    BDTV("http://www.ncl.org.br/NCL3.0/BDTVProfile"),
+    CAUSAL_CONNECTOR("http://www.ncl.org.br/NCL3.0/causalConnectorProfile");
 
 
     private String name;

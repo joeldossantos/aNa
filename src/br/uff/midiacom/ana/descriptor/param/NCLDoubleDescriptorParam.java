@@ -100,7 +100,7 @@ public class NCLDoubleDescriptorParam<P extends NCLDescriptorParam> extends NCLD
 
     @Override
     protected String getParamValue() {
-        if(getRelative())
+        if(getRelative() != null && !getRelative())
             return ""+getValue().intValue()+"%";
         else
             return ""+ getValue().intValue();
