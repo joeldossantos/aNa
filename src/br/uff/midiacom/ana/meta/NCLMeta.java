@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 

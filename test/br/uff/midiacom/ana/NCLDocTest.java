@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.NCLNamespace;
+import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;

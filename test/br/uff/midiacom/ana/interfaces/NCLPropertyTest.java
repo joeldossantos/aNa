@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.datatype.NCLSystemVariable;
+import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;

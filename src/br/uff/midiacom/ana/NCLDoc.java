@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.NCLElementSets;
-import br.uff.midiacom.ana.datatype.NCLNamespace;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

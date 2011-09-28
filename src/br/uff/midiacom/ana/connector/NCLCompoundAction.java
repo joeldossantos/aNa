@@ -39,9 +39,9 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLActionOperator;
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

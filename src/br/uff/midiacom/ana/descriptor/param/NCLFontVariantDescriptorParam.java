@@ -38,8 +38,8 @@
 package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.NCLAttributes;
-import br.uff.midiacom.ana.datatype.NCLFontVariant;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
 import org.xml.sax.XMLReader;
 
 

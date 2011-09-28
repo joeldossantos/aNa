@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
-import br.uff.midiacom.ana.datatype.NCLTime;
+import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLBody;
@@ -45,12 +45,12 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.NCLElementSets;
-import br.uff.midiacom.ana.datatype.NCLInstanceType;
-import br.uff.midiacom.ana.datatype.NCLMediaType;
-import br.uff.midiacom.ana.datatype.NCLMimeType;
-import br.uff.midiacom.ana.datatype.NCLUriType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
+import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
+import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
+import br.uff.midiacom.ana.datatype.enums.NCLUriType;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -165,9 +165,9 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *          se o indicador não estiver no formato correto ou se a
      *          mídia não é do tipo Time.
      *
-     * @see NCLTime#isUTC()
+     * @see TimeType#isUTC()
      */
-    public void setSrc(NCLTime time) throws IllegalArgumentException {
+    public void setSrc(TimeType time) throws IllegalArgumentException {
         if(!time.isUTC() || getType() != NCLMimeType.APPLICATION_X_GINGA_TIME)
             throw new IllegalArgumentException("Invalid src");
 
@@ -184,7 +184,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
      *
      * @see NCLMedia#setSrc(java.lang.String)
      * @see NCLMedia#setSrc(br.pensario.datatype.NCLUriType, java.lang.String)
-     * @see NCLMedia#setSrc(br.pensario.interfaces.NCLTime)
+     * @see NCLMedia#setSrc(br.pensario.interfaces.TimeType)
      */
     public String getSrc() {
         return src;
@@ -682,7 +682,7 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
                             setSrc(attributes.getValue(i));
                         }
                         catch(URISyntaxException ex){
-                            setSrc(new NCLTime(attributes.getValue(i)));
+                            setSrc(new TimeType(attributes.getValue(i)));
                         }
                     }
                     else if(attributes.getLocalName(i).equals("type")){

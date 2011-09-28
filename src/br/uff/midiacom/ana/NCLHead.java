@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
-import br.uff.midiacom.ana.datatype.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;

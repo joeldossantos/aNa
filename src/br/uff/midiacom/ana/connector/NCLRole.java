@@ -38,8 +38,8 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.NCLDefaultActionRole;
-import br.uff.midiacom.ana.datatype.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
+import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 
 
 /**

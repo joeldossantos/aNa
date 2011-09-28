@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.NCLElementSets;
-import br.uff.midiacom.ana.datatype.NCLNotifier;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLNotifier;
 import java.util.ArrayList;
 import java.util.List;
 import org.xml.sax.Attributes;

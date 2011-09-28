@@ -37,10 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.datatype.NCLSample;
-import br.uff.midiacom.ana.datatype.NCLTime;
+import br.uff.midiacom.ana.datatype.SampleType;
+import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLSampleType;
+import br.uff.midiacom.ana.datatype.enums.NCLSampleType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;
@@ -56,8 +56,8 @@ public class NCLAreaTest {
     @Test
     public void test1() throws NCLInvalidIdentifierException {
         NCLArea area = new NCLArea("anchor");
-        area.setBegin(new NCLTime(5));
-        area.setEnd(new NCLTime(20));
+        area.setBegin(new TimeType(5));
+        area.setEnd(new TimeType(20));
 
         String expResult = "<area id='anchor' begin='5s' end='20s'/>\n";
         String result = area.parse(0);
@@ -67,8 +67,8 @@ public class NCLAreaTest {
     @Test
     public void test2() throws NCLInvalidIdentifierException {
         NCLArea area = new NCLArea("anchor");
-        area.setFirst(new NCLSample(5,NCLSampleType.F));
-        area.setLast(new NCLSample(20,NCLSampleType.F));
+        area.setFirst(new SampleType(5,NCLSampleType.F));
+        area.setLast(new SampleType(20,NCLSampleType.F));
 
         String expResult = "<area id='anchor' first='5f' last='20f'/>\n";
         String result = area.parse(0);

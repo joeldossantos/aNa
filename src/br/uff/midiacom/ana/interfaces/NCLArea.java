@@ -37,13 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.datatype.NCLSample;
-import br.uff.midiacom.ana.datatype.NCLTime;
+import br.uff.midiacom.ana.datatype.SampleType;
+import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.NCLMediaType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
 import br.uff.midiacom.ana.node.NCLMedia;
 import java.util.Vector;
 import org.xml.sax.Attributes;
@@ -60,12 +60,12 @@ import org.xml.sax.XMLReader;
 public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
 
     private int[] coords;
-    private NCLTime begin;
-    private NCLTime end;
+    private TimeType begin;
+    private TimeType end;
     private String text;
     private Integer position;
-    private NCLSample first;
-    private NCLSample last;
+    private SampleType first;
+    private SampleType last;
     private String label;
     
     
@@ -138,9 +138,9 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @param begin
      *          tempo de inicio da âncora temporal.
      *
-     * @see NCLTime
+     * @see TimeType
      */
-    public void setBegin(NCLTime begin) {
+    public void setBegin(TimeType begin) {
         notifyAltered(NCLElementAttributes.BEGIN, this.begin, begin);
         this.begin = begin;
     }
@@ -152,7 +152,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @return
      *          elemento representando o valor de tempo.
      */
-    public NCLTime getBegin() {
+    public TimeType getBegin() {
         return begin;
     }
     
@@ -164,9 +164,9 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @param end
      *          tempo de fim da âncora temporal.
      *
-     * @see NCLTime
+     * @see TimeType
      */
-    public void setEnd(NCLTime end) {
+    public void setEnd(TimeType end) {
         notifyAltered(NCLElementAttributes.END, this.end, end);
         this.end = end;
     }
@@ -178,7 +178,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @return
      *          elemento representando o valor de tempo.
      */
-    public NCLTime getEnd() {
+    public TimeType getEnd() {
         return end;
     }
     
@@ -245,9 +245,9 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @param first
      *          amostra de inicio da ancora.
      *
-     * @see NCLSample
+     * @see SampleType
      */
-    public void setFirst(NCLSample first) {
+    public void setFirst(SampleType first) {
         notifyAltered(NCLElementAttributes.FIRST, this.first, first);
         this.first = first;
     }
@@ -259,7 +259,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @return
      *          amostra de inicio da ancora.
      */
-    public NCLSample getFirst() {
+    public SampleType getFirst() {
         return first;
     }
     
@@ -270,9 +270,9 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @param last
      *          amostra de fim da ancora.
      *
-     * @see NCLSample
+     * @see SampleType
      */
-    public void setLast(NCLSample last) {
+    public void setLast(SampleType last) {
         notifyAltered(NCLElementAttributes.LAST, this.last, last);
         this.last = last;
     }
@@ -284,7 +284,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @return
      *          amostra de fim da ancora.
      */
-    public NCLSample getLast() {
+    public SampleType getLast() {
         return last;
     }
     
@@ -401,17 +401,17 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
                     setCoords(a);
                 }
                 else if(attributes.getLocalName(i).equals("begin"))
-                    setBegin(new NCLTime(attributes.getValue(i)));
+                    setBegin(new TimeType(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("end"))
-                    setEnd(new NCLTime(attributes.getValue(i)));
+                    setEnd(new TimeType(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("text"))
                     setText(attributes.getValue(i));
                 else if(attributes.getLocalName(i).equals("position"))
                     setPosition(new Integer(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("first"))
-                    setFirst(new NCLSample(attributes.getValue(i)));
+                    setFirst(new SampleType(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("last"))
-                    setLast(new NCLSample(attributes.getValue(i)));
+                    setLast(new SampleType(attributes.getValue(i)));
                 else if(attributes.getLocalName(i).equals("label"))
                     setLabel(attributes.getValue(i));
             }

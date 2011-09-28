@@ -37,15 +37,15 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
-import br.uff.midiacom.ana.datatype.NCLTime;
+import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLTransitionDirection;
-import br.uff.midiacom.ana.datatype.NCLTransitionSubtype;
-import br.uff.midiacom.ana.datatype.NCLTransitionType;
-import br.uff.midiacom.ana.datatype.NCLColor;
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
+import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
+import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
+import br.uff.midiacom.ana.datatype.enums.NCLColor;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -60,7 +60,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
 
     private NCLTransitionType type;
     private NCLTransitionSubtype subtype;
-    private NCLTime dur;
+    private TimeType dur;
     private Double startProgress;
     private Double endProgress;
     private NCLTransitionDirection direction;
@@ -152,7 +152,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * @param dur
      *          elemento representando a duração da transição.
      */
-    public void setDur(NCLTime dur) {
+    public void setDur(TimeType dur) {
         notifyAltered(NCLElementAttributes.DUR, this.dur, dur);
         this.dur = dur;
     }
@@ -164,7 +164,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * @return
      *          elemento representando a duração da transição.
      */
-    public NCLTime getDur() {
+    public TimeType getDur() {
         return dur;
     }
 
@@ -423,7 +423,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
                     }
                 }
                 else if(attributes.getLocalName(i).equals("dur")){
-                    setDur(new NCLTime(attributes.getValue(i)));
+                    setDur(new TimeType(attributes.getValue(i)));
                 }
                 else if(attributes.getLocalName(i).equals("startProgress")){
                     setStartProgress(new Double(attributes.getValue(i)));

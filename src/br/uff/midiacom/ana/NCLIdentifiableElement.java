@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

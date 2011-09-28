@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;

@@ -37,12 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
-import br.uff.midiacom.ana.datatype.NCLColor;
+import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.NCLTransitionDirection;
-import br.uff.midiacom.ana.datatype.NCLTransitionSubtype;
-import br.uff.midiacom.ana.datatype.NCLTransitionType;
-import br.uff.midiacom.ana.datatype.NCLTime;
+import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
+import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
+import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
+import br.uff.midiacom.ana.datatype.TimeType;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class NCLTransitionTest {
         trans.setType(NCLTransitionType.FADE);
         trans.setSubtype(NCLTransitionSubtype.CROSSFADE);
         trans.setDirection(NCLTransitionDirection.FORWARD);
-        trans.setDur(new NCLTime(5));
+        trans.setDur(new TimeType(5));
         trans.setStartProgress(0.1);
         trans.setEndProgress(0.9);
         trans.setFadeColor(NCLColor.BLACK);
