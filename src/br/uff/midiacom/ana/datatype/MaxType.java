@@ -35,25 +35,88 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.enums;
+package br.uff.midiacom.ana.datatype;
 
 
 /**
- * Nomes das variáveis de sistema (com argumento) da <i>Nested Context Language</i> (NCL).
+ * This class represents a value that can be a positive integer or the String
+ * "unbounded".
  */
-public enum NCLArgSystemVariable {
+public class MaxType {
 
-    SYSTEM_RETURNBITRATE_i("system.returnBitRate(i)"),
-    SYSTEM_SCREENSIZE_i("system.screenSize(i)"),
-    SYSTEM_SCREENGRAPHICSIZE_i("system.screenGraphicSize(i)"),
-    SYSTEM_AUDIOTYPE_i("system.audioType(i)"),
-    SYSTEM_DEVNUMBER_i("system.devNumber(i)"),
-    SYSTEM_CLASSTYPE_i("system.classType(i)"),
-    SYSTEM_INFO_i("system.info(i)");
+    private Integer value;
+    private String unbounded = "unbounded";
 
 
-    private String name;
-    private NCLArgSystemVariable(String name) { this.name = name;}
-    @Override
-    public String toString() { return name; }
+    /**
+     * Creates the value as a integer number.
+     *
+     * @param value
+     *          a positive integer.
+     * @throws IllegalArgumentException
+     *          if the integer is negative.
+     */
+    public MaxType(int value) throws IllegalArgumentException {
+        if(value < 0)
+            throw new IllegalArgumentException("Negative value");
+
+        this.value = value;
+    }
+
+
+    /**
+     * Creates the value as a String.
+     *
+     * @param value
+     *          String representing a positive integer or the String "unbounded".
+     * @throws NullPointerException
+     *          if the String is null.
+     * @throws IllegalArgumentException
+     *          if the String is empty.
+     */
+    public MaxType(String value) throws NullPointerException, IllegalArgumentException {
+        if(value == null)
+            throw new NullPointerException("Null value String");
+        if("".equals(value.trim()))
+            throw new IllegalArgumentException("Empty value String");
+
+        if(!value.equals(unbounded))
+            this.value = new Integer(value);
+    }
+
+
+    /**
+     * Return the value.
+     *
+     * @return
+     *          element representing a positive integer.
+     */
+    public Integer getValue() {
+        return value;
+    }
+
+
+    /**
+     * Check if the value is the String "unbounded".
+     *
+     * @return
+     *          true if the value is "unbounded".
+     */
+    public boolean isUnbounded() {
+        return value == null;
+    }
+
+
+    /**
+     * Returns the value.
+     *
+     * @return
+     *          String representing the value.
+     */
+    public String parse() {
+        if(value == null)
+            return unbounded;
+        else
+            return value.toString();
+    }
 }

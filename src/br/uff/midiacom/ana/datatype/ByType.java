@@ -35,59 +35,88 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.enums;
+package br.uff.midiacom.ana.datatype;
 
 
 /**
- * Nomes das variáveis de sistema (que não tem argumento) da <i>Nested Context Language</i> (NCL).
+ * This class represents a value that can be a positive integer or the String
+ * "indefinite".
  */
-public enum NCLSystemVariable {
+public class ByType {
 
-    SYSTEM_LANGUAGE("system.language"),
-    SYSTEM_CAPTION("system.caption"),
-    SYSTEM_SUBTITLE("system.subtitle"),
-    SYSTEM_SCREENSIZE("system.screenSize"),
-    SYSTEM_SCREENGRAPHICSIZE("system.screenGraphicSize"),
-    SYSTEM_AUDIOTYPE("system.audioType"),
-    SYSTEM_CLASSNUMBER("system.classNumber"),
-    SYSTEM_CPU("system.CPU"),
-    SYSTEM_MEMORY("system.memory"),
-    SYSTEM_OPERATINGSYSTEM("system.operatingSystem"),
-    SYSTEM_JAVACONFIGURATION("system.javaConfiguration"),
-    SYSTEM_JAVAPROFILE("system.javaProfile"),
-    SYSTEM_LUAVERSION("system.luaVersion"),
+    private Integer value;
+    private String indefinite = "indefinite";
 
 
-    DEFAULT_FOCUSBORDERCOLOR("default.focusBorderColor"),
-    DEFAULT_SELBORDERCOLOR("default.selBorderColor"),
-    DEFAULT_FOCUSBORDERWIDTH("default.focusBorderWidth"),
-    DEFAULT_FOCUSBORDERTRANSPARENCY("default.focusBorderTransparency"),
+    /**
+     * Creates the value as a integer number.
+     *
+     * @param value
+     *          a positive integer.
+     * @throws IllegalArgumentException
+     *          if the integer is negative.
+     */
+    public ByType(int value) throws IllegalArgumentException {
+        if(value < 0)
+            throw new IllegalArgumentException("Negative value");
+
+        this.value = value;
+    }
 
 
-    SERVICE_CURRENTFOCUS("service.currentFocus"),
-    SERVICE_CURRENTKEYMASTER("service.currentKeyMaster"),
+    /**
+     * Creates the value as a String.
+     *
+     * @param value
+     *          String representing a positive integer or the String "unbounded".
+     * @throws NullPointerException
+     *          if the String is null.
+     * @throws IllegalArgumentException
+     *          if the String is empty.
+     */
+    public ByType(String value) throws NullPointerException, IllegalArgumentException {
+        if(value == null)
+            throw new NullPointerException("Null value String");
+        if("".equals(value.trim()))
+            throw new IllegalArgumentException("Empty value String");
+
+        if(!value.equals(indefinite))
+            this.value = new Integer(value);
+    }
 
 
-    SI_NUMBEROFSERVICES("si.numberOfServices"),
-    SI_NUMBEROFPARTIALSERVICES("si.numberOfPartialServices"),
-    SI_CHANNELNUMBER("si.channelNumber"),
+    /**
+     * Return the value.
+     *
+     * @return
+     *          element representing a positive integer.
+     */
+    public Integer getValue() {
+        return value;
+    }
 
 
-    CHANNEL_KEYCAPTURE("channel.keyCapture"),
-    CHANNEL_VIRTUALKEYBOARD("channel.virtualKeyboard"),
-    CHANNEL_KEYBOARDBOUNDS("channel.keyboardBounds"),
-
-    SYSTEM_RETURNBITRATE_i("system.returnBitRate"),
-    SYSTEM_SCREENSIZE_i("system.screenSize"),
-    SYSTEM_SCREENGRAPHICSIZE_i("system.screenGraphicSize"),
-    SYSTEM_AUDIOTYPE_i("system.audioType"),
-    SYSTEM_DEVNUMBER_i("system.devNumber"),
-    SYSTEM_CLASSTYPE_i("system.classType"),
-    SYSTEM_INFO_i("system.info");
+    /**
+     * Check if the value is the String "indefinite".
+     *
+     * @return
+     *          true if the value is "indefinite".
+     */
+    public boolean isUnbounded() {
+        return value == null;
+    }
 
 
-    private String name;
-    private NCLSystemVariable(String name) { this.name = name;}
-    @Override
-    public String toString() { return name; }
+    /**
+     * Returns the value.
+     *
+     * @return
+     *          String representing the value.
+     */
+    public String parse() {
+        if(value == null)
+            return indefinite;
+        else
+            return value.toString();
+    }
 }
