@@ -37,30 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-/**
- * Esta classe define uma regra de teste composta da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiableElement implements NCLTestRule<T> {
+public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLElement> extends NCLIdentifiableElementPrototype<T, P> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
-    private NCLOperator operator;
-    private Set<T> rules = new TreeSet<T>();
-
-    private boolean insideRule;
+    protected NCLOperator operator;
+    protected IdentifiableElementList<T, T> rules;
 
 
     /**
@@ -71,26 +59,9 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador da regra não for válido.
      */
-    public NCLCompositeRuleType(String id) throws NCLInvalidIdentifierException {
+    public NCLCompositeRulePrototype(String id) throws XMLException {
         setId(id);
-    }
-
-
-    /**
-     * Construtor do elemento <i>compositeRule</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLCompositeRuleType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-
-        insideRule = false;
+        rules = new IdentifiableElementList<T, T>();
     }
 
 
@@ -101,7 +72,6 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
      *          elemento representando o operador da regra composta.
      */
     public void setOperator(NCLOperator operator) {
-        notifyAltered(NCLElementAttributes.OPERATOR, this.operator, operator);
         this.operator = operator;
     }
 
@@ -127,16 +97,8 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
      *
      * @see TreeSet#add
      */
-    public boolean addRule(T rule) {
-        if(rules.add(rule)){
-            //Se rule existe, atribui este como seu parente
-            if(rule != null)
-                rule.setParent(this);
-
-            notifyInserted(NCLElementSets.RULES, rule);
-            return true;
-        }
-        return false;
+    public boolean addRule(T rule) throws XMLException {
+        return rules.add(rule, (T) this);
     }
 
 
@@ -150,16 +112,13 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
      *
      * @see TreeSet#remove
      */
-    public boolean removeRule(T rule) {
-        if(rules.remove(rule)){
-            //Se rule existe, retira o seu parentesco
-            if(rule != null)
-                rule.setParent(null);
+    public boolean removeRule(T rule) throws XMLException {
+        return rules.remove(rule);
+    }
 
-            notifyRemoved(NCLElementSets.RULES, rule);
-            return true;
-        }
-        return false;
+
+    public boolean removeRule(String id) throws XMLException {
+        return rules.remove(id);
     }
 
 
@@ -171,8 +130,13 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
      * @return
      *          verdadeiro se a regra existir.
      */
-    public boolean hasRule(T rule) {
+    public boolean hasRule(T rule) throws XMLException {
         return rules.contains(rule);
+    }
+
+
+    public boolean hasRule(String id) throws XMLException {
+        return rules.get(id) != null;
     }
 
 
@@ -193,7 +157,7 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
      * @return
      *          lista contendo as regras da regra composta.
      */
-    public Set<T> getRules() {
+    public IdentifiableElementList<T, T> getRules() {
         return rules;
     }
 
@@ -226,82 +190,5 @@ public class NCLCompositeRuleType<T extends NCLTestRule> extends NCLIdentifiable
         content += "</compositeRule>\n";
 
         return content;
-    }
-
-
-    public int compareTo(T other) {
-        return getId().compareTo(other.getId());
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("compositeRule") && !insideRule){
-                cleanWarnings();
-                cleanErrors();
-                insideRule = true;
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                    else if(attributes.getLocalName(i).equals("operator")){
-                        for(NCLOperator op : NCLOperator.values()){
-                        if(op.toString().equals(attributes.getValue(i)))
-                            setOperator(op);
-                        }
-                    }
-                }
-            }
-            else if(localName.equals("compositeRule") && insideRule){
-                // compositeRule e um elemento interno
-                T child = createCompositeRule();
-                child.startElement(uri, localName, qName, attributes);
-                addRule(child);
-            }
-            else if(localName.equals("rule")){
-                T child = createRule();
-                child.startElement(uri, localName, qName, attributes);
-                addRule(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasRule()){
-            for(T rule : rules){
-                rule.endDocument();
-                addWarning(rule.getWarnings());
-                addError(rule.getErrors());
-            }
-        }
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>compositeRule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>compositeRule</i>.
-     */
-    protected T createCompositeRule() {
-        return (T) new NCLCompositeRuleType(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>rule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>rule</i>.
-     */
-    protected T createRule() {
-        return (T) new NCLRuleType(getReader(), this);
     }
 }

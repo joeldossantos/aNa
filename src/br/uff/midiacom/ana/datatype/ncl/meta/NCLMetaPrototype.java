@@ -35,56 +35,99 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
+package br.uff.midiacom.ana.datatype.ncl.meta;
 
-import br.uff.midiacom.ana.Element;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-/**
- * Esta classe define o elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parametro de descritor em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public interface NCLDescriptorParamType<P extends NCLDescriptorParamType, V> extends Element, Comparable<P> {
+public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+
+    protected StringType name;
+    protected StringType mcontent;
 
 
     /**
-     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
+     * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLMetaPrototype() {}
+
+
+    /**
+     * Atribui um nome ao metadado.
      *
      * @param name
-     *          Elemento representando o nome do parâmetro.
-     */
-    public void setName(NCLAttributes name);
-
-
-    /**
-     * Retorna o nome do parâmetro.
-     *
-     * @return
-     *          elemento representando o nome do parâmetro.
-     */
-    public NCLAttributes getName();
-
-
-    /**
-     * Atribui um valor ao parâmetro.
-     *
-     * @param value
-     *          valor do parâmetro.
+     *          String representando o nome do metadado.
      * @throws IllegalArgumentException
-     *          se o valor não estiver de acordo com o esperado.
+     *          se a String for vazia.
      */
-    public void setValue(V value) throws IllegalArgumentException;
+    public void setName(String name) throws XMLException {
+        this.name = new StringType(name);
+    }
 
 
     /**
-     * Retorna o valor do parâmetro.
+     * Retorna o nome do metadado.
      *
      * @return
-     *          valor do parâmetro.
+     *          String representando o nome do metadado.
      */
-    public V getValue();
+    public String getName() {
+        return name.getValue();
+    }
+
+
+    /**
+     * Atribui um conteúdo ao metadado.
+     *
+     * @param content
+     *          String representando o conteúdo do metadado.
+     * @throws IllegalArgumentException
+     *          se a String for vazia.
+     */
+    public void setContent(String content) throws XMLException {
+        this.mcontent = new StringType(content);
+    }
+
+
+    /**
+     * Retorna o conteúdo do metadado.
+     * 
+     * @return
+     *          String representando o conteúdo do metadado.
+     */
+    public String getContent() {
+        return mcontent.getValue();
+    }
+
+    
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<meta";
+        if(getName() != null)
+            content += " name='" + getName() + "'";
+        if(getContent() != null)
+            content += " content='" + getContent() + "'";
+        content += "/>\n";
+
+        return content;
+    }
+
+
+    public boolean compare(T other) {
+        return getName().equals(other.getName());
+    }
 }

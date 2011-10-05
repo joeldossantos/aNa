@@ -37,47 +37,23 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.reuse;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
-/**
- * Esta classe define uma base de documentos importados da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIdentifiableElement {
+public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBasePrototype, P extends NCLElement, Ei extends NCLImportPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
-    private Set<I> imports = new TreeSet<I>();
+    protected ElementList<Ei, T> imports;
 
 
     /**
      * Construtor do elemento <i>importedDocumentBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLImportedDocumentBaseType() {}
-
-
-    /**
-     * Construtor do elemento <i>importedDocumentBase</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLImportedDocumentBaseType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLImportedDocumentBasePrototype() {
+        imports = new ElementList<Ei, T>();
     }
 
 
@@ -89,16 +65,8 @@ public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIde
      *
      * @see TreeSet#add
      */
-    public boolean addImportNCL(I importNCL) {
-        if(imports.add(importNCL)){
-            //Se importNCL existe, atribui este como seu parente
-            if(importNCL != null)
-                importNCL.setParent(this);
-
-            notifyInserted(NCLElementSets.IMPORTS, importNCL);
-            return true;
-        }
-        return false;
+    public boolean addImportNCL(Ei importNCL) throws XMLException {
+        return imports.add(importNCL, (T) this);
     }
 
 
@@ -110,16 +78,8 @@ public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIde
      *
      * @see TreeSet#remove
      */
-    public boolean removeImportNCL(I importNCL) {
-        if(imports.remove(importNCL)){
-            //Se importNCL existe, retira o seu parentesco
-            if(importNCL != null)
-                importNCL.setParent(null);
-
-            notifyRemoved(NCLElementSets.IMPORTS, importNCL);
-            return true;
-        }
-        return false;
+    public boolean removeImportNCL(Ei importNCL) throws XMLException {
+        return imports.remove(importNCL);
     }
 
 
@@ -129,7 +89,7 @@ public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIde
      * @param importBase
      *          elemento representando o importador a ser verificado.
      */
-    public boolean hasImportNCL(I importNCL) {
+    public boolean hasImportNCL(Ei importNCL) throws XMLException {
         return imports.contains(importNCL);
     }
 
@@ -151,7 +111,7 @@ public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIde
      * @return
      *          lista contendo os importadores de documento da base de documentos importados.
      */
-    public Set<I> getImportNCLs() {
+    public ElementList<Ei, T> getImportNCLs() {
         return imports;
     }
 
@@ -174,7 +134,7 @@ public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIde
         if(hasImportNCL()){
             content += ">\n";
 
-            for(I imp : imports)
+            for(Ei imp : imports)
                 content += imp.parse(ident + 1);
 
             content += space + "</importedDocumentBase>\n";
@@ -183,52 +143,5 @@ public class NCLImportedDocumentBaseType<I extends NCLImportType> extends NCLIde
             content += "/>\n";
 
         return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("importedDocumentBase")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("importNCL")){
-                I child = createImportNCL();
-                child.startElement(uri, localName, qName, attributes);
-                addImportNCL(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasImportNCL()){
-            for(I imp : imports){
-                imp.endDocument();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>importNCL</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>importNCL</i>.
-     */
-    protected I createImportNCL() {
-        return (I) new NCLImportType(NCLImportType.NCL, getReader(), this);
     }
 }

@@ -40,12 +40,6 @@ package br.uff.midiacom.ana.datatype.ncl;
 import br.uff.midiacom.xml.XMLElement;
 
 
-/**
- * Esta interface define a interface básica dos elementos da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public interface NCLElement<T extends NCLElement> extends XMLElement<T> {
+public interface NCLElement<T extends NCLElement, P extends NCLElement> extends XMLElement<T, P> {
 
 }

@@ -35,71 +35,72 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
+package br.uff.midiacom.ana.datatype.ncl.meta;
 
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-/**
- * Esta classe define um elemento identificável da <i>Nested Context Language</i> (NCL), isto é,
- * um elemento que possui um identificador único (atributo <i>id</i> ou <i>name</i>.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public abstract class NCLIdentifiableElementType extends NCLElementType implements NCLIdentifiableElement {
-    
-    private String id;    
+public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLElement> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+
+    protected StringType rdfTree;
 
 
     /**
-     * Determina o identificador único do elemento da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param id
-     *          String representando o atributo <i>id</i> ou <i>name</i> do elemento.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador não for válido.
+     * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
      */
-    public void setId(String id) throws NCLInvalidIdentifierException {
-        if(!validate(id))
-            throw new NCLInvalidIdentifierException("Invalid identifier");
+    public NCLMetadataPrototype() {}
 
-        notifyAltered(NCLElementAttributes.ID, this.id, id);
-        this.id = id;
-    }
-    
-    
+
     /**
-     * Retorna o identificador único do elemento da <i>Nested Context Language</i> (NCL).
-     * Este identificador pode representar o atributo <i>id</i> ou <i>name</i> do elemento.
-     * 
+     * Determina a árvore RDF de metadados do elemento metadata.
+     *
+     * @param rdfTree
+     *          String representando a árvore RDF.
+     * @throws IllegalArgumentException
+     *          se a String for vazia.
+     */
+    public void setRDFTree(String rdfTree) throws XMLException {
+        this.rdfTree = new StringType(rdfTree);
+    }
+
+
+    /**
+     * Retorna a árvore RDF de metadados do elemento metadata.
+     *
      * @return
-     *          String representando o identificador do elemento.
+     *          String representando a árvore RDF.
      */
-    public String getId() {
-        return id;
+    public String getRDFTree() {
+        return rdfTree.getValue();
     }
 
 
-    /**
-     * Método utilizado para validar o identificador do elemento.
-     * A validação segue o formato: [_:A-Za-z] \c = [-._:A-Za-z0-9]
-     * 
-     * @param id
-     *          String representando o identificador a ser validado.
-     * @return
-     *          verdadeiro se o identificador for válido e falso caso contrário.
-     */
-    private boolean validate(String id) {
-    
-        Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
+    public String parse(int ident) {
+        String space, content;
 
-        Matcher matcher = pattern.matcher(id);
+        if(ident < 0)
+            ident = 0;
 
-        return matcher.matches();  
-        
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<metadata>\n";
+        if(getRDFTree() != null)
+            content += getRDFTree() + "\n";
+        content += space + "</metadata>\n";
+
+        return content;
     }
-    
+
+
+    public boolean compare(T other) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

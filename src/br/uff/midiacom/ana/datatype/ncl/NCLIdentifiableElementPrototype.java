@@ -37,33 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
-
-/**
- * Classe que define uma exceção gerada pela criação de uma identificação
- * inválida.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLInvalidIdentifierException extends Exception {
-
-    
-    public NCLInvalidIdentifierException() {
-        super();
-    }
+import br.uff.midiacom.xml.XMLIdentifiableElementPrototype;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
-    public NCLInvalidIdentifierException(String msg) {
-        super(msg);
-    }
+public abstract class NCLIdentifiableElementPrototype<T extends NCLIdentifiableElement, P extends NCLElement> extends XMLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
 
-    public NCLInvalidIdentifierException(Throwable ex) {
-        super(ex);
-    }
+    protected boolean validate(String id) {
+        Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
+        Matcher matcher = pattern.matcher(id);
 
-
-    public NCLInvalidIdentifierException(String msg, Throwable ex) {
-        super(msg,ex);
+        return matcher.matches();
     }
 }

@@ -37,49 +37,27 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.transition;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.reuse.NCLImport;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-/**
- * Esta classe define uma base de transições da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P extends NCLElement, Et extends NCLTransitionPrototype, Ei extends NCLImportPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
-    private Set<T> transitions = new TreeSet<T>();
-    private Set<I> imports = new TreeSet<I>();
+    protected IdentifiableElementList<Et, T> transitions;
+    protected ElementList<Ei, T> imports;
 
 
     /**
      * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLTransitionBaseType() {}
-
-
-    /**
-     * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLTransitionBaseType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLTransitionBasePrototype() {
+        transitions = new IdentifiableElementList<Et, T>();
+        imports = new ElementList<Ei, T>();
     }
 
 
@@ -93,16 +71,8 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      *
      * @see TreeSet#add
      */
-    public boolean addTransition(T transition) {
-        if(transitions.add(transition)){
-            //Se transition existe, atribui este como seu parente
-            if(transition != null)
-                transition.setParent(this);
-
-            notifyInserted(NCLElementSets.TRANSITIONS, transition);
-            return true;
-        }
-        return false;
+    public boolean addTransition(Et transition) throws XMLException {
+        return transitions.add(transition, (T) this);
     }
 
 
@@ -116,16 +86,13 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      *
      * @see TreeSet#remove
      */
-    public boolean removeTransition(T transition) {
-        if(transitions.remove(transition)){
-            //Se transition existe, retira o seu parentesco
-            if(transition != null)
-                transition.setParent(null);
+    public boolean removeTransition(Et transition) throws XMLException {
+        return transitions.remove(transition);
+    }
 
-            notifyRemoved(NCLElementSets.TRANSITIONS, transition);
-            return true;
-        }
-        return false;
+
+    public boolean removeTransition(String id) throws XMLException {
+        return transitions.remove(id);
     }
 
 
@@ -137,8 +104,13 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      * @return
      *          verdadeiro se a transição existir.
      */
-    public boolean hasTransition(T transition) {
+    public boolean hasTransition(Et transition) throws XMLException {
         return transitions.contains(transition);
+    }
+
+
+    public boolean hasTransition(String id) throws XMLException {
+        return transitions.get(id) != null;
     }
 
 
@@ -159,7 +131,7 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      * @return
      *          lista contendo as transições da base de transições.
      */
-    public Set<T> getTransitions() {
+    public IdentifiableElementList<Et, T> getTransitions() {
         return transitions;
     }
 
@@ -172,16 +144,8 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      *
      * @see TreeSet#add
      */
-    public boolean addImportBase(I importBase) {
-        if(imports.add(importBase)){
-            //Se importBase existe, atribui este como seu parente
-            if(importBase != null)
-                importBase.setParent(this);
-
-            notifyInserted(NCLElementSets.TRANSITIONBASE, importBase);
-            return true;
-        }
-        return false;
+    public boolean addImportBase(Ei importBase) throws XMLException {
+        return imports.add(importBase, (T) this);
     }
 
 
@@ -193,16 +157,8 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      *
      * @see TreeSet#remove
      */
-    public boolean removeImportBase(I importBase) {
-        if(imports.remove(importBase)){
-            //Se importBase existe, retira o seu parentesco
-            if(importBase != null)
-                importBase.setParent(null);
-
-            notifyRemoved(NCLElementSets.TRANSITIONBASE, importBase);
-            return true;
-        }
-        return false;
+    public boolean removeImportBase(Ei importBase) throws XMLException {
+        return imports.remove(importBase);
     }
 
 
@@ -212,7 +168,7 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      * @param importBase
      *          elemento representando o importador a ser verificado.
      */
-    public boolean hasImportBase(I importBase) {
+    public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
     }
 
@@ -234,7 +190,7 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
      * @return
      *          lista contendo os importadores de base da base de transições.
      */
-    public Set<I> getImportBases() {
+    public ElementList<Ei, T> getImportBases() {
         return imports;
     }
 
@@ -258,12 +214,12 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
             content += ">\n";
 
             if(hasImportBase()){
-                for(I imp : imports)
+                for(Ei imp : imports)
                     content += imp.parse(ident + 1);
             }
 
             if(hasTransition()){
-                for(T transition : transitions)
+                for(Et transition : transitions)
                     content += transition.parse(ident + 1);
             }
 
@@ -273,76 +229,5 @@ public class NCLTransitionBaseType<T extends NCLTransitionType, I extends NCLImp
             content += "/>\n";
 
         return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("transitionBase")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("importBase")){
-                I child = createImportBase();
-                child.startElement(uri, localName, qName, attributes);
-                addImportBase(child);
-            }
-            else if(localName.equals("transition")){
-                T child = createTransition();
-                child.startElement(uri, localName, qName, attributes);
-                addTransition(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasImportBase()){
-            for(I imp : imports){
-                imp.endDocument();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-        if(hasTransition()){
-            for(T transition : transitions){
-                transition.endDocument();
-                addWarning(transition.getWarnings());
-                addError(transition.getErrors());
-            }
-        }
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>importBase</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>importBase</i>.
-     */
-    protected I createImportBase() {
-        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>transition</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>transition</i>.
-     */
-    protected T createTransition() {
-        return (T) new NCLTransitionType(getReader(), this);
     }
 }

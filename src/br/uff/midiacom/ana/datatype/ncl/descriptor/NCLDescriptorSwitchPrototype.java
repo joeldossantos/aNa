@@ -57,7 +57,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorSwitchType<D extends NCLLayoutDescriptor, B extends NCLDescriptorBindRuleType, L extends NCLLayoutDescriptor> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
+public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B extends NCLDescriptorBindRulePrototype, L extends NCLLayoutDescriptor> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
 
     private Set<D> descriptors = new TreeSet<D>();
     private List<B> binds = new ArrayList<B>();
@@ -72,7 +72,7 @@ public class NCLDescriptorSwitchType<D extends NCLLayoutDescriptor, B extends NC
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador do switch de descritor não for válido.
      */
-    public NCLDescriptorSwitchType(String id) throws NCLInvalidIdentifierException {
+    public NCLDescriptorSwitchPrototype(String id) throws NCLInvalidIdentifierException {
         setId(id);
     }
 
@@ -85,7 +85,7 @@ public class NCLDescriptorSwitchType<D extends NCLLayoutDescriptor, B extends NC
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLDescriptorSwitchType(XMLReader reader, NCLElement parent) {
+    public NCLDescriptorSwitchPrototype(XMLReader reader, NCLElement parent) {
         setReader(reader);
         setParent(parent);
 
@@ -349,7 +349,7 @@ public class NCLDescriptorSwitchType<D extends NCLLayoutDescriptor, B extends NC
             else if(localName.equals("defaultDescriptor")){
                 for(int i = 0; i < attributes.getLength(); i++){
                     if(attributes.getLocalName(i).equals("descriptor"))
-                        setDefaultDescriptor((D) new NCLDescriptorType(attributes.getValue(i)));//cast retirado na correcao das referencias
+                        setDefaultDescriptor((D) new NCLDescriptorPrototype(attributes.getValue(i)));//cast retirado na correcao das referencias
                 }
             }
         }
@@ -409,7 +409,7 @@ public class NCLDescriptorSwitchType<D extends NCLLayoutDescriptor, B extends NC
      *          elemento representando o elemento filho <i>bindRule</i>.
      */
     protected B createBindRule() {
-        return (B) new NCLDescriptorBindRuleType(getReader(), this);
+        return (B) new NCLDescriptorBindRulePrototype(getReader(), this);
     }
 
 
@@ -421,6 +421,6 @@ public class NCLDescriptorSwitchType<D extends NCLLayoutDescriptor, B extends NC
      *          elemento representando o elemento filho <i>descriptor</i>.
      */
     protected D createDescriptor() {
-        return (D) new NCLDescriptorType(getReader(), this);
+        return (D) new NCLDescriptorPrototype(getReader(), this);
     }
 }

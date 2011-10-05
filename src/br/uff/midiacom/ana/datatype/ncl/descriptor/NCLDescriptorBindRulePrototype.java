@@ -55,7 +55,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorBindRuleType<B extends NCLDescriptorBindRuleType, D extends NCLLayoutDescriptor, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
+public class NCLDescriptorBindRulePrototype<B extends NCLDescriptorBindRulePrototype, D extends NCLLayoutDescriptor, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
 
     private D constituent;
     private R rule;
@@ -64,7 +64,7 @@ public class NCLDescriptorBindRuleType<B extends NCLDescriptorBindRuleType, D ex
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBindRuleType() {}
+    public NCLDescriptorBindRulePrototype() {}
 
 
     /**
@@ -75,7 +75,7 @@ public class NCLDescriptorBindRuleType<B extends NCLDescriptorBindRuleType, D ex
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLDescriptorBindRuleType(XMLReader reader, NCLElement parent) {
+    public NCLDescriptorBindRulePrototype(XMLReader reader, NCLElement parent) {
         setReader(reader);
         setParent(parent);
 
@@ -182,7 +182,7 @@ public class NCLDescriptorBindRuleType<B extends NCLDescriptorBindRuleType, D ex
                 if(attributes.getLocalName(i).equals("rule"))
                     setRule((R) new NCLRule(attributes.getValue(i)));//cast retirado na correcao das referencias
                 else if(attributes.getLocalName(i).equals("constituent"))
-                    setConstituent((D) new NCLDescriptorType(attributes.getValue(i)));//cast retirado na correcao das referencias
+                    setConstituent((D) new NCLDescriptorPrototype(attributes.getValue(i)));//cast retirado na correcao das referencias
             }
         }
         catch(NCLInvalidIdentifierException ex){
@@ -226,7 +226,7 @@ public class NCLDescriptorBindRuleType<B extends NCLDescriptorBindRuleType, D ex
 
     private void constituentReference() {
         //Search for a component node in its parent
-        Set<D> descriptors = ((NCLDescriptorSwitchType) getParent()).getDescriptors();
+        Set<D> descriptors = ((NCLDescriptorSwitchPrototype) getParent()).getDescriptors();
 
         for(D descriptor : descriptors){
             if(descriptor.getId().equals(getConstituent().getId())){

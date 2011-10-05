@@ -56,7 +56,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorBaseType<D extends NCLLayoutDescriptor, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends NCLImport> extends NCLIdentifiableElement {
 
     private Set<D> descriptors = new TreeSet<D>();
     private Set<I> imports = new TreeSet<I>();
@@ -65,7 +65,7 @@ public class NCLDescriptorBaseType<D extends NCLLayoutDescriptor, I extends NCLI
     /**
      * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBaseType() {}
+    public NCLDescriptorBasePrototype() {}
 
 
     /**
@@ -76,7 +76,7 @@ public class NCLDescriptorBaseType<D extends NCLLayoutDescriptor, I extends NCLI
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLDescriptorBaseType(XMLReader reader, NCLElement parent) {
+    public NCLDescriptorBasePrototype(XMLReader reader, NCLElement parent) {
         setReader(reader);
         setParent(parent);
 
@@ -362,7 +362,7 @@ public class NCLDescriptorBaseType<D extends NCLLayoutDescriptor, I extends NCLI
      *          elemento representando o elemento filho <i>descriptor</i>.
      */
     protected D createDescriptor() {
-        return (D) new NCLDescriptorType(getReader(), this);
+        return (D) new NCLDescriptorPrototype(getReader(), this);
     }
 
 
@@ -374,6 +374,6 @@ public class NCLDescriptorBaseType<D extends NCLLayoutDescriptor, I extends NCLI
      *          elemento representando o elemento filho <i>descriptorSwitch</i>.
      */
     protected D createDescriptorSwitch() {
-        return (D) new NCLDescriptorSwitchType(getReader(), this);
+        return (D) new NCLDescriptorSwitchPrototype(getReader(), this);
     }
 }

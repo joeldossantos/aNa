@@ -37,17 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.region;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.reuse.NCLImport;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
 /**
@@ -61,39 +58,25 @@ import org.xml.sax.XMLReader;
  * de exibicao relacionado aquela base.<br>
  *
  * 
- * @see br.pensario.region.NCLRegionType
+ * @see br.pensario.region.NCLRegionPrototype
  *
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegionType, I extends NCLImport> extends NCLIdentifiableElement implements Comparable<RB> {
+public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends NCLElement, Er extends NCLRegionPrototype, Ei extends NCLImportPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
-    private String device;
-    private R parent_region;
-    
-    private Set<R> regions = new TreeSet<R>();
-    private Set<I> imports = new TreeSet<I>();
+    protected StringType device;
+    protected Er parent_region;
+    protected IdentifiableElementList<Er, T> regions;
+    protected ElementList<Ei, T> imports;
 
 
     /**
      * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLRegionBaseType() {}
-
-
-    /**
-     * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLRegionBaseType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLRegionBasePrototype() {
+        regions = new IdentifiableElementList<Er, T>();
+        imports = new ElementList<Ei, T>();
     }
 
 
@@ -105,12 +88,8 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * @throws java.lang.IllegalArgumentException
      *          O metodo dispara uma excecao caso o usuario passe uma string vazia como parametro.
      */
-    public void setDevice(String device) throws IllegalArgumentException {
-        if(device != null && "".equals(device.trim()))
-            throw new IllegalArgumentException("Empty device String");
-
-        notifyAltered(NCLElementAttributes.DEVICE, this.device, device);
-        this.device = device;
+    public void setDevice(String device) throws XMLException {
+        this.device = new StringType(device);
     }
 
 
@@ -121,7 +100,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *          Retorna uma String representando o elemento device associado a <i>regionBase</i> em questao.
      */
     public String getDevice() {
-        return device;
+        return device.getValue();
     }    
 
 
@@ -132,7 +111,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * @param region
      *          Elemento representando a regiao a ser utilizada como pai.
      */
-    public void setParentRegion(R region) {
+    public void setParentRegion(Er region) {
         this.parent_region = region;
     }
 
@@ -145,7 +124,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * @return
      *          elemento representando a regiao pai de uma base de regioes.
      */
-    public NCLRegionType getParentRegion() {
+    public Er getParentRegion() {
         return parent_region;
     }
 
@@ -154,7 +133,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * Uma base de regioes pode conter como filhos elementos <i>region</i> e elementos <i>importBase</i>. Este metodo adiciona a base uma
      * um elemento <i>region</i>, uma regiao da tela do dispositivo relacionado a esta base.
      *
-     * @see br.pensario.region.NCLRegionType
+     * @see br.pensario.region.NCLRegionPrototype
      * 
      * @param region
      *          O método recebe como parametro um elemento <i>region</i> a ser adicionado.
@@ -163,16 +142,23 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *
      * @see TreeSet#add
      */
-    public boolean addRegion(R region) {
-        if(regions.add(region)){
-            //Se region existe, atribui este como seu parente
-            if(region != null)
-                region.setParent(this);
+    public boolean addRegion(Er region) throws XMLException {
+        return regions.add(region, (T) this);
+    }
 
-            notifyInserted(NCLElementSets.REGIONS, region);
-            return true;
-        }
-        return false;
+
+    /**
+     * Remove uma regiao da base de regioes. Nesta implementacao, o metodo recebe como parametro um objeto <i>region</i> a ser retirado da base.
+     *
+     * @param region
+     *          Recebe como parametro o proprio elemento region a ser removido.
+     * @return
+     *          Retorna verdadeiro se a regiao for removida com sucesso.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeRegion(Er region) throws XMLException {
+        return regions.remove(region);
     }
 
 
@@ -186,35 +172,8 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *
      * @see TreeSet#remove
      */
-    public boolean removeRegion(String id) {
-        for(R region : regions){
-            if(region.getId().equals(id))
-                return removeRegion(region);
-        }
-        return false;
-    }
-
-
-    /**
-     * Remove uma regiao da base de regioes. Nesta implementacao, o metodo recebe como parametro um objeto <i>region</i> a ser retirado da base.
-     * 
-     * @param region
-     *          Recebe como parametro o proprio elemento region a ser removido.
-     * @return
-     *          Retorna verdadeiro se a regiao for removida com sucesso.
-     *
-     * @see TreeSet#remove
-     */
-    public boolean removeRegion(R region) {
-        if(regions.remove(region)){
-            //Se region existe, retira o seu parentesco
-            if(region != null)
-                region.setParent(null);
-
-            notifyRemoved(NCLElementSets.REGIONS, region);
-            return true;
-        }
-        return false;
+    public boolean removeRegion(String id) throws XMLException {
+        return regions.remove(id);
     }
 
 
@@ -228,8 +187,13 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *           Falso caso a base não contenha a regiao.
      *          
      */    
-    public boolean hasRegion(R region) {
+    public boolean hasRegion(Er region) throws XMLException {
         return regions.contains(region);        
+    }
+
+
+    public boolean hasRegion(String id) throws XMLException {
+        return regions.get(id) != null;
     }
 
 
@@ -241,7 +205,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *          Falso caso a base nao possua elementos <i>region</i>
      */
     public boolean hasRegion() {
-        return regions.size() > 0;        
+        return !regions.isEmpty();
     }
 
 
@@ -251,8 +215,8 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * @return
      *          lista contendo as regioes da base de regioes.
      */
-    public Set<R> getRegions() {
-        return regions;        
+    public IdentifiableElementList<Er, T> getRegions() {
+        return regions;
     }
 
 
@@ -265,16 +229,8 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *
      * @see TreeSet#add
      */
-    public boolean addImportBase(I importBase) {
-        if(imports.add(importBase)){
-            //Se importBase existe, atribui este como seu parente
-            if(importBase != null)
-                importBase.setParent(this);
-
-            notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    public boolean addImportBase(Ei importBase) throws XMLException {
+        return imports.add(importBase, (T) this);
     }
 
 
@@ -286,16 +242,8 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      *
      * @see TreeSet#remove
      */
-    public boolean removeImportBase(I importBase) {
-        if(imports.remove(importBase)){
-            //Se importBase existe, retira o seu parentesco
-            if(importBase != null)
-                importBase.setParent(null);
-
-            notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    public boolean removeImportBase(Ei importBase) throws XMLException {
+        return imports.remove(importBase);
     }
 
 
@@ -305,7 +253,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * @param importBase
      *          Elemento representando o importador a ser verificado.
      */
-    public boolean hasImportBase(I importBase) {
+    public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
     }
 
@@ -328,7 +276,7 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
      * @return
      *          lista contendo os elementos <i>importBase</i> da base de regiões.
      */
-    public Set<I> getImportBases() {
+    public ElementList<Ei, T> getImportBases() {
         return imports;
     }
 
@@ -356,11 +304,11 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
             content += ">\n";
 
             if(hasImportBase()){
-                for(I imp : imports)
+                for(Ei imp : imports)
                     content += imp.parse(ident + 1);
             }
             if(hasRegion()){
-                for(R region : regions)
+                for(Er region : regions)
                     content += region.parse(ident + 1);
             }
             content += space + "</regionBase>\n";
@@ -369,109 +317,5 @@ public class NCLRegionBaseType<RB extends NCLRegionBaseType, R extends NCLRegion
             content += "/>\n";
 
         return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("regionBase")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                    else if(attributes.getLocalName(i).equals("device"))
-                        setDevice(attributes.getValue(i));
-                    else if(attributes.getLocalName(i).equals("region"))
-                        setParentRegion((R) new NCLRegionType(attributes.getValue(i)));//cast retirado na correcao das referencias
-                }
-            }
-            else if(localName.equals("importBase")){
-                I child = createImportBase();
-                child.startElement(uri, localName, qName, attributes);
-                addImportBase(child);
-            }
-            else if(localName.equals("region")){
-                R child = createRegion();
-                child.startElement(uri, localName, qName, attributes);
-                addRegion(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(getParent() != null){
-            if(getParentRegion() != null)
-                setParentRegion(findRegion(getRegions()));
-        }
-
-        if(hasImportBase()){
-            for(I imp : imports){
-                imp.endDocument();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-        if(hasRegion()){
-            for(R region : regions){
-                region.endDocument();
-                addWarning(region.getWarnings());
-                addError(region.getErrors());
-            }
-        }
-    }
-
-   
-    private R findRegion(Set<R> regions) {
-        for(R reg : regions){
-            if(reg.hasRegion()){
-                NCLRegionType r = findRegion(reg.getRegions());
-                if(r != null)
-                    return (R) r;
-            }
-            else{
-                if(reg.getId().equals(getParentRegion().getId()))
-                    return (R) reg;
-            }
-        }
-
-        addWarning("Could not find region in regionBase with id: " + getParentRegion().getId());
-        return null;
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>importBase</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>importBase</i>.
-     */
-    protected I createImportBase() {
-        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>region</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>region</i>.
-     */
-    protected R createRegion() {
-        return (R) new NCLRegionType(getReader(), this);
-    }
-    
-    
-    
-    public int compareTo(RB other) {
-        return getId().compareTo(other.getId());
     }
 }

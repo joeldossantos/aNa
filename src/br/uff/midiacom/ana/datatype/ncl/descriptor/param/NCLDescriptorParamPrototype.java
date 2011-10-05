@@ -35,12 +35,49 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.descriptor;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 
 
-public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor, P extends NCLElement> extends NCLIdentifiableElement<T, P> {
+public interface NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, V> extends NCLElement<T, P> {
 
+
+    /**
+     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
+     *
+     * @param name
+     *          Elemento representando o nome do parâmetro.
+     */
+    public void setName(NCLAttributes name);
+
+
+    /**
+     * Retorna o nome do parâmetro.
+     *
+     * @return
+     *          elemento representando o nome do parâmetro.
+     */
+    public NCLAttributes getName();
+
+
+    /**
+     * Atribui um valor ao parâmetro.
+     *
+     * @param value
+     *          valor do parâmetro.
+     * @throws IllegalArgumentException
+     *          se o valor não estiver de acordo com o esperado.
+     */
+    public void setValue(V value) throws IllegalArgumentException;
+
+
+    /**
+     * Retorna o valor do parâmetro.
+     *
+     * @return
+     *          valor do parâmetro.
+     */
+    public V getValue();
 }
