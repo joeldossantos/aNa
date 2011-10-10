@@ -37,50 +37,27 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.reuse.NCLImport;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-/**
- * Esta classe define o elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma base de descritores de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P extends NCLElement, Ed extends NCLLayoutDescriptor, Ei extends NCLImportPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
-    private Set<D> descriptors = new TreeSet<D>();
-    private Set<I> imports = new TreeSet<I>();
+    protected IdentifiableElementList<Ed, T> descriptors;
+    protected ElementList<Ei, T> imports;
 
 
     /**
      * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBasePrototype() {}
-
-
-    /**
-     * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLDescriptorBasePrototype(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLDescriptorBasePrototype() {
+        descriptors = new IdentifiableElementList<Ed, T>();
+        imports = new ElementList<Ei, T>();
     }
 
 
@@ -92,16 +69,21 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      *
      * @see TreeSet#add
      */
-    public boolean addDescriptor(D descriptor) {
-        if(descriptors.add(descriptor)){
-            //Se descriptor existe, atribui este como seu parente
-            if(descriptor != null)
-                descriptor.setParent(this);
+    public boolean addDescriptor(Ed descriptor) throws XMLException {
+        return descriptors.add(descriptor, (T) this);
+    }
 
-            notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+
+    /**
+     * Remove um descritor da base de descritores.
+     *
+     * @param descriptor
+     *          elemento representando o descritor a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeDescriptor(Ed descriptor) throws XMLException {
+        return descriptors.remove(descriptor);
     }
 
 
@@ -115,33 +97,8 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      *
      * @see TreeSet#remove
      */
-    public boolean removeDescriptor(String id) {
-        for(D descriptor : descriptors){
-            if(descriptor.getId().equals(id))
-                return removeDescriptor(descriptor);
-        }
-        return false;
-    }
-    
-
-    /**
-     * Remove um descritor da base de descritores.
-     * 
-     * @param descriptor
-     *          elemento representando o descritor a ser removido.
-     *
-     * @see TreeSet#remove
-     */
-    public boolean removeDescriptor(D descriptor) {
-        if(descriptors.remove(descriptor)){
-            //Se descriptor existe, retira o seu parentesco
-            if(descriptor != null)
-                descriptor.setParent(null);
-
-            notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+    public boolean removeDescriptor(String id) throws XMLException {
+        return descriptors.remove(id);
     }
 
 
@@ -151,8 +108,13 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      * @param descriptor
      *          elemento representando o descritor a ser verificado.
      */
-    public boolean hasDescriptor(D descriptor) {
+    public boolean hasDescriptor(Ed descriptor) throws XMLException {
         return descriptors.contains(descriptor);
+    }
+
+
+    public boolean hasDescriptor(String id) throws XMLException {
+        return descriptors.get(id) != null;
     }
 
 
@@ -173,7 +135,7 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      * @return
      *          lista contendo os descritores da base de descritores.
      */
-    public Set<D> getDescriptors() {
+    public IdentifiableElementList<Ed, T> getDescriptors() {
         return descriptors;
     }
 
@@ -186,16 +148,8 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      *
      * @see TreeSet#add
      */
-    public boolean addImportBase(I importBase) {
-        if(imports.add(importBase)){
-            //Se importBase existe, atribui este como seu parente
-            if(importBase != null)
-                importBase.setParent(this);
-
-            notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    public boolean addImportBase(Ei importBase) throws XMLException {
+        return imports.add(importBase, (T) this);
     }
 
 
@@ -207,16 +161,8 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      *
      * @see TreeSet#remove
      */
-    public boolean removeImportBase(I importBase) {
-        if(imports.remove(importBase)){
-            //Se importBase existe, retira o seu parentesco
-            if(importBase != null)
-                importBase.setParent(null);
-
-            notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    public boolean removeImportBase(Ei importBase) throws XMLException {
+        return imports.remove(importBase);
     }
 
 
@@ -226,7 +172,7 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      * @param importBase
      *          elemento representando o importador a ser verificado.
      */
-    public boolean hasImportBase(I importBase) {
+    public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
     }
 
@@ -248,7 +194,7 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
      * @return
      *          lista contendo os importadores de base da base de descritores.
      */
-    public Set<I> getImportBases() {
+    public ElementList<Ei, T> getImportBases() {
         return imports;
     }
 
@@ -272,12 +218,12 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
             content += ">\n";
 
             if(hasImportBase()){
-                for(I imp : imports)
+                for(Ei imp : imports)
                     content += imp.parse(ident + 1);
             }
 
             if(hasDescriptor()){
-                for(D descriptor : descriptors)
+                for(Ed descriptor : descriptors)
                     content += descriptor.parse(ident + 1);
             }
             
@@ -287,93 +233,5 @@ public class NCLDescriptorBasePrototype<D extends NCLLayoutDescriptor, I extends
             content += "/>\n";
 
         return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("descriptorBase")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("importBase")){
-                I child = createImportBase();
-                child.startElement(uri, localName, qName, attributes);
-                addImportBase(child);
-            }
-            else if(localName.equals("descriptor")){
-                D child = createDescriptor();
-                child.startElement(uri, localName, qName, attributes);
-                addDescriptor(child);
-            }
-            else if(localName.equals("descriptorSwitch")){
-                D child = createDescriptorSwitch();
-                child.startElement(uri, localName, qName, attributes);
-                addDescriptor(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasImportBase()){
-            for(I imp : imports){
-                imp.endDocument();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-        if(hasDescriptor()){
-            for(D descriptor : descriptors){
-                descriptor.endDocument();
-                addWarning(descriptor.getWarnings());
-                addError(descriptor.getErrors());
-            }
-        }
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>importBase</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>importBase</i>.
-     */
-    protected I createImportBase() {
-        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>descriptor</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>descriptor</i>.
-     */
-    protected D createDescriptor() {
-        return (D) new NCLDescriptorPrototype(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>descriptorSwitch</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>descriptorSwitch</i>.
-     */
-    protected D createDescriptorSwitch() {
-        return (D) new NCLDescriptorSwitchPrototype(getReader(), this);
     }
 }

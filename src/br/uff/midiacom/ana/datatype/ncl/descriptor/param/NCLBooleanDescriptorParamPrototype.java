@@ -35,10 +35,38 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.connector;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-public interface NCLStatement<T extends NCLStatement, P extends NCLElement> extends NCLElement<T, P> {
+public class NCLBooleanDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, Boolean> {
+
+
+    public NCLBooleanDescriptorParamPrototype() {
+        super();
+    }
+
+
+    @Override
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        if(!name.equals(NCLAttributes.REUSE_PLAYER) && !name.equals(NCLAttributes.VISIBLE))
+            throw new IllegalArgumentException("This parameter type can not be used with this name.");
+
+        super.setName(name);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) {
+        setValue(Boolean.valueOf(value));
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        return getValue().toString();
+    }
+
 }

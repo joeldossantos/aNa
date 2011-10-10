@@ -35,10 +35,71 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.connector;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-public interface NCLStatement<T extends NCLStatement, P extends NCLElement> extends NCLElement<T, P> {
+public class NCLPercentDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, Double> {
+
+    private Boolean relative;
+
+
+    public NCLPercentDescriptorParamPrototype() {
+        super();
+    }
+
+
+    @Override
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        if(!name.equals(NCLAttributes.TRANSPARENCY) && !name.equals(NCLAttributes.SOUND_LEVEL)
+                && !name.equals(NCLAttributes.BALANCE_LEVEL) && !name.equals(NCLAttributes.TREBLE_LEVEL)
+                && !name.equals(NCLAttributes.BASS_LEVEL))
+            throw new IllegalArgumentException("This parameter type can not be used with this name.");
+
+        super.setName(name);
+    }
+
+
+    @Override
+    public void setValue(Double value) throws IllegalArgumentException {
+        if(!relative && (value < 0 || value > 1))
+            throw new IllegalArgumentException("The value of the paramenter must be between 0 and 1");
+        if(relative && (value < 0 || value > 100))
+            throw new IllegalArgumentException("The relative value of the paramenter must be between 0 and 100");
+
+        super.setValue(value);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws IllegalArgumentException {
+        int index = value.indexOf("%");
+        if(index > 0){
+            value = value.substring(0, index);
+            setRelative(true);
+        }
+
+        setValue(new Double(value));
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        if(relative)
+            return (getValue().toString())+"%";
+        else
+            return getValue().toString();
+    }
+
+
+    public void setRelative(Boolean relative) {
+        this.relative = relative;
+    }
+
+
+    public Boolean getRelative() {
+        return relative;
+    }
 }

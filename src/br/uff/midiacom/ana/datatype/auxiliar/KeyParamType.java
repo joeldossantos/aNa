@@ -35,55 +35,61 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.enums;
+package br.uff.midiacom.ana.datatype.auxiliar;
 
-import br.uff.midiacom.ana.Element;
-import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLKey;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
-
-public class NCLNotifier extends Thread {
-
-    private Element source, other;
-    private NCLElementSets setName;
-    private NCLElementAttributes attName;
-    private NCLModificationListener listener;
-    private Object oldV, newV;
-    private int type;
+/**
+ *
+ * @author joel
+ */
+public class KeyParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<KeyParamType, NCLKey, P>{
 
 
-    public NCLNotifier(int type, NCLModificationListener listener, Element source, NCLElementSets setName, Element other) {
-        super();
-        this.type = type;
-        this.listener = listener;
-        this.source = source;
-        this.setName = setName;
-        this.other = other;
+    public KeyParamType(NCLKey value) throws XMLException {
+        super(value);
     }
 
 
-    public NCLNotifier(NCLModificationListener listener, Element source, NCLElementAttributes attName, Object oldV, Object newV) {
-        super();
-        this.type = 2;
-        this.listener = listener;
-        this.source = source;
-        this.attName = attName;
-        this.oldV = oldV;
-        this.newV = newV;
+    public KeyParamType(P value) throws XMLException {
+        super(value);
+    }
+
+
+    public KeyParamType(String value) throws XMLException {
+        super(value);
     }
 
 
     @Override
-    public void run() {
-        switch(type){
-            case 0:
-                listener.insertedElement(source, setName, other);
-                return;
-            case 1:
-                listener.removedElement(source, setName, other);
-                return;
-            case 2:
-                listener.alteredElement(source, attName, oldV, newV);
-                return;
+    protected P createParam(String param) {
+        //@todo: criar método para procurar o parâmetro
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    @Override
+    protected NCLKey createValue(String value) throws XMLException {
+        for(NCLKey k : NCLKey.values()){
+            if(k.toString().equals(value))
+                return k;
         }
+
+        throw new XMLException("Could not find Key value.");
+    }
+
+
+    @Override
+    protected String getStringValue() {
+        return getValue().toString();
+    }
+
+
+    @Override
+    protected String getStringParam() {
+        return getParam().getName();
     }
 }

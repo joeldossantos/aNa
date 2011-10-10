@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.auxiliar;
 
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 

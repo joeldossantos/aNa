@@ -35,10 +35,40 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.connector;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-public interface NCLStatement<T extends NCLStatement, P extends NCLElement> extends NCLElement<T, P> {
+public class NCLFontWeightDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, NCLFontWeight> {
+
+
+    public NCLFontWeightDescriptorParamPrototype() {
+        super();
+    }
+
+
+    @Override
+    public void setName(NCLAttributes name) {
+        super.setName(NCLAttributes.FONT_WEIGHT);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws IllegalArgumentException {
+        for(NCLFontWeight font : NCLFontWeight.values()){
+            if(value.equals(font.toString()))
+                setValue(font);
+        }
+
+        setValue(null);
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        return getValue().toString();
+    }
 }

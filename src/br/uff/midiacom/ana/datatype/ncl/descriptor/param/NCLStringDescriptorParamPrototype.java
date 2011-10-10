@@ -35,88 +35,38 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
+
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-/**
- * This class represents a value that can be a positive integer or the String
- * "unbounded".
- */
-public class MaxType {
-
-    private Integer value;
-    private String unbounded = "unbounded";
+public class NCLStringDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, String> {
 
 
-    /**
-     * Creates the value as a integer number.
-     *
-     * @param value
-     *          a positive integer.
-     * @throws IllegalArgumentException
-     *          if the integer is negative.
-     */
-    public MaxType(int value) throws IllegalArgumentException {
-        if(value < 0)
-            throw new IllegalArgumentException("Negative value");
-
-        this.value = value;
+    public NCLStringDescriptorParamPrototype() {
+        super();
     }
 
 
-    /**
-     * Creates the value as a String.
-     *
-     * @param value
-     *          String representing a positive integer or the String "unbounded".
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty.
-     */
-    public MaxType(String value) throws NullPointerException, IllegalArgumentException {
-        if(value == null)
-            throw new NullPointerException("Null value String");
-        if("".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
+    @Override
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        if(!name.equals(NCLAttributes.STYLE) && !name.equals(NCLAttributes.FONT_FAMILY))
+            throw new IllegalArgumentException("This parameter type can not be used with this name.");
 
-        if(!value.equals(unbounded))
-            this.value = new Integer(value);
+        super.setName(name);
     }
 
 
-    /**
-     * Return the value.
-     *
-     * @return
-     *          element representing a positive integer.
-     */
-    public Integer getValue() {
-        return value;
+    @Override
+    protected void setParamValue(String value) {
+        setValue(value);
     }
 
-
-    /**
-     * Check if the value is the String "unbounded".
-     *
-     * @return
-     *          true if the value is "unbounded".
-     */
-    public boolean isUnbounded() {
-        return value == null;
+    
+    @Override
+    protected String getParamValue() {
+        return getValue();
     }
 
-
-    /**
-     * Returns the value.
-     *
-     * @return
-     *          String representing the value.
-     */
-    public String parse() {
-        if(value == null)
-            return unbounded;
-        else
-            return value.toString();
-    }
 }

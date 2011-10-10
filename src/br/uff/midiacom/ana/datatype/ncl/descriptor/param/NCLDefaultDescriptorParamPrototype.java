@@ -35,66 +35,68 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.descriptor;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, Ed extends NCLLayoutDescriptor, Er extends NCLTestRule> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public abstract class NCLDefaultDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, V> extends XMLElementPrototype<T, P> implements NCLDescriptorParamPrototype<T, P, V> {
 
-    protected Ed constituent;
-    protected Er rule;
+    protected NCLAttributes name;
+    protected V value;
 
 
     /**
-     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBindRulePrototype() {}
+    public NCLDefaultDescriptorParamPrototype() {}
 
 
     /**
-     * Atribui um constituent ao bind.
+     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
      *
-     * @param constituent
-     *          elemento representando o descritor mapeado pelo bind.
+     * @param name
+     *          Elemento representando o nome do parâmetro.
      */
-    public void setConstituent(Ed constituent) {
-        this.constituent = constituent;
+    public void setName(NCLAttributes name) {
+        this.name = name;
     }
 
 
     /**
-     * Retorna o constituent do bind.
+     * Retorna o nome do parâmetro.
      *
      * @return
-     *          elemento representando o descritor mapeado pelo bind.
+     *          elemento representando o nome do parâmetro.
      */
-    public Ed getConstituent() {
-        return constituent;
+    public NCLAttributes getName() {
+        return name;
     }
 
 
     /**
-     * Atribui uma regra de avaliação ao bind.
+     * Atribui um valor ao parâmetro.
      *
-     * @param rule
-     *          elemento representando a regra de avaliação do bind.
+     * @param value
+     *          valor do parâmetro.
+     * @throws IllegalArgumentException
+     *          se o valor não estiver de acordo com o esperado.
      */
-    public void setRule(Er rule) {
-        this.rule = rule;
+    public void setValue(V value) throws IllegalArgumentException {
+        this.value = value;
     }
 
 
     /**
-     * Retorna a regra de avaliação do bind.
-     * 
+     * Retorna o valor do parâmetro.
+     *
      * @return
-     *          elemento representando a regra de avaliação do bind.
+     *          valor do parâmetro.
      */
-    public Er getRule() {
-        return rule;
+    public V getValue() {
+        return value;
     }
 
 
@@ -109,29 +111,40 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
         for(int i = 0; i < ident; i++)
             space += "\t";
 
-        content = space + "<bindRule";
-        if(getRule() != null)
-            content += " rule='" + getRule().getId() + "'";
-        if(getConstituent() != null)
-            content += " constituent='" + getConstituent().getId() + "'";
-        content += "/>\n";
 
+        // param element and attributes declaration
+        content = space + "<descriptorParam";
+        if(getName() != null)
+            content += " name='" + getName().toString() + "'";
+        if((getValue() != null) || (this instanceof NCLColorDescriptorParamPrototype && ((NCLColorDescriptorParamPrototype)this).getIsTransparent() != null))
+            content += " value='" + getParamValue() + "'";
+        content += "/>\n";
 
         return content;
     }
 
 
     public boolean compare(T other) {
-        boolean comp = false;
-
-        // Compara pela regra
-        if(getRule() != null)
-            comp |= getRule().compare(other.getRule());
-
-        // Compara pelo constituent
-        if(getConstituent() != null)
-            comp |= getConstituent().compare(other.getConstituent());
-
-        return comp;
+        return getName().equals(other.getName());
     }
+
+
+    /**
+     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
+     * de forma a atribuir o valor do tipo correto para cada parâmetro de
+     * descritor.
+     *
+     * @param value
+     *          String representando o valor do parâmetro de descritor.
+     */
+    protected abstract void setParamValue(String value);
+
+
+    /**
+     * Retorna o valor do parâmetro como uma String.
+     *
+     * @return
+     *          String representando o valor do parâmetro do descritor.
+     */
+    protected abstract String getParamValue();
 }

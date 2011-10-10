@@ -35,93 +35,40 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
-import br.uff.midiacom.ana.datatype.enums.NCLColor;
-
-
-/**
- * This class represents a value that can be a color or the "blend" String.
- */
-public class BlendColorType {
-
-    private NCLColor color;
-    private String blend = "blend";
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-    /**
-     * Creates the value as a color.
-     *
-     * @param color
-     *          element representing the color.
-     * @throws NullPointerException
-     *          if the color is null.
-     */
-    public BlendColorType(NCLColor color) throws NullPointerException {
-        if(color == null)
-            throw new NullPointerException("null color");
+public class NCLFontVariantDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, NCLFontVariant> {
 
-        this.color = color;
+
+    public NCLFontVariantDescriptorParamPrototype() {
+        super();
     }
 
 
-    /**
-     * Creates the value as a String.
-     *
-     * @param color
-     *          String representing a color or the "blend" String.
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty.
-     */
-    public BlendColorType(String color) throws NullPointerException, IllegalArgumentException {
-        if(color == null)
-            throw new NullPointerException("Null color String");
-        if("".equals(color.trim()))
-            throw new IllegalArgumentException("Empty color String");
+    @Override
+    public void setName(NCLAttributes name) {
+        super.setName(NCLAttributes.FONT_VARIANT);
+    }
 
-        if(!color.equals(blend)){
-            for(NCLColor c : NCLColor.values()){
-                if(c.toString().equals(color))
-                    this.color = c;
-            }
+
+    @Override
+    protected void setParamValue(String value) throws IllegalArgumentException {
+        for(NCLFontVariant font : NCLFontVariant.values()){
+            if(value.equals(font.toString()))
+                setValue(font);
         }
+
+        setValue(null);
     }
 
 
-    /**
-     * Return the value.
-     *
-     * @return
-     *          element representing a color.
-     */
-    public NCLColor getColor() {
-        return color;
-    }
-
-
-    /**
-     * Check if the value is the String "blend".
-     *
-     * @return
-     *          true if the value is "blend".
-     */
-    public boolean isBlend() {
-        return color == null;
-    }
-
-
-    /**
-     * Returns the value.
-     *
-     * @return
-     *          String representing the value.
-     */
-    public String parse() {
-        if(color == null)
-            return blend;
-        else
-            return color.toString();
+    @Override
+    protected String getParamValue() {
+        return getValue().toString();
     }
 }

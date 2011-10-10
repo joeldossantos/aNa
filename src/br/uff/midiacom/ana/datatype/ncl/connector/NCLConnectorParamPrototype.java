@@ -37,25 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-/**
- * Esta classe define o elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parâmetro de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLConnectorParamType<P extends NCLConnectorParamType> extends NCLIdentifiableElement implements Comparable<P> {
+public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P extends NCLElement> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
     
-    private String type;
+    protected StringType type;
     
     
     /**
@@ -68,24 +59,8 @@ public class NCLConnectorParamType<P extends NCLConnectorParamType> extends NCLI
      *         java.lang.IllegalArgumentException
      *          se a String do tipo for vazia.
      */
-    public NCLConnectorParamType(String name) throws NCLInvalidIdentifierException {
+    public NCLConnectorParamPrototype(String name) throws XMLException {
         setName(name);
-    }
-
-
-    /**
-     * Construtor do elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLConnectorParamType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
     }
 
 
@@ -97,8 +72,7 @@ public class NCLConnectorParamType<P extends NCLConnectorParamType> extends NCLI
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome do parâmetro for inválido.
      */
-    public void setName(String name) throws NCLInvalidIdentifierException {
-        notifyAltered(NCLElementAttributes.NAME, getId(), name);
+    public void setName(String name) throws XMLException {
         setId(name);
     }
     
@@ -122,12 +96,8 @@ public class NCLConnectorParamType<P extends NCLConnectorParamType> extends NCLI
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setType(String type) {
-        if(type != null && "".equals(type.trim()))
-            throw new IllegalArgumentException("Empty type String");
-
-        notifyAltered(NCLElementAttributes.TYPE, this.type, type);
-        this.type = type;
+    public void setType(String type) throws XMLException {
+        this.type = new StringType(type);
     }
 
 
@@ -138,7 +108,7 @@ public class NCLConnectorParamType<P extends NCLConnectorParamType> extends NCLI
      *      String contendo o tipo do parâmetro.
      */
     public String getType() {
-        return type;
+        return type.getValue();
     }
     
     
@@ -161,28 +131,5 @@ public class NCLConnectorParamType<P extends NCLConnectorParamType> extends NCLI
         content += "/>\n";
 
         return content;
-    }
-
-    
-    public int compareTo(P other) {
-        return getName().compareTo(other.getName());
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("name"))
-                    setName(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("type"))
-                    setType(attributes.getValue(i));
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
     }
 }

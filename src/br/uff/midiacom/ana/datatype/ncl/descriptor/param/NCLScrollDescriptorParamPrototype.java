@@ -35,88 +35,40 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
+
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLScroll;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-/**
- * This class represents a value that can be a positive integer or the String
- * "indefinite".
- */
-public class ByType {
-
-    private Integer value;
-    private String indefinite = "indefinite";
+public class NCLScrollDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, NCLScroll> {
 
 
-    /**
-     * Creates the value as a integer number.
-     *
-     * @param value
-     *          a positive integer.
-     * @throws IllegalArgumentException
-     *          if the integer is negative.
-     */
-    public ByType(int value) throws IllegalArgumentException {
-        if(value < 0)
-            throw new IllegalArgumentException("Negative value");
-
-        this.value = value;
+    public NCLScrollDescriptorParamPrototype() {
+        super();
     }
 
 
-    /**
-     * Creates the value as a String.
-     *
-     * @param value
-     *          String representing a positive integer or the String "unbounded".
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty.
-     */
-    public ByType(String value) throws NullPointerException, IllegalArgumentException {
-        if(value == null)
-            throw new NullPointerException("Null value String");
-        if("".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
-
-        if(!value.equals(indefinite))
-            this.value = new Integer(value);
+    @Override
+    public void setName(NCLAttributes name) {
+        super.setName(NCLAttributes.SCROLL);
     }
 
 
-    /**
-     * Return the value.
-     *
-     * @return
-     *          element representing a positive integer.
-     */
-    public Integer getValue() {
-        return value;
+    @Override
+    protected void setParamValue(String value) throws IllegalArgumentException {
+        for(NCLScroll scroll : NCLScroll.values()){
+            if(value.equals(scroll.toString()))
+                setValue(scroll);
+        }
+
+        setValue(null);
     }
 
 
-    /**
-     * Check if the value is the String "indefinite".
-     *
-     * @return
-     *          true if the value is "indefinite".
-     */
-    public boolean isUnbounded() {
-        return value == null;
-    }
-
-
-    /**
-     * Returns the value.
-     *
-     * @return
-     *          String representing the value.
-     */
-    public String parse() {
-        if(value == null)
-            return indefinite;
-        else
-            return value.toString();
+    @Override
+    protected String getParamValue() {
+        return getValue().toString();
     }
 }

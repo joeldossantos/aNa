@@ -35,102 +35,90 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.descriptor;
+package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, Ed extends NCLLayoutDescriptor, Er extends NCLTestRule> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, P extends NCLElement, Ep extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
 
-    protected Ed constituent;
-    protected Er rule;
-
+    protected AssValueParamType<Ep> value;
+    
 
     /**
-     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
+     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBindRulePrototype() {}
+    public NCLValueAssessmentPrototype() {}
 
 
     /**
-     * Atribui um constituent ao bind.
+     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
      *
-     * @param constituent
-     *          elemento representando o descritor mapeado pelo bind.
+     * @param value
+     *          String contendo o valor da assertiva.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setConstituent(Ed constituent) {
-        this.constituent = constituent;
+    public NCLValueAssessmentPrototype(AssValueParamType<Ep> value) throws IllegalArgumentException {
+        setValue(value);
     }
-
+    
 
     /**
-     * Retorna o constituent do bind.
+     * Determina o valor da assertiva do conector.
+     *
+     * @param value
+     *          String contendo o valor da assertiva.
+     * @throws java.lang.IllegalArgumentException
+     *          Se o valor a ser atribuído for uma String vazia.
+     */
+    public void setValue(AssValueParamType<Ep> value) {
+        this.value = value;
+    }
+    
+
+    /**
+     * Retorna o valor da assetiva do conector. Retorna a String que representa um valor
+     * padrao caso o valor tenha sido determinado desta forma.
      *
      * @return
-     *          elemento representando o descritor mapeado pelo bind.
+     *          String contendo o valor da assertiva.
      */
-    public Ed getConstituent() {
-        return constituent;
+    public AssValueParamType<Ep> getValue() {
+        return value;
     }
-
-
-    /**
-     * Atribui uma regra de avaliação ao bind.
-     *
-     * @param rule
-     *          elemento representando a regra de avaliação do bind.
-     */
-    public void setRule(Er rule) {
-        this.rule = rule;
-    }
-
-
-    /**
-     * Retorna a regra de avaliação do bind.
-     * 
-     * @return
-     *          elemento representando a regra de avaliação do bind.
-     */
-    public Er getRule() {
-        return rule;
-    }
-
-
+    
+    
     public String parse(int ident) {
         String space, content;
 
         if(ident < 0)
             ident = 0;
-
+        
         // Element indentation
         space = "";
         for(int i = 0; i < ident; i++)
             space += "\t";
 
-        content = space + "<bindRule";
-        if(getRule() != null)
-            content += " rule='" + getRule().getId() + "'";
-        if(getConstituent() != null)
-            content += " constituent='" + getConstituent().getId() + "'";
+        content = space + "<valueAssessment";
+        if(getValue() != null)
+            content += " value='" + getValue().parse() + "'";
         content += "/>\n";
-
 
         return content;
     }
 
 
     public boolean compare(T other) {
-        boolean comp = false;
+        boolean comp = true;
 
-        // Compara pela regra
-        if(getRule() != null)
-            comp |= getRule().compare(other.getRule());
+        String this_stat, other_stat;
 
-        // Compara pelo constituent
-        if(getConstituent() != null)
-            comp |= getConstituent().compare(other.getConstituent());
+        if(getValue() == null) this_stat = ""; else this_stat = getValue().parse();
+        if(other.getValue() == null) other_stat = ""; else other_stat = other.getValue().parse();
+        comp &= this_stat.equals(other_stat);
 
         return comp;
     }

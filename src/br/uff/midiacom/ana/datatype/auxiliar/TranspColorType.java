@@ -35,103 +35,93 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.auxiliar;
 
-import java.util.Vector;
+import br.uff.midiacom.ana.datatype.enums.NCLColor;
 
 
 /**
- * This class represents an value represented as an array (ex.: 99,99,99).
+ * This class represents a value that can be a color or the "transparent" String.
  */
-public class ArrayType {
+public class TranspColorType {
 
-    private double[] values;
-    
-    
+    private NCLColor color;
+    private String transparent = "transparent";
+
+
     /**
-     * Create the array from an array of values.
+     * Creates the value as a color.
      *
-     * @param values
-     *          array of values.
-     * @throws IllegalArgumentException
-     *          if one value of the array is negative.
+     * @param color
+     *          element representing the color.
+     * @throws NullPointerException
+     *          if the color is null.
      */
-    public ArrayType(double[] values) throws IllegalArgumentException {
-        setValues(values);
+    public TranspColorType(NCLColor color) throws NullPointerException {
+        if(color == null)
+            throw new NullPointerException("null color");
+
+        this.color = color;
     }
 
 
     /**
-     * Create the array from an array of values.
+     * Creates the value as a String.
      *
-     * @param values
-     *          array of values.
+     * @param color
+     *          String representing a color or the "transparent" String.
+     * @throws NullPointerException
+     *          if the String is null.
      * @throws IllegalArgumentException
-     *          if one value of the array is negative.
+     *          if the String is empty.
      */
-    public ArrayType(String values) {
-        Vector<Double> array = new Vector<Double>();
-        while(values.contains(",")){
-            int index = values.indexOf(",");
-            array.add(new Double(values.substring(0, index)));
-            values = values.substring(index + 1);
-        }
-        array.add(new Double(values));
-        double[] a = new double[array.size()];
-        for(int k = 0; k < array.size(); k++)
-            a[k] = (double) array.elementAt(k);
+    public TranspColorType(String color) throws NullPointerException, IllegalArgumentException {
+        if(color == null)
+            throw new NullPointerException("Null color String");
+        if("".equals(color.trim()))
+            throw new IllegalArgumentException("Empty color String");
 
-        setValues(a);
-    }
-
-
-    private void setValues(double[] values) throws IllegalArgumentException {
-        if(values != null){
-            for(double coord : values){
-                if(coord < 0)
-                    throw new IllegalArgumentException("Invalid value: " + coord);
+        if(!color.equals(transparent)){
+            for(NCLColor c : NCLColor.values()){
+                if(c.toString().equals(color))
+                    this.color = c;
             }
         }
-
-        this.values = values;
     }
 
 
     /**
-     * Returns the array.
+     * Return the value.
      *
      * @return
-     *          array of values.
+     *          element representing a color.
      */
-    public double[] getArray() {
-        return values;
+    public NCLColor getColor() {
+        return color;
     }
 
 
     /**
-     * Returns the array size.
+     * Check if the value is the String "transparent".
      *
      * @return
-     *          integer with the array size.
+     *          true if the value is "transparent".
      */
-    public int getSize() {
-        return values.length;
+    public boolean isTransparent() {
+        return color == null;
     }
 
 
     /**
-     * Returns the array.
+     * Returns the value.
      *
      * @return
-     *          String representing the array.
+     *          String representing the value.
      */
-    private String parse() {
-        String result = "";
-        for(int i = 0; i < values.length; i++){
-            result += values[i];
-            if(i < values.length - 1)
-                result += ",";
-        }
-        return result;
+    public String parse() {
+        if(color == null)
+            return transparent;
+        else
+            return color.toString();
     }
 }

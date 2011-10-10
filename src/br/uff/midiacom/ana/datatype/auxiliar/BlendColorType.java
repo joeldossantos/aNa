@@ -35,107 +35,93 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.auxiliar;
+
+import br.uff.midiacom.ana.datatype.enums.NCLColor;
 
 
 /**
- * This class represents a number. The number can be:
- * <ul>
- *   <li>absolute number in the format 99.99</li>
- *   <li>relative number in the format 99.99%</li>
- * </ul>
+ * This class represents a value that can be a color or the "blend" String.
  */
-public class RelativeType {
+public class BlendColorType {
 
-    private double value;
-    private boolean isRelative;
+    private NCLColor color;
+    private String blend = "blend";
 
 
     /**
-     * Creates the number as a absolute number.
+     * Creates the value as a color.
      *
-     * @param value
-     *          double representing the number.
+     * @param color
+     *          element representing the color.
+     * @throws NullPointerException
+     *          if the color is null.
      */
-    public RelativeType(double value) {
-        this.value = value;
-        isRelative = false;
+    public BlendColorType(NCLColor color) throws NullPointerException {
+        if(color == null)
+            throw new NullPointerException("null color");
+
+        this.color = color;
     }
 
 
     /**
-     * Creates a number that can be relative.
+     * Creates the value as a String.
      *
-     * @param value
-     *          double representing the number.
-     * @param isRelative
-     *          boolean indicating if the number is relative or absolute.
-     *          true for relative and false for absolute.
-     */
-    public RelativeType(double value, boolean isRelative) {
-        this.value = value;
-        this.isRelative = isRelative;
-    }
-
-
-    /**
-     * Creates the number as a String.
-     *
-     * @param value
-     *          String representing the number.
+     * @param color
+     *          String representing a color or the "blend" String.
      * @throws NullPointerException
      *          if the String is null.
      * @throws IllegalArgumentException
      *          if the String is empty.
      */
-    public RelativeType(String value) throws NullPointerException, IllegalArgumentException {
-        if(value == null)
-            throw new NullPointerException("Null value String");
-        if("".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
+    public BlendColorType(String color) throws NullPointerException, IllegalArgumentException {
+        if(color == null)
+            throw new NullPointerException("Null color String");
+        if("".equals(color.trim()))
+            throw new IllegalArgumentException("Empty color String");
 
-        int index = value.indexOf("%");
-        if(index > 0){
-            value = value.substring(0, index);
-            isRelative = true;
+        if(!color.equals(blend)){
+            for(NCLColor c : NCLColor.values()){
+                if(c.toString().equals(color))
+                    this.color = c;
+            }
         }
-
-        this.value = new Double(value);
     }
 
 
     /**
-     * Returns the number value.
+     * Return the value.
      *
      * @return
-     *          double representing the number.
+     *          element representing a color.
      */
-    public double getValue() {
-        return value;
+    public NCLColor getColor() {
+        return color;
     }
 
 
     /**
-     * Indicates if the number is relative.
+     * Check if the value is the String "blend".
      *
      * @return
-     *          boolean indicating if the number is relative.
+     *          true if the value is "blend".
      */
-    public boolean isRelative() {
-        return isRelative;
+    public boolean isBlend() {
+        return color == null;
     }
 
 
     /**
-     * Returns the number value.
+     * Returns the value.
      *
      * @return
-     *          String representing the number.
+     *          String representing the value.
      */
     public String parse() {
-        if(isRelative)
-            return "" + value + "%";
+        if(color == null)
+            return blend;
         else
-            return "" + value;
+            return color.toString();
     }
 }

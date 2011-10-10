@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
-import br.uff.midiacom.ana.datatype.SrcType;
+import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -50,15 +50,15 @@ import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, Er extends NCLRegionPrototype, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLLayoutDescriptor<T, P> {
+public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, Er extends NCLRegionPrototype, Ed extends NCLDescriptorPrototype, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLLayoutDescriptor<T, P> {
 
     protected StringType player;
     protected Integer explicitDur;
     protected Boolean freeze;
-    protected T moveLeft;
-    protected T moveRight;
-    protected T moveUp;
-    protected T moveDown;
+    protected Ed moveLeft;
+    protected Ed moveRight;
+    protected Ed moveUp;
+    protected Ed moveDown;
     protected Integer focusIndex;
     protected NCLColor focusBorderColor;
     protected Integer focusBorderWidth;
@@ -163,7 +163,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveLeft(T descriptor) {
+    public void setMoveLeft(Ed descriptor) {
         this.moveLeft = descriptor;
     }
 
@@ -175,7 +175,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveLeft() {
+    public Ed getMoveLeft() {
         return moveLeft;
     }
 
@@ -187,7 +187,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveRight(T descriptor) {
+    public void setMoveRight(Ed descriptor) {
         this.moveRight = descriptor;
     }
 
@@ -199,7 +199,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveRight() {
+    public Ed getMoveRight() {
         return moveRight;
     }
 
@@ -211,7 +211,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveUp(T descriptor) {
+    public void setMoveUp(Ed descriptor) {
         this.moveUp = descriptor;
     }
 
@@ -223,7 +223,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveUp() {
+    public Ed getMoveUp() {
         return moveUp;
     }
 
@@ -235,7 +235,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveDown(T descriptor) {
+    public void setMoveDown(Ed descriptor) {
         this.moveDown = descriptor;
     }
 
@@ -247,7 +247,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveDown() {
+    public Ed getMoveDown() {
         return moveDown;
     }  
     

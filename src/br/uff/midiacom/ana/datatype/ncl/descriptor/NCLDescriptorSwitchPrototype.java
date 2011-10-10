@@ -37,31 +37,19 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-/**
- * Esta classe define o elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um switch de descritor em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B extends NCLDescriptorBindRulePrototype, L extends NCLLayoutDescriptor> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
+public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, Eb extends NCLDescriptorBindRulePrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
-    private Set<D> descriptors = new TreeSet<D>();
-    private List<B> binds = new ArrayList<B>();
-    private D defaultDescriptor;
+    protected IdentifiableElementList<T, T> descriptors;
+    protected ElementList<Eb, T> binds;
+    protected T defaultDescriptor;
 
 
     /**
@@ -72,24 +60,10 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador do switch de descritor não for válido.
      */
-    public NCLDescriptorSwitchPrototype(String id) throws NCLInvalidIdentifierException {
+    public NCLDescriptorSwitchPrototype(String id) throws XMLException {
         setId(id);
-    }
-
-
-    /**
-     * Construtor do elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLDescriptorSwitchPrototype(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+        descriptors = new IdentifiableElementList<T, T>();
+        binds = new ElementList<Eb, T>();
     }
 
 
@@ -101,16 +75,21 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      *
      * @see TreeSet#add
      */
-    public boolean addDescriptor(D descriptor) {
-        if(descriptors.add(descriptor)){
-            //Se descriptor existe, atribui este como seu parente
-            if(descriptor != null)
-                descriptor.setParent(this);
+    public boolean addDescriptor(T descriptor) throws XMLException {
+        return descriptors.add(descriptor, (T) this);
+    }
 
-            notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+
+    /**
+     * Remove um descritor do switch de descritor.
+     *
+     * @param descriptor
+     *          elemento representando o descritor a ser removido.
+     *
+     * @see TreeSet#remove
+     */
+    public boolean removeDescriptor(T descriptor) throws XMLException {
+        return descriptors.remove(descriptor);
     }
 
 
@@ -124,33 +103,8 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      *
      * @see TreeSet#remove
      */
-    public boolean removeDescriptor(String id) {
-        for(D descriptor : descriptors){
-            if(descriptor.getId().equals(id))
-                return removeDescriptor(descriptor);
-        }
-        return false;
-    }
-
-
-    /**
-     * Remove um descritor do switch de descritor.
-     *
-     * @param descriptor
-     *          elemento representando o descritor a ser removido.
-     *
-     * @see TreeSet#remove
-     */
-    public boolean removeDescriptor(D descriptor) {
-        if(descriptors.remove(descriptor)){
-            //Se descriptor existe, retira o seu parentesco
-            if(descriptor != null)
-                descriptor.setParent(null);
-
-            notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+    public boolean removeDescriptor(String id) throws XMLException {
+        return descriptors.remove(id);
     }
 
 
@@ -160,8 +114,13 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @param descriptor
      *          elemento representando o descritor a ser verificado.
      */
-    public boolean hasDescriptor(D descriptor) {
+    public boolean hasDescriptor(T descriptor) throws XMLException {
         return descriptors.contains(descriptor);
+    }
+
+
+    public boolean hasDescriptor(String id) throws XMLException {
+        return descriptors.get(id) != null;
     }
 
 
@@ -182,7 +141,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @return
      *          lista contendo os descritores do switch de descritor.
      */
-    public Set<D> getDescriptors() {
+    public IdentifiableElementList<T, T> getDescriptors() {
         return descriptors;
     }
 
@@ -195,15 +154,8 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      *
      * @see ArrayList#add
      */
-    public boolean addBind(B bind) {
-        if(bind != null && binds.add(bind)){
-            //atribui este como parente do bind
-            bind.setParent(this);
-
-            notifyInserted(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    public boolean addBind(Eb bind) throws XMLException {
+        return binds.add(bind, (T) this);
     }
 
 
@@ -215,16 +167,8 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      *
      * @see ArrayList#remove
      */
-    public boolean removeBind(B bind) {
-        if(binds.remove(bind)){
-            //Se bind existe, retira o seu parentesco
-            if(bind != null)
-                bind.setParent(null);
-
-            notifyRemoved(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    public boolean removeBind(Eb bind) throws XMLException {
+        return binds.remove(bind);
     }
 
 
@@ -234,7 +178,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @param bind
      *          elemento representando o bind a ser verificado.
      */
-    public boolean hasBind(B bind) {
+    public boolean hasBind(Eb bind) throws XMLException {
         return binds.contains(bind);
     }
 
@@ -256,7 +200,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @return
      *          lista contendo os binds do switch de descritor.
      */
-    public List<B> getBinds() {
+    public ElementList<Eb, T> getBinds() {
         return binds;
     }
 
@@ -267,8 +211,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @param defaultDescriptor
      *          elemento representando o descritor padrão.
      */
-    public void setDefaultDescriptor(D defaultDescriptor) {
-        notifyAltered(NCLElementAttributes.DESCRIPTOR, this.defaultDescriptor, defaultDescriptor);
+    public void setDefaultDescriptor(T defaultDescriptor) {
         this.defaultDescriptor = defaultDescriptor;
     }
 
@@ -279,7 +222,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
      * @return
      *          elemento representando o descritor padrão.
      */
-    public D getDefaultDescriptor() {
+    public T getDefaultDescriptor() {
         return defaultDescriptor;
     }
 
@@ -301,7 +244,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
         content += ">\n";
 
         if(hasBind()){
-            for(B bind : binds)
+            for(Eb bind : binds)
                 content += bind.parse(ident + 1);
         }
 
@@ -309,7 +252,7 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
             content += space + "\t" + "<defaultDescriptor descriptor='" + getDefaultDescriptor().getId() + "'/>\n";
 
         if(hasDescriptor()){
-            for(D descriptor : descriptors)
+            for(T descriptor : descriptors)
                 content += descriptor.parse(ident + 1);
         }
 
@@ -317,110 +260,5 @@ public class NCLDescriptorSwitchPrototype<D extends NCLLayoutDescriptor, B exten
 
 
         return content;
-    }
-
-
-    public int compareTo(L other) {
-        return getId().compareTo(other.getId());
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("descriptorSwitch")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("bindRule")){
-                B child = createBindRule();
-                child.startElement(uri, localName, qName, attributes);
-                addBind(child);
-            }
-            else if(localName.equals("descriptor")){
-                D child = createDescriptor();
-                child.startElement(uri, localName, qName, attributes);
-                addDescriptor(child);
-            }
-            else if(localName.equals("defaultDescriptor")){
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("descriptor"))
-                        setDefaultDescriptor((D) new NCLDescriptorPrototype(attributes.getValue(i)));//cast retirado na correcao das referencias
-                }
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endElement(String uri, String localName, String qName) {
-        if(localName.equals("descriptorSwitch"))
-            super.endElement(uri, localName, qName);
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(getDefaultDescriptor() != null)
-            defaultDescriptorReference();
-
-        if(hasBind()){
-            for(B bind : binds){
-                bind.endDocument();
-                addWarning(bind.getWarnings());
-                addError(bind.getErrors());
-            }
-        }
-        if(hasDescriptor()){
-            for(D descriptor : descriptors){
-                descriptor.endDocument();
-                addWarning(descriptor.getWarnings());
-                addError(descriptor.getErrors());
-            }
-        }
-    }
-
-
-    private void defaultDescriptorReference() {
-        //Search for a component node in its parent
-        for(D descriptor : descriptors){
-            if(descriptor.getId().equals(getDefaultDescriptor().getId())){
-                setDefaultDescriptor(descriptor);
-                return;
-            }
-        }
-
-        addWarning("Could not find descriptor in descriptorSwitch with id: " + getDefaultDescriptor().getId());
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>bindRule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>bindRule</i>.
-     */
-    protected B createBindRule() {
-        return (B) new NCLDescriptorBindRulePrototype(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>descriptor</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>descriptor</i>.
-     */
-    protected D createDescriptor() {
-        return (D) new NCLDescriptorPrototype(getReader(), this);
     }
 }

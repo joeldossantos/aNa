@@ -35,93 +35,65 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-/**
- * This class represents a value that can be a color or the "transparent" String.
- */
-public class TranspColorType {
-
-    private NCLColor color;
-    private String transparent = "transparent";
+public class NCLColorDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, NCLColor> {
 
 
-    /**
-     * Creates the value as a color.
-     *
-     * @param color
-     *          element representing the color.
-     * @throws NullPointerException
-     *          if the color is null.
-     */
-    public TranspColorType(NCLColor color) throws NullPointerException {
-        if(color == null)
-            throw new NullPointerException("null color");
+    private Boolean isTransparent;
 
-        this.color = color;
+
+    public NCLColorDescriptorParamPrototype() {
+        super();
     }
 
 
-    /**
-     * Creates the value as a String.
-     *
-     * @param color
-     *          String representing a color or the "transparent" String.
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty.
-     */
-    public TranspColorType(String color) throws NullPointerException, IllegalArgumentException {
-        if(color == null)
-            throw new NullPointerException("Null color String");
-        if("".equals(color.trim()))
-            throw new IllegalArgumentException("Empty color String");
+    @Override
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        if(!name.equals(NCLAttributes.BACKGROUND) && !name.equals(NCLAttributes.FONT_COLOR))
+            throw new IllegalArgumentException("This parameter type can not be used with this name.");
 
-        if(!color.equals(transparent)){
-            for(NCLColor c : NCLColor.values()){
-                if(c.toString().equals(color))
-                    this.color = c;
-            }
+        super.setName(name);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) {
+        for(NCLColor color : NCLColor.values()){
+            if(value.equals(color.toString()))
+                setValue(color);
         }
+
+        if(value.equals("transparent"))
+            setIsTransparent(true);
+        
+        setValue(null);
     }
 
 
-    /**
-     * Return the value.
-     *
-     * @return
-     *          element representing a color.
-     */
-    public NCLColor getColor() {
-        return color;
+    @Override
+    protected String getParamValue() {
+        if((getIsTransparent() != null) && (getIsTransparent()))
+            return "transparent";
+        
+        return getValue().toString();
     }
 
 
-    /**
-     * Check if the value is the String "transparent".
-     *
-     * @return
-     *          true if the value is "transparent".
-     */
-    public boolean isTransparent() {
-        return color == null;
+    public void setIsTransparent(Boolean isTransparent) throws IllegalArgumentException {
+        if(!getName().equals(NCLAttributes.BACKGROUND))
+            throw new IllegalArgumentException("This value can not be used with this parameter.");
+
+        this.isTransparent = isTransparent;
     }
 
 
-    /**
-     * Returns the value.
-     *
-     * @return
-     *          String representing the value.
-     */
-    public String parse() {
-        if(color == null)
-            return transparent;
-        else
-            return color.toString();
+    public Boolean getIsTransparent() {
+        return isTransparent;
     }
 }

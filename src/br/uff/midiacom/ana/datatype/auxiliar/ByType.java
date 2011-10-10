@@ -35,122 +35,88 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype;
+package br.uff.midiacom.ana.datatype.auxiliar;
 
 
 /**
- * This class percentage value. The value can be represented:
- * <ul>
- *   <li>without the percentage sign as a number between 0 and 1</li>
- *   <li>with the percentage sign as a number between 0 and 100 (ex.: 99.99%)</li>
- * </ul>
+ * This class represents a value that can be a positive integer or the String
+ * "indefinite".
  */
-public class PercentageType {
+public class ByType {
 
-    private double value;
-    private boolean signed;
-
-
-    /**
-     * Creates the percentage as a signed value.
-     *
-     * @param value
-     *          double representing a number between 0 and 100.
-     * @throws IllegalArgumentException
-     *          if the value is out of bounds.
-     */
-    public PercentageType(double value) throws IllegalArgumentException {
-        signed = true;
-        setValue(value);
-    }
+    private Integer value;
+    private String indefinite = "indefinite";
 
 
     /**
-     * Creates the percentage indicating if it has a percent sign.
+     * Creates the value as a integer number.
      *
      * @param value
-     *          double representing the percentage.
-     * @param signed
-     *          boolean indicating if the percentage value has or not a percent
-     *          sign. true for a signed value and false for unsigned.
+     *          a positive integer.
      * @throws IllegalArgumentException
-     *          if the value is out of bounds.
+     *          if the integer is negative.
      */
-    public PercentageType(double value, boolean signed) throws IllegalArgumentException {
-        this.signed = signed;
-        setValue(value);
-    }
-
-
-    /**
-     * Creates the percentage as a String.
-     *
-     * @param value
-     *          String representing the percentage.
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty or out of bounds.
-     */
-    public PercentageType(String value) throws NullPointerException, IllegalArgumentException {
-        if(value == null)
-            throw new NullPointerException("Null value String");
-        if("".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
-
-        int index = value.indexOf("%");
-        if(index > 0){
-            value = value.substring(0, index);
-            signed = true;
-        }
-
-        setValue(new Double(value));
-    }
-
-
-    private void setValue(double value) throws IllegalArgumentException {
-        if(!signed && (value < 0 || value > 1))
-            throw new IllegalArgumentException("The number must be between 0 and 1.");
-        if(signed && (value < 0 || value > 100))
-            throw new IllegalArgumentException("The number must be between 0 and 100.");
+    public ByType(int value) throws IllegalArgumentException {
+        if(value < 0)
+            throw new IllegalArgumentException("Negative value");
 
         this.value = value;
     }
 
 
     /**
-     * Returns the percentage value.
+     * Creates the value as a String.
+     *
+     * @param value
+     *          String representing a positive integer or the String "unbounded".
+     * @throws NullPointerException
+     *          if the String is null.
+     * @throws IllegalArgumentException
+     *          if the String is empty.
+     */
+    public ByType(String value) throws NullPointerException, IllegalArgumentException {
+        if(value == null)
+            throw new NullPointerException("Null value String");
+        if("".equals(value.trim()))
+            throw new IllegalArgumentException("Empty value String");
+
+        if(!value.equals(indefinite))
+            this.value = new Integer(value);
+    }
+
+
+    /**
+     * Return the value.
      *
      * @return
-     *          double representing the number.
+     *          element representing a positive integer.
      */
-    public double getValue() {
+    public Integer getValue() {
         return value;
     }
 
 
     /**
-     * Indicates if the percentage has a percentage sign.
+     * Check if the value is the String "indefinite".
      *
      * @return
-     *          boolean indicating if the percentage value has or not a percent
-     *          sign. true for a signed value and false for unsigned.
+     *          true if the value is "indefinite".
      */
-    public boolean isRelative() {
-        return signed;
+    public boolean isUnbounded() {
+        return value == null;
     }
 
 
     /**
-     * Returns the number value.
+     * Returns the value.
      *
      * @return
-     *          String representing the number.
+     *          String representing the value.
      */
     public String parse() {
-        if(signed)
-            return "" + value + "%";
+        if(value == null)
+            return indefinite;
         else
-            return "" + value;
+            return value.toString();
     }
 }
