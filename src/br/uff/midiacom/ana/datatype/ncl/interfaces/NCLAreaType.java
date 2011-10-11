@@ -37,8 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
-import br.uff.midiacom.ana.datatype.SampleType;
-import br.uff.midiacom.ana.datatype.TimeType;
+import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
+import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;

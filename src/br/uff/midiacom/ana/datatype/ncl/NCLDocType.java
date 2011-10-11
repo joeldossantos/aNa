@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDocType<H extends NCLHeadType, B extends NCLBodyType> extends NCLIdentifiableElementType {
+public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> extends NCLIdentifiableElementPrototype {
 
     private String title;
     private NCLNamespace xmlns; //atributo obrigatório
@@ -311,7 +311,7 @@ public class NCLDocType<H extends NCLHeadType, B extends NCLBodyType> extends NC
      *          elemento representando o elemento filho <i>head</i>.
      */
     protected H createHead() {
-        return (H) new NCLHeadType(getReader(), this);
+        return (H) new NCLHeadPrototype(getReader(), this);
     }
 
 
@@ -323,6 +323,6 @@ public class NCLDocType<H extends NCLHeadType, B extends NCLBodyType> extends NC
      *          elemento representando o elemento filho <i>body</i>.
      */
     protected B createBody() {
-        return (B) new NCLBodyType(getReader(), this);
+        return (B) new NCLBodyPrototype(getReader(), this);
     }
 }

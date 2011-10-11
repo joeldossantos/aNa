@@ -116,6 +116,11 @@ public class SrcType {
     }
 
 
+    public String getExtension() {
+        return src.substring(src.lastIndexOf("."));
+    }
+
+
     /**
      * Returns the source locator.
      *

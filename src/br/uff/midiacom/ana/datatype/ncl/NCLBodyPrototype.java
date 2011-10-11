@@ -37,30 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.interfaces.NCLPort;
-import br.uff.midiacom.ana.interfaces.NCLProperty;
-import br.uff.midiacom.ana.link.NCLLink;
-import br.uff.midiacom.ana.meta.NCLMeta;
-import br.uff.midiacom.ana.meta.NCLMetadata;
-import br.uff.midiacom.ana.node.NCLContext;
-import br.uff.midiacom.ana.node.NCLMedia;
-import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.ana.node.NCLSwitch;
-import java.util.Set;
-import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
-
-/**
- * Esta classe define o elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define o corpo de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLBodyType<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata> extends NCLIdentifiableElementType {
+public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata> extends NCLIdentifiableElementPrototype {
 
     private Set<Pt> ports = new TreeSet<Pt>();
     private Set<Pp> properties = new TreeSet<Pp>();
@@ -73,7 +51,7 @@ public class NCLBodyType<Pt extends NCLPort, Pp extends NCLProperty, N extends N
     /**
      * Construtor do elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLBodyType() {}
+    public NCLBodyPrototype() {}
 
 
     /**
@@ -84,7 +62,7 @@ public class NCLBodyType<Pt extends NCLPort, Pp extends NCLProperty, N extends N
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLBodyType(XMLReader reader, NCLElementType parent) {
+    public NCLBodyPrototype(XMLReader reader, NCLElementType parent) {
         setReader(reader);
         setParent(parent);
 
