@@ -41,22 +41,17 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-public class NCLDoubleDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, Double> {
-
-    private Boolean relative;
+public class NCLIntegerDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, Integer> {
 
 
-    public NCLDoubleDescriptorParamPrototype() {
+    public NCLIntegerDescriptorParamPrototype() {
         super();
     }
 
 
     @Override
     public void setName(NCLAttributes name) throws IllegalArgumentException {
-        if(!name.equals(NCLAttributes.TOP) && !name.equals(NCLAttributes.LEFT)
-                && !name.equals(NCLAttributes.BOTTOM) && !name.equals(NCLAttributes.RIGHT)
-                && !name.equals(NCLAttributes.WIDTH) && !name.equals(NCLAttributes.HEIGHT)
-                && !name.equals(NCLAttributes.FONT_SIZE))
+        if(!name.equals(NCLAttributes.ZINDEX))
             throw new IllegalArgumentException("This parameter type can not be used with this name.");
 
         super.setName(name);
@@ -64,9 +59,9 @@ public class NCLDoubleDescriptorParamPrototype<T extends NCLDescriptorParamProto
 
 
     @Override
-    public void setValue(Double value) throws IllegalArgumentException {
-        if(relative != null && relative && (value < 0 || value > 100))
-            throw new IllegalArgumentException("The relative value of the paramenter must be between 0 and 100");
+    public void setValue(Integer value) throws IllegalArgumentException {
+        if(value < 0 || value > 255)
+            throw new IllegalArgumentException("The relative value of the paramenter must be between 0 and 255");
 
         super.setValue(value);
     }
@@ -74,34 +69,12 @@ public class NCLDoubleDescriptorParamPrototype<T extends NCLDescriptorParamProto
 
     @Override
     protected void setParamValue(String value) throws IllegalArgumentException {
-        int index = value.indexOf("%");
-        if(index > 0){
-            value = value.substring(0, index);
-            setRelative(true);
-        }
-
-        setValue(new Double(value));
+        setValue(new Integer(value));
     }
 
 
     @Override
     protected String getParamValue() {
-        if(getRelative() != null && !getRelative())
-            return ""+getValue().intValue()+"%";
-        else
-            return ""+ getValue().intValue();
-    }
-
-
-    public void setRelative(Boolean relative) throws IllegalArgumentException {
-        if(getName().equals(NCLAttributes.ZINDEX))
-            throw new IllegalArgumentException("This parameter type can not have a relative valur.");
-        
-        this.relative = relative;
-    }
-
-
-    public Boolean getRelative() {
-        return relative;
+        return ""+ getValue().intValue();
     }
 }

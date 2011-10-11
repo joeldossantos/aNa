@@ -37,25 +37,15 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
-/**
- * Esta classe define o elemento <i>property</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma propriedade de um nó.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
+public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement> extends NCLIdentifiableElementPrototype<T, P> implements NCLInterface<T, P> {
 
-    private String value;
+    protected String value;
     
     
     /**
@@ -66,7 +56,7 @@ public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElem
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome da propriedade não for válido.
      */
-    public NCLPropertyType(String name) throws NCLInvalidIdentifierException {
+    public NCLPropertyPrototype(String name) throws XMLException {
         setName(name);
     }    
 
@@ -80,24 +70,8 @@ public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElem
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome da propriedade não for válido.
      */
-    public NCLPropertyType(NCLSystemVariable name) throws NCLInvalidIdentifierException {
+    public NCLPropertyPrototype(NCLSystemVariable name) throws XMLException {
         setName(name);
-    }
-
-
-    /**
-     * Construtor do elemento <i>property</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLPropertyType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
     }
     
     
@@ -110,8 +84,7 @@ public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElem
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome da propriedade não for válido.
      */
-    public void setName(String name) throws NCLInvalidIdentifierException {
-        notifyAltered(NCLElementAttributes.NAME, getName(), name);
+    public void setName(String name) throws XMLException {
         setId(name);
     }    
 
@@ -124,11 +97,9 @@ public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElem
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome da propriedade não for válido.
      */
-    public void setName(NCLSystemVariable name) throws NCLInvalidIdentifierException {
+    public void setName(NCLSystemVariable name) throws XMLException {
         if(name == null)
-            throw new NCLInvalidIdentifierException("Invalid name");
-
-        notifyAltered(NCLElementAttributes.NAME, getName(), name);
+            throw new XMLException("Invalid name");
         setId(name.toString());
     }
     
@@ -155,8 +126,6 @@ public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElem
     public void setValue(String value) throws IllegalArgumentException {
         if(value != null && "".equals(value.trim()))
             throw new IllegalArgumentException("Empty value String");
-
-        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
         this.value = value;
     }
     
@@ -193,28 +162,5 @@ public class NCLPropertyType<I extends NCLInterface> extends NCLIdentifiableElem
         
         
         return content;
-    }
-    
-    
-    public int compareTo(I other) {
-        return getId().compareTo(other.getId());
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("name"))
-                    setName(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("value"))
-                    setValue(attributes.getValue(i));
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
     }
 }

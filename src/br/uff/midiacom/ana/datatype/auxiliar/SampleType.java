@@ -164,7 +164,7 @@ public class SampleType {
     }
     
     
-    public String toString() {
+    public String parse() {
         switch(type){
         case S:
             return value + "s";
