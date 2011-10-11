@@ -43,7 +43,7 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
-public class NCLSwitchPortType<T extends NCLSwitchPortType, P extends NCLElement, Em extends NCLMappingPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLInterface<T, P> {
+public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends NCLElement, Em extends NCLMappingPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLInterface<T, P> {
 
     protected ElementList<Em, T> mappings = new ElementList<Em, T>();
 
@@ -56,7 +56,7 @@ public class NCLSwitchPortType<T extends NCLSwitchPortType, P extends NCLElement
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador for inválido.
      */
-    public NCLSwitchPortType(String id) throws XMLException {
+    public NCLSwitchPortPrototype(String id) throws XMLException {
         setId(id);
     }
 

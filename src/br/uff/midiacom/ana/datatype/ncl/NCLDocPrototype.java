@@ -37,33 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
-/**
- * Esta classe define o elemento <i>ncl</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento raiz de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> extends NCLIdentifiableElementPrototype {
+public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, Eh extends NCLHeadPrototype, Eb extends NCLBodyPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
     private String title;
     private NCLNamespace xmlns; //atributo obrigatório
 
-    private H head;
-    private B body;
+    private Eh head;
+    private Eb body;
 
     
     /**
@@ -79,7 +62,6 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
         if(title != null && "".equals(title.trim()))
             throw new IllegalArgumentException("Empty title String");
         
-        notifyAltered(NCLElementAttributes.TITLE, this.title, title);
         this.title = title;
     }
 
@@ -102,7 +84,6 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
      *          namespace usado pelo documento NCL.
      */
     public void setXmlns(NCLNamespace xmlns) {
-        notifyAltered(NCLElementAttributes.XMLNS, this.xmlns, xmlns);
         this.xmlns = xmlns;
     }
 
@@ -124,18 +105,16 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
      * @param head
      *          elemento representando o cabeçalho do documento NCL.
      */
-    public void setHead(H head) {
+    public void setHead(Eh head) {
         //Retira o parentesco do head atual
         if(this.head != null){
             this.head.setParent(null);
-            notifyRemoved(NCLElementSets.HEAD, this.head);
         }
 
         this.head = head;
         //Se head existe, atribui este como seu parente
         if(this.head != null){
             this.head.setParent(this);
-            notifyInserted(NCLElementSets.HEAD, head);
         }
     }
 
@@ -146,7 +125,7 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
      * @return
      *          elemento representando o cabeçalho do documento NCL.
      */
-    public H getHead() {
+    public Eh getHead() {
         return head;
     }
 
@@ -157,18 +136,16 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
      * @param body
      *          elemento representando o corpo do documento NCL.
      */
-    public void setBody(B body) {
+    public void setBody(Eb body) {
         //Retira o parentesco do body atual
         if(this.body != null){
             this.body.setParent(null);
-            notifyRemoved(NCLElementSets.BODY, this.body);
         }
 
         this.body = body;
         //Se body existe, atribui este como seu parente
         if(this.body != null){
             this.body.setParent(this);
-            notifyInserted(NCLElementSets.BODY, body);
         }
     }
 
@@ -179,7 +156,7 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
      * @return
      *          elemento representando o cabeçalho do documento NCL.
      */
-    public B getBody() {
+    public Eb getBody() {
         return body;
     }
 
@@ -220,109 +197,5 @@ public class NCLDocType<H extends NCLHeadPrototype, B extends NCLBodyPrototype> 
         content += space + "</ncl>\n";
 
         return content;
-    }
-
-
-    /**
-     * Recupera a estrutura de classes que representam elementos NCL a partir
-     * de um arquivo XML especificado de acordo com a linguagem NCL.
-     *
-     * @param path
-     *          String contendo o caminho absoluto para o arquivo XML.
-     * @throws NCLParsingException
-     *          se algum erro ocorrer durante a recuperação do arquivo.
-     */
-    public void loadXML(File xmlFile) throws NCLParsingException {
-        try{
-            setReader(XMLReaderFactory.createXMLReader());
-
-            getReader().setContentHandler(this);
-            getReader().setErrorHandler(new NCLParsingErrorHandler(getReader()));
-
-            FileReader r = new FileReader(xmlFile);
-            getReader().parse(new InputSource(r));
-        }
-        catch(SAXException ex){
-            throw new NCLParsingException(ex.getMessage());
-        }
-        catch(FileNotFoundException ex){
-            throw new NCLParsingException(ex.getMessage());
-        }
-        catch(IOException ex){
-            throw new NCLParsingException(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("ncl")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                    else if(attributes.getLocalName(i).equals("title"))
-                        setTitle(attributes.getValue(i));
-                }
-                if(!uri.equals("")){
-                    for(NCLNamespace ns : NCLNamespace.values()){
-                        if(ns.toString().equals(uri))
-                            setXmlns(ns);
-                    }
-                }
-            }
-            else if(localName.equals("head")){
-                setHead(createHead());
-                getHead().startElement(uri, localName, qName, attributes);
-            }
-            else if(localName.equals("body")){
-                setBody(createBody());
-                getBody().startElement(uri, localName, qName, attributes);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(getHead() != null){
-            getHead().endDocument();
-            addWarning(getHead().getWarnings());
-            addError(getHead().getErrors());
-        }
-        if(getBody() != null){
-            getBody().endDocument();
-            addWarning(getBody().getWarnings());
-            addError(getBody().getErrors());
-        }
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>head</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>head</i>.
-     */
-    protected H createHead() {
-        return (H) new NCLHeadPrototype(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>body</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>body</i>.
-     */
-    protected B createBody() {
-        return (B) new NCLBodyPrototype(getReader(), this);
     }
 }

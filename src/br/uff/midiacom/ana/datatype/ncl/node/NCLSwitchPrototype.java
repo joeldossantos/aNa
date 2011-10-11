@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
@@ -179,7 +180,7 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @return
      *          lista contendo as portas do contexto.
      */
-    public IdentifiableElementList<Ept, T> getPorts() {
+    public IdentifiableElementList<Ep, T> getPorts() {
         return ports;
     }
 

@@ -44,6 +44,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
@@ -354,7 +356,7 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
      *          verdadeiro se a propriedade existir.
      */
     public boolean hasProperty(String name) throws XMLException {
-        return properties.get(id) != null;
+        return properties.get(name) != null;
     }
 
 

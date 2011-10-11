@@ -37,36 +37,45 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
+import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
+import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
+import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
-public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata> extends NCLIdentifiableElementPrototype {
 
-    private Set<Pt> ports = new TreeSet<Pt>();
-    private Set<Pp> properties = new TreeSet<Pp>();
-    private Set<N> nodes = new TreeSet<N>();
-    private Set<L> links = new TreeSet<L>();
-    private Set<M> metas = new TreeSet<M>();
-    private Set<MT> metadatas = new TreeSet<MT>();
+public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
+        extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+
+    protected T refer;
+    protected IdentifiableElementList<Ept, T> ports;
+    protected IdentifiableElementList<Epp, T> properties;
+    protected IdentifiableElementList<En, T> nodes;
+    protected IdentifiableElementList<El, T> links;
+    protected ElementList<Em, T> metas;
+    protected ElementList<Emt, T> metadatas;
 
 
     /**
-     * Construtor do elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLBodyPrototype() {}
-
-
-    /**
-     * Construtor do elemento <i>body</i> da <i>Nested Context Language</i> (NCL).
+     * Construtor do elemento <i>context</i> da <i>Nested Context Language</i> (NCL).
      *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
+     * @param id
+     *          identificador do contexto.
+     * @throws br.pensario.NCLInvalidIdentifierException
+     *          se o identificador do contexto for inválido.
      */
-    public NCLBodyPrototype(XMLReader reader, NCLElementType parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLBodyPrototype(String id) throws XMLException {
+        setId(id);
+        ports = new IdentifiableElementList<Ept, T>();
+        properties = new IdentifiableElementList<Epp, T>();
+        nodes = new IdentifiableElementList<En, T>();
+        links = new IdentifiableElementList<El, T>();
+        metas = new ElementList<Em, T>();
+        metadatas = new ElementList<Emt, T>();
     }
 
 
@@ -80,41 +89,14 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addPort(Pt port) {
-        if(ports.add(port)){
-            //Se port existe, atribui este como seu parente
-            if(port != null)
-                port.setParent(this);
+    public boolean addPort(Ept port) throws XMLException {
+        return ports.add(port, (T) this);
+    }
 
-            notifyInserted(NCLElementSets.PORTS, port);
-            return true;
-        }
-        return false;
-    }
-    
-    
+
     /**
-     * Remove uma porta do corpo do documento NCL.
-     * 
-     * @param id
-     *          identificador da porta a ser removida.
-     * @return
-     *          Verdadeiro se a porta foi removida.
+     * Remove uma porta do contexto.
      *
-     * @see TreeSet#remove
-     */
-    public boolean removePort(String id) {
-        for(Pt port : ports){
-            if(port.getId().equals(id))
-                return removePort(port);
-        }
-        return false;
-    }
-    
-    
-    /**
-     * Remove uma porta do corpo do documento NCL.
-     * 
      * @param port
      *          elemento representando a porta a ser removida.
      * @return
@@ -122,73 +104,76 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removePort(Pt port) {
-        if(ports.remove(port)){
-            //Se port existe, retira o seu parentesco
-            if(port != null)
-                port.setParent(null);
+    public boolean removePort(Ept port) throws XMLException {
+        return ports.remove(port);
+    }
 
-            notifyRemoved(NCLElementSets.PORTS, port);
-            return true;
-        }
-        return false;
-    }
-    
-    
+
     /**
-     * Verifica se o corpo do documento NCL possui uma porta.
-     * 
+     * Remove uma porta do contexto.
+     *
      * @param id
-     *          identificador da porta a ser verificada.
+     *          identificador da porta a ser removida.
      * @return
-     *          verdadeiro se a porta existir.
+     *          Verdadeiro se a porta foi removida.
+     *
+     * @see TreeSet#remove
      */
-    public boolean hasPort(String id) {
-        for(Pt port : ports){
-            if(port.getId().equals(id))
-                return true;
-        }
-        return false;
+    public boolean removePort(String id) throws XMLException {
+        return ports.remove(id);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui uma porta.
+     * Verifica se o contexto possui uma porta.
      *
      * @param port
      *          elemento representando a porta a ser verificada.
      * @return
      *          verdadeiro se a porta existir.
      */
-    public boolean hasPort(Pt port) {
+    public boolean hasPort(Ept port) throws XMLException {
         return ports.contains(port);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui alguma porta.
-     * 
+     * Verifica se o contexto possui uma porta.
+     *
+     * @param id
+     *          identificador da porta a ser verificada.
      * @return
-     *          verdadeiro se o corpo do documento NCL possuir alguma porta.
+     *          verdadeiro se a porta existir.
+     */
+    public boolean hasPort(String id) throws XMLException {
+        return ports.get(id) != null;
+    }
+
+
+    /**
+     * Verifica se o contexto possui alguma porta.
+     *
+     * @return
+     *          verdadeiro se o contexto possuir alguma porta.
      */
     public boolean hasPort() {
         return !ports.isEmpty();
     }
-    
-    
+
+
     /**
-     * Retorna as portas do corpo do documento NCL.
-     * 
+     * Retorna as portas do contexto.
+     *
      * @return
-     *          lista contendo as portas do corpo do documento NCL.
+     *          lista contendo as portas do contexto.
      */
-    public Set<Pt> getPorts() {
+    public IdentifiableElementList<Ept, T> getPorts() {
         return ports;
     }
-    
-    
+
+
     /**
-     * Adiciona uma propriedade ao corpo do documento NCL.
+     * Adiciona uma propriedade ao contexto.
      *
      * @param property
      *          elemento representando a propriedade a ser adicionada.
@@ -197,40 +182,13 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addProperty(Pp property) {
-        if(properties.add(property)){
-            //Se property existe, atribui este como seu parente
-            if(property != null)
-                property.setParent(this);
+    public boolean addProperty(Epp property) throws XMLException {
+        return properties.add(property, (T) this);
+    }
 
-            notifyInserted(NCLElementSets.PROPERTIES, property);
-            return true;
-        }
-        return false;
-    }
-    
-    
+
     /**
-     * Remove uma propriedade do corpo do documento NCL.
-     *
-     * @param name
-     *          nome da propriedade a ser removida.
-     * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
-     */
-    public boolean removeProperty(String name) {
-        for(Pp property : properties){
-            if(property.getId().equals(name))
-                return removeProperty(property);
-        }
-        return false;
-    }
-    
-    
-    /**
-     * Remove uma propriedade do corpo do documento NCL.
+     * Remove uma propriedade do contexto.
      *
      * @param property
      *          elemento representando a propriedade a ser removida.
@@ -239,73 +197,76 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removeProperty(Pp property) {
-        if(properties.remove(property)){
-            //Se property existe, retira o seu parentesco
-            if(property != null)
-                property.setParent(null);
-
-            notifyRemoved(NCLElementSets.PROPERTIES, property);
-            return true;
-        }
-        return false;
+    public boolean removeProperty(Epp property) throws XMLException {
+        return properties.remove(property);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui uma propriedade.
+     * Remove uma propriedade do contexto.
      *
      * @param name
-     *          nome da propriedade a ser verificada.
+     *          nome da propriedade a ser removida.
      * @return
-     *          verdadeiro se a propriedade existir.
+     *          Verdadeiro se a propriedade foi removida.
+     *
+     * @see TreeSet#remove
      */
-    public boolean hasProperty(String name) {
-        for(Pp property : properties){
-            if(property.getId().equals(name))
-                return true;
-        }
-        return false;
+    public boolean removeProperty(String name) throws XMLException {
+        return properties.remove(name);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui uma propriedade.
+     * Verifica se o contexto possui uma propriedade.
      *
      * @param property
      *          elemento representando a propriedade a ser verificada.
      * @return
      *          verdadeiro se a propriedade existir.
      */
-    public boolean hasProperty(Pp property) {
+    public boolean hasProperty(Epp property) throws XMLException {
         return properties.contains(property);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui alguma propriedade.
+     * Verifica se o contexto possui uma propriedade.
+     *
+     * @param name
+     *          nome da propriedade a ser verificada.
+     * @return
+     *          verdadeiro se a propriedade existir.
+     */
+    public boolean hasProperty(String name) throws XMLException {
+        return properties.get(name) != null;
+    }
+
+
+    /**
+     * Verifica se o contexto possui alguma propriedade.
      *
      * @return
-     *          verdadeiro se o corpo do documento NCL possuir alguma propriedade.
+     *          verdadeiro se o contexto possuir alguma propriedade.
      */
     public boolean hasProperty() {
         return !properties.isEmpty();
     }
-    
-    
+
+
     /**
-     * Retorna as propriedades do corpo do documento NCL.
+     * Retorna as propriedades do contexto.
      *
      * @return
-     *          lista contendo as propriedades do corpo do documento NCL.
+     *          lista contendo as propriedades do contexto.
      */
-    public Set<Pp> getProperties() {
+    public IdentifiableElementList<Epp, T> getProperties() {
         return properties;
     }
-    
-    
+
+
     /**
-     * Adiciona um nó ao corpo do documento NCL.
+     * Adiciona um nó ao contexto.
      *
      * @param node
      *          elemento representando o nó a ser adicionado.
@@ -314,40 +275,13 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addNode(N node) {
-        if(nodes.add(node)){
-            //Se node existe, atribui este como seu parente
-            if(node != null)
-                node.setParent(this);
+    public boolean addNode(En node) throws XMLException {
+        return nodes.add(node, (T) this);
+    }
 
-            notifyInserted(NCLElementSets.NODES, node);
-            return true;
-        }
-        return false;
-    }
-    
-    
+
     /**
-     * Remove um nó do corpo do documento NCL.
-     *
-     * @param id
-     *          identificador do nó a ser removido.
-     * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
-     */
-    public boolean removeNode(String id) {
-        for(N node : nodes){
-            if(node.getId().equals(id))
-                return removeNode(node);
-        }
-        return false;
-    }
-    
-    
-    /**
-     * Remove um nó do corpo do documento NCL.
+     * Remove um nó do contexto.
      *
      * @param node
      *          elemento representando um nó a ser removido.
@@ -356,73 +290,76 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removeNode(N node) {
-        if(nodes.remove(node)){
-            //Se node existe, retira o seu parentesco
-            if(node != null)
-                node.setParent(null);
-
-            notifyRemoved(NCLElementSets.NODES, node);
-            return true;
-        }
-        return false;
+    public boolean removeNode(En node) throws XMLException {
+        return nodes.remove(node);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui um nó.
+     * Remove um nó do contexto.
      *
      * @param id
-     *          identificador do nó a ser verificado.
+     *          identificador do nó a ser removido.
      * @return
-     *          verdadeiro se o nó existir.
+     *          Verdadeiro se o nó foi removido.
+     *
+     * @see TreeSet#remove
      */
-    public boolean hasNode(String id) {
-        for(N node : nodes){
-            if(node.getId().equals(id))
-                return true;
-        }
-        return false;
+    public boolean removeNode(String id) throws XMLException {
+        return nodes.remove(id);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui um nó.
+     * Verifica se o contexto possui um nó.
      *
      * @param node
      *          elemento representando o nó a ser verificado.
      * @return
      *          verdadeiro se o nó existir.
      */
-    public boolean hasNode(N node) {
+    public boolean hasNode(En node) throws XMLException {
         return nodes.contains(node);
     }
-    
-    
+
+
     /**
-     * Verifica se o corpo do documento NCL possui algum nó.
+     * Verifica se o contexto possui um nó.
+     *
+     * @param id
+     *          identificador do nó a ser verificado.
+     * @return
+     *          verdadeiro se o nó existir.
+     */
+    public boolean hasNode(String id) throws XMLException {
+        return nodes.get(id) != null;
+    }
+
+
+    /**
+     * Verifica se o contexto possui algum nó.
      *
      * @return
-     *          verdadeiro se o corpo do documento NCL possuir algum nó.
+     *          verdadeiro se o contexto possuir algum nó.
      */
     public boolean hasNode() {
         return (!nodes.isEmpty());
     }
-    
-    
+
+
     /**
-     * Retorna os nós do corpo do documento NCL.
+     * Retorna os nós do contexto.
      *
      * @return
-     *          lista contendo os nós do corpo do documento NCL.
+     *          lista contendo os nós do contexto.
      */
-    public Set<N> getNodes() {
+    public IdentifiableElementList<En, T> getNodes() {
         return nodes;
     }
-    
-    
+
+
     /**
-     * Adiciona um link ao corpo do documento NCL.
+     * Adiciona um link ao contexto.
      *
      * @param link
      *          elemento representando o link a ser adicionado.
@@ -431,21 +368,13 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addLink(L link) {
-        if(links.add(link)){
-            //Se link existe, atribui este como seu parente
-            if(link != null)
-                link.setParent(this);
-
-            notifyInserted(NCLElementSets.LINKS, link);
-            return true;
-        }
-        return false;
+    public boolean addLink(El link) throws XMLException {
+        return links.add(link, (T) this);
     }
-    
-    
+
+
     /**
-     * Remove um link do corpo do documento NCL.
+     * Remove um link do contexto.
      *
      * @param link
      *          elemento representando o link a ser removido.
@@ -454,50 +383,52 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removeLink(L link) {
-        if(links.remove(link)){
-            //Se link existe, retira o seu parentesco
-            if(link != null)
-                link.setParent(null);
-
-            notifyRemoved(NCLElementSets.LINKS, link);
-            return true;
-        }
-        return false;
+    public boolean removeLink(El link) throws XMLException {
+        return links.remove(link);
     }
-    
-    
+
+
+    public boolean removeLink(String id) throws XMLException {
+        return links.remove(id);
+    }
+
+
     /**
-     * Verifica se o corpo do documento NCL possui um link.
+     * Verifica se o contexto possui um link.
      *
      * @param link
      *          elemento representando o link a ser verificado.
      * @return
      *          verdadeiro se o link existir.
      */
-    public boolean hasLink(L link) {
+    public boolean hasLink(El link) throws XMLException {
         return links.contains(link);
     }
-    
-    
+
+
+    public boolean hasLink(String id) throws XMLException {
+        return links.get(id) != null;
+    }
+
+
     /**
-     * Verifica se o corpo do documento NCL possui algum link.
-     * 
+     * Verifica se o contexto possui algum link.
+     *
      * @return
-     *          verdadeiro se o corpo do documento NCL possuir algum link.
+     *          verdadeiro se o contexto possuir algum link.
      */
     public boolean hasLink() {
         return !links.isEmpty();
     }
-    
-    
+
+
     /**
-     * Retorna os links do corpo do documento NCL.
-     * 
+     * Retorna os links do contexto.
+     *
      * @return
-     *          lista contendo os links do corpo do documento NCL.
+     *          lista contendo os links do contexto.
      */
-    public Set<L> getLinks() {
+    public IdentifiableElementList<El, T> getLinks() {
         return links;
     }
 
@@ -512,16 +443,8 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addMeta(M meta) {
-        if(metas.add(meta)){
-            //Se meta existe, atribui este como seu parente
-            if(meta != null)
-                meta.setParent(this);
-
-            notifyInserted(NCLElementSets.METAS, meta);
-            return true;
-        }
-        return false;
+    public boolean addMeta(Em meta) throws XMLException {
+        return metas.add(meta, (T) this);
     }
 
 
@@ -535,16 +458,8 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removeMeta(M meta) {
-        if(metas.remove(meta)){
-            //Se meta existe, retira o seu parentesco
-            if(meta != null)
-                meta.setParent(null);
-
-            notifyRemoved(NCLElementSets.METAS, meta);
-            return true;
-        }
-        return false;
+    public boolean removeMeta(Em meta) throws XMLException {
+        return metas.remove(meta);
     }
 
 
@@ -556,7 +471,7 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      * @return
      *          verdadeiro se o link existir.
      */
-    public boolean hasMeta(M meta) {
+    public boolean hasMeta(Em meta) throws XMLException {
         return metas.contains(meta);
     }
 
@@ -576,9 +491,9 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          lista contendo os metadados do cabeçalho do documento NCL.
+     *          conjunto contendo os metadados do cabeçalho do documento NCL.
      */
-    public Set<M> getMetas() {
+    public ElementList<Em, T> getMetas() {
         return metas;
     }
 
@@ -593,16 +508,8 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addMetadata(MT metadata) {
-        if(metadatas.add(metadata)){
-            //Se metadata existe, atribui este como seu parente
-            if(metadata != null)
-                metadata.setParent(this);
-
-            notifyInserted(NCLElementSets.METADATAS, metadata);
-            return true;
-        }
-        return false;
+    public boolean addMetadata(Emt metadata) throws XMLException {
+        return metadatas.add(metadata, (T) this);
     }
 
 
@@ -616,16 +523,8 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removeMetadata(MT metadata) {
-        if(metadatas.remove(metadata)){
-            //Se metadata existe, retira o seu parentesco
-            if(metadata != null)
-                metadata.setParent(null);
-
-            notifyRemoved(NCLElementSets.METADATAS, metadata);
-            return true;
-        }
-        return false;
+    public boolean removeMetadata(Emt metadata) throws XMLException {
+        return metadatas.remove(metadata);
     }
 
 
@@ -637,7 +536,7 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      * @return
      *          verdadeiro se o link existir.
      */
-    public boolean hasMetadata(MT metadata) {
+    public boolean hasMetadata(Emt metadata) throws XMLException {
         return metadatas.contains(metadata);
     }
 
@@ -657,9 +556,9 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      * Retorna os metadados do cabeçalho do documento NCL.
      *
      * @return
-     *          lista contendo os metadados do cabeçalho do documento NCL.
+     *          conjunto contendo os metadados do cabeçalho do documento NCL.
      */
-    public Set<MT> getMetadatas() {
+    public ElementList<Emt, T> getMetadatas() {
         return metadatas;
     }
     
@@ -684,27 +583,27 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
         
         // <body> element content
         if(hasMeta()){
-            for(M meta : metas)
+            for(Em meta : metas)
                 content += meta.parse(ident + 1);
         }
         if(hasMetadata()){
-            for(MT metadata : metadatas)
+            for(Emt metadata : metadatas)
                 content += metadata.parse(ident + 1);
         }
         if(hasPort()){
-            for(Pt port : ports)
+            for(Ept port : ports)
                 content += port.parse(ident + 1);
         }
         if(hasProperty()){
-            for(Pp property : properties)
+            for(Epp property : properties)
                 content += property.parse(ident + 1);
         }
         if(hasNode()){
-            for(N node : nodes)
+            for(En node : nodes)
                 content += node.parse(ident + 1);
         }
         if(hasLink()){
-            for(L link : links)
+            for(El link : links)
                 content += link.parse(ident + 1);
         }
         
@@ -713,206 +612,5 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
         content += space + "</body>\n";
         
         return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("body")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("meta")){
-                M child = createMeta();
-                child.startElement(uri, localName, qName, attributes);
-                addMeta(child);
-            }
-            else if(localName.equals("metadata")){
-                MT child = createMetadata();
-                child.startElement(uri, localName, qName, attributes);
-                addMetadata(child);
-            }
-            else if(localName.equals("port")){
-                Pt child = createPort();
-                child.startElement(uri, localName, qName, attributes);
-                addPort(child);
-            }
-            else if(localName.equals("property")){
-                Pp child = createProperty();
-                child.startElement(uri, localName, qName, attributes);
-                addProperty(child);
-            }
-            else if(localName.equals("media")){
-                N child = createMedia();
-                child.startElement(uri, localName, qName, attributes);
-                addNode(child);
-            }
-            else if(localName.equals("context")){
-                N child = createContext();
-                child.startElement(uri, localName, qName, attributes);
-                addNode(child);
-            }
-            else if(localName.equals("switch")){
-                N child = createSwitch();
-                child.startElement(uri, localName, qName, attributes);
-                addNode(child);
-            }
-            else if(localName.equals("link")){
-                L child = createLink();
-                child.startElement(uri, localName, qName, attributes);
-                addLink(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasMeta()){
-            for(M meta : metas){
-                meta.endDocument();
-                addWarning(meta.getWarnings());
-                addError(meta.getErrors());
-            }
-        }
-        if(hasMetadata()){
-            for(MT metadata : metadatas){
-                metadata.endDocument();
-                addWarning(metadata.getWarnings());
-                addError(metadata.getErrors());
-            }
-        }
-        if(hasPort()){
-            for(Pt port : ports){
-                port.endDocument();
-                addWarning(port.getWarnings());
-                addError(port.getErrors());
-            }
-        }
-        if(hasProperty()){
-            for(Pp property : properties){
-                property.endDocument();
-                addWarning(property.getWarnings());
-                addError(property.getErrors());
-            }
-        }
-        if(hasNode()){
-            for(N node : nodes){
-                node.endDocument();
-                addWarning(node.getWarnings());
-                addError(node.getErrors());
-            }
-        }
-        if(hasLink()){
-            for(L link : links){
-                link.endDocument();
-                addWarning(link.getWarnings());
-                addError(link.getErrors());
-            }
-        }
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>meta</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>meta</i>.
-     */
-    protected M createMeta() {
-        return (M) new NCLMeta(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>metadata</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>metadata</i>.
-     */
-    protected MT createMetadata() {
-        return (MT) new NCLMetadata(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>port</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>port</i>.
-     */
-    protected Pt createPort() {
-        return (Pt) new NCLPort(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>property</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>property</i>.
-     */
-    protected Pp createProperty() {
-        return (Pp) new NCLProperty(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>media</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>media</i>.
-     */
-    protected N createMedia() {
-        return (N) new NCLMedia(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>context</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>context</i>.
-     */
-    protected N createContext() {
-        return (N) new NCLContext(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>switch</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>switch</i>.
-     */
-    protected N createSwitch() {
-        return (N) new NCLSwitch(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>link</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>link</i>.
-     */
-    protected L createLink() {
-        return (L) new NCLLink(getReader(), this);
     }
 }

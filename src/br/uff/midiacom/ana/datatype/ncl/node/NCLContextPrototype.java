@@ -39,6 +39,9 @@ package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -54,8 +57,8 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
     protected IdentifiableElementList<Epp, T> properties;
     protected IdentifiableElementList<En, T> nodes;
     protected IdentifiableElementList<El, T> links;
-    protected IdentifiableElementList<Em, T> metas;
-    protected IdentifiableElementList<Emt, T> metadatas;
+    protected ElementList<Em, T> metas;
+    protected ElementList<Emt, T> metadatas;
     
     
     /**
@@ -72,8 +75,8 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
         properties = new IdentifiableElementList<Epp, T>();
         nodes = new IdentifiableElementList<En, T>();
         links = new IdentifiableElementList<El, T>();
-        metas = new IdentifiableElementList<Em, T>();
-        metadatas = new IdentifiableElementList<Emt, T>();
+        metas = new ElementList<Em, T>();
+        metadatas = new ElementList<Emt, T>();
     }
 
 
