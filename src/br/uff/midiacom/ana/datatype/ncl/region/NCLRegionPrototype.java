@@ -316,7 +316,7 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se o índice for um valor negativo.
      */
     public void setzIndex(Integer zIndex) throws IllegalArgumentException {
-        if(zIndex != null && zIndex < 0)
+        if(zIndex != null && zIndex < 0 && zIndex > 250)
             throw new IllegalArgumentException("Illegal index value");
 
         this.zIndex = zIndex;

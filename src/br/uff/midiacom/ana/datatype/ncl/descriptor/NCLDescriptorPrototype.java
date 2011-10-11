@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
+import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -53,7 +54,7 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, Er extends NCLRegionPrototype, Ed extends NCLDescriptorPrototype, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLLayoutDescriptor<T, P> {
 
     protected StringType player;
-    protected Integer explicitDur;
+    protected TimeType explicitDur;
     protected Boolean freeze;
     protected Ed moveLeft;
     protected Ed moveRight;
@@ -116,7 +117,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @param explicitDur
      *          inteiro representando a duração a ser usada pelo descritor em segundos.
      */
-    public void setExplicitDur(Integer explicitDur) {
+    public void setExplicitDur(TimeType explicitDur) {
         this.explicitDur = explicitDur;
     }
 
@@ -127,7 +128,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @return
      *          inteiro representando a duração definida no descritor em segundos.
      */
-    public Integer getExplicitDur() {
+    public TimeType getExplicitDur() {
         return explicitDur;
     }
 

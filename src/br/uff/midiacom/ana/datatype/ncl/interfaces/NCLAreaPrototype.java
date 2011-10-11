@@ -39,34 +39,22 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
-import br.uff.midiacom.ana.node.NCLMedia;
-import java.util.Vector;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.array.ArrayType;
 
 
-/**
- * Esta classe define o elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma âncora de um nó.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
+public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, Ei extends NCLInterface> extends NCLIdentifiableElementPrototype<Ei, P> implements NCLInterface<Ei, P> {
 
-    private int[] coords;
-    private TimeType begin;
-    private TimeType end;
-    private String text;
-    private Integer position;
-    private SampleType first;
-    private SampleType last;
-    private String label;
+    protected ArrayType coords;
+    protected TimeType begin;
+    protected TimeType end;
+    protected String text;
+    protected Integer position;
+    protected SampleType first;
+    protected SampleType last;
+    protected String label;
     
     
     /**
@@ -77,24 +65,8 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador da âncora for inválido.
      */
-    public NCLAreaType(String id) throws NCLInvalidIdentifierException {
+    public NCLAreaPrototype(String id) throws XMLException {
         setId(id);
-    }
-
-
-    /**
-     * Construtor do elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLAreaType(XMLReader reader, NCLElement parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
     }
 
 
@@ -104,18 +76,8 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * 
      * @param coords
      *          coordenadas da âncora espacial.
-     * @throws java.lang.IllegalArgumentException
-     *          se alguma das coordenadas for inválida.
      */
-    public void setCoords(int[] coords) throws IllegalArgumentException {
-        if(coords != null){
-            for(int coord : coords){
-                if(coord < 0)
-                    throw new IllegalArgumentException("Invalid coordenate: " + coord);
-            }
-        }
-
-        notifyAltered(NCLElementAttributes.COORDS, this.coords, coords);
+    public void setCoords(ArrayType coords){
         this.coords = coords;
     }
     
@@ -126,7 +88,7 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * @return
      *          array de inteiros com as coordenadas.
      */
-    public int[] getCoords() {
+    public ArrayType getCoords() {
         return coords;
     }
     
@@ -141,7 +103,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * @see TimeType
      */
     public void setBegin(TimeType begin) {
-        notifyAltered(NCLElementAttributes.BEGIN, this.begin, begin);
         this.begin = begin;
     }
     
@@ -167,7 +128,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * @see TimeType
      */
     public void setEnd(TimeType end) {
-        notifyAltered(NCLElementAttributes.END, this.end, end);
         this.end = end;
     }
     
@@ -194,8 +154,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
     public void setText(String text) throws IllegalArgumentException {
         if(text != null && "".equals(text.trim()))
             throw new IllegalArgumentException("Empty value String");
-
-        notifyAltered(NCLElementAttributes.TEXT, this.text, text);
         this.text = text;
     }
     
@@ -222,8 +180,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
     public void setPosition(Integer position) throws IllegalArgumentException {
         if(position != null && position < 0)
             throw new IllegalArgumentException("Invalid position");
-
-        notifyAltered(NCLElementAttributes.POSITION, this.position, position);
         this.position = position;
     }
     
@@ -248,7 +204,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * @see SampleType
      */
     public void setFirst(SampleType first) {
-        notifyAltered(NCLElementAttributes.FIRST, this.first, first);
         this.first = first;
     }
     
@@ -273,7 +228,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
      * @see SampleType
      */
     public void setLast(SampleType last) {
-        notifyAltered(NCLElementAttributes.LAST, this.last, last);
         this.last = last;
     }
     
@@ -302,8 +256,6 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
     public void setLabel(String label) throws IllegalArgumentException {
         if(label != null && "".equals(label.trim()))
             throw new IllegalArgumentException("Empty label String");
-
-        notifyAltered(NCLElementAttributes.LABEL, this.label, label);
         this.label = label;
     }
     
@@ -335,89 +287,23 @@ public class NCLAreaType<I extends NCLInterface> extends NCLIdentifiableElement 
         if(getId() != null)
             content += " id='" + getId() + "'";
         if(getCoords() != null)
-            content += " coords='" + coordsToString() + "'";
+            content += " coords='" + coords.parse() + "'";
         if(getBegin() != null)
-            content += " begin='" + getBegin().toString() + "'";
+            content += " begin='" + getBegin().parse() + "'";
         if(getEnd() != null)
-            content += " end='" + getEnd().toString() + "'";
+            content += " end='" + getEnd().parse() + "'";
         if(getText() != null)
             content += " text='" + getText() + "'";
         if(getPosition() != null)
             content += " position='" + getPosition() + "'";
         if(getFirst() != null)
-            content += " first='" + getFirst().toString() + "'";
+            content += " first='" + getFirst().parse() + "'";
         if(getLast() != null)
-            content += " last='" + getLast().toString() + "'";
+            content += " last='" + getLast().parse() + "'";
         if(getLabel() != null)
             content += " label='" + getLabel() + "'";
         content += "/>\n";
         
         return content;
-    }
-    
-    
-    /**
-     * Transforma as coordenadas em uma string.
-     * 
-     * @return
-     *          String representando as coordenadas espaciais.
-     */
-    private String coordsToString() {
-        String result = "";
-        for(int i = 0; i < coords.length; i++){
-            result += coords[i];
-            if(i < coords.length - 1)
-                result += ",";
-        }
-        return result;
-    }
-
-    
-    public int compareTo(I other) {
-        return getId().compareTo(other.getId());
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("id"))
-                    setId(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("coords")){
-                    Vector<Integer>  coord = new Vector<Integer>();
-                    String value = attributes.getValue(i);
-                    while(value.contains(",")){
-                        int index = value.indexOf(",");
-                        coord.add(new Integer(value.substring(0, index)));
-                        value = value.substring(index + 1);
-                    }
-                    coord.add(new Integer(value));
-                    int[] a = new int[coord.size()];
-                    for(int k = 0; k < coord.size(); k++)
-                        a[k] = (int) coord.elementAt(k);
-                    setCoords(a);
-                }
-                else if(attributes.getLocalName(i).equals("begin"))
-                    setBegin(new TimeType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("end"))
-                    setEnd(new TimeType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("text"))
-                    setText(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("position"))
-                    setPosition(new Integer(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("first"))
-                    setFirst(new SampleType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("last"))
-                    setLast(new SampleType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("label"))
-                    setLabel(attributes.getValue(i));
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
     }
 }

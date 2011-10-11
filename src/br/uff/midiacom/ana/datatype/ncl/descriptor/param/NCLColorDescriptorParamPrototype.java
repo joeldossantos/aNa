@@ -64,15 +64,19 @@ public class NCLColorDescriptorParamPrototype<T extends NCLDescriptorParamProtot
 
     @Override
     protected void setParamValue(String value) {
-        for(NCLColor color : NCLColor.values()){
-            if(value.equals(color.toString()))
-                setValue(color);
+        if(value.equals("transparent")){
+            setIsTransparent(true);
+            setValue(null);
+            return;
         }
 
-        if(value.equals("transparent"))
-            setIsTransparent(true);
-        
-        setValue(null);
+        for(NCLColor color : NCLColor.values()){
+            if(value.equals(color.toString())){
+                setValue(color);
+                this.isTransparent = false;
+                break;
+            }
+        }
     }
 
 
