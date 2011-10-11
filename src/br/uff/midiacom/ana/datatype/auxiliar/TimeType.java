@@ -396,8 +396,7 @@ public class TimeType {
     }
     
     
-    @Override
-    public String toString() {
+    public String parse() {
         if(getSecond() == null)
             return null;
         
