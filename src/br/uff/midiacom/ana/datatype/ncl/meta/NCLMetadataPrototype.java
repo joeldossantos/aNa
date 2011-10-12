@@ -38,12 +38,14 @@
 package br.uff.midiacom.ana.datatype.ncl.meta;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLElement> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLElement, I extends XMLElementImpl>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected StringType rdfTree;
 

@@ -43,10 +43,12 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, Ep extends NCLPropertyPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
+public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLPropertyPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
     protected Ep var;
     protected NCLComparator comparator;

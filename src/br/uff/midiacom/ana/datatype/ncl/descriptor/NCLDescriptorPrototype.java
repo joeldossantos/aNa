@@ -46,12 +46,14 @@ import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParamProto
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, Er extends NCLRegionPrototype, Ed extends NCLDescriptorPrototype, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLLayoutDescriptor<T, P> {
+public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, Ed extends NCLDescriptorPrototype, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLLayoutDescriptor<T, P> {
 
     protected StringType player;
     protected TimeType explicitDur;

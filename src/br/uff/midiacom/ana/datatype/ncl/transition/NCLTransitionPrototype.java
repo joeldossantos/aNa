@@ -46,9 +46,11 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends NCLElement> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends NCLElement, I extends XMLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected NCLTransitionType type;
     protected NCLTransitionSubtype subtype;

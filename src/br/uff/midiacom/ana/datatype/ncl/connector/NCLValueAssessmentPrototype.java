@@ -39,10 +39,12 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, P extends NCLElement, Ep extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected AssValueParamType<Ep> value;
     

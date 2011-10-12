@@ -39,14 +39,15 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPrototype, P extends NCLElement, Ea extends NCLAttributeAssessmentPrototype, Ev extends NCLValueAssessmentPrototype>
-        extends XMLElementPrototype<T, P> implements NCLStatement<T, P> {
+public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAttributeAssessmentPrototype, Ev extends NCLValueAssessmentPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLStatement<T, P> {
 
     protected NCLComparator comparator;
     protected Ev valueAssessment;

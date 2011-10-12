@@ -41,11 +41,13 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, Eb extends NCLDescriptorBindRulePrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, I extends XMLElementImpl, Eb extends NCLDescriptorBindRulePrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected IdentifiableElementList<T, T> descriptors;
     protected ElementList<Eb, T> binds;

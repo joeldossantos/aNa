@@ -39,13 +39,15 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototype, P extends NCLElement, Es extends NCLStatement> extends XMLElementPrototype<T, P> implements NCLStatement<T, P> {
+public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototype, P extends NCLElement, I extends XMLElementImpl, Es extends NCLStatement>
+        extends XMLElementPrototype<T, P, I> implements NCLStatement<T, P> {
 
     protected NCLOperator operator;
     protected Boolean isNegated;

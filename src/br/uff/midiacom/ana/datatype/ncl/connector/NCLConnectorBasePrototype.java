@@ -42,11 +42,13 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P extends NCLElement, Ec extends NCLCausalConnectorPrototype, Ei extends NCLImportPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCausalConnectorPrototype, Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected IdentifiableElementList<Ec, T> connectors;
     protected ElementList<Ei, T> imports;

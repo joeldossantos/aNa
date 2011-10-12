@@ -39,9 +39,11 @@ package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, Eh extends NCLHeadPrototype, Eb extends NCLBodyPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I extends XMLElementImpl, Eh extends NCLHeadPrototype, Eb extends NCLBodyPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected String title;
     protected NCLNamespace xmlns;

@@ -75,6 +75,7 @@ public enum NCLElementAttributes {
     NAME("name"),
     OFFSET("offset"),
     OPERATOR("operator"),
+    PARENT("parent"),
 //    PARAMTYPE("paramType"),
 //    PARBY("parBy"),
 //    PARDELAY("parDelay"),

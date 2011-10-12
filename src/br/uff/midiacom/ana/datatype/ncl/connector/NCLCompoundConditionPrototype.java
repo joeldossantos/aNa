@@ -40,13 +40,15 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototype, P extends NCLElement, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLCondition<T, P, Ep> {
+public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLCondition<T, P, Ep> {
     
     protected NCLConditionOperator operator;
     protected DoubleParamType<Ep> delay;

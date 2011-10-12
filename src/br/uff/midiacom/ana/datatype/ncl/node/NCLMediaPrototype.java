@@ -47,11 +47,12 @@ import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement, Ea extends NCLAreaPrototype, Ep extends NCLPropertyPrototype, Ed extends NCLLayoutDescriptor, En extends NCLNode>
-        extends NCLIdentifiableElementPrototype<En, P> implements NCLNode<En, P> {
+public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAreaPrototype, Ep extends NCLPropertyPrototype, Ed extends NCLLayoutDescriptor, En extends NCLNode>
+        extends NCLIdentifiableElementPrototype<En, P, I> implements NCLNode<En, P> {
 
     protected SrcType src;
     protected NCLMimeType type;

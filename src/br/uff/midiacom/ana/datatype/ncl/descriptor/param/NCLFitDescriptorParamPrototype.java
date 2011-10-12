@@ -40,9 +40,11 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFit;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLFitDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement> extends NCLDefaultDescriptorParamPrototype<T, P, NCLFit> {
+public class NCLFitDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
+        extends NCLDefaultDescriptorParamPrototype<T, P, I, NCLFit> {
 
 
     public NCLFitDescriptorParamPrototype() {

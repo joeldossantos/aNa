@@ -41,12 +41,14 @@ import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLElement, Er extends NCLRegionPrototype> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected StringType alias;
     protected SrcType documentURI;

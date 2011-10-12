@@ -42,14 +42,15 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, Er extends NCLRolePrototype, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParamPrototype>
-        extends XMLElementPrototype<T, P> implements NCLElement<T, P>{
+public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P>{
 
     protected Er role;
     protected En component;

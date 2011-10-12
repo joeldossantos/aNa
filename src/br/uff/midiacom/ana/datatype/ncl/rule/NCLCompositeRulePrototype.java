@@ -42,10 +42,12 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLElement> extends NCLIdentifiableElementPrototype<T, P> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
+public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends XMLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
     protected NCLOperator operator;
     protected IdentifiableElementList<T, T> rules;

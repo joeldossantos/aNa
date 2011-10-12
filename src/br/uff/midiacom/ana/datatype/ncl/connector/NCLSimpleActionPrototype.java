@@ -45,11 +45,13 @@ import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
-public class NCLSimpleActionPrototype<T extends NCLAction, P extends NCLElement, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLAction<T, P, Ep> {
+public class NCLSimpleActionPrototype<T extends NCLAction, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLAction<T, P, Ep> {
 
     protected StringParamType<Ep> value;
     protected Integer min;

@@ -39,10 +39,12 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, Ed extends NCLLayoutDescriptor, Er extends NCLTestRule> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, Ed extends NCLLayoutDescriptor, Er extends NCLTestRule>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected Ed constituent;
     protected Er rule;

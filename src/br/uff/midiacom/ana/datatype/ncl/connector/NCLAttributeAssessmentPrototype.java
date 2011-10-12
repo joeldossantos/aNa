@@ -42,10 +42,12 @@ import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPrototype, P extends NCLElement, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected Er role;
     protected NCLEventType eventType;

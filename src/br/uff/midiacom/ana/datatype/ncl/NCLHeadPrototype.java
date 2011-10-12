@@ -45,14 +45,16 @@ import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, Eib extends NCLImportedDocumentBasePrototype, Erl extends NCLRuleBasePrototype, Etb extends NCLTransitionBasePrototype, Erb extends NCLRegionBasePrototype,
-        Edb extends NCLDescriptorBasePrototype, Ecb extends NCLConnectorBasePrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, I extends XMLElementImpl, Eib extends NCLImportedDocumentBasePrototype, Erl extends NCLRuleBasePrototype, Etb extends NCLTransitionBasePrototype, Erb extends NCLRegionBasePrototype,
+        Edb extends NCLDescriptorBasePrototype, Ecb extends NCLConnectorBasePrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected Eib importedDocumentBase;
     protected Erl ruleBase;

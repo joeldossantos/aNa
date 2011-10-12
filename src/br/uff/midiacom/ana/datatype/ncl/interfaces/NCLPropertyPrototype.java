@@ -41,9 +41,11 @@ import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement> extends NCLIdentifiableElementPrototype<T, P> implements NCLInterface<T, P> {
+public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends XMLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
 
     protected String value;
     

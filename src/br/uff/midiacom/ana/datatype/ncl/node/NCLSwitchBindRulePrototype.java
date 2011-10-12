@@ -39,10 +39,12 @@ package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P extends NCLElement, En extends NCLNode, Er extends NCLTestRule> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Er extends NCLTestRule>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected En constituent;
     protected Er rule;

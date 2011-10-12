@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.string.StringType;
@@ -63,7 +64,8 @@ import br.uff.midiacom.xml.datatype.string.StringType;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends NCLElement, Er extends NCLRegionPrototype, Ei extends NCLImportPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected StringType device;
     protected Er parent_region;

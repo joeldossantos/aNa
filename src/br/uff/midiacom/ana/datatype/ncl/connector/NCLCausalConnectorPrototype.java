@@ -41,11 +41,12 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, P extends NCLElement, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
-        extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
+public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected Ec condition;
     protected Ea action;

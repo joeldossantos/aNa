@@ -45,12 +45,13 @@ import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLElement, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
-        extends NCLIdentifiableElementPrototype<En, P> implements NCLNode<En, P> {
+public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLElement, I extends XMLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
+        extends NCLIdentifiableElementPrototype<En, P, I> implements NCLNode<En, P> {
 
     protected T refer;
     protected IdentifiableElementList<Ept, T> ports;

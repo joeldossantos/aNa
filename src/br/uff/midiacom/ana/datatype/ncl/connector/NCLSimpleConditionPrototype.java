@@ -43,11 +43,13 @@ import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
-public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, P extends NCLElement, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLCondition<T, P, Ep> {
+public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLCondition<T, P, Ep> {
 
     protected KeyParamType<Ep> key;
     protected Integer min;

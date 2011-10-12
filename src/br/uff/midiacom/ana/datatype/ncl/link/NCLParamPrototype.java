@@ -40,11 +40,13 @@ package br.uff.midiacom.ana.datatype.ncl.link;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement, Ec extends NCLConnectorParamPrototype> extends XMLElementPrototype<T, P> implements NCLElement<T, P>{
+public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P>{
 
     protected Ec name;
     protected StringType value;

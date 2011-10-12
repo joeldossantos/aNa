@@ -42,10 +42,12 @@ import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
 
 
-public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, Ei extends NCLInterface> extends NCLIdentifiableElementPrototype<Ei, P> implements NCLInterface<Ei, P> {
+public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, I extends XMLElementImpl, Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected ArrayType coords;
     protected TimeType begin;

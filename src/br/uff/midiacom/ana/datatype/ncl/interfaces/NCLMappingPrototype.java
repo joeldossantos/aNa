@@ -39,10 +39,12 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLElement, En extends NCLNode, Ei extends NCLInterface> extends XMLElementPrototype<T, P> implements NCLElement<T, P> {
+public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ei extends NCLInterface>
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
     protected En component;
     protected Ei interfac;

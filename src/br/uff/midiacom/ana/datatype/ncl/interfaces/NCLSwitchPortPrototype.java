@@ -40,10 +40,12 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
-public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends NCLElement, Em extends NCLMappingPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLInterface<T, P> {
+public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends NCLElement, I extends XMLElementImpl, Em extends NCLMappingPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
 
     protected ElementList<Em, T> mappings = new ElementList<Em, T>();
 

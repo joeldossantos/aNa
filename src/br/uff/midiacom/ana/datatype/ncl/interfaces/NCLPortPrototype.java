@@ -41,9 +41,11 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, En extends NCLNode, Ei extends NCLInterface> extends NCLIdentifiableElementPrototype<T, P> implements NCLInterface<T, P> {
+public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
 
     protected En component;
     protected Ei interfac;

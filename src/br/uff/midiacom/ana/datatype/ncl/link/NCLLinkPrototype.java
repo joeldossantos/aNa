@@ -42,11 +42,13 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, Ep extends NCLParamPrototype, Eb extends NCLBindPrototype, Ec extends NCLCausalConnectorPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P>{
+public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLParamPrototype, Eb extends NCLBindPrototype, Ec extends NCLCausalConnectorPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>{
 
     protected Ec xconnector;
     protected ElementList<Ep, T> linkParams;
