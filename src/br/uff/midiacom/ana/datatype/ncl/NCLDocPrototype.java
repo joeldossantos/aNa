@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, Eh extends NCLHeadPrototype, Eb extends NCLBodyPrototype> extends NCLIdentifiableElementPrototype<T, P> implements NCLIdentifiableElement<T, P> {
 
-    private String title;
-    private NCLNamespace xmlns; //atributo obrigatório
-
-    private Eh head;
-    private Eb body;
+    protected String title;
+    protected NCLNamespace xmlns;
+    protected Eh head;
+    protected Eb body;
 
     
     /**
@@ -58,9 +58,9 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, Eh
      * @throws java.lang.IllegalArgumentException
      *          Se o título a ser atribuído for uma String vazia.
      */
-    public void setTitle(String title) throws IllegalArgumentException {
+    public void setTitle(String title) throws XMLException {
         if(title != null && "".equals(title.trim()))
-            throw new IllegalArgumentException("Empty title String");
+            throw new XMLException("Empty title String");
         
         this.title = title;
     }
@@ -83,7 +83,10 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, Eh
      * @param xmlns
      *          namespace usado pelo documento NCL.
      */
-    public void setXmlns(NCLNamespace xmlns) {
+    public void setXmlns(NCLNamespace xmlns) throws XMLException {
+        if(xmlns == null)
+            throw new XMLException("Null xmlns.");
+
         this.xmlns = xmlns;
     }
 
