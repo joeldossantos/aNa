@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -50,7 +50,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public abstract class NCLDefaultDescriptorParam<P extends NCLDescriptorParam, V> extends NCLElement implements NCLDescriptorParam<P, V> {
+public abstract class NCLDefaultDescriptorParam<P extends NCLDescriptorParam, V> extends NCLElementImpl implements NCLDescriptorParam<P, V> {
 
     private NCLAttributes name;
     private V value;
@@ -70,7 +70,7 @@ public abstract class NCLDefaultDescriptorParam<P extends NCLDescriptorParam, V>
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLDefaultDescriptorParam(XMLReader reader, NCLElement parent) {
+    public NCLDefaultDescriptorParam(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 
@@ -54,7 +54,7 @@ public class NCLRole {
     private NCLDefaultConditionRole cname;
     private NCLDefaultActionRole aname;
 
-    private NCLElement parent;
+    private NCLElementImpl parent;
     
     
     /**
@@ -199,7 +199,7 @@ public class NCLRole {
      * @return
      *          verdadeiro se o elemento pai foi atribuido. Caso o papel já possua um elemento pai, o retorno será falso.
      */
-    public boolean setParent(NCLElement parent) {
+    public boolean setParent(NCLElementImpl parent) {
         if(this.parent != null && parent != null)
             return false;
 
@@ -214,7 +214,7 @@ public class NCLRole {
      * @return
      *          elemento NCL representando o elemento pai.
      */
-    public NCLElement getParent() {
+    public NCLElementImpl getParent() {
         return parent;
     }
 }

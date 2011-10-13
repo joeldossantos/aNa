@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.node.NCLContext;
@@ -55,7 +55,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLInterface> extends NCLElement implements Comparable<M> {
+public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLInterface> extends NCLElementImpl implements Comparable<M> {
 
     private N component;
     private I interfac;
@@ -75,7 +75,7 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLMapping(XMLReader reader, NCLElement parent) {
+    public NCLMapping(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
 import br.uff.midiacom.ana.NCLBody;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -91,7 +91,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLSwitch(XMLReader reader, NCLElement parent) {
+    public NCLSwitch(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -610,7 +610,7 @@ public class NCLSwitch<N extends NCLNode, S extends NCLSwitch, P extends NCLSwit
 
     private void switchReference() {
         //Search for the interface inside the node
-        NCLElement body = getParent();
+        NCLElementImpl body = getParent();
 
         while(!(body instanceof NCLBody)){
             body = body.getParent();

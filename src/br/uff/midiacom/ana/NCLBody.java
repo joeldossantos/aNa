@@ -38,6 +38,12 @@
 package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBodyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
+import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
+import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.link.NCLLink;
@@ -60,7 +66,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata> extends NCLIdentifiableElement {
+public class NCLBody extends NCLBodyPrototype implements NCLIdentifiableElement {
+//public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNode, L extends NCLLink, M extends NCLMeta, MT extends NCLMetadata> extends NCLIdentifiableElement {
 
     private Set<Pt> ports = new TreeSet<Pt>();
     private Set<Pp> properties = new TreeSet<Pp>();
@@ -84,7 +91,7 @@ public class NCLBody<Pt extends NCLPort, Pp extends NCLProperty, N extends NCLNo
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLBody(XMLReader reader, NCLElement parent) {
+    public NCLBody(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

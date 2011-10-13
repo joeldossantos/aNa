@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.Element;
+import br.uff.midiacom.ana.NCLElement;
 
 
 /**
@@ -46,7 +46,7 @@ import br.uff.midiacom.ana.Element;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public interface NCLAction<T, P extends NCLConnectorParam> extends Comparable<T>, Element {
+public interface NCLAction<T, P extends NCLConnectorParam> extends Comparable<T>, NCLElement {
 
     /**
      * Atribui um atraso à ação.

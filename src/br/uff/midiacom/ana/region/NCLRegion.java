@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -115,7 +115,7 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLRegion(XMLReader reader, NCLElement parent) {
+    public NCLRegion(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

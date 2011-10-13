@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import org.xml.sax.XMLReader;
 
@@ -60,7 +60,7 @@ public class NCLPercentDescriptorParam<P extends NCLDescriptorParam> extends NCL
     }
 
 
-    public NCLPercentDescriptorParam(XMLReader reader, NCLElement parent) {
+    public NCLPercentDescriptorParam(XMLReader reader, NCLElementImpl parent) {
         super(reader, parent);
     }
 

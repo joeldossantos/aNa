@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.rule.NCLRule;
@@ -55,7 +55,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
+public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R extends NCLTestRule> extends NCLElementImpl implements Comparable<B> {
 
     private N constituent;
     private R rule;
@@ -75,7 +75,7 @@ public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLSwitchBindRule(XMLReader reader, NCLElement parent) {
+    public NCLSwitchBindRule(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -205,7 +205,7 @@ public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R
 
 
     private Set<R> getRules() {
-        NCLElement root = getParent();
+        NCLElementImpl root = getParent();
 
         while(!(root instanceof NCLDoc)){
             root = root.getParent();

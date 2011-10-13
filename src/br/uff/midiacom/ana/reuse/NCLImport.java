@@ -38,10 +38,13 @@
 package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import java.net.URI;
@@ -57,7 +60,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElement implements Comparable<I> {
+public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion>
+        extends NCLImportPrototype<T, P, I, Er> implements NCLElement<T, P> {
 
     private String alias;
     private String documentURI;
@@ -96,7 +100,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
      * @throws java.lang.NullPointerException
      *          se o tipo for nulo.
      */
-    public NCLImport(NCLImportType type, XMLReader reader, NCLElement parent) throws NullPointerException {
+    public NCLImport(NCLImportType type, XMLReader reader, NCLElementImpl parent) throws NullPointerException {
         if(type == null)
             throw new NullPointerException("Null type");
 
@@ -250,7 +254,7 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
 
     private void regionReference() {
         //Search for the interface inside the node
-        NCLElement head = getParent();
+        NCLElementImpl head = getParent();
 
         while(!(head instanceof NCLHead)){
             head = head.getParent();
@@ -288,5 +292,20 @@ public class NCLImport<I extends NCLImport, R extends NCLRegion> extends NCLElem
         }
 
         return null;
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

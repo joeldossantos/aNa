@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -55,7 +55,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NCLLayoutDescriptor, R extends NCLTestRule> extends NCLElement implements Comparable<B> {
+public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NCLLayoutDescriptor, R extends NCLTestRule> extends NCLElementImpl implements Comparable<B> {
 
     private D constituent;
     private R rule;
@@ -75,7 +75,7 @@ public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NC
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLDescriptorBindRule(XMLReader reader, NCLElement parent) {
+    public NCLDescriptorBindRule(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -205,7 +205,7 @@ public class NCLDescriptorBindRule<B extends NCLDescriptorBindRule, D extends NC
 
 
     private Set<R> getRules() {
-        NCLElement head = getParent();
+        NCLElementImpl head = getParent();
 
         while(!(head instanceof NCLHead)){
             head = head.getParent();

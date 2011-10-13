@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -56,7 +56,7 @@ import org.xml.sax.XMLReader;
  *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttributeAssessment, V extends NCLValueAssessment>
-        extends NCLElement implements NCLStatement<S> {
+        extends NCLElementImpl implements NCLStatement<S> {
 
     private NCLComparator comparator;
     
@@ -78,7 +78,7 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLAssessmentStatement(XMLReader reader, NCLElement parent) {
+    public NCLAssessmentStatement(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

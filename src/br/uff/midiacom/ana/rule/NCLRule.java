@@ -40,11 +40,13 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
+import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
 import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
@@ -60,7 +62,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLIdentifiableElement implements NCLTestRule<T> {
+public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLProperty>
+        extends NCLRulePrototype<T, P, I, Ep> implements NCLTestRule<T, P> {
 
     private P var;
     private NCLComparator comparator;
@@ -88,7 +91,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLRule(XMLReader reader, NCLElement parent) {
+    public NCLRule(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -242,7 +245,7 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
 
     private void propertyReference() {
         //Search for the interface inside the node
-        NCLElement doc = getParent();
+        NCLElementImpl doc = getParent();
 
         while(!(doc instanceof NCLDoc)){
             doc = doc.getParent();
@@ -291,5 +294,20 @@ public class NCLRule<P extends NCLProperty, T extends NCLTestRule> extends NCLId
 
         addWarning("Could not find property with name: " + getVar().getName());
         return null;
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

@@ -42,7 +42,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLElementImpl {
+public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLElement>
+        extends br.uff.midiacom.ana.datatype.ncl.NCLElementImpl<T, P> {
 
     private NCLModificationListener listener;
     private NCLElement owner;
@@ -53,6 +54,24 @@ public class NCLElementImpl {
             throw new XMLException("Null owner element.");
 
         this.owner = owner;
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        super.setId(id);
+        notifyAltered(NCLElementAttributes.ID, this.id, id);
+    }
+
+
+    @Override
+    public boolean setParent(P parent) {
+        P aux = getParent();
+        if(super.setParent(parent)){
+            notifyAltered(NCLElementAttributes.PARENT, aux, parent);
+            return true;
+        }
+        return false;
     }
 
 

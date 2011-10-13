@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -83,7 +83,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLLink(XMLReader reader, NCLElement parent) {
+    public NCLLink(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -411,7 +411,7 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
 
 
     private Set<C> getConnectors() {
-        NCLElement root = getParent();
+        NCLElementImpl root = getParent();
 
         while(!(root instanceof NCLDoc)){
             root = root.getParent();

@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -93,7 +93,7 @@ public class NCLProperty<I extends NCLInterface> extends NCLIdentifiableElement 
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLProperty(XMLReader reader, NCLElement parent) {
+    public NCLProperty(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

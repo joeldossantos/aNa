@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
@@ -55,7 +55,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement implements NCLStatement<S> {
+public class NCLCompoundStatement<S extends NCLStatement> extends NCLElementImpl implements NCLStatement<S> {
 
     private NCLOperator operator;
     private Boolean isNegated;
@@ -79,7 +79,7 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElement imp
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLCompoundStatement(XMLReader reader, NCLElement parent) {
+    public NCLCompoundStatement(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

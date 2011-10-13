@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.xml.XMLException;
+import org.w3c.dom.Element;
+
 
 
 public interface NCLElement<T extends NCLElement, P extends NCLElement>
@@ -46,7 +49,7 @@ public interface NCLElement<T extends NCLElement, P extends NCLElement>
      * Implementa o método startElement do parser SAX para a recuperação dos objetos
      * representativos dos elementos NCL a partir de um arquivo XML.
      */
-    public void load(NCLElement element);
+    public void load(Element element) throws XMLException;
 
 
     /**

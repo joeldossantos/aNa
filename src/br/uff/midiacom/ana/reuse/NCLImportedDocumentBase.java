@@ -38,10 +38,12 @@
 package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
 import java.util.Set;
 import java.util.TreeSet;
 import org.xml.sax.Attributes;
@@ -54,7 +56,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLImport>
+        extends NCLImportedDocumentBasePrototype<T, P, I, Ei> implements NCLIdentifiableElement<T, P> {
 
     private Set<I> imports = new TreeSet<I>();
 
@@ -73,7 +76,7 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLImportedDocumentBase(XMLReader reader, NCLElement parent) {
+    public NCLImportedDocumentBase(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -218,6 +221,21 @@ public class NCLImportedDocumentBase<I extends NCLImport> extends NCLIdentifiabl
                 addError(imp.getErrors());
             }
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

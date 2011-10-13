@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
 import org.xml.sax.XMLReader;
@@ -59,7 +59,7 @@ public class NCLScrollDescriptorParam<P extends NCLDescriptorParam> extends NCLD
     }
 
 
-    public NCLScrollDescriptorParam(XMLReader reader, NCLElement parent) {
+    public NCLScrollDescriptorParam(XMLReader reader, NCLElementImpl parent) {
         super(reader, parent);
     }
 

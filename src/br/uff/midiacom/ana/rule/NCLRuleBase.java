@@ -38,10 +38,12 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;
@@ -55,7 +57,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTestRule, Ei extends NCLImport>
+        extends NCLRuleBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
     private Set<T> rules = new TreeSet<T>();
     private Set<I> imports = new TreeSet<I>();
@@ -75,7 +78,7 @@ public class NCLRuleBase<T extends NCLTestRule, I extends NCLImport> extends NCL
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLRuleBase(XMLReader reader, NCLElement parent) {
+    public NCLRuleBase(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

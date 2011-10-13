@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -76,7 +76,7 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLDescriptorBase(XMLReader reader, NCLElement parent) {
+    public NCLDescriptorBase(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

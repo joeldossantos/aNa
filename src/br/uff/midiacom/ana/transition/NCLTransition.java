@@ -37,8 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
-import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.TimeType;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
@@ -46,6 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionPrototype;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -56,7 +58,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableElement implements Comparable<T> {
+public class NCLTransition<T extends NCLTransition, P extends NCLElement, I extends NCLElementImpl>
+        extends NCLTransitionPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     private NCLTransitionType type;
     private NCLTransitionSubtype subtype;
@@ -92,7 +95,7 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLTransition(XMLReader reader, NCLElement parent) {
+    public NCLTransition(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -463,5 +466,20 @@ public class NCLTransition<T extends NCLTransition> extends NCLIdentifiableEleme
         catch(NCLInvalidIdentifierException ex){
             addError(ex.getMessage());
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

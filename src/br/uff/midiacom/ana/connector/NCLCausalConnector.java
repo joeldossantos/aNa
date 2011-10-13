@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -84,7 +84,7 @@ public class NCLCausalConnector<C extends NCLCausalConnector, Co extends NCLCond
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLCausalConnector(XMLReader reader, NCLElement parent) {
+    public NCLCausalConnector(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

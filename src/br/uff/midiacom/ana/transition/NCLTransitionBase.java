@@ -38,10 +38,13 @@
 package br.uff.midiacom.ana.transition;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.util.Set;
 import java.util.TreeSet;
@@ -55,7 +58,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTransition, Ei extends NCLImport>
+        extends NCLTransitionBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
     private Set<T> transitions = new TreeSet<T>();
     private Set<I> imports = new TreeSet<I>();
@@ -75,7 +79,7 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLTransitionBase(XMLReader reader, NCLElement parent) {
+    public NCLTransitionBase(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -320,6 +324,21 @@ public class NCLTransitionBase<T extends NCLTransition, I extends NCLImport> ext
                 addError(transition.getErrors());
             }
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

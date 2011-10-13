@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import org.xml.sax.XMLReader;
@@ -62,7 +62,7 @@ public class NCLColorDescriptorParam<P extends NCLDescriptorParam> extends NCLDe
     }
 
 
-    public NCLColorDescriptorParam(XMLReader reader, NCLElement parent) {
+    public NCLColorDescriptorParam(XMLReader reader, NCLElementImpl parent) {
         super(reader, parent);
     }
 

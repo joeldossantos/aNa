@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
 import org.xml.sax.XMLReader;
@@ -59,7 +59,7 @@ public class NCLFontVariantDescriptorParam<P extends NCLDescriptorParam> extends
     }
 
 
-    public NCLFontVariantDescriptorParam(XMLReader reader, NCLElement parent) {
+    public NCLFontVariantDescriptorParam(XMLReader reader, NCLElementImpl parent) {
         super(reader, parent);
     }
 

@@ -37,15 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
-import br.uff.midiacom.ana.IdentifiableElement;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 
 
-/**
- * Esta classe define uma regra de teste da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public interface NCLTestRule<T> extends IdentifiableElement, Comparable<T> {
+public interface NCLTestRule<T extends NCLTestRule, P extends NCLElement>
+        extends br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
 }

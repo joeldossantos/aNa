@@ -43,7 +43,7 @@ import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.NCLBody;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -96,7 +96,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLContext(XMLReader reader, NCLElement parent) {
+    public NCLContext(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -901,7 +901,7 @@ public class NCLContext<C extends NCLContext, Pt extends NCLPort, Pp extends NCL
 
     private void contextReference() {
         //Search for the interface inside the node
-        NCLElement body = getParent();
+        NCLElementImpl body = getParent();
 
         while(!(body instanceof NCLBody)){
             body = body.getParent();

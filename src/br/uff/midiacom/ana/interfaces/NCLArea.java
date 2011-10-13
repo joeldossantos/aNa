@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.datatype.SampleType;
 import br.uff.midiacom.ana.datatype.TimeType;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -90,7 +90,7 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLArea(XMLReader reader, NCLElement parent) {
+    public NCLArea(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

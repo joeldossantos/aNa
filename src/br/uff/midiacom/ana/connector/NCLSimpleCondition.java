@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
@@ -57,7 +57,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P extends NCLConnectorParam> extends NCLElement implements NCLCondition<C, P> {
+public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P extends NCLConnectorParam> extends NCLElementImpl implements NCLCondition<C, P> {
 
     private NCLKey key;
     private Integer min;
@@ -86,7 +86,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLSimpleCondition(XMLReader reader, NCLElement parent) {
+    public NCLSimpleCondition(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -548,7 +548,7 @@ public class NCLSimpleCondition<C extends NCLCondition, R extends NCLRole, P ext
 
 
     private P parameterReference(String id) {
-        NCLElement connector = getParent();
+        NCLElementImpl connector = getParent();
 
         while(!(connector instanceof NCLCausalConnector)){
             connector = connector.getParent();

@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
@@ -54,7 +54,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends NCLElement implements Comparable<P>{
+public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends NCLElementImpl implements Comparable<P>{
 
     private C name;
     private String value;
@@ -92,7 +92,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
      * @throws java.lang.NullPointerException
      *          se o tipo for nulo.
      */
-    public NCLParam(NCLParamInstance paramType, XMLReader reader, NCLElement parent) throws NullPointerException {
+    public NCLParam(NCLParamInstance paramType, XMLReader reader, NCLElementImpl parent) throws NullPointerException {
         if(paramType == null)
             throw new NullPointerException("Null type");
 
@@ -219,7 +219,7 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
 
     private void nameReference() {
         //Search for the connector parameter inside the connector
-        NCLElement link = getParent();
+        NCLElementImpl link = getParent();
 
         while(!(link instanceof NCLLink)){
             link = link.getParent();{

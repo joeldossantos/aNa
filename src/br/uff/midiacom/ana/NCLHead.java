@@ -39,6 +39,7 @@ package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLHeadPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
@@ -59,8 +60,9 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase, TB extends NCLTransitionBase, RB extends NCLRegionBase,
-        DB extends NCLDescriptorBase, CB extends NCLConnectorBase, M extends NCLMeta, MT extends NCLMetadata> extends NCLElement {
+public class NCLHead extends NCLHeadPrototype implements NCLElement {
+//public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase, TB extends NCLTransitionBase, RB extends NCLRegionBase,
+//        DB extends NCLDescriptorBase, CB extends NCLConnectorBase, M extends NCLMeta, MT extends NCLMetadata> extends NCLElementImpl {
 
     private IB importedDocumentBase;
     private RLB ruleBase;
@@ -86,7 +88,7 @@ public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLHead(XMLReader reader, NCLElement parent) {
+    public NCLHead(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

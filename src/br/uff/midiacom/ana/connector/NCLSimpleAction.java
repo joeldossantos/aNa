@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
@@ -56,7 +56,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends NCLConnectorParam> extends NCLElement implements NCLAction<A, P> {
+public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends NCLConnectorParam> extends NCLElementImpl implements NCLAction<A, P> {
 
     private String value;
     private Integer min;
@@ -93,7 +93,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLSimpleAction(XMLReader reader, NCLElement parent) {
+    public NCLSimpleAction(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -901,7 +901,7 @@ public class NCLSimpleAction<A extends NCLAction, R extends NCLRole, P extends N
 
 
     private P parameterReference(String id) {
-        NCLElement connector = getParent();
+        NCLElementImpl connector = getParent();
 
         while(!(connector instanceof NCLCausalConnector)){
             connector = connector.getParent();

@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.meta;
 
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -50,7 +50,7 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable<M> {
+public class NCLMeta<M extends NCLMeta> extends NCLElementImpl implements Comparable<M> {
 
     private String name;
     private String mcontent;
@@ -70,7 +70,7 @@ public class NCLMeta<M extends NCLMeta> extends NCLElement implements Comparable
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLMeta(XMLReader reader, NCLElement parent) {
+    public NCLMeta(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 

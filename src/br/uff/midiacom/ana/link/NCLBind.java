@@ -42,7 +42,7 @@ import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -68,7 +68,7 @@ import org.xml.sax.XMLReader;
  *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I extends NCLInterface, D extends NCLLayoutDescriptor, P extends NCLParam>
-        extends NCLElement implements Comparable<B>{
+        extends NCLElementImpl implements Comparable<B>{
 
     private R role;
     private N component;
@@ -92,7 +92,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
      * @param parent
      *          elemento NCL representando o elemento pai.
      */
-    public NCLBind(XMLReader reader, NCLElement parent) {
+    public NCLBind(XMLReader reader, NCLElementImpl parent) {
         setReader(reader);
         setParent(parent);
 
@@ -587,7 +587,7 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
 
 
     private Set<D> getDescriptors() {
-        NCLElement root = getParent();
+        NCLElementImpl root = getParent();
 
         while(!(root instanceof NCLDoc)){
             root = root.getParent();
