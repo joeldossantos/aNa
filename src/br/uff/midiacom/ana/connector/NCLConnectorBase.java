@@ -40,18 +40,13 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
 import java.util.TreeSet;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -64,30 +59,11 @@ import org.xml.sax.XMLReader;
 public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCausalConnector, Ei extends NCLImport>
         extends NCLConnectorBasePrototype<T, P, I, Ec, Ei> implements NCLIdentifiableElement<T, P> {
 
-    private Set<C> connectors = new TreeSet<C>();
-    private Set<I> imports = new TreeSet<I>();
-    
 
     /**
      * Construtor do elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLConnectorBase() {}
-
-
-    /**
-     * Construtor do elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLConnectorBase(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
 
 
     /**
@@ -100,13 +76,10 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      *
      * @see TreeSet#add(java.lang.Object)
      */
-    public boolean addCausalConnector(C connector) {
-        if(connectors.add(connector)){
-            //Se connector existe, atribui este como seu parente
-            if(connector != null)
-                connector.setParent(this);
-
-            notifyInserted(NCLElementSets.CONNECTORS, connector);
+    @Override
+    public boolean addCausalConnector(Ec connector) throws XMLException {
+        if(super.addCausalConnector(connector)){
+            impl.notifyInserted(NCLElementSets.CONNECTORS, connector);
             return true;
         }
         return false;
@@ -123,54 +96,16 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      *
      * @see TreeSet#remove(java.lang.Object)
      */    
-    public boolean removeCausalConnector(C connector) {
-        if(connectors.remove(connector)){
-            //Se connector existe, retira o seu parentesco
-            if(connector != null)
-                connector.setParent(null);
-
-            notifyRemoved(NCLElementSets.CONNECTORS, connector);
+    @Override
+    public boolean removeCausalConnector(Ec connector) throws XMLException {
+        if(super.removeCausalConnector(connector)){
+            impl.notifyRemoved(NCLElementSets.CONNECTORS, connector);
             return true;
         }
         return false;
     }
     
     
-    /**
-     * Verifica se a base de conectores possui um conector.
-     * 
-     * @param connector
-     *          elemento representando o conector a ser verificado.
-     * @return
-     *          verdadeiro se o conector existir.
-     */
-    public boolean hasCausalConnector(C connector) {
-        return connectors.contains(connector);        
-    }
-    
-    
-    /**
-     * Verifica se a base de conectores possui pelo menos um conector.
-     * 
-     * @return
-     *          verdadeiro se a base de conectores possui pelo menos um conector.
-     */
-    public boolean hasCausalConnector() {
-        return !connectors.isEmpty();
-    }
-
-    
-    /**
-     * Retorna os conectores da base de conectores.
-     * 
-     * @return
-     *          lista contendo os conectores da base de conectores.
-     */
-    public Set<C> getCausalConnectors() {
-        return connectors;        
-    }
-
-
     /**
      * Adiciona um importador de base à base de conectores.
      *
@@ -179,13 +114,10 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      *
      * @see TreeSet#add
      */
-    public boolean addImportBase(I importBase) {
-        if(imports.add(importBase)){
-            //Se importBase existe, atribui este como seu parente
-            if(importBase != null)
-                importBase.setParent(this);
-
-            notifyInserted(NCLElementSets.IMPORTS, importBase);
+    @Override
+    public boolean addImportBase(Ei importBase) throws XMLException {
+        if(super.addImportBase(importBase)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;
@@ -200,134 +132,61 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      *
      * @see TreeSet#remove
      */
-    public boolean removeImportBase(I importBase) {
-        if(imports.remove(importBase)){
-            //Se importBase existe, retira o seu parentesco
-            if(importBase != null)
-                importBase.setParent(null);
-
-            notifyRemoved(NCLElementSets.IMPORTS, importBase);
+    @Override
+    public boolean removeImportBase(Ei importBase) throws XMLException {
+        if(super.removeImportBase(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
             return true;
         }
         return false;
     }
 
 
-    /**
-     * Verifica se a base de conectores contém um importador de base.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser verificado.
-     */
-    public boolean hasImportBase(I importBase) {
-        return imports.contains(importBase);
-    }
-
-
-    /**
-     * Verifica se a base de conectores possui algum importador de base.
-     *
-     * @return
-     *          verdadeiro se a base de conectores possuir algum importador de base.
-     */
-    public boolean hasImportBase() {
-        return !imports.isEmpty();
-    }
-
-
-    /**
-     * Retorna os importadores de base da base de conectores.
-     *
-     * @return
-     *          lista contendo os importadores de base da base de conectores.
-     */
-    public Set<I> getImportBases() {
-        return imports;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<connectorBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-
-        if(hasImportBase() || hasCausalConnector()){
-            content += ">\n";
-
-            if(hasImportBase()){
-                for(I imp : imports)
-                    content += imp.parse(ident + 1);
-            }
-
-            if(hasCausalConnector()){
-                for(C connector: connectors)
-                    content += connector.parse(ident + 1);
-            }
-
-            content += space + "</connectorBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("connectorBase")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("importBase")){
-                I child = createImportBase();
-                child.startElement(uri, localName, qName, attributes);
-                addImportBase(child);
-            }
-            else if(localName.equals("causalConnector")){
-                C child = createCausalConnector();
-                child.startElement(uri, localName, qName, attributes);
-                addCausalConnector(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasImportBase()){
-            for(I imp : imports){
-                imp.endDocument();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-        if(hasCausalConnector()){
-            for(C connector : connectors){
-                connector.endDocument();
-                addWarning(connector.getWarnings());
-                addError(connector.getErrors());
-            }
-        }
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            if(localName.equals("connectorBase")){
+//                cleanWarnings();
+//                cleanErrors();
+//                for(int i = 0; i < attributes.getLength(); i++){
+//                    if(attributes.getLocalName(i).equals("id"))
+//                        setId(attributes.getValue(i));
+//                }
+//            }
+//            else if(localName.equals("importBase")){
+//                I child = createImportBase();
+//                child.startElement(uri, localName, qName, attributes);
+//                addImportBase(child);
+//            }
+//            else if(localName.equals("causalConnector")){
+//                C child = createCausalConnector();
+//                child.startElement(uri, localName, qName, attributes);
+//                addCausalConnector(child);
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(hasImportBase()){
+//            for(I imp : imports){
+//                imp.endDocument();
+//                addWarning(imp.getWarnings());
+//                addError(imp.getErrors());
+//            }
+//        }
+//        if(hasCausalConnector()){
+//            for(C connector : connectors){
+//                connector.endDocument();
+//                addWarning(connector.getWarnings());
+//                addError(connector.getErrors());
+//            }
+//        }
+//    }
 
 
     public void load(Element element) throws XMLException {
@@ -345,26 +204,26 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
     }
 
 
-    /**
-     * Função de criação do elemento filho <i>importBase</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>importBase</i>.
-     */
-    protected I createImportBase() {
-        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>causalConnector</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>causalConnector</i>.
-     */
-    protected C createCausalConnector() {
-        return (C) new NCLCausalConnector(getReader(), this);
-    }
+//    /**
+//     * Função de criação do elemento filho <i>importBase</i>.
+//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+//     *
+//     * @return
+//     *          elemento representando o elemento filho <i>importBase</i>.
+//     */
+//    protected I createImportBase() {
+//        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+//    }
+//
+//
+//    /**
+//     * Função de criação do elemento filho <i>causalConnector</i>.
+//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+//     *
+//     * @return
+//     *          elemento representando o elemento filho <i>causalConnector</i>.
+//     */
+//    protected C createCausalConnector() {
+//        return (C) new NCLCausalConnector(getReader(), this);
+//    }
 }

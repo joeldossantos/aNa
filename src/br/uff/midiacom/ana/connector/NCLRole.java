@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 /**
@@ -52,12 +53,6 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
  */
 public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePrototype<T, P> {
 
-    private String name;
-    private NCLDefaultConditionRole cname;
-    private NCLDefaultActionRole aname;
-
-    private NCLElementImpl parent;
-    
     
     /**
      * Construtor do papel.
@@ -67,8 +62,9 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
      * @throws java.lang.IllegalArgumentException
      *          Se o nome a ser atribuído for uma String vazia.
      */
-    public NCLRole(String name) throws IllegalArgumentException {
-        setName(name);
+    public NCLRole(String name) throws XMLException {
+        super(name);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -79,7 +75,8 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
      *          elemento representando o nome do papel.
      */
     public NCLRole(NCLDefaultConditionRole name) {
-        setName(name);
+        super(name);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -90,7 +87,8 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
      *          elemento representando o nome do papel.
      */
     public NCLRole(NCLDefaultActionRole name) {
-        setName(name);
+        super(name);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -102,29 +100,11 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
      * @throws java.lang.IllegalArgumentException
      *          Se o nome a ser atribuído for uma String vazia.
      */
-    public void setName(String name) throws IllegalArgumentException {
-        if(name != null && "".equals(name.trim()))
-            throw new IllegalArgumentException("Empty name String");
-
-        
-        if(name != null){
-            for(NCLDefaultConditionRole role : NCLDefaultConditionRole.values()){
-                if(name.equals(role.toString())){
-                    setName(role);
-                    return;
-                }
-            }
-            for(NCLDefaultActionRole role : NCLDefaultActionRole.values()){
-                if(name.equals(role.toString())){
-                    setName(role);
-                    return;
-                }
-            }
-        }
-
-        this.name = name;
-        this.cname = null;
-        this.aname = null;
+    @Override
+    public void setName(String name) throws XMLException {
+        String aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
@@ -134,10 +114,11 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
      * @param name
      *          elemento representando o nome do papel.
      */
+    @Override
     public void setName(NCLDefaultConditionRole name) {
-        this.cname = name;
-        this.name = null;
-        this.aname = null;
+        String aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
@@ -147,52 +128,14 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
      * @param name
      *          elemento representando o nome do papel.
      */
+    @Override
     public void setName(NCLDefaultActionRole name) {
-        aname = name;
-        this.name = null;
-        this.cname= null;
+        String aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
     
     
-    /**
-     * Retorna o nome do papel. Retorna a String que representa um papel padrao
-     * caso o nome do papel tenha sido determinado desta forma.
-     *
-     * @return
-     *          String com o nome do papel.
-     */
-    public String getName() {
-        if(cname != null)
-            return cname.toString();
-        if(aname != null)
-            return aname.toString();
-        else
-            return name;
-    }
-
-
-    /**
-     * Retorna o nome do papel caso este tenha sido determinado como uma condicao padrao.
-     *
-     * @return
-     *          NCLDefaultConditionRole representando o nome do papel
-     */
-    public NCLDefaultConditionRole getConditionName() {
-        return cname;
-    }
-
-
-    /**
-     * Retorna o nome do papel caso este tenha sido determinado como uma acao padrao.
-     *
-     * @return
-     *          NCLDefaultActionRole representando o nome do papel
-     */
-    public NCLDefaultActionRole getActionName() {
-        return aname;
-    }
-
-
     /**
      * Atribui um elemento pai ao papel.
      *
@@ -207,16 +150,5 @@ public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePro
 
         this.parent = parent;
         return true;
-    }
-
-
-    /**
-     * Retorna o elemento pai do papel.
-     *
-     * @return
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLElementImpl getParent() {
-        return parent;
     }
 }
