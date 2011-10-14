@@ -37,15 +37,20 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -66,7 +71,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegionBase<RB extends NCLRegionBase, R extends NCLRegion, I extends NCLImport> extends NCLIdentifiableElement implements Comparable<RB> {
+public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, Ei extends NCLImport>
+        extends NCLRegionBasePrototype<T, P, I, Er, Ei> implements NCLIdentifiableElement<T, P> {
 
     private String device;
     private R parent_region;
@@ -443,6 +449,21 @@ public class NCLRegionBase<RB extends NCLRegionBase, R extends NCLRegion, I exte
 
         addWarning("Could not find region in regionBase with id: " + getParentRegion().getId());
         return null;
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

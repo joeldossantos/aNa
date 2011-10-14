@@ -42,20 +42,25 @@ import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLUriType;
+import br.uff.midiacom.ana.datatype.ncl.node.NCLMediaPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
+import br.uff.midiacom.xml.XMLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -67,8 +72,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNode, D extends NCLLayoutDescriptor, M extends NCLMedia>
-        extends NCLIdentifiableElement implements NCLNode<N> {
+public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode>
+        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<T, P> {
 
     private String src;
     private NCLMimeType type;
@@ -827,6 +832,21 @@ public class NCLMedia<A extends NCLArea, P extends NCLProperty, N extends NCLNod
 
         addWarning("Could not find media with id: " + getRefer().getId());
         return null;
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

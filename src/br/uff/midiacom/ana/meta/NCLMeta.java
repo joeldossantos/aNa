@@ -37,8 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.meta;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
+import br.uff.midiacom.xml.XMLException;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -50,7 +55,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLMeta<M extends NCLMeta> extends NCLElementImpl implements Comparable<M> {
+public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLElementImpl>
+        extends NCLMetaPrototype<T, P, I> implements NCLElement<T, P> {
 
     private String name;
     private String mcontent;
@@ -172,5 +178,20 @@ public class NCLMeta<M extends NCLMeta> extends NCLElementImpl implements Compar
             else if(attributes.getLocalName(i).equals("content"))
                 setContent(attributes.getValue(i));
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

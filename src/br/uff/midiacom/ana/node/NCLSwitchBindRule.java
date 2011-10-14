@@ -38,12 +38,17 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchBindRulePrototype;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -55,7 +60,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R extends NCLTestRule> extends NCLElementImpl implements Comparable<B> {
+public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Er extends NCLTestRule>
+        extends NCLSwitchBindRulePrototype<T, P, I, En, Er> implements NCLElement<T, P> {
 
     private N constituent;
     private R rule;
@@ -258,5 +264,20 @@ public class NCLSwitchBindRule<B extends NCLSwitchBindRule, N extends NCLNode, R
         //@todo: regras internas a regras compostas podem ser utilizadas?
 
         addWarning("Could not find rule in ruleBase with id: " + getRule().getId());
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

@@ -37,13 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -71,7 +76,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement implements Comparable<R> {
+public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLElementImpl>
+        extends NCLRegionPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     private String title;
     private Integer left;
@@ -802,6 +808,21 @@ public class NCLRegion<R extends NCLRegion> extends NCLIdentifiableElement imple
                 addError(region.getErrors());
             }
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 
