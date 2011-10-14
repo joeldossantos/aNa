@@ -38,21 +38,16 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.SampleType;
-import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
+import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
-import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Vector;
+import br.uff.midiacom.xml.datatype.array.ArrayType;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -64,15 +59,6 @@ import org.xml.sax.XMLReader;
  */
 public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
         extends NCLAreaPrototype<T, P, I, Ei> implements NCLInterface<Ei, P> {
-
-    private int[] coords;
-    private TimeType begin;
-    private TimeType end;
-    private String text;
-    private Integer position;
-    private SampleType first;
-    private SampleType last;
-    private String label;
     
     
     /**
@@ -83,24 +69,9 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador da âncora for inválido.
      */
-    public NCLArea(String id) throws NCLInvalidIdentifierException {
-        setId(id);
-    }
-
-
-    /**
-     * Construtor do elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLArea(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLArea(String id) throws XMLException {
+        super(id);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -113,27 +84,11 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      * @throws java.lang.IllegalArgumentException
      *          se alguma das coordenadas for inválida.
      */
-    public void setCoords(int[] coords) throws IllegalArgumentException {
-        if(coords != null){
-            for(int coord : coords){
-                if(coord < 0)
-                    throw new IllegalArgumentException("Invalid coordenate: " + coord);
-            }
-        }
-
-        notifyAltered(NCLElementAttributes.COORDS, this.coords, coords);
-        this.coords = coords;
-    }
-    
-    
-    /**
-     * Retorna as coordenadas espaciais da âncora.
-     * 
-     * @return
-     *          array de inteiros com as coordenadas.
-     */
-    public int[] getCoords() {
-        return coords;
+    @Override
+    public void setCoords(ArrayType coords) {
+        ArrayType aux = this.coords;
+        super.setCoords(coords);
+        impl.notifyAltered(NCLElementAttributes.COORDS, aux, coords);
     }
     
     
@@ -146,23 +101,14 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      *
      * @see TimeType
      */
+    @Override
     public void setBegin(TimeType begin) {
-        notifyAltered(NCLElementAttributes.BEGIN, this.begin, begin);
-        this.begin = begin;
+        TimeType aux = this.begin;
+        super.setBegin(begin);
+        impl.notifyAltered(NCLElementAttributes.BEGIN, aux, begin);
     }
     
-    
-    /**
-     * Retorna o valor de inicio da âncora.
-     * 
-     * @return
-     *          elemento representando o valor de tempo.
-     */
-    public TimeType getBegin() {
-        return begin;
-    }
-    
-    
+        
     /**
      * Define uma âncora de conteúdo representando porções temporais.
      * Caso a media que contém a âncora for do tipo "application/x-ginga-time" o tempo deve ser completo.
@@ -172,23 +118,14 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      *
      * @see TimeType
      */
+    @Override
     public void setEnd(TimeType end) {
-        notifyAltered(NCLElementAttributes.END, this.end, end);
-        this.end = end;
+        TimeType aux = this.end;
+        super.setBegin(end);
+        impl.notifyAltered(NCLElementAttributes.END, aux, end);
     }
     
-    
-    /**
-     * Retorna o valor de fim da âncora.
-     * 
-     * @return
-     *          elemento representando o valor de tempo.
-     */
-    public TimeType getEnd() {
-        return end;
-    }
-    
-    
+        
     /**
      * Define uma ancora textual.
      * 
@@ -197,26 +134,14 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setText(String text) throws IllegalArgumentException {
-        if(text != null && "".equals(text.trim()))
-            throw new IllegalArgumentException("Empty value String");
+    @Override
+    public void setText(String text) throws XMLException {
+        StringType aux = this.text;
+        super.setText(text);
+        impl.notifyAltered(NCLElementAttributes.TEXT, aux, text);
+    }
 
-        notifyAltered(NCLElementAttributes.TEXT, this.text, text);
-        this.text = text;
-    }
-    
-    
-    /**
-     * Retorna o conteúdo da ancora textual.
-     * 
-     * @return
-     *          String com conteúdo da âncora textual.
-     */
-    public String getText() {
-        return text;
-    }
-    
-    
+
     /**
      * Define a posição do texto da ancora textual.
      * 
@@ -225,26 +150,14 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      * @throws java.lang.IllegalArgumentException
      *          se a posição for um valor negativo.
      */
-    public void setPosition(Integer position) throws IllegalArgumentException {
-        if(position != null && position < 0)
-            throw new IllegalArgumentException("Invalid position");
-
-        notifyAltered(NCLElementAttributes.POSITION, this.position, position);
-        this.position = position;
+    @Override
+    public void setPosition(Integer position) throws XMLException {
+        Integer aux = this.position;
+        super.setPosition(position);
+        impl.notifyAltered(NCLElementAttributes.POSITION, aux, position);
     }
     
-    
-    /**
-     * Retorna a posição do texto da ancora textual.
-     * 
-     * @return
-     *          inteiro com a posicao do texto.
-     */
-    public Integer getPosition() {
-        return position;
-    }
-    
-    
+        
     /**
      * Define uma ancora de conteudo com base em uma amostra.
      * 
@@ -253,23 +166,14 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      *
      * @see SampleType
      */
+    @Override
     public void setFirst(SampleType first) {
-        notifyAltered(NCLElementAttributes.FIRST, this.first, first);
-        this.first = first;
+        SampleType aux = this.first;
+        super.setFirst(first);
+        impl.notifyAltered(NCLElementAttributes.FIRST, aux, first);
     }
     
-    
-    /**
-     * Retorna o início da ancora de conteudo com base em uma amostra.
-     * 
-     * @return
-     *          amostra de inicio da ancora.
-     */
-    public SampleType getFirst() {
-        return first;
-    }
-    
-    
+        
     /**
      * Define uma ancora de conteudo com base em uma amostra.
      *
@@ -278,23 +182,14 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      *
      * @see SampleType
      */
+    @Override
     public void setLast(SampleType last) {
-        notifyAltered(NCLElementAttributes.LAST, this.last, last);
-        this.last = last;
+        SampleType aux = this.last;
+        super.setLast(last);
+        impl.notifyAltered(NCLElementAttributes.LAST, aux, last);
     }
     
-    
-    /**
-     * Retorna o fim da ancora de conteudo com base em uma amostra.
-     *
-     * @return
-     *          amostra de fim da ancora.
-     */
-    public SampleType getLast() {
-        return last;
-    }
-    
-    
+        
     /**
      * define uma ancora de conteudo baseada no atributo label,
      * que especifica uma cadeia de caracteres que deve ser utilizada
@@ -305,127 +200,56 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setLabel(String label) throws IllegalArgumentException {
-        if(label != null && "".equals(label.trim()))
-            throw new IllegalArgumentException("Empty label String");
-
-        notifyAltered(NCLElementAttributes.LABEL, this.label, label);
-        this.label = label;
-    }
-    
-    
-    /**
-     * Retorna o label da ancora de conteudo.
-     * 
-     * @return
-     *          String contendo a identificacao da região do conteúdo.
-     */
-    public String getLabel() {
-        return label;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-                
-        // <area> element and attributes declaration
-        content = space + "<area";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getCoords() != null)
-            content += " coords='" + coordsToString() + "'";
-        if(getBegin() != null)
-            content += " begin='" + getBegin().toString() + "'";
-        if(getEnd() != null)
-            content += " end='" + getEnd().toString() + "'";
-        if(getText() != null)
-            content += " text='" + getText() + "'";
-        if(getPosition() != null)
-            content += " position='" + getPosition() + "'";
-        if(getFirst() != null)
-            content += " first='" + getFirst().toString() + "'";
-        if(getLast() != null)
-            content += " last='" + getLast().toString() + "'";
-        if(getLabel() != null)
-            content += " label='" + getLabel() + "'";
-        content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    /**
-     * Transforma as coordenadas em uma string.
-     * 
-     * @return
-     *          String representando as coordenadas espaciais.
-     */
-    private String coordsToString() {
-        String result = "";
-        for(int i = 0; i < coords.length; i++){
-            result += coords[i];
-            if(i < coords.length - 1)
-                result += ",";
-        }
-        return result;
-    }
-
-    
-    public int compareTo(I other) {
-        return getId().compareTo(other.getId());
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("id"))
-                    setId(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("coords")){
-                    Vector<Integer>  coord = new Vector<Integer>();
-                    String value = attributes.getValue(i);
-                    while(value.contains(",")){
-                        int index = value.indexOf(",");
-                        coord.add(new Integer(value.substring(0, index)));
-                        value = value.substring(index + 1);
-                    }
-                    coord.add(new Integer(value));
-                    int[] a = new int[coord.size()];
-                    for(int k = 0; k < coord.size(); k++)
-                        a[k] = (int) coord.elementAt(k);
-                    setCoords(a);
-                }
-                else if(attributes.getLocalName(i).equals("begin"))
-                    setBegin(new TimeType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("end"))
-                    setEnd(new TimeType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("text"))
-                    setText(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("position"))
-                    setPosition(new Integer(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("first"))
-                    setFirst(new SampleType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("last"))
-                    setLast(new SampleType(attributes.getValue(i)));
-                else if(attributes.getLocalName(i).equals("label"))
-                    setLabel(attributes.getValue(i));
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
+    public void setLabel(String label) throws XMLException {
+        StringType aux = this.label;
+        super.setLabel(label);
+        impl.notifyAltered(NCLElementAttributes.LABEL, aux, label);
     }
+    
+    
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("id"))
+//                    setId(attributes.getValue(i));
+//                else if(attributes.getLocalName(i).equals("coords")){
+//                    Vector<Integer>  coord = new Vector<Integer>();
+//                    String value = attributes.getValue(i);
+//                    while(value.contains(",")){
+//                        int index = value.indexOf(",");
+//                        coord.add(new Integer(value.substring(0, index)));
+//                        value = value.substring(index + 1);
+//                    }
+//                    coord.add(new Integer(value));
+//                    int[] a = new int[coord.size()];
+//                    for(int k = 0; k < coord.size(); k++)
+//                        a[k] = (int) coord.elementAt(k);
+//                    setCoords(a);
+//                }
+//                else if(attributes.getLocalName(i).equals("begin"))
+//                    setBegin(new TimeType(attributes.getValue(i)));
+//                else if(attributes.getLocalName(i).equals("end"))
+//                    setEnd(new TimeType(attributes.getValue(i)));
+//                else if(attributes.getLocalName(i).equals("text"))
+//                    setText(attributes.getValue(i));
+//                else if(attributes.getLocalName(i).equals("position"))
+//                    setPosition(new Integer(attributes.getValue(i)));
+//                else if(attributes.getLocalName(i).equals("first"))
+//                    setFirst(new SampleType(attributes.getValue(i)));
+//                else if(attributes.getLocalName(i).equals("last"))
+//                    setLast(new SampleType(attributes.getValue(i)));
+//                else if(attributes.getLocalName(i).equals("label"))
+//                    setLabel(attributes.getValue(i));
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
 
 
     public void load(Element element) throws XMLException {
