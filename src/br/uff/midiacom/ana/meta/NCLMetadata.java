@@ -43,8 +43,6 @@ import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -57,29 +55,11 @@ import org.xml.sax.XMLReader;
 public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends NCLElementImpl>
         extends NCLMetadataPrototype<T, P, I> implements NCLElement<T, P> {
 
-    private String rdfTree;
-
 
     /**
      * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLMetadata() {}
-
-
-    /**
-     * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLMetadata(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
 
 
     /**
@@ -90,63 +70,23 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
      * @throws IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setRDFTree(String rdfTree) throws IllegalArgumentException {
-        if (rdfTree != null && "".equals(rdfTree.trim()))
-            throw new IllegalArgumentException("Empty String");
-
-        this.rdfTree = rdfTree;
-    }
-
-
-    /**
-     * Retorna a árvore RDF de metadados do elemento metadata.
-     *
-     * @return
-     *          String representando a árvore RDF.
-     */
-    public String getRDFTree() {
-        return rdfTree;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<metadata>\n";
-        if(getRDFTree() != null)
-            content += getRDFTree() + "\n";
-        content += space + "</metadata>\n";
-
-        return content;
-    }
-
-
-    public int compareTo(M other) {
-        return getRDFTree().compareTo(other.getRDFTree());
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        cleanWarnings();
-        cleanErrors();
+    public void setRDFTree(String rdfTree) throws XMLException {
+        super.setRDFTree(rdfTree);
     }
-//TODO: o parser vai encarar o RDF como xml também, tem que recuprerar de outra forma
 
-    @Override
-    public void characters(char[] ch, int start, int length) {
-        setRDFTree(new String(ch, start, length));
-    }
+
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        cleanWarnings();
+//        cleanErrors();
+//    }
+////TODO: o parser vai encarar o RDF como xml também, tem que recuprerar de outra forma
+//
+//    @Override
+//    public void characters(char[] ch, int start, int length) {
+//        setRDFTree(new String(ch, start, length));
+//    }
 
 
     public void load(Element element) throws XMLException {
