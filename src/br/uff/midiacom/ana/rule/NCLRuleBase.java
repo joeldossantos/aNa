@@ -40,15 +40,11 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
-import java.util.Set;
+import br.uff.midiacom.xml.XMLException;
 import java.util.TreeSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -60,30 +56,11 @@ import org.xml.sax.XMLReader;
 public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTestRule, Ei extends NCLImport>
         extends NCLRuleBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
-    private Set<T> rules = new TreeSet<T>();
-    private Set<I> imports = new TreeSet<I>();
-
 
     /**
      * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLRuleBase() {}
-
-
-    /**
-     * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLRuleBase(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
 
 
     /**
@@ -96,13 +73,10 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *
      * @see TreeSet#add
      */
-    public boolean addRule(T rule) {
-        if(rules.add(rule)){
-            //Se rule existe, atribui este como seu parente
-            if(rule != null)
-                rule.setParent(this);
-
-            notifyInserted(NCLElementSets.RULES, rule);
+    @Override
+    public boolean addRule(Et rule) throws XMLException {
+        if(super.addRule(rule)){
+            impl.notifyInserted(NCLElementSets.RULES, rule);
             return true;
         }
         return false;
@@ -119,51 +93,13 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *
      * @see TreeSet#remove
      */
-    public boolean removeRule(T rule) {
-        if(rules.remove(rule)){
-            //Se rule existe, retira o seu parentesco
-            if(rule != null)
-                rule.setParent(null);
-
-            notifyRemoved(NCLElementSets.RULES, rule);
+    @Override
+    public boolean removeRule(Et rule) throws XMLException {
+        if(super.removeRule(rule)){
+            impl.notifyRemoved(NCLElementSets.RULES, rule);
             return true;
         }
         return false;
-    }
-
-
-    /**
-     * Verifica se a base de regras possui uma regra.
-     *
-     * @param rule
-     *          elemento representando a regra a ser verificada.
-     * @return
-     *          verdadeiro se a regra existir.
-     */
-    public boolean hasRule(T rule) {
-        return rules.contains(rule);
-    }
-
-
-    /**
-     * Verifica se a base de regras possui alguma regra.
-     *
-     * @return
-     *          verdadeiro se a base de regras possui alguma regra.
-     */
-    public boolean hasRule() {
-        return !rules.isEmpty();
-    }
-
-
-    /**
-     * Retorna as regras da base de regras.
-     *
-     * @return
-     *          lista contendo as regras da base de regras.
-     */
-    public Set<T> getRules() {
-        return rules;
     }
 
 
@@ -175,13 +111,9 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *
      * @see TreeSet#add
      */
-    public boolean addImportBase(I importBase) {
-        if(imports.add(importBase)){
-            //Se importBase existe, atribui este como seu parente
-            if(importBase != null)
-                importBase.setParent(this);
-
-            notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
+    public boolean addImportBase(Ei importBase) throws XMLException {
+        if(super.addImportBase(importBase)){
+            impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
             return true;
         }
         return false;
@@ -196,139 +128,66 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *
      * @see TreeSet#remove
      */
-    public boolean removeImportBase(I importBase) {
-        if(imports.remove(importBase)){
-            //Se importBase existe, retira o seu parentesco
-            if(importBase != null)
-                importBase.setParent(null);
-
-            notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
+    @Override
+    public boolean removeImportBase(Ei importBase) throws XMLException {
+        if(super.removeImportBase(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
             return true;
         }
         return false;
     }
 
 
-    /**
-     * Verifica se a base de regras contém um importador de base.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser verificado.
-     */
-    public boolean hasImportBase(I importBase) {
-        return imports.contains(importBase);
-    }
-
-
-    /**
-     * Verifica se a base de regras possui algum importador de base.
-     *
-     * @return
-     *          verdadeiro se a base de regras possuir algum importador de base.
-     */
-    public boolean hasImportBase() {
-        return !imports.isEmpty();
-    }
-
-
-    /**
-     * Retorna os importadores de base da base de regras.
-     *
-     * @return
-     *          lista contendo os importadores de base da base de regras.
-     */
-    public Set<I> getImportBases() {
-        return imports;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<ruleBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-
-        if(hasImportBase() || hasRule()){
-            content += ">\n";
-
-            if(hasImportBase()){
-                for(I imp : imports)
-                    content += imp.parse(ident + 1);
-            }
-
-            if(hasRule()){
-                for(T rule : rules)
-                    content += rule.parse(ident + 1);
-            }
-
-            content += space + "</ruleBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            if(localName.equals("ruleBase")){
-                cleanWarnings();
-                cleanErrors();
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("importBase")){
-                I child = createImportBase();
-                child.startElement(uri, localName, qName, attributes);
-                addImportBase(child);
-            }
-            else if(localName.equals("rule")){
-                T child = createRule();
-                child.startElement(uri, localName, qName, attributes);
-                addRule(child);
-            }
-            else if(localName.equals("compositeRule")){
-                T child = createCompositeRule();
-                child.startElement(uri, localName, qName, attributes);
-                addRule(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasImportBase()){
-            for(I imp : imports){
-                imp.endDocument();
-                addWarning(imp.getWarnings());
-                addError(imp.getErrors());
-            }
-        }
-        if(hasRule()){
-            for(T rule : rules){
-                rule.endDocument();
-                addWarning(rule.getWarnings());
-                addError(rule.getErrors());
-            }
-        }
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            if(localName.equals("ruleBase")){
+//                cleanWarnings();
+//                cleanErrors();
+//                for(int i = 0; i < attributes.getLength(); i++){
+//                    if(attributes.getLocalName(i).equals("id"))
+//                        setId(attributes.getValue(i));
+//                }
+//            }
+//            else if(localName.equals("importBase")){
+//                I child = createImportBase();
+//                child.startElement(uri, localName, qName, attributes);
+//                addImportBase(child);
+//            }
+//            else if(localName.equals("rule")){
+//                T child = createRule();
+//                child.startElement(uri, localName, qName, attributes);
+//                addRule(child);
+//            }
+//            else if(localName.equals("compositeRule")){
+//                T child = createCompositeRule();
+//                child.startElement(uri, localName, qName, attributes);
+//                addRule(child);
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(hasImportBase()){
+//            for(I imp : imports){
+//                imp.endDocument();
+//                addWarning(imp.getWarnings());
+//                addError(imp.getErrors());
+//            }
+//        }
+//        if(hasRule()){
+//            for(T rule : rules){
+//                rule.endDocument();
+//                addWarning(rule.getWarnings());
+//                addError(rule.getErrors());
+//            }
+//        }
+//    }
 
 
     /**
@@ -339,7 +198,7 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *          elemento representando o elemento filho <i>importBase</i>.
      */
     protected I createImportBase() {
-        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+//        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
     }
 
 
@@ -351,7 +210,7 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *          elemento representando o elemento filho <i>rule</i>.
      */
     protected T createRule() {
-        return (T) new NCLRule(getReader(), this);
+//        return (T) new NCLRule(getReader(), this);
     }
 
 
@@ -363,6 +222,6 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *          elemento representando o elemento filho <i>compositeRule</i>.
      */
     protected T createCompositeRule() {
-        return (T) new NCLCompositeRule(getReader(), this);
+//        return (T) new NCLCompositeRule(getReader(), this);
     }
 }
