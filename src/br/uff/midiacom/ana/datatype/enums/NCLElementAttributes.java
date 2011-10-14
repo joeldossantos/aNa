@@ -29,7 +29,7 @@ public enum NCLElementAttributes {
     CONTENT("content"),
     COORDS("coords"),
 //    DAY("day"),
-//    DEFAULTCOMPONENT("defaultComponent"),
+    DEFAULTCOMPONENT("defaultComponent"),
 //    DEFAULTDESCRIPTOR("defaultDescriptor"),
 //    DEFVALUE("defValue"),
     DELAY("delay"),
