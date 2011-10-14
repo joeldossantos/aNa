@@ -63,30 +63,11 @@ import org.xml.sax.XMLReader;
 public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Er extends NCLTestRule>
         extends NCLSwitchBindRulePrototype<T, P, I, En, Er> implements NCLElement<T, P> {
 
-    private N constituent;
-    private R rule;
-
 
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLSwitchBindRule() {}
-
-
-    /**
-     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLSwitchBindRule(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
 
     
     /**
@@ -95,20 +76,11 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
      * @param constituent
      *          elemento representando o nó mapeado pelo bind.
      */
-    public void setConstituent(N constituent) {
-        notifyAltered(NCLElementAttributes.CONSTITUENT, this.constituent, constituent);
-        this.constituent = constituent;
-    }
-
-
-    /**
-     * Retorna o constituent do bind.
-     *
-     * @return
-     *          elemento representando o nó mapeado pelo bind.
-     */
-    public N getConstituent() {
-        return constituent;
+    @Override
+    public void setConstituent(En constituent) {
+        En aux = this.constituent;
+        super.setConstituent(constituent);
+        impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
     }
 
 
@@ -118,153 +90,76 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
      * @param rule
      *          elemento representando a regra de avaliação do bind.
      */
-    public void setRule(R rule) {
-        notifyAltered(NCLElementAttributes.RULE, this.rule, rule);
-        this.rule = rule;
-    }
-
-
-    /**
-     * Retorna a regra de avaliação do bind.
-     *
-     * @return
-     *          elemento representando a regra de avaliação do bind.
-     */
-    public R getRule() {
-        return rule;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<bindRule";
-        if(getRule() != null)
-            content += " rule='" + getRule().getId() + "'";
-        if(getConstituent() != null)
-            content += " constituent='" + getConstituent().getId() + "'";
-        content += "/>\n";
-
-
-        return content;
-    }
-
-
-    public int compareTo(B other) {
-        int comp = 0;
-
-        // Compara pela regra
-        if(getRule() != null)
-            comp = getRule().compareTo(other.getRule());
-        else
-            comp = -1;
-
-        // Compara pelo constituent
-        if(comp == 0){
-            if(getConstituent() != null)
-                comp = getConstituent().compareTo(other.getConstituent());
-            else
-                comp = -1;
-        }
-
-        return comp;
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("rule"))
-                    setRule((R) new NCLRule(attributes.getValue(i)));//cast retirado na correcao das referencias
-                else if(attributes.getLocalName(i).equals("constituent"))
-                    setConstituent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
+    public void setRule(Er rule) {
+        Er aux = this.rule;
+        super.setRule(rule);
+        impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
     }
 
 
-    @Override
-    public void endDocument() {
-        if(getParent() == null)
-            return;
-
-        if(getConstituent() != null)
-            constituentReference();
-
-        if(getRule() != null)
-            ruleReference();
-    }
-
-
-    private Set<R> getRules() {
-        NCLElementImpl root = getParent();
-
-        while(!(root instanceof NCLDoc)){
-            root = root.getParent();
-            if(root == null){
-                addWarning("Could not find root element");
-                return null;
-            }
-        }
-
-        if(((NCLDoc) root).getHead() == null){
-            addWarning("Could not find a head");
-            return null;
-        }
-        if(((NCLDoc) root).getHead().getRuleBase() == null){
-            addWarning("Could not find a ruleBase");
-            return null;
-        }
-
-        return ((NCLDoc) root).getHead().getRuleBase().getRules();
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("rule"))
+//                    setRule((R) new NCLRule(attributes.getValue(i)));//cast retirado na correcao das referencias
+//                else if(attributes.getLocalName(i).equals("constituent"))
+//                    setConstituent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(getParent() == null)
+//            return;
+//
+//        if(getConstituent() != null)
+//            constituentReference();
+//
+//        if(getRule() != null)
+//            ruleReference();
+//    }
 
 
-    private void constituentReference() {
-        //Search for a component node in its parent
-        Set<N> nodes = ((NCLSwitch) getParent()).getNodes();
-
-        for(N node : nodes){
-            if(node.getId().equals(getConstituent().getId())){
-                setConstituent(node);
-                return;
-            }
-        }
-
-        addWarning("Could not find node in switch with id: " + getConstituent().getId());
-    }
-
-
-    private void ruleReference() {
-        //Search for the interface inside the node
-        Set<R> rules = getRules();
-        if(rules == null)
-            return;
-        
-        for(R rul : rules){
-            if(rul.getId().equals(getRule().getId())){
-                setRule(rul);
-                return;
-            }
-        }
-        //@todo: regras internas a regras compostas podem ser utilizadas?
-
-        addWarning("Could not find rule in ruleBase with id: " + getRule().getId());
-    }
+//    private void constituentReference() {
+//        //Search for a component node in its parent
+//        Set<N> nodes = ((NCLSwitch) getParent()).getNodes();
+//
+//        for(N node : nodes){
+//            if(node.getId().equals(getConstituent().getId())){
+//                setConstituent(node);
+//                return;
+//            }
+//        }
+//
+//        addWarning("Could not find node in switch with id: " + getConstituent().getId());
+//    }
+//
+//
+//    private void ruleReference() {
+//        //Search for the interface inside the node
+//        Set<R> rules = getRules();
+//        if(rules == null)
+//            return;
+//
+//        for(R rul : rules){
+//            if(rul.getId().equals(getRule().getId())){
+//                setRule(rul);
+//                return;
+//            }
+//        }
+//        //@todo: regras internas a regras compostas podem ser utilizadas?
+//
+//        addWarning("Could not find rule in ruleBase with id: " + getRule().getId());
+//    }
 
 
     public void load(Element element) throws XMLException {
