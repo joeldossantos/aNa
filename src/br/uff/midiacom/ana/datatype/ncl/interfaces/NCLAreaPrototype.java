@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
 public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, I extends XMLElementImpl, Ei extends NCLInterface>
@@ -52,11 +53,11 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
     protected ArrayType coords;
     protected TimeType begin;
     protected TimeType end;
-    protected String text;
+    protected StringType text;
     protected Integer position;
     protected SampleType first;
     protected SampleType last;
-    protected String label;
+    protected StringType label;
     
     
     /**
@@ -153,10 +154,8 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setText(String text) throws IllegalArgumentException {
-        if(text != null && "".equals(text.trim()))
-            throw new IllegalArgumentException("Empty value String");
-        this.text = text;
+    public void setText(String text) throws XMLException {
+        this.text = new StringType(text);
     }
     
     
@@ -167,7 +166,7 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          String com conteúdo da âncora textual.
      */
     public String getText() {
-        return text;
+        return text.getValue();
     }
     
     
@@ -179,9 +178,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @throws java.lang.IllegalArgumentException
      *          se a posição for um valor negativo.
      */
-    public void setPosition(Integer position) throws IllegalArgumentException {
+    public void setPosition(Integer position) throws XMLException {
         if(position != null && position < 0)
-            throw new IllegalArgumentException("Invalid position");
+            throw new XMLException("Invalid position");
         this.position = position;
     }
     
@@ -255,10 +254,8 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setLabel(String label) throws IllegalArgumentException {
-        if(label != null && "".equals(label.trim()))
-            throw new IllegalArgumentException("Empty label String");
-        this.label = label;
+    public void setLabel(String label) throws XMLException {
+        this.label = new StringType(label);
     }
     
     
@@ -269,7 +266,7 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          String contendo a identificacao da região do conteúdo.
      */
     public String getLabel() {
-        return label;
+        return label.getValue();
     }
     
     

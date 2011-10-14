@@ -124,14 +124,13 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
     }
 
     public boolean compare(T other) {
-        boolean comp;
+        boolean comp = true;
 
         // Compara pelo componente
-        comp = getComponent().compare(other.getComponent());
+        comp &= getComponent().compare(other.getComponent());
 
         // Compara pela interface
-        if(!comp)
-            comp = getInterface().compare(other.getInterface());
+        comp &= getInterface().compare(other.getInterface());
 
         return comp;
     }

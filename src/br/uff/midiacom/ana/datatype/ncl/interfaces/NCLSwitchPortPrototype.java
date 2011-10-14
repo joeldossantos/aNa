@@ -47,7 +47,7 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends NCLElement, I extends XMLElementImpl, Em extends NCLMappingPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
 
-    protected ElementList<Em, T> mappings = new ElementList<Em, T>();
+    protected ElementList<Em, T> mappings;
 
 
     /**
@@ -60,6 +60,7 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
      */
     public NCLSwitchPortPrototype(String id) throws XMLException {
         setId(id);
+        mappings = new ElementList<Em, T>();
     }
 
 

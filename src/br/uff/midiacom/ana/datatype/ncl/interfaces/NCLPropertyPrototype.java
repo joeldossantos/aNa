@@ -42,12 +42,13 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
 public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
 
-    protected String value;
+    protected StringType value;
     
     
     /**
@@ -125,10 +126,8 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setValue(String value) throws IllegalArgumentException {
-        if(value != null && "".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
-        this.value = value;
+    public void setValue(String value) throws XMLException {
+        this.value = new StringType(value);
     }
     
     
@@ -139,7 +138,7 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          String representando o valor atribuido.
      */
     public String getValue() {
-        return value;
+        return value.getValue();
     }
     
     
