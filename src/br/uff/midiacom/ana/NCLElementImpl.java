@@ -107,7 +107,7 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
      * @param inserted
      *          element inserted.
      */
-    protected void notifyInserted(NCLElementSets setName, NCLElement inserted) {
+    public void notifyInserted(NCLElementSets setName, NCLElement inserted) {
         if(listener != null)
             (new NCLNotifier(0, listener, owner, setName, inserted)).start();
     }
@@ -121,7 +121,7 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
      * @param inserted
      *          element removed.
      */
-    protected void notifyRemoved(NCLElementSets setName, NCLElement removed) {
+    public void notifyRemoved(NCLElementSets setName, NCLElement removed) {
         if(listener != null)
             (new NCLNotifier(1, listener, owner, setName, removed)).start();
     }
@@ -137,7 +137,7 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
      * @param newValue
      *          the attribute new value.
      */
-    protected void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
+    public void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
         if(listener != null)
             (new NCLNotifier(listener, owner, attributeName, oldValue, newValue)).start();
     }

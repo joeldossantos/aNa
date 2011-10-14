@@ -41,15 +41,20 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.region.NCLRegionBase;
+import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -63,12 +68,6 @@ import org.xml.sax.XMLReader;
 public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion>
         extends NCLImportPrototype<T, P, I, Er> implements NCLElement<T, P> {
 
-    private String alias;
-    private String documentURI;
-    private R region;
-
-    private NCLImportType type;
-
 
     /**
      * Construtor do elemento de importação.
@@ -79,36 +78,9 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
      * @throws java.lang.NullPointerException
      *          se o tipo for nulo.
      */
-    public NCLImport(NCLImportType type) throws NullPointerException {
-        if(type == null)
-            throw new NullPointerException("Null type");
-
-        this.type = type;
-    }
-
-
-    /**
-     * Construtor do elemento de importação.
-     *
-     * @param type
-     *          tipo do elemento, importBase ou importNCL.
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     *
-     * @throws java.lang.NullPointerException
-     *          se o tipo for nulo.
-     */
-    public NCLImport(NCLImportType type, XMLReader reader, NCLElementImpl parent) throws NullPointerException {
-        if(type == null)
-            throw new NullPointerException("Null type");
-
-        this.type = type;
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLImport(NCLImportType type) throws NullPointerException, XMLException {
+        super(type);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -118,20 +90,11 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
      * @param alias
      *          String representando o alias.
      */
-    public void setAlias(String alias) {
-        notifyAltered(NCLElementAttributes.ALIAS, this.alias, alias);
-        this.alias = alias;
-    }
-
-
-    /**
-     * Retorna o alias do elemento de importação.
-     *
-     * @return
-     *          String representando o alias.
-     */
-    public String getAlias() {
-        return alias;
+    @Override
+    public void setAlias(String alias) throws XMLException {
+        StringType aux = this.alias;
+        super.setAlias(alias);
+        impl.notifyAltered(NCLElementAttributes.ALIAS, aux, alias);
     }
 
 
@@ -146,23 +109,11 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
      *
      * @see java.net.URI
      */
-    public void setDocumentURI(String documentURI) throws URISyntaxException {
-        if (documentURI != null)
-            this.documentURI = new URI(documentURI).toString();
-
-        notifyAltered(NCLElementAttributes.DOCUMENTURI, this.documentURI, documentURI);
-        this.documentURI = documentURI;
-    }
-
-
-    /**
-     * Retorna o endereço do documento sendo importado.
-     *
-     * @return
-     *          String representando o endereço.
-     */
-    public String getDocumentURI() {
-        return documentURI;
+    @Override
+    public void setDocumentURI(SrcType documentURI) throws XMLException{
+        SrcType aux = this.documentURI;
+        super.setDocumentURI(documentURI);
+        impl.notifyAltered(NCLElementAttributes.DOCUMENTURI, aux, documentURI);
     }
 
 
@@ -172,84 +123,46 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
      * @param region
      *          elemento representando a região associada.
      */
-    public void setRegion(R region) {
-        notifyAltered(NCLElementAttributes.REGION, this.region, region);
-        this.region = region;
-    }
-
-
-    /**
-     * Retorna a região associada ao importador.
-     *
-     * @return
-     *          elemento representando a região associada.
-     */
-    public R getRegion() {
-        return region;
-    }
-
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<" + type.toString();
-        if(getAlias() != null)
-            content += " alias='" + getAlias() + "'";
-        if(getDocumentURI() != null)
-            content += " documentURI='" + getDocumentURI() + "'";
-        if(getRegion() != null)
-            content += " region='" + getRegion().getId() + "'";
-        content += "/>\n";
-
-        return content;
-    }
-
-
-    public int compareTo(I other) {
-        return getAlias().compareTo(other.getAlias());
-    }
-    
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("alias"))
-                    setAlias(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("documentURI"))
-                    setDocumentURI(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("region")){
-                    setRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
-                }
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-        catch(URISyntaxException ex){
-            addError(ex.getMessage());
-        }
+    public void setRegion(Er region) {
+        Er aux = this.region;
+        super.setRegion(region);
+        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
     }
 
 
-    @Override
-    public void endDocument() {
-        if(getParent() == null)
-            return;
-
-        if(getRegion() != null)
-            regionReference();
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("alias"))
+//                    setAlias(attributes.getValue(i));
+//                else if(attributes.getLocalName(i).equals("documentURI"))
+//                    setDocumentURI(attributes.getValue(i));
+//                else if(attributes.getLocalName(i).equals("region")){
+//                    setRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
+//                }
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//        catch(URISyntaxException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(getParent() == null)
+//            return;
+//
+//        if(getRegion() != null)
+//            regionReference();
+//    }
 
 
     private void regionReference() {
@@ -301,11 +214,11 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
 
 
     public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
+//        impl.setModificationListener(listener);
     }
 
 
     public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
+//        return impl.getModificationListener();
     }
 }
