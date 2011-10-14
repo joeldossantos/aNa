@@ -40,48 +40,7 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 
 
-/**
- * Esta classe define uma ação de um conector da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public interface NCLAction<T, P extends NCLConnectorParam> extends Comparable<T>, NCLElement {
+public interface NCLAction<T extends NCLAction, P extends NCLElement, Ep extends NCLConnectorParam>
+        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep> {
 
-    /**
-     * Atribui um atraso à ação.
-     * 
-     * @param delay
-     *          inteiro contendo o atraso, em segundos.
-     * @throws java.lang.IllegalArgumentException
-     *          se o inteiro for negativo.
-     */
-    public void setDelay(Integer delay);
-
-
-    /**
-     * Atribui um atraso à ação.
-     *
-     * @param delay
-     *          parâmetro representando o atraso.
-     */
-    public void setDelay(P delay);
-    
-    
-    /**
-     * Retorna o atraso atribuido à ação.
-     *
-     * @return
-     *          inteiro contendo o atraso, em segundos.
-     */
-    public Integer getDelay();
-
-
-    /**
-     * Retorna o atraso atribuido à ação.
-     *
-     * @return
-     *          parâmetro representando o atraso.
-     */
-    public P getParamDelay();
 }

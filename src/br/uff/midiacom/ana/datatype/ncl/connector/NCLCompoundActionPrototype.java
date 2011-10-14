@@ -48,7 +48,7 @@ import java.util.Iterator;
 
 
 public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLAction<T, P, Ep> {
+        extends XMLElementPrototype<Ea, P, I> implements NCLAction<Ea, P, Ep> {
 
     protected NCLActionOperator operator;
     protected DoubleParamType<Ep> delay;
@@ -194,7 +194,7 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
     }
 
 
-    public boolean compare(T other) {
+    public boolean compare(Ea other) {
         boolean comp = true;
 
         String this_act, other_act;

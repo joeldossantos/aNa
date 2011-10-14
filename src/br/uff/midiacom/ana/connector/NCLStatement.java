@@ -40,11 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 
 
-/**
- * Esta classe define uma assertiva de um conector da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public interface NCLStatement<T> extends Comparable<T>, NCLElement {
+public interface NCLStatement<T extends NCLStatement, P extends NCLElement>
+        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLStatement<T, P> {
+
+
 }

@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 
 
 /**
@@ -48,7 +50,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRole {
+public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePrototype<T, P> {
 
     private String name;
     private NCLDefaultConditionRole cname;

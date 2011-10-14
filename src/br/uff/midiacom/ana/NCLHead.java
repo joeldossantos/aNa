@@ -47,8 +47,10 @@ import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.rule.NCLRuleBase;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -60,9 +62,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLHead extends NCLHeadPrototype implements NCLElement {
-//public class NCLHead<IB extends NCLImportedDocumentBase, RLB extends NCLRuleBase, TB extends NCLTransitionBase, RB extends NCLRegionBase,
-//        DB extends NCLDescriptorBase, CB extends NCLConnectorBase, M extends NCLMeta, MT extends NCLMetadata> extends NCLElementImpl {
+public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLElementImpl, Eib extends NCLImportedDocumentBase, Erl extends NCLRuleBase, Etb extends NCLTransitionBase, Erb extends NCLRegionBase, Edb extends NCLDescriptorBase, Ecb extends NCLConnectorBase, Em extends NCLMeta, Emt extends NCLMetadata>
+    extends NCLHeadPrototype<T, P, I, Eib, Erl, Etb, Erb, Edb, Ecb, Em, Emt> implements NCLElement<T, P> {
 
     private IB importedDocumentBase;
     private RLB ruleBase;
@@ -642,6 +643,21 @@ public class NCLHead extends NCLHeadPrototype implements NCLElement {
                 addError(metadata.getErrors());
             }
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

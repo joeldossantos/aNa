@@ -47,7 +47,7 @@ import java.util.Iterator;
 
 
 public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototype, P extends NCLElement, I extends XMLElementImpl, Es extends NCLStatement>
-        extends XMLElementPrototype<T, P, I> implements NCLStatement<T, P> {
+        extends XMLElementPrototype<Es, P, I> implements NCLStatement<Es, P> {
 
     protected NCLOperator operator;
     protected Boolean isNegated;
@@ -200,7 +200,7 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
     }
     
     
-    public boolean compare(T other) {
+    public boolean compare(Es other) {
         boolean comp = true;
 
         String this_stat, other_stat;

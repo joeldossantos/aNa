@@ -48,7 +48,7 @@ import java.util.Iterator;
 
 
 public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLCondition<T, P, Ep> {
+        extends XMLElementPrototype<Ec, P, I> implements NCLCondition<Ec, P, Ep> {
     
     protected NCLConditionOperator operator;
     protected DoubleParamType<Ep> delay;
@@ -265,7 +265,7 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
     }
     
     
-    public boolean compare(T other) {
+    public boolean compare(Ec other) {
         boolean comp = true;
 
         String this_cond, other_cond;

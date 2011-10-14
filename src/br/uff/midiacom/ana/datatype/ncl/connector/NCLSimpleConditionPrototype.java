@@ -48,8 +48,8 @@ import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
-public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLCondition<T, P, Ep> {
+public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<Ec, P, I> implements NCLCondition<Ec, P, Ep> {
 
     protected KeyParamType<Ep> key;
     protected Integer min;
@@ -283,7 +283,7 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
     }
 
     
-    public boolean compare(T other) {
+    public boolean compare(Ec other) {
         boolean comp = true;
 
         String this_cond, other_cond;

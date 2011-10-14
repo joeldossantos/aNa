@@ -37,13 +37,20 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLAssessmentStatementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLAttributeAssessmentPrototype;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLValueAssessmentPrototype;
+import br.uff.midiacom.xml.XMLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -55,8 +62,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttributeAssessment, V extends NCLValueAssessment>
-        extends NCLElementImpl implements NCLStatement<S> {
+public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment>
+        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev> implements NCLStatement<T, P> {
 
     private NCLComparator comparator;
     
@@ -359,6 +366,21 @@ public class NCLAssessmentStatement<S extends NCLStatement, A extends NCLAttribu
             addWarning(getValueAssessment().getWarnings());
             addError(getValueAssessment().getErrors());
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

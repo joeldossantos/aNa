@@ -37,13 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundStatementPrototype;
+import br.uff.midiacom.xml.XMLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -55,7 +60,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLCompoundStatement<S extends NCLStatement> extends NCLElementImpl implements NCLStatement<S> {
+public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement>
+        extends NCLCompoundStatementPrototype<T, P, I, Es> implements NCLStatement<Es, P> {
 
     private NCLOperator operator;
     private Boolean isNegated;
@@ -329,6 +335,21 @@ public class NCLCompoundStatement<S extends NCLStatement> extends NCLElementImpl
                 addError(statement.getErrors());
             }
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

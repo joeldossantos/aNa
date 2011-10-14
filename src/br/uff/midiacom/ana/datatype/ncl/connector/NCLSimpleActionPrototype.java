@@ -50,8 +50,8 @@ import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
-public class NCLSimpleActionPrototype<T extends NCLAction, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLAction<T, P, Ep> {
+public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAction, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
+        extends XMLElementPrototype<Ea, P, I> implements NCLAction<Ea, P, Ep> {
 
     protected StringParamType<Ep> value;
     protected Integer min;
@@ -398,7 +398,7 @@ public class NCLSimpleActionPrototype<T extends NCLAction, P extends NCLElement,
     }
 
 
-    public boolean compare(T other) {
+    public boolean compare(Ea other) {
         boolean comp = true;
 
         String this_act, other_act;
