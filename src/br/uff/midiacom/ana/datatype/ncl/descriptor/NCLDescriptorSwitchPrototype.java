@@ -46,12 +46,12 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, I extends XMLElementImpl, Eb extends NCLDescriptorBindRulePrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRulePrototype>
+        extends NCLIdentifiableElementPrototype<El, P, I> implements NCLIdentifiableElement<El, P> {
 
-    protected IdentifiableElementList<T, T> descriptors;
+    protected IdentifiableElementList<El, T> descriptors;
     protected ElementList<Eb, T> binds;
-    protected T defaultDescriptor;
+    protected El defaultDescriptor;
 
 
     /**
@@ -64,7 +64,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      */
     public NCLDescriptorSwitchPrototype(String id) throws XMLException {
         setId(id);
-        descriptors = new IdentifiableElementList<T, T>();
+        descriptors = new IdentifiableElementList<El, T>();
         binds = new ElementList<Eb, T>();
     }
 
@@ -77,7 +77,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      *
      * @see TreeSet#add
      */
-    public boolean addDescriptor(T descriptor) throws XMLException {
+    public boolean addDescriptor(El descriptor) throws XMLException {
         return descriptors.add(descriptor, (T) this);
     }
 
@@ -90,7 +90,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      *
      * @see TreeSet#remove
      */
-    public boolean removeDescriptor(T descriptor) throws XMLException {
+    public boolean removeDescriptor(El descriptor) throws XMLException {
         return descriptors.remove(descriptor);
     }
 
@@ -116,7 +116,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      * @param descriptor
      *          elemento representando o descritor a ser verificado.
      */
-    public boolean hasDescriptor(T descriptor) throws XMLException {
+    public boolean hasDescriptor(El descriptor) throws XMLException {
         return descriptors.contains(descriptor);
     }
 
@@ -143,7 +143,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      * @return
      *          lista contendo os descritores do switch de descritor.
      */
-    public IdentifiableElementList<T, T> getDescriptors() {
+    public IdentifiableElementList<El, T> getDescriptors() {
         return descriptors;
     }
 
@@ -213,7 +213,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      * @param defaultDescriptor
      *          elemento representando o descritor padrão.
      */
-    public void setDefaultDescriptor(T defaultDescriptor) {
+    public void setDefaultDescriptor(El defaultDescriptor) {
         this.defaultDescriptor = defaultDescriptor;
     }
 
@@ -224,7 +224,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
      * @return
      *          elemento representando o descritor padrão.
      */
-    public T getDefaultDescriptor() {
+    public El getDefaultDescriptor() {
         return defaultDescriptor;
     }
 
@@ -254,7 +254,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLLayoutDescriptor, P exten
             content += space + "\t" + "<defaultDescriptor descriptor='" + getDefaultDescriptor().getId() + "'/>\n";
 
         if(hasDescriptor()){
-            for(T descriptor : descriptors)
+            for(El descriptor : descriptors)
                 content += descriptor.parse(ident + 1);
         }
 

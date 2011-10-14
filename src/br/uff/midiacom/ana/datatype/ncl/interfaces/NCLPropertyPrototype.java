@@ -45,8 +45,8 @@ import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends XMLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
+public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends XMLElementImpl, Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected StringType value;
     

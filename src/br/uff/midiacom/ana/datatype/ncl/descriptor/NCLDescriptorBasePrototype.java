@@ -47,10 +47,10 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P extends NCLElement, I extends XMLElementImpl, Ed extends NCLLayoutDescriptor, Ei extends NCLImportPrototype>
+public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImportPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
-    protected IdentifiableElementList<Ed, T> descriptors;
+    protected IdentifiableElementList<El, T> descriptors;
     protected ElementList<Ei, T> imports;
 
 
@@ -58,7 +58,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLDescriptorBasePrototype() {
-        descriptors = new IdentifiableElementList<Ed, T>();
+        descriptors = new IdentifiableElementList<El, T>();
         imports = new ElementList<Ei, T>();
     }
 
@@ -71,7 +71,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      *
      * @see TreeSet#add
      */
-    public boolean addDescriptor(Ed descriptor) throws XMLException {
+    public boolean addDescriptor(El descriptor) throws XMLException {
         return descriptors.add(descriptor, (T) this);
     }
 
@@ -84,7 +84,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      *
      * @see TreeSet#remove
      */
-    public boolean removeDescriptor(Ed descriptor) throws XMLException {
+    public boolean removeDescriptor(El descriptor) throws XMLException {
         return descriptors.remove(descriptor);
     }
 
@@ -110,7 +110,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @param descriptor
      *          elemento representando o descritor a ser verificado.
      */
-    public boolean hasDescriptor(Ed descriptor) throws XMLException {
+    public boolean hasDescriptor(El descriptor) throws XMLException {
         return descriptors.contains(descriptor);
     }
 
@@ -137,7 +137,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @return
      *          lista contendo os descritores da base de descritores.
      */
-    public IdentifiableElementList<Ed, T> getDescriptors() {
+    public IdentifiableElementList<El, T> getDescriptors() {
         return descriptors;
     }
 
@@ -225,7 +225,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
             }
 
             if(hasDescriptor()){
-                for(Ed descriptor : descriptors)
+                for(El descriptor : descriptors)
                     content += descriptor.parse(ident + 1);
             }
             

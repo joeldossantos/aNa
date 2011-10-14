@@ -52,16 +52,16 @@ import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, Ed extends NCLDescriptorPrototype, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLLayoutDescriptor<T, P> {
+public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype>
+        extends NCLIdentifiableElementPrototype<El, P, I> implements NCLLayoutDescriptor<El, P> {
 
     protected StringType player;
     protected TimeType explicitDur;
     protected Boolean freeze;
-    protected Ed moveLeft;
-    protected Ed moveRight;
-    protected Ed moveUp;
-    protected Ed moveDown;
+    protected T moveLeft;
+    protected T moveRight;
+    protected T moveUp;
+    protected T moveDown;
     protected Integer focusIndex;
     protected NCLColor focusBorderColor;
     protected Integer focusBorderWidth;
@@ -166,7 +166,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveLeft(Ed descriptor) {
+    public void setMoveLeft(T descriptor) {
         this.moveLeft = descriptor;
     }
 
@@ -178,7 +178,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public Ed getMoveLeft() {
+    public T getMoveLeft() {
         return moveLeft;
     }
 
@@ -190,7 +190,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveRight(Ed descriptor) {
+    public void setMoveRight(T descriptor) {
         this.moveRight = descriptor;
     }
 
@@ -202,7 +202,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public Ed getMoveRight() {
+    public T getMoveRight() {
         return moveRight;
     }
 
@@ -214,7 +214,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveUp(Ed descriptor) {
+    public void setMoveUp(T descriptor) {
         this.moveUp = descriptor;
     }
 
@@ -226,7 +226,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public Ed getMoveUp() {
+    public T getMoveUp() {
         return moveUp;
     }
 
@@ -238,7 +238,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveDown(Ed descriptor) {
+    public void setMoveDown(T descriptor) {
         this.moveDown = descriptor;
     }
 
@@ -250,7 +250,7 @@ public class NCLDescriptorPrototype<T extends NCLLayoutDescriptor, P extends NCL
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public Ed getMoveDown() {
+    public T getMoveDown() {
         return moveDown;
     }  
     

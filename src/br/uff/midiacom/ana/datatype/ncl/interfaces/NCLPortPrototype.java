@@ -45,7 +45,7 @@ import br.uff.midiacom.xml.XMLElementImpl;
 
 
 public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLInterface<T, P> {
+        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected En component;
     protected Ei interfac;

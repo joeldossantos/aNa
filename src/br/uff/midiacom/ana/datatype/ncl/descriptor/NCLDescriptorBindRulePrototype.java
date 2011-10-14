@@ -43,10 +43,10 @@ import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, Ed extends NCLLayoutDescriptor, Er extends NCLTestRule>
+public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Er extends NCLTestRule>
         extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
-    protected Ed constituent;
+    protected El constituent;
     protected Er rule;
 
 
@@ -62,7 +62,7 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
      * @param constituent
      *          elemento representando o descritor mapeado pelo bind.
      */
-    public void setConstituent(Ed constituent) {
+    public void setConstituent(El constituent) {
         this.constituent = constituent;
     }
 
@@ -73,7 +73,7 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
      * @return
      *          elemento representando o descritor mapeado pelo bind.
      */
-    public Ed getConstituent() {
+    public El getConstituent() {
         return constituent;
     }
 
