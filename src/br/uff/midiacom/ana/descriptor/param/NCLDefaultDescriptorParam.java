@@ -37,10 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDefaultDescriptorParamPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 /**
@@ -50,142 +52,51 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public abstract class NCLDefaultDescriptorParam<P extends NCLDescriptorParam, V> extends NCLElementImpl implements NCLDescriptorParam<P, V> {
-
-    private NCLAttributes name;
-    private V value;
+public abstract class NCLDefaultDescriptorParam<T extends NCLDescriptorParam, P extends NCLElement, I extends NCLElementImpl, V>
+        extends NCLDefaultDescriptorParamPrototype<T, P, I, V> implements NCLDescriptorParam<T, P, V> {
 
 
-    /**
-     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLDefaultDescriptorParam() {}
-
-
-    /**
-     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLDefaultDescriptorParam(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
-
-
-    /**
-     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
-     *
-     * @param name
-     *          Elemento representando o nome do parâmetro.
-     */
-    public void setName(NCLAttributes name) {
-        this.name = name;
-    }
-
-
-    /**
-     * Retorna o nome do parâmetro.
-     *
-     * @return
-     *          elemento representando o nome do parâmetro.
-     */
-    public NCLAttributes getName() {
-        return name;
-    }
-
-
-    /**
-     * Atribui um valor ao parâmetro.
-     *
-     * @param value
-     *          valor do parâmetro.
-     * @throws IllegalArgumentException
-     *          se o valor não estiver de acordo com o esperado.
-     */
-    public void setValue(V value) throws IllegalArgumentException {
-        this.value = value;
-    }
-
-
-    /**
-     * Retorna o valor do parâmetro.
-     *
-     * @return
-     *          valor do parâmetro.
-     */
-    public V getValue() {
-        return value;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<descriptorParam";
-        if(getName() != null)
-            content += " name='" + getName().toString() + "'";
-        if((getValue() != null) || (this instanceof NCLColorDescriptorParam && ((NCLColorDescriptorParam)this).getIsTransparent() != null))
-            content += " value='" + getParamValue() + "'";
-        content += "/>\n";
-
-        return content;
-    }
-
-
-    public int compareTo(P other) {
-        return getName().compareTo(other.getName());
+    public NCLDefaultDescriptorParam() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl((NCLElement) this);
     }
 
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        cleanWarnings();
-        cleanErrors();
-        for(int i = 0; i < attributes.getLength(); i++){
-            if(attributes.getLocalName(i).equals("name")){
-                    for(NCLAttributes a : NCLAttributes.values()){
-                        if(a.toString().equals(attributes.getValue(i)))
-                            setName(a);
-                    }
-                }
-            else if(attributes.getLocalName(i).equals("value"))
-                setParamValue(attributes.getValue(i));
-        }
+    public void setName(NCLAttributes name) {
+        super.setName(name);
     }
 
 
-    /**
-     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
-     * de forma a atribuir o valor do tipo correto para cada parâmetro de
-     * descritor.
-     *
-     * @param value
-     *          String representando o valor do parâmetro de descritor.
-     */
-    protected abstract void setParamValue(String value);
+    @Override
+    public void setValue(V value) throws IllegalArgumentException {
+        super.setValue(value);
+    }
 
 
-    /**
-     * Retorna o valor do parâmetro como uma String.
-     *
-     * @return
-     *          String representando o valor do parâmetro do descritor.
-     */
-    protected abstract String getParamValue();
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        cleanWarnings();
+//        cleanErrors();
+//        for(int i = 0; i < attributes.getLength(); i++){
+//            if(attributes.getLocalName(i).equals("name")){
+//                    for(NCLAttributes a : NCLAttributes.values()){
+//                        if(a.toString().equals(attributes.getValue(i)))
+//                            setName(a);
+//                    }
+//                }
+//            else if(attributes.getLocalName(i).equals("value"))
+//                setParamValue(attributes.getValue(i));
+//        }
+//    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
+    }
 }

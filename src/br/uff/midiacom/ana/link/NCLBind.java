@@ -42,20 +42,25 @@ import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.ncl.link.NCLBindPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -67,8 +72,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I extends NCLInterface, D extends NCLLayoutDescriptor, P extends NCLParam>
-        extends NCLElementImpl implements Comparable<B>{
+public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRole, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParam>
+        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep> implements NCLElement<T, P>{
 
     private R role;
     private N component;
@@ -622,6 +627,21 @@ public class NCLBind<B extends NCLBind, R extends NCLRole, N extends NCLNode, I 
         //@todo: descritores internos a switch de descritores podem ser utilizados?
 
         addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

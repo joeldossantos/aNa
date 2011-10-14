@@ -37,14 +37,19 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLMappingPrototype;
 import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -55,7 +60,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLInterface> extends NCLElementImpl implements Comparable<M> {
+public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
+        extends NCLMappingPrototype<T, P, I, En, Ei> implements NCLElement<T, P> {
 
     private N component;
     private I interfac;
@@ -264,5 +270,20 @@ public class NCLMapping<M extends NCLMapping, N extends NCLNode, I extends NCLIn
         }
 
         addWarning("Could not find interface with id: " + getInterface().getId());
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

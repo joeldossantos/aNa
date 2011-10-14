@@ -67,7 +67,7 @@ import org.xml.sax.XMLReader;
  *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
-        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLNode<T, P> {
+        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLNode<En, P> {
 
     private C refer;
     private Set<Pt> ports = new TreeSet<Pt>();

@@ -74,7 +74,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L extends NCLLayoutDescriptor, T extends NCLTransition, P extends NCLDescriptorParam> extends NCLIdentifiableElement implements NCLLayoutDescriptor<L> {
+public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, El extends NCLLayoutDescriptor, Et extends NCLTransition, Ep extends NCLDescriptorParam>
+        extends NCLDescriptorPrototype<T, P, I, Er, El, Et, Ep> implements NCLLayoutDescriptor<El, P> {
 
     private String player;
     private Integer explicitDur;
@@ -1002,6 +1003,21 @@ public class NCLDescriptor<D extends NCLDescriptor, R extends NCLRegion, L exten
         return null;
     }
 
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
+    }
+    
 
     /**
      * Função de criação do elemento filho <i>descriptorParam</i>.

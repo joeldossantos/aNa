@@ -48,43 +48,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public interface NCLDescriptorParam<P extends NCLDescriptorParam, V> extends NCLElement, Comparable<P> {
+public interface NCLDescriptorParam<T extends NCLDescriptorParam, P extends NCLElement, V>
+        extends br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParamPrototype<T, P, V> {
 
-
-    /**
-     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
-     *
-     * @param name
-     *          Elemento representando o nome do parâmetro.
-     */
-    public void setName(NCLAttributes name);
-
-
-    /**
-     * Retorna o nome do parâmetro.
-     *
-     * @return
-     *          elemento representando o nome do parâmetro.
-     */
-    public NCLAttributes getName();
-
-
-    /**
-     * Atribui um valor ao parâmetro.
-     *
-     * @param value
-     *          valor do parâmetro.
-     * @throws IllegalArgumentException
-     *          se o valor não estiver de acordo com o esperado.
-     */
-    public void setValue(V value) throws IllegalArgumentException;
-
-
-    /**
-     * Retorna o valor do parâmetro.
-     *
-     * @return
-     *          valor do parâmetro.
-     */
-    public V getValue();
 }

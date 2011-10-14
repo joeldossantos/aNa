@@ -37,12 +37,17 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.link;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.ncl.link.NCLParamPrototype;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -54,7 +59,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends NCLElementImpl implements Comparable<P>{
+public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLConnectorParam>
+        extends NCLParamPrototype<T, P, I, Ec> implements NCLElement<T, P>{
 
     private C name;
     private String value;
@@ -245,5 +251,20 @@ public class NCLParam<P extends NCLParam, C extends NCLConnectorParam> extends N
         }
 
         addWarning("Could not find connectorParam in connector with name: " + getName().getName());
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

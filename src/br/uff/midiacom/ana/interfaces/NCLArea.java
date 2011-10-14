@@ -37,15 +37,20 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.SampleType;
 import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
+import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.ana.node.NCLMedia;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Vector;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -57,7 +62,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement implements NCLInterface<I> {
+public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
+        extends NCLAreaPrototype<T, P, I, Ei> implements NCLInterface<Ei, P> {
 
     private int[] coords;
     private TimeType begin;
@@ -419,5 +425,20 @@ public class NCLArea<I extends NCLInterface> extends NCLIdentifiableElement impl
         catch(NCLInvalidIdentifierException ex){
             addError(ex.getMessage());
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

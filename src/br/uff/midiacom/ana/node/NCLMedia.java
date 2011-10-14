@@ -73,7 +73,7 @@ import org.xml.sax.XMLReader;
  *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode>
-        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<T, P> {
+        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P> {
 
     private String src;
     private NCLMimeType type;

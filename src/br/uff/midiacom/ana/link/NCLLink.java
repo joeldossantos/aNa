@@ -42,14 +42,18 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
+import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
+import br.uff.midiacom.xml.XMLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -61,7 +65,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C extends NCLCausalConnector> extends NCLIdentifiableElement implements Comparable<L>{
+public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLParam, Eb extends NCLBind, Ec extends NCLCausalConnector>
+        extends NCLLinkPrototype<T, P, I, Ep, Eb, Ec> implements NCLIdentifiableElement<T, P>{
 
     private C xconnector;
     
@@ -450,6 +455,21 @@ public class NCLLink<L extends NCLLink, P extends NCLParam, B extends NCLBind, C
         }
 
         addWarning("Could not find connector in connectorBase with id: " + getXconnector().getId());
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 

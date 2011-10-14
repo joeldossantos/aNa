@@ -37,14 +37,19 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.xml.XMLException;
 import java.util.Set;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -56,7 +61,8 @@ import org.xml.sax.XMLReader;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImport> extends NCLIdentifiableElement {
+public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImport>
+        extends NCLDescriptorBasePrototype<T, P, I, El, Ei> implements NCLIdentifiableElement<T, P> {
 
     private Set<D> descriptors = new TreeSet<D>();
     private Set<I> imports = new TreeSet<I>();
@@ -339,6 +345,21 @@ public class NCLDescriptorBase<D extends NCLLayoutDescriptor, I extends NCLImpor
                 addError(descriptor.getErrors());
             }
         }
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 
 
