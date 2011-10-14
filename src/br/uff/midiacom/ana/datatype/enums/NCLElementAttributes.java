@@ -26,6 +26,7 @@ public enum NCLElementAttributes {
     COMPONENT("component"),
 //    CONDITION("condition"),
     CONSTITUENT("constituent"),
+    CONTENT("content"),
     COORDS("coords"),
 //    DAY("day"),
 //    DEFAULTCOMPONENT("defaultComponent"),

@@ -43,9 +43,8 @@ import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -58,30 +57,11 @@ import org.xml.sax.XMLReader;
 public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLElementImpl>
         extends NCLMetaPrototype<T, P, I> implements NCLElement<T, P> {
 
-    private String name;
-    private String mcontent;
-
 
     /**
      * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLMeta() {}
-
-
-    /**
-     * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLMeta(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
 
 
     /**
@@ -92,23 +72,11 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
      * @throws IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setName(String name) throws IllegalArgumentException {
-        if (name != null && "".equals(name.trim()))
-            throw new IllegalArgumentException("Empty String");
-
-        notifyAltered(NCLElementAttributes.NAME, this.name, name);
-        this.name = name;
-    }
-
-
-    /**
-     * Retorna o nome do metadado.
-     *
-     * @return
-     *          String representando o nome do metadado.
-     */
-    public String getName() {
-        return name;
+    @Override
+    public void setName(String name) throws XMLException {
+        StringType aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
@@ -120,65 +88,25 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
      * @throws IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setContent(String content) throws IllegalArgumentException {
-        if (content != null && "".equals(content.trim()))
-            throw new IllegalArgumentException("Empty String");
-
-        this.mcontent = content;
-    }
-
-
-    /**
-     * Retorna o conteúdo do metadado.
-     * 
-     * @return
-     *          String representando o conteúdo do metadado.
-     */
-    public String getContent() {
-        return mcontent;
-    }
-
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<meta";
-        if(getName() != null)
-            content += " name='" + getName() + "'";
-        if(getContent() != null)
-            content += " content='" + getContent() + "'";
-        content += "/>\n";
-
-        return content;
-    }
-
-
-    public int compareTo(M other) {
-        return getName().compareTo(other.getName());
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        cleanWarnings();
-        cleanErrors();
-        for(int i = 0; i < attributes.getLength(); i++){
-            if(attributes.getLocalName(i).equals("name"))
-                setName(attributes.getValue(i));
-            else if(attributes.getLocalName(i).equals("content"))
-                setContent(attributes.getValue(i));
-        }
+    public void setContent(String content) throws XMLException {
+        StringType aux = this.mcontent;
+        super.setName(content);
+        impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
     }
+
+
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        cleanWarnings();
+//        cleanErrors();
+//        for(int i = 0; i < attributes.getLength(); i++){
+//            if(attributes.getLocalName(i).equals("name"))
+//                setName(attributes.getValue(i));
+//            else if(attributes.getLocalName(i).equals("content"))
+//                setContent(attributes.getValue(i));
+//        }
+//    }
 
 
     public void load(Element element) throws XMLException {
