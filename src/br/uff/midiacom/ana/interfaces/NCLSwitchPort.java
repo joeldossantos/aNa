@@ -39,18 +39,12 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLMappingPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
 import java.util.TreeSet;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -62,8 +56,6 @@ import org.xml.sax.XMLReader;
 public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I extends NCLElementImpl, Em extends NCLMapping, Ei extends NCLInterface>
         extends NCLSwitchPortPrototype<T, P, I, Em, Ei> implements NCLInterface<Ei, P> {
 
-    private Set<M> mappings = new TreeSet<M>();
-
 
     /**
      * Construtor do elemento <i>switchPort</i> da <i>Nested Context Language</i> (NCL).
@@ -73,24 +65,9 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador for inválido.
      */
-    public NCLSwitchPort(String id) throws NCLInvalidIdentifierException {
-        setId(id);
-    }
-
-
-    /**
-     * Construtor do elemento <i>switchPort</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLSwitchPort(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLSwitchPort(String id) throws XMLException {
+        super(id);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -104,13 +81,10 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
      *
      * @see TreeSet#add
      */
-    public boolean addMapping(M mapping) {
-        if(mappings.add(mapping)){
-            //Se mapping existe, atribui este como seu parente
-            if(mapping != null)
-                mapping.setParent(this);
-
-            notifyInserted(NCLElementSets.MAPPINGS, mapping);
+    @Override
+    public boolean addMapping(Em mapping) throws XMLException {
+        if(super.addMapping(mapping)){
+            impl.notifyInserted(NCLElementSets.MAPPINGS, mapping);
             return true;
         }
         return false;
@@ -127,121 +101,49 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
      *
      * @see TreeSet#remove
      */
-    public boolean removeMapping(M mapping) {
-        if(mappings.remove(mapping)){
-            //Se mapping existe, retira o seu parentesco
-            if(mapping != null)
-                mapping.setParent(null);
-
-            notifyRemoved(NCLElementSets.MAPPINGS, mapping);
+    @Override
+    public boolean removeMapping(Em mapping) throws XMLException {
+        if(super.removeMapping(mapping)){
+            impl.notifyRemoved(NCLElementSets.MAPPINGS, mapping);
             return true;
         }
         return false;
     }
 
 
-    /**
-     * Verifica se a porta de switch possui um mapeamento.
-     *
-     * @param mapping
-     *          elemento representando o mapeamento a ser verificado.
-     * @return
-     *          verdadeiro se o mapeamento existir.
-     */
-    public boolean hasMapping(M mapping) {
-        return mappings.contains(mapping);
-    }
-
-
-    /**
-     * Verifica se a porta de switch possui algum mapeamento.
-     *
-     * @return
-     *          verdadeiro se a porta de switch possuir algum mapeamento.
-     */
-    public boolean hasMapping() {
-        return !mappings.isEmpty();
-    }
-
-
-    /**
-     * Retorna os mapeamentos da porta de switch.
-     *
-     * @return
-     *          lista contendo os mapeamentos da porta de switch.
-     */
-    public Set<M> getMappings() {
-        return mappings;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // <port> element and attributes declaration
-        content = space + "<switchPort";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        content += ">\n";
-
-        if(hasMapping()){
-            for(M mapping : mappings)
-                content += mapping.parse(ident + 1);
-        }
-
-        content += "</switchPort>\n";
-
-        return content;
-    }
-
-
-    public int compareTo(I other) {
-        return getId().compareTo(other.getId());
-    }
-
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            if(localName.equals("switchPort")){
-                for(int i = 0; i < attributes.getLength(); i++){
-                    if(attributes.getLocalName(i).equals("id"))
-                        setId(attributes.getValue(i));
-                }
-            }
-            else if(localName.equals("mapping")){
-                M child = createMapping();
-                child.startElement(uri, localName, qName, attributes);
-                addMapping(child);
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasMapping()){
-            for(M mapping : mappings){
-                mapping.endDocument();
-                addWarning(mapping.getWarnings());
-                addError(mapping.getErrors());
-            }
-        }
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            if(localName.equals("switchPort")){
+//                for(int i = 0; i < attributes.getLength(); i++){
+//                    if(attributes.getLocalName(i).equals("id"))
+//                        setId(attributes.getValue(i));
+//                }
+//            }
+//            else if(localName.equals("mapping")){
+//                M child = createMapping();
+//                child.startElement(uri, localName, qName, attributes);
+//                addMapping(child);
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(hasMapping()){
+//            for(M mapping : mappings){
+//                mapping.endDocument();
+//                addWarning(mapping.getWarnings());
+//                addError(mapping.getErrors());
+//            }
+//        }
+//    }
 
 
     public void load(Element element) throws XMLException {
@@ -259,14 +161,14 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Função de criação do elemento filho <i>mapping</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>mapping</i>.
-     */
-    protected M createMapping() {
-        return (M) new NCLMapping(getReader(), this);
-    }
+//    /**
+//     * Função de criação do elemento filho <i>mapping</i>.
+//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+//     *
+//     * @return
+//     *          elemento representando o elemento filho <i>mapping</i>.
+//     */
+//    protected M createMapping() {
+//        return (M) new NCLMapping(getReader(), this);
+//    }
 }

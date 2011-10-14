@@ -40,15 +40,11 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
-import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.xml.datatype.string.StringType;
 
 
 /**
@@ -60,9 +56,7 @@ import org.xml.sax.XMLReader;
  */
 public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement, I extends NCLElementImpl>
         extends NCLConnectorParamPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
-    
-    private String type;
-    
+        
     
     /**
      * Construtor do elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
@@ -74,24 +68,9 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
      *         java.lang.IllegalArgumentException
      *          se a String do tipo for vazia.
      */
-    public NCLConnectorParam(String name) throws NCLInvalidIdentifierException {
-        setName(name);
-    }
-
-
-    /**
-     * Construtor do elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLConnectorParam(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLConnectorParam(String name) throws XMLException {
+        super(name);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -103,20 +82,11 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o nome do parâmetro for inválido.
      */
-    public void setName(String name) throws NCLInvalidIdentifierException {
-        notifyAltered(NCLElementAttributes.NAME, getId(), name);
-        setId(name);
-    }
-    
-    
-    /**
-     * Retorna o nome do parâmetro
-     * 
-     * @return
-     *          String contendo o nome atribuido ao parâmetro.
-     */
-    public String getName() {
-        return getId();
+    @Override
+    public void setName(String name) throws XMLException {
+        StringType aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
     
     
@@ -128,74 +98,35 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
      * @throws java.lang.IllegalArgumentException
      *          se a String for vazia.
      */
-    public void setType(String type) {
-        if(type != null && "".equals(type.trim()))
-            throw new IllegalArgumentException("Empty type String");
-
-        notifyAltered(NCLElementAttributes.TYPE, this.type, type);
-        this.type = type;
-    }
-
-
-    /**
-     * Retorna o tipo do parâmetro
-     * 
-     * @return
-     *      String contendo o tipo do parâmetro.
-     */
-    public String getType() {
-        return type;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<connectorParam";
-        if(getName() != null)
-            content += " name='" + getName() + "'";
-        if(getType() != null)
-            content += " type='" + getType() + "'";        
-        content += "/>\n";
-
-        return content;
-    }
-
-    
-    public int compareTo(P other) {
-        return getName().compareTo(other.getName());
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("name"))
-                    setName(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("type"))
-                    setType(attributes.getValue(i));
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
+    public void setType(String type) throws XMLException {
+        StringType aux = this.type;
+        super.setType(type);
+        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
     }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("name"))
+//                    setName(attributes.getValue(i));
+//                else if(attributes.getLocalName(i).equals("type"))
+//                    setType(attributes.getValue(i));
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    public void load(Element element) throws XMLException {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
 
 
     public void setModificationListener(NCLModificationListener listener) {
