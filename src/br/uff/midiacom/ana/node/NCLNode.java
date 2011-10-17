@@ -38,9 +38,10 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 
 
 public interface NCLNode<T extends NCLNode, P extends NCLElement>
-        extends br.uff.midiacom.ana.datatype.ncl.node.NCLNode<T, P> {
+        extends br.uff.midiacom.ana.datatype.ncl.node.NCLNode<T, P>, NCLIdentifiableElement<T, P> {
 
 }

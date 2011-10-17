@@ -37,71 +37,31 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
-import br.uff.midiacom.ana.datatype.TimeType;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
-import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.*;
-import br.uff.midiacom.ana.NCLBody;
-import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
-import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
-import br.uff.midiacom.ana.datatype.enums.NCLUriType;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLMediaPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define o elemento <i>media</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um conteúdo de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode>
         extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P> {
     
     
-    /**
-     * Construtor do elemento <i>media</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param id
-     *          identificador do elemento media.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da media for inválido.
-     */
     public NCLMedia(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
     
-    /**
-     * Atribui a URI do conteúdo da mídia.
-     * 
-     * @param src
-     *          String contendo a URI do conteúdo da mídia.
-     * @throws java.net.URISyntaxException
-     *          se a URI não for válida.
-     *
-     * @see java.net.URI
-     */
     @Override
     public void setSrc(SrcType src) {
         SrcType aux = this.src;
@@ -110,13 +70,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
     
     
-    /**
-     * Determina o tipo da mídia.
-     * O tipo da mídia será um dos tipos padronizados na norma.
-     * 
-     * @param type
-     *          tipo da mídia.
-     */
     @Override
     public void setType(NCLMimeType type) {
         NCLMimeType aux = this.type;
@@ -125,12 +78,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
     
         
-    /**
-     * Determina o descritor da mídia.
-     * 
-     * @param descriptor
-     *          elemento representando o descritor da mídia.
-     */
     @Override
     public void setDescriptor(Ed descriptor) {
         Ed aux = this.descriptor;
@@ -139,12 +86,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
     
 
-    /**
-     * Atribui uma media para ser reutilizada pela media.
-     *
-     * @param refer
-     *          elemento representando a media a ser reutilizado.
-     */
     @Override
     public void setRefer(T refer) {
         T aux = this.refer;
@@ -153,12 +94,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-    /**
-     * Determina o tipo de instância de outra media essa media é.
-     *
-     * @param instance
-     *          elemento representando o tipo de instancia.
-     */
     @Override
     public void setInstance(NCLInstanceType instance) {
         NCLInstanceType aux = this.instance;
@@ -167,16 +102,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
     
-    /**
-     * Adiciona uma âncora a mídia.
-     * 
-     * @param area
-     *          elemento representando a âncora a ser adicionada.
-     * @return
-     *          Verdadeiro se a âncora foi adicionada.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addArea(Ea area) throws XMLException {
         if(super.addArea(area)){
@@ -187,36 +112,16 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
     
     
-    /**
-     * Remove uma âncora da mídia.
-     *
-     * @param id
-     *          identificador da âncora a ser removida.
-     * @return
-     *          Verdadeiro se a âncora foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
-    public boolean removeArea(String id) {
-        for(Ea area : areas){
-            if(area.getId().equals(id))
-                return removeArea(area);
+    public boolean removeArea(String id) throws XMLException {
+        if(super.removeArea(id)){
+            impl.notifyRemoved(NCLElementSets.AREAS, id);
+            return true;
         }
         return false;
     }
     
     
-    /**
-     * Remove uma âncora a mídia.
-     *
-     * @param area
-     *          elemento representando a âncora a ser removida.
-     * @return
-     *          Verdadeiro se a âncora foi removida.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean removeArea(Ea area) throws XMLException {
         if(super.removeArea(area)){
@@ -227,16 +132,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
     
         
-    /**
-     * Adiciona uma propriedade a mídia.
-     *
-     * @param property
-     *          elemento representando a propriedade a ser adicionada.
-     * @return
-     *          Verdadeiro se a propriedade foi adicionada.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addProperty(Ep property) throws XMLException {
         if(super.addProperty(property)){
@@ -247,36 +142,16 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-    /**
-     * Remove uma propriedade da mídia.
-     *
-     * @param name
-     *          nome da propriedade a ser removida.
-     * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
-    public boolean removeProperty(String name) {
-        for(Ep property : properties){
-            if(property.getId().equals(name))
-                return removeProperty(property);
+    public boolean removeProperty(String name) throws XMLException {
+        if(super.removeProperty(name)){
+            impl.notifyRemoved(NCLElementSets.PROPERTIES, name);
+            return true;
         }
         return false;
     }
 
 
-    /**
-     * Remove uma propriedade da mídia.
-     *
-     * @param property
-     *          elemento representando a propriedade a ser removida.
-     * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeProperty(Ep property) throws XMLException {
         if(super.removeProperty(property)){
@@ -337,8 +212,8 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() != null){
@@ -378,8 +253,8 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 //
 //        addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
 //    }
-//
-//
+
+
 //    private void mediaReference() {
 //        //Search for the interface inside the node
 //        NCLElementImpl body = getParent();
@@ -394,8 +269,8 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 //
 //        setRefer(findMedia(((NCLBody) body).getNodes()));
 //    }
-//
-//
+
+
 //    private M findMedia(Set<N> nodes) {
 //        for(N n : nodes){
 //            if(n instanceof NCLMedia){
@@ -440,26 +315,26 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>area</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>area</i>.
-//     */
-//    protected A createArea() {
-//        return (A) new NCLArea(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>property</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>property</i>.
-//     */
-//    protected P createProperty() {
-//        return (P) new NCLProperty(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>area</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>area</i>.
+     */
+    protected NCLArea createArea(String id) throws XMLException {
+        return new NCLArea(id);
+    }
+
+
+    /**
+     * Function to create the child element <i>property</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>property</i>.
+     */
+    protected NCLProperty createProperty(String name) throws XMLException {
+        return new NCLProperty(name);
+    }
 }
