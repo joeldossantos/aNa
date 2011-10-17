@@ -161,8 +161,8 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          elemento representando o elemento filho <i>importBase</i>.
      */
-    protected Ei createImportBase() throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE);
+    protected NCLImport createImportBase() throws XMLException {
+        return new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -173,7 +173,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          elemento representando o elemento filho <i>transition</i>.
      */
-    protected Et createTransition(String id) throws XMLException {
-        return (Et) new NCLTransition(id);
+    protected NCLTransition createTransition(String id) throws XMLException {
+        return new NCLTransition(id);
     }
 }
