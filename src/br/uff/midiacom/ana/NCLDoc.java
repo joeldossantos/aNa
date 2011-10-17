@@ -74,28 +74,27 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
 
     @Override
     public void setHead(Eh head) {
-        impl.notifyRemoved(NCLElementSets.HEAD, this.head);
+        Eh aux = this.head;
         super.setHead(head);
-        impl.notifyInserted(NCLElementSets.HEAD, head);
+        impl.notifyAltered(NCLElementAttributes.HEAD, aux, head);
     }
 
 
     @Override
     public void setBody(Eb body) {
-        impl.notifyRemoved(NCLElementSets.BODY, this.body);
+        Eb aux = this.body;
         super.setBody(body);
-        impl.notifyInserted(NCLElementSets.BODY, body);
+        impl.notifyAltered(NCLElementAttributes.BODY, aux, body);
     }
 
 
     /**
-     * Recupera a estrutura de classes que representam elementos NCL a partir
-     * de um arquivo XML especificado de acordo com a linguagem NCL.
+     * Loads the objects structure representing an NCL document from an XML file.
      *
-     * @param path
-     *          String contendo o caminho absoluto para o arquivo XML.
+     * @param xmlFile
+     *          file with the NCL document content.
      * @throws NCLParsingException
-     *          se algum erro ocorrer durante a recuperação do arquivo.
+     *          if an error occur while parsing the document.
      */
     public void loadXML(File xmlFile) throws NCLParsingException {
 //        try{
@@ -182,27 +181,25 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
 
 
     /**
-     * Função de criação do elemento filho <i>head</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>head</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>head</i>.
+     *          element representing the child <i>head</i>.
      */
-    protected Eh createHead() {
-        //return (Eh) new NCLHead(getReader(), this);
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected NCLHead createHead() throws XMLException {
+        return new NCLHead();
     }
 
 
     /**
-     * Função de criação do elemento filho <i>body</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>body</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>body</i>.
+     *          element representing the child <i>body</i>.
      */
-    protected Eb createBody() {
-        //return (Eb) new NCLBody(getReader(), this);
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected NCLBody createBody() throws XMLException {
+        return new NCLBody();
     }
 }

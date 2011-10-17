@@ -69,8 +69,7 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador do contexto for inválido.
      */
-    public NCLBodyPrototype(String id) throws XMLException {
-        setId(id);
+    public NCLBodyPrototype() throws XMLException {
         ports = new IdentifiableElementList<Ept, T>();
         properties = new IdentifiableElementList<Epp, T>();
         nodes = new IdentifiableElementList<En, T>();
