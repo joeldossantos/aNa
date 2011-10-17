@@ -46,7 +46,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
@@ -54,25 +53,12 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
         extends NCLTransitionBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
-     */
     public NCLTransitionBase() throws XMLException {
         super();
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Adiciona uma transição a base de transições.
-     *
-     * @param transition
-     *          elemento representando a transição a ser adicionada.
-     * @return
-     *          verdadeiro se a transição foi adicionada.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addTransition(Et transition) throws XMLException {
         if(super.addTransition(transition)){
@@ -83,16 +69,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
     }
 
 
-    /**
-     * Remove uma transição da base de transições.
-     *
-     * @param transition
-     *          elemento representando a transição a ser removida.
-     * @return
-     *          verdadeiro se a transição foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeTransition(Et transition) throws XMLException {
         if(super.removeTransition(transition)){
@@ -103,14 +79,16 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
     }
 
 
-    /**
-     * Adiciona um importador de base à base de transições.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
-     */
+    @Override
+    public boolean removeTransition(String id) throws XMLException {
+        if(super.removeTransition(id)){
+            impl.notifyRemoved(NCLElementSets.TRANSITIONS, id);
+            return true;
+        }
+        return false;
+    }
+
+
     @Override
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(super.addImportBase(importBase)){
@@ -121,14 +99,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
     }
 
 
-    /**
-     * Remove um importador de base da base de transições.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(super.removeImportBase(importBase)){
@@ -155,11 +125,11 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
 
     /**
-     * Função de criação do elemento filho <i>importBase</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>importBase</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>importBase</i>.
+     *          element representing the child <i>importBase</i>.
      */
     protected NCLImport createImportBase() throws XMLException {
         return new NCLImport(NCLImportType.BASE);
@@ -167,11 +137,11 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
 
     /**
-     * Função de criação do elemento filho <i>transition</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>transition</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>transition</i>.
+     *          element representing the child <i>transition</i>.
      */
     protected NCLTransition createTransition(String id) throws XMLException {
         return new NCLTransition(id);

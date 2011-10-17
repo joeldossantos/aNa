@@ -56,26 +56,12 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
         extends NCLTransitionPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     
-    /**
-     * Construtor do elemento <i>transition</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da transição.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da transição não for válido.
-     */
     public NCLTransition(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui um tipo a transição.
-     *
-     * @param type
-     *          elemento representando o tipo da transição.
-     */
     @Override
     public void setType(NCLTransitionType type) {
         NCLTransitionType aux = this.type;
@@ -84,12 +70,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Atribui um subtipo a transição.
-     *
-     * @param subtype
-     *          elemento representando o subtipo da transição.
-     */
     @Override
     public void setSubtype(NCLTransitionSubtype subtype) {
         NCLTransitionSubtype aux = this.subtype;
@@ -98,12 +78,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Atribui uma duração a transição.
-     *
-     * @param dur
-     *          elemento representando a duração da transição.
-     */
     @Override
     public void setDur(TimeType dur) {
         TimeType aux = this.dur;
@@ -112,12 +86,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Atribui um delay de progresso inicial a transição.
-     *
-     * @param startProgress
-     *          fracionário representando o delay inicial.
-     */
     @Override
     public void setStartProgress(Double startProgress) {
         Double aux = this.startProgress;
@@ -126,12 +94,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Atribui um delay de progresso final a transição.
-     *
-     * @param startProgress
-     *          fracionário representando o delay final.
-     */
     @Override
     public void setEndProgress(Double endProgress) {
         Double aux = this.endProgress;
@@ -140,12 +102,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Atribui uma direção a transição.
-     *
-     * @param direction
-     *          elemento representando a direção.
-     */
     @Override
     public void setDirection(NCLTransitionDirection direction) {
         NCLTransitionDirection aux = this.direction;
@@ -154,12 +110,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Atribui uma cor para as transições de fade com cor.
-     *
-     * @param fadeColor
-     *          cor associada a transição de fade.
-     */
     @Override
     public void setFadeColor(NCLColor fadeColor) {
         NCLColor aux = this.fadeColor;
@@ -168,12 +118,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Determina o numero de repetições da transição no eixo horizontal.
-     *
-     * @param horRepeat
-     *          inteiro representando o número de repetições.
-     */
     @Override
     public void setHorRepeat(Integer horRepeat) {
         Integer aux = this.horRepeat;
@@ -182,12 +126,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Determina o numero de repetições da transição no eixo vertical.
-     *
-     * @param vertRepeat
-     *          inteiro representando o número de repetições.
-     */
     @Override
     public void setVertRepeat(Integer vertRepeat) {
         Integer aux = this.vertRepeat;
@@ -196,12 +134,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Determina a largura da borda da transição.
-     *
-     * @param borderWidth
-     *          inteiro representando a largura da borda.
-     */
     @Override
     public void setBorderWidth(Integer borderWidth) {
         Integer aux = this.borderWidth;
@@ -210,12 +142,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Determina a cor da borda da transição.
-     *
-     * @param borderColor
-     *          cor da borda.
-     */
     @Override
     public void setBorderColor(NCLColor borderColor) {
         NCLColor aux = this.borderColor;
