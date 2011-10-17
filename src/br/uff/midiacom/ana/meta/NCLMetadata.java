@@ -40,39 +40,29 @@ package br.uff.midiacom.ana.meta;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma árvore RDF de metadados para o documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends NCLElementImpl>
         extends NCLMetadataPrototype<T, P, I> implements NCLElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLMetadata() {}
+    public NCLMetadata() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina a árvore RDF de metadados do elemento metadata.
-     *
-     * @param rdfTree
-     *          String representando a árvore RDF.
-     * @throws IllegalArgumentException
-     *          se a String for vazia.
-     */
     @Override
     public void setRDFTree(String rdfTree) throws XMLException {
+        StringType aux = this.rdfTree;
         super.setRDFTree(rdfTree);
+        impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
+        
     }
 
 
