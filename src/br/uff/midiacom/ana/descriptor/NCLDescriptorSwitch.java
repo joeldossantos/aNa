@@ -44,44 +44,19 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorSwitchPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um switch de descritor em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRule>
         extends NCLDescriptorSwitchPrototype<T, P, I, El, Eb> implements NCLLayoutDescriptor<El, P> {
 
 
-    /**
-     * Construtor do elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do switch de descritor.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do switch de descritor não for válido.
-     */
     public NCLDescriptorSwitch(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Adiciona um descritor ao switch de descritor.
-     *
-     * @param descriptor
-     *          elemento representando o descritor a ser adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addDescriptor(El descriptor) throws XMLException {
         if(super.addDescriptor(descriptor)){
@@ -92,34 +67,16 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-    /**
-     * Remove um descritor do switch de descritor.
-     *
-     * @param id
-     *          identificador do descritor a ser removido.
-     * @return
-     *          Verdadeiro se o descritor foi removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
-    public boolean removeDescriptor(String id) {
-        for(El descriptor : descriptors){
-            if(descriptor.getId().equals(id))
-                return removeDescriptor(descriptor);
+    public boolean removeDescriptor(String id) throws XMLException {
+        if(super.removeDescriptor(id)){
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, id);
+            return true;
         }
         return false;
     }
 
 
-    /**
-     * Remove um descritor do switch de descritor.
-     *
-     * @param descriptor
-     *          elemento representando o descritor a ser removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeDescriptor(El descriptor) throws XMLException {
         if(super.removeDescriptor(descriptor)){
@@ -130,14 +87,6 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-    /**
-     * Adiciona um bind ao switch de descritor.
-     *
-     * @param bind
-     *          elemento representando o bind a ser adicionado.
-     *
-     * @see ArrayList#add
-     */
     @Override
     public boolean addBind(Eb bind) throws XMLException {
         if(super.addBind(bind)){
@@ -148,14 +97,6 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-    /**
-     * Remove um bind do switch de descritor.
-     *
-     * @param bind
-     *          elemento representando o bind a ser removido.
-     *
-     * @see ArrayList#remove
-     */
     @Override
     public boolean removeBind(Eb bind) throws XMLException {
         if(super.removeBind(bind)){
@@ -166,12 +107,6 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-    /**
-     * Determina o descritor padrão do switch de descritor.
-     *
-     * @param defaultDescriptor
-     *          elemento representando o descritor padrão.
-     */
     @Override
     public void setDefaultDescriptor(El defaultDescriptor) {
         El aux = this.defaultDescriptor;
@@ -212,15 +147,15 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endElement(String uri, String localName, String qName) {
 //        if(localName.equals("descriptorSwitch"))
 //            super.endElement(uri, localName, qName);
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getDefaultDescriptor() != null)
@@ -271,26 +206,26 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>bindRule</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>bindRule</i>.
-//     */
-//    protected B createBindRule() {
-//        return (B) new NCLDescriptorBindRule(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>descriptor</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>descriptor</i>.
-//     */
-//    protected D createDescriptor() {
-//        return (D) new NCLDescriptor(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>bindRule</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>bindRule</i>.
+     */
+    protected NCLDescriptorBindRule createBindRule() throws XMLException {
+        return new NCLDescriptorBindRule();
+    }
+
+
+    /**
+     * Function to create the child element <i>descriptor</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>descriptor</i>.
+     */
+    protected NCLDescriptor createDescriptor(String id) throws XMLException {
+        return new NCLDescriptor(id);
+    }
 }

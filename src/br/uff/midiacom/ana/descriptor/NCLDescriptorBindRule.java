@@ -47,29 +47,16 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>bindRule</i> de um switch de descritor da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um bind de um switch de descritor de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Er extends NCLTestRule>
-        extends NCLDescriptorBindRulePrototype<T, P, I, El, Er> implements NCLLayoutDescriptor<El, P> {
+        extends NCLDescriptorBindRulePrototype<T, P, I, El, Er> implements NCLElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLDescriptorBindRule() {}
+    public NCLDescriptorBindRule() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Atribui um constituent ao bind.
-     *
-     * @param constituent
-     *          elemento representando o descritor mapeado pelo bind.
-     */
     @Override
     public void setConstituent(El constituent) {
         El aux = this.constituent;
@@ -78,12 +65,6 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
     }
 
 
-    /**
-     * Atribui uma regra de avaliação ao bind.
-     *
-     * @param rule
-     *          elemento representando a regra de avaliação do bind.
-     */
     @Override
     public void setRule(Er rule) {
         Er aux = this.rule;
@@ -108,8 +89,8 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -136,8 +117,8 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
 //
 //        addWarning("Could not find descriptor in descriptorSwitch with id: " + getConstituent().getId());
 //    }
-//
-//
+
+
 //    private void ruleReference() {
 //        //Search for the interface inside the node
 //        Set<R> rules = getRules();
