@@ -50,40 +50,16 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma âncora de um nó.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
         extends NCLAreaPrototype<T, P, I, Ei> implements NCLInterface<Ei, P> {
     
     
-    /**
-     * Construtor do elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param id
-     *          identificador da âncora.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da âncora for inválido.
-     */
     public NCLArea(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Define uma âncora de conteudo representando porções espaciais.
-     * x1,y1,x2,y2,...,xN,yN
-     * 
-     * @param coords
-     *          coordenadas da âncora espacial.
-     * @throws java.lang.IllegalArgumentException
-     *          se alguma das coordenadas for inválida.
-     */
     @Override
     public void setCoords(ArrayType coords) {
         ArrayType aux = this.coords;
@@ -92,15 +68,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Define uma âncora de conteúdo representando porções temporais.
-     * Caso a media que contém a âncora for do tipo "application/x-ginga-time" o tempo deve ser completo.
-     * 
-     * @param begin
-     *          tempo de inicio da âncora temporal.
-     *
-     * @see TimeType
-     */
     @Override
     public void setBegin(TimeType begin) {
         TimeType aux = this.begin;
@@ -109,15 +76,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Define uma âncora de conteúdo representando porções temporais.
-     * Caso a media que contém a âncora for do tipo "application/x-ginga-time" o tempo deve ser completo.
-     * 
-     * @param end
-     *          tempo de fim da âncora temporal.
-     *
-     * @see TimeType
-     */
     @Override
     public void setEnd(TimeType end) {
         TimeType aux = this.end;
@@ -126,14 +84,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Define uma ancora textual.
-     * 
-     * @param text
-     *          padrao de texto usado como âncora textual.
-     * @throws java.lang.IllegalArgumentException
-     *          se a String for vazia.
-     */
     @Override
     public void setText(String text) throws XMLException {
         StringType aux = this.text;
@@ -142,14 +92,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
 
 
-    /**
-     * Define a posição do texto da ancora textual.
-     * 
-     * @param position
-     *          posicao do texto.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for um valor negativo.
-     */
     @Override
     public void setPosition(Integer position) throws XMLException {
         Integer aux = this.position;
@@ -158,14 +100,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Define uma ancora de conteudo com base em uma amostra.
-     * 
-     * @param first
-     *          amostra de inicio da ancora.
-     *
-     * @see SampleType
-     */
     @Override
     public void setFirst(SampleType first) {
         SampleType aux = this.first;
@@ -174,14 +108,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Define uma ancora de conteudo com base em uma amostra.
-     *
-     * @param last
-     *          amostra de fim da ancora.
-     *
-     * @see SampleType
-     */
     @Override
     public void setLast(SampleType last) {
         SampleType aux = this.last;
@@ -190,16 +116,6 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * define uma ancora de conteudo baseada no atributo label,
-     * que especifica uma cadeia de caracteres que deve ser utilizada
-     * pelo exibidor de midias para identificar uma regiao de conteudo.
-     * 
-     * @param label
-     *          identificacao da região do conteúdo.
-     * @throws java.lang.IllegalArgumentException
-     *          se a String for vazia.
-     */
     @Override
     public void setLabel(String label) throws XMLException {
         StringType aux = this.label;

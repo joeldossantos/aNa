@@ -48,87 +48,38 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>property</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma propriedade de um nó.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
         extends NCLPropertyPrototype<T, P, I, Ei> implements NCLInterface<Ei, P> {
 
     
-    /**
-     * Construtor do elemento <i>property</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param name
-     *          String contendo o nome da propriedade.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome da propriedade não for válido.
-     */
     public NCLProperty(String name) throws XMLException {
         super(name);
         impl = (I) new NCLElementImpl(this);
     }    
 
 
-    /**
-     * Construtor do elemento <i>property</i> da <i>Nested Context Language</i> (NCL).
-     * Segue os nomes da variáveis de sistema de NCL.
-     * 
-     * @param name
-     *          NCLSystemVariable contendo o nome da propriedade.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome da propriedade não for válido.
-     */
     public NCLProperty(NCLSystemVariable name) throws XMLException {
         super(name);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Determina o nome da propriedade sem seguir os valores padrão especificados na norma.
-     * O nome, entretando pode estar na forma shared.xxx
-     * 
-     * @param name
-     *          String contendo o nome da propriedade.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome da propriedade não for válido.
-     */
     @Override
     public void setName(String name) throws XMLException {
-        StringType aux = this.name;
+        String aux = this.getName();
         super.setName(name);
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }    
 
 
-    /**
-     * Determina o nome de uma propriedade seguindo os valore padrão especificados na norma.
-     * 
-     * @param name
-     *          NCLSystemVariable contendo o nome da propriedade.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome da propriedade não for válido.
-     */
     @Override
     public void setName(NCLSystemVariable name) throws XMLException {
-        StringType aux = this.name;
+        String aux = this.getName();
         super.setName(name);
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
-    /**
-     * Atribui um valor a propriedade.
-     * 
-     * @param value
-     *          String representando o valor a ser atribuido.
-     * @throws java.lang.IllegalArgumentException
-     *          se a String for vazia.
-     */
     @Override
     public void setValue(String value) throws XMLException {
         StringType aux = this.value;

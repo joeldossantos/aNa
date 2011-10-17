@@ -47,37 +47,16 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>port</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma porta de um contexto.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
         extends NCLPortPrototype<T, P, I, En, Ei> implements NCLInterface<Ei, P> {
 
 
-    /**
-     * Construtor do elemento <i>port</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param id
-     *          identificador da porta.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador for inválido.
-     */
     public NCLPort(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui um nó a porta.
-     * 
-     * @param component
-     *          elemento representando o nó.
-     */
     @Override
     public void setComponent(En component) {
         En aux = this.component;
@@ -86,12 +65,6 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Determina a interface de nó atributa a porta.
-     * 
-     * @param interfac
-     *          elemento representando a interface do nó.
-     */
     @Override
     public void setInterface(Ei interfac) {
         Ei aux = this.interfac;
@@ -118,8 +91,8 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -131,8 +104,8 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
 //        if(getComponent() != null && getInterface() != null)
 //            interfaceReference();
 //    }
-//
-//
+
+
 //    private void componentReference() {
 //        //Search for a component node in its parent
 //        Set<N> nodes;
@@ -151,8 +124,8 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
 //
 //        addWarning("Could not find node with id: " + getComponent().getId());
 //    }
-//
-//
+
+
 //    private void interfaceReference() {
 //        //Search for the interface inside the node
 //        Set<I> ifaces;

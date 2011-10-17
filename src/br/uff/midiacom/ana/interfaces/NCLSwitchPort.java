@@ -47,40 +47,16 @@ import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define uma porta de um switch da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I extends NCLElementImpl, Em extends NCLMapping, Ei extends NCLInterface>
         extends NCLSwitchPortPrototype<T, P, I, Em, Ei> implements NCLInterface<Ei, P> {
 
 
-    /**
-     * Construtor do elemento <i>switchPort</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da porta de switch.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador for inválido.
-     */
     public NCLSwitchPort(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Adiciona um mapeamento a porta de switch.
-     *
-     * @param mapping
-     *          elemento representando o mapeamento a ser adicionado.
-     * @return
-     *          Verdadeiro se o mapeamento foi adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addMapping(Em mapping) throws XMLException {
         if(super.addMapping(mapping)){
@@ -91,16 +67,6 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Remove um mapeamento da porta de switch.
-     *
-     * @param mapping
-     *          elemento representando o mapeamento a ser removido.
-     * @return
-     *          Verdadeiro se o mapeamento foi removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeMapping(Em mapping) throws XMLException {
         if(super.removeMapping(mapping)){
@@ -132,8 +98,8 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(hasMapping()){
@@ -161,14 +127,14 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>mapping</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>mapping</i>.
-//     */
-//    protected M createMapping() {
-//        return (M) new NCLMapping(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>mapping</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>mapping</i>.
+     */
+    protected NCLMapping createMapping() throws XMLException {
+        return new NCLMapping();
+    }
 }

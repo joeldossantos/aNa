@@ -47,28 +47,16 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define um mapeamento da porta do switch da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
         extends NCLMappingPrototype<T, P, I, En, Ei> implements NCLElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>mapping</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLMapping() {}
+    public NCLMapping() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o componente mapeado pelo mapeamento.
-     *
-     * @param component
-     *          elemento representando o componente mapeado.
-     */
     @Override
     public void setComponent(En component) {
         En aux = this.component;
@@ -77,12 +65,6 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
     }
 
 
-    /**
-     * Determina a interface mapeada pelo mapeamento.
-     *
-     * @param interfac
-     *          elemento representando a interface mapeada.
-     */
     @Override
     public void setInterface(Ei interfac) {
         Ei aux = this.interfac;
@@ -107,8 +89,8 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -140,8 +122,8 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
 //
 //        addWarning("Could not find node in switch with id: " + getComponent().getId());
 //    }
-//
-//
+
+
 //    private void interfaceReference() {
 //        //Search for the interface inside the node
 //        Set<I> ifaces;
