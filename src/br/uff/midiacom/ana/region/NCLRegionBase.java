@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
@@ -51,40 +52,16 @@ import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
- * NCL nos permite definir onde cada no de midia sera apresentado, tanto em que classe de dispositivos como em qual regiao
- * de apresentaçao de cada dispositivo. Para cada classe de dispositivos de saida definimos, no cabeçalho do documento ( dentro do  elemento <i>head</i>),
- * uma colecao de regioes atraves do elemento <i>regionBase</i>.
- * Dentro de uma base de regioes definimos os elementos <i>region</i> que especificam
- * em que regioes da tela do dispositivo de saida serao exibidos os nos de conteudo. Alem de elementos <i>region</i>, uma base de regioes tambem pode
- * conter elementos <i>importBase</i> para importar uma base definida em outro documento NCL. Ela ainda pode conter o atributo device, que especifica o dispositivo
- * de exibicao relacionado aquela base.<br>
- *
- * 
- * @see br.pensario.region.NCLRegion
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, Ei extends NCLImport>
         extends NCLRegionBasePrototype<T, P, I, Er, Ei> implements NCLIdentifiableElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLRegionBase() {}
+    public NCLRegionBase() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Define um dispositivo de exibicao associado ao elemento <i>regionBase</i>. Ou seja, esse metodo determina para qual
-     * dispositivo as regioes contidas naquela base serao validas.
-     * @param device
-     *          O metodo recebe como parametro um String representando o dispositivo de exibicao a que se quer relacionar a base de regioes atual.
-     * @throws java.lang.IllegalArgumentException
-     *          O metodo dispara uma excecao caso o usuario passe uma string vazia como parametro.
-     */
     @Override
     public void setDevice(String device) throws XMLException {
         StringType aux = this.device;
@@ -93,32 +70,12 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    /**
-     * NCL permite que regioes sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma regiao filha pode ser relativa a uma regiao pai
-     * e expressa como porcentagem. Esse metodo atribui a <i>regionBase</i> a regiao pai, ou seja, a regiao mais externa do aninhamento
-     * 
-     * @param region
-     *          Elemento representando a regiao a ser utilizada como pai.
-     */
     @Override
     public void setParentRegion(Er region) {
         super.setParentRegion(region);
     }
 
 
-    /**
-     * Uma base de regioes pode conter como filhos elementos <i>region</i> e elementos <i>importBase</i>. Este metodo adiciona a base uma
-     * um elemento <i>region</i>, uma regiao da tela do dispositivo relacionado a esta base.
-     *
-     * @see br.pensario.region.NCLRegion
-     * 
-     * @param region
-     *          O método recebe como parametro um elemento <i>region</i> a ser adicionado.
-     * @return
-     *          Retorna verdadeiro se a regiao for adicionada com sucesso.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addRegion(Er region) throws XMLException {
         if(super.addRegion(region)){
@@ -129,36 +86,16 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Este metodo remove um elemento <i>region</i> da base. Nesta implementacao, o metodo recebe o identificador da regiao a ser removida.
-     *
-     * @param id
-     *          O metodo recebe com parametro uma string representando o  identificador da regiao a ser removida.
-     * @return
-     *          Retorna verdadeiro se a regiao for removida com sucesso.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeRegion(String id) throws XMLException {
-        for(Er region : regions){
-            if(region.getId().equals(id))
-                return removeRegion(region);
+        if(super.removeRegion(id)){
+            impl.notifyRemoved(NCLElementSets.REGIONS, id);
+            return true;
         }
         return false;
     }
 
 
-    /**
-     * Remove uma regiao da base de regioes. Nesta implementacao, o metodo recebe como parametro um objeto <i>region</i> a ser retirado da base.
-     * 
-     * @param region
-     *          Recebe como parametro o proprio elemento region a ser removido.
-     * @return
-     *          Retorna verdadeiro se a regiao for removida com sucesso.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeRegion(Er region) throws XMLException {
         if(super.removeRegion(region)){
@@ -169,15 +106,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Adiciona um elemento importBase a base de regioes. O elemento <i>importBase</i>, permite ao documento importar uma base de regioes
-     * pertencente a outro documento NCL.
-     *
-     * @param importBase
-     *          O método recebe como parametro um elemento <i>importBase</i> a ser adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(super.addImportBase(importBase)){
@@ -188,14 +116,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    /**
-     * Remove um elemento <i>importBase</i> da base de regioes.
-     *
-     * @param importBase
-     *           O metodo recebe como parâmetro um elemento <i>importBase</i> a ser removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(super.removeImportBase(importBase)){
@@ -236,8 +156,8 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() != null){
@@ -295,26 +215,26 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>importBase</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>importBase</i>.
-//     */
-//    protected I createImportBase() {
-//        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>region</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>region</i>.
-//     */
-//    protected R createRegion() {
-//        return (R) new NCLRegion(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>importBase</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>importBase</i>.
+     */
+    protected NCLImport createImportBase() throws XMLException {
+        return new NCLImport(NCLImportType.BASE);
+    }
+
+
+    /**
+     * Function to create the child element <i>region</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>region</i>.
+     */
+    protected NCLRegion createRegion(String id) throws XMLException {
+        return new NCLRegion(id);
+    }
 }
