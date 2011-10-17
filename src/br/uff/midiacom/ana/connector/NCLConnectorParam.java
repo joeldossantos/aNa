@@ -45,59 +45,27 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parâmetro de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement, I extends NCLElementImpl>
         extends NCLConnectorParamPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
         
     
-    /**
-     * Construtor do elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param name
-     *          String contendo o nome a ser atribuido ao parâmetro.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome do parâmetro for inválido.
-     *         java.lang.IllegalArgumentException
-     *          se a String do tipo for vazia.
-     */
     public NCLConnectorParam(String name) throws XMLException {
         super(name);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui um nome ao parâmetro
-     *
-     * @param name
-     *          String contendo o nome a ser atribuido ao parâmetro.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome do parâmetro for inválido.
-     */
     @Override
     public void setName(String name) throws XMLException {
-        StringType aux = this.name;
+        String aux = this.getName();
         super.setName(name);
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
     
     
-    /**
-     * Atribui um tipo ao parâmetro
-     *
-     * @param type
-     *      String contendo o tipo do parâmetro.
-     * @throws java.lang.IllegalArgumentException
-     *          se a String for vazia.
-     */
     @Override
     public void setType(String type) throws XMLException {
         StringType aux = this.type;
@@ -122,11 +90,11 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
-//    public void load(Element element) throws XMLException {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 
     public void setModificationListener(NCLModificationListener listener) {

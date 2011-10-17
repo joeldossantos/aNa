@@ -47,45 +47,22 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define de uma assertiva de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLConnectorParam>
         extends NCLValueAssessmentPrototype<T, P, I, Ep> implements NCLElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLValueAssessment() {}
+    public NCLValueAssessment() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param value
-     *          String contendo o valor da assertiva.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
-     */
-    public NCLValueAssessment(String value) throws XMLException {
+    public NCLValueAssessment(AssValueParamType<Ep> value) throws XMLException {
         super(value);
         impl = (I) new NCLElementImpl(this);
     }
     
 
-    /**
-     * Determina o valor da assertiva do conector.
-     *
-     * @param value
-     *          String contendo o valor da assertiva.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
-     */
     @Override
     public void setValue(AssValueParamType value) {
         AssValueParamType aux = this.value;
@@ -121,8 +98,8 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -131,8 +108,8 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
 //        if(getParamValue() != null)
 //            setValue(parameterReference(getParamValue().getId()));
 //    }
-//
-//
+
+
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //

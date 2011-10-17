@@ -50,31 +50,16 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um atributo da assertiva de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRole, Ep extends NCLConnectorParam>
         extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep> implements NCLElement<T, P>{
 
 
-    /**
-     * Construtor do elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLAttributeAssessment() {}
+    public NCLAttributeAssessment() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o papel do atributo da assertiva.
-     * 
-     * @param role
-     *          String representando o papel definido pela assertiva.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o role for uma String vazia.
-     */
     @Override
     public void setRole(Er role) {
         Er aux = this.role;
@@ -83,12 +68,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     }
     
         
-    /**
-     * Determina o tipo do evento testado pelo atributo da assertiva.
-     * 
-     * @param eventType
-     *          tipo do evento.
-     */
     @Override
     public void setEventType(NCLEventType eventType) {
         NCLEventType aux = this.eventType;
@@ -97,12 +76,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     }
     
         
-    /**
-     * Determina a tecla testada pelo atributo da assertiva.
-     * 
-     * @param key
-     *          elemento representando a tecla.
-     */
     @Override
     public void setKey(KeyParamType key) {
         KeyParamType aux = this.key;
@@ -111,12 +84,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     }
 
 
-    /**
-     * Determina o tipo do atributo testado pelo atributo da assertiva.
-     * 
-     * @param attributeType
-     *          elemento representando o tipo do atributo.
-     */
     @Override
     public void setAttributeType(NCLAttributeType attributeType) {
         NCLAttributeType aux = this.attributeType;
@@ -125,14 +92,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     }
     
         
-    /**
-     * Determina o offset de teste.
-     * 
-     * @param offset
-     *          inteiro representando o valor do offset a ser utilizado no teste.
-     * @throws java.lang.IllegalArgumentException
-     *          se o offset for inválido.
-     */
     @Override
     public void setOffset(IntegerParamType offset) {
         IntegerParamType aux = this.offset;
@@ -191,8 +150,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -242,7 +201,14 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     }
 
 
-//    protected R createRole(String name) {
-//        return (R) new NCLRole(name);
-//    }
+    /**
+     * Function to create a connector <i>role</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a connector <i>role</i>.
+     */
+    protected NCLRole createRole(String name) throws XMLException {
+        return new NCLRole(name);
+    }
 }

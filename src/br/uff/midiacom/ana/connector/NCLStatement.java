@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 
 
 public interface NCLStatement<T extends NCLStatement, P extends NCLElement>
-        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLStatement<T, P> {
+        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLStatement<T, P>, NCLElement<T, P> {
 
 
 }

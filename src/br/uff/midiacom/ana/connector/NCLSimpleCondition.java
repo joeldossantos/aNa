@@ -52,29 +52,16 @@ import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma condição simples de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Er extends NCLRole, Ep extends NCLConnectorParam>
         extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep> implements NCLCondition<Ec, P, Ep> {
 
 
-    /**
-     * Construtor do elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLSimpleCondition() {}
+    public NCLSimpleCondition() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o número mínimo de binds que devem usar essa condição.
-     * 
-     * @param min
-     *          inteiro positivo representando o número mínimo.
-     */
     @Override
     public void setMin(Integer min) {
         Integer aux = this.min;
@@ -83,13 +70,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    /**
-     * Determina o número máximo de binds que devem usar essa condição.
-     *
-     * @param max
-     *          inteiro positivo representando o número máximo ou um inteiro negativo
-     *          caso o número máximo seja a String "umbouded".
-     */
     @Override
     public void setMax(MaxType max) {
         MaxType aux = this.max;
@@ -98,12 +78,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    /**
-     * Determina como serão avaliados o conjunto de binds que usam essa condição.
-     *
-     * @param qualifier
-     *          operador lógico que representa como os binds serão avaliados.
-     */
     @Override
     public void setQualifier(NCLConditionOperator qualifier) {
         NCLConditionOperator aux = this.qualifier;
@@ -112,12 +86,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    /**
-     * Determina o nome do papel de condição seguindo um dos nomes padrões.
-     *
-     * @param role
-     *          elemento representando o nome do papel.
-     */
     @Override
     public void setRole(Er role) {
         Er aux = this.role;
@@ -126,12 +94,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    /**
-     * Determina a tecla da condição.
-     *
-     * @param key
-     *          elemento representando a tecla da condição.
-     */
     @Override
     public void setKey(KeyParamType key) {
         KeyParamType aux = this.key;
@@ -140,12 +102,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    /**
-     * Determina o tipo do evento da condição.
-     *
-     * @param eventType
-     *          elemento representando o tipo do evento da condição.
-     */
     @Override
     public void setEventType(NCLEventType eventType) {
         NCLEventType aux = this.eventType;
@@ -154,12 +110,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    /**
-     * Determina a transição do evento da condição.
-     *
-     * @param transition
-     *          elemento representando a transição do evento da condição.
-     */
     @Override
     public void setTransition(NCLEventTransition transition) {
         NCLEventTransition aux = this.transition;
@@ -242,8 +192,8 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -254,8 +204,8 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 //        if(getParamKey() != null)
 //            setKey(parameterReference(getParamKey().getId()));
 //    }
-//
-//
+
+
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //
@@ -293,7 +243,14 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-//    protected R createRole(String name) {
-//        return (R) new NCLRole(name);
-//    }
+    /**
+     * Function to create a connector <i>role</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a connector <i>role</i>.
+     */
+    protected NCLRole createRole(String name) throws XMLException {
+        return new NCLRole(name);
+    }
 }

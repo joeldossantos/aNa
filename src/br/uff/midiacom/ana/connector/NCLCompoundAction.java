@@ -39,38 +39,26 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundActionPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
+import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>compoundAction</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma ação composta de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Ep extends NCLConnectorParam>
         extends NCLCompoundActionPrototype<T, P, I, Ea, Ep> implements NCLAction<Ea, P, Ep> {
 
 
-    /**
-     * Construtor do elemento <i>compoundAction</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLCompoundAction() {}
+    public NCLCompoundAction() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o operador da ação composta.
-     *
-     * @param operator
-     *          elemento representando o operador a ser atribuido.
-     */
     @Override
     public void setOperator(NCLActionOperator operator) {
         NCLActionOperator aux = this.operator;
@@ -79,16 +67,6 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
     }
     
     
-    /**
-     * Adiciona uma ação a ação composta.
-     *
-     * @param action
-     *          elemento representando a ação a ser adicionada
-     * @return
-     *          verdadeiro se a ação foi adicionada.
-     *
-     * @see ArrayList#add(java.lang.Object)
-     */
     @Override
     public boolean addAction(Ea action) throws XMLException {
         if(super.addAction(action)){
@@ -99,16 +77,6 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
     }
 
 
-    /**
-     * Remove uma ação a ação composta.
-     *
-     * @param action
-     *          elemento representando a ação a ser removida
-     * @return
-     *          verdadeiro se a ação foi removida.
-     *
-     * @see ArrayList#remove(java.lang.Object)
-     */
     @Override
     public boolean removeAction(Ea action) throws XMLException {
         if(super.removeAction(action)){
@@ -169,8 +137,8 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() != null){
@@ -186,8 +154,8 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 //            }
 //        }
 //    }
-//
-//
+
+
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //
@@ -208,28 +176,43 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 //        addWarning("Could not find connectorParam in connector with id: " + id);
 //        return null;
 //    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>simpleAction</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>simpleAction</i>.
-//     */
-//    protected A createSimpleAction() {
-//        return (A) new NCLSimpleAction(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>compoundAction</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>compoundAction</i>.
-//     */
-//    protected A createCompoundAction() {
-//        return (A) new NCLCompoundAction(getReader(), this);
-//    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
+    }
+
+
+    /**
+     * Function to create the child element <i>simpleAction</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>simpleAction</i>.
+     */
+    protected NCLSimpleAction createSimpleAction() throws XMLException {
+        return new NCLSimpleAction();
+    }
+
+
+    /**
+     * Function to create the child element <i>compoundAction</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>compoundAction</i>.
+     */
+    protected NCLCompoundAction createCompoundAction() throws XMLException {
+        return new NCLCompoundAction();
+    }
 }

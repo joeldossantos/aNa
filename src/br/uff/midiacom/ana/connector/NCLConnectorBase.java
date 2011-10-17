@@ -42,40 +42,23 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma base de conectores de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCausalConnector, Ei extends NCLImport>
         extends NCLConnectorBasePrototype<T, P, I, Ec, Ei> implements NCLIdentifiableElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLConnectorBase() {}
+    public NCLConnectorBase() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Adiciona um conector a base de conectores.
-     * 
-     * @param connector
-     *          elemento representando o conector a ser adicionado.
-     * @return
-     *          verdadeiro se o conector foi adicionado.
-     *
-     * @see TreeSet#add(java.lang.Object)
-     */
     @Override
     public boolean addCausalConnector(Ec connector) throws XMLException {
         if(super.addCausalConnector(connector)){
@@ -86,16 +69,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
     }
     
     
-    /**
-     * Remove um conector da base de conectores.
-     * 
-     * @param connector
-     *          elemento representando o conector a ser removido.
-     * @return
-     *          verdadeiro se o conector foi removido.
-     *
-     * @see TreeSet#remove(java.lang.Object)
-     */    
     @Override
     public boolean removeCausalConnector(Ec connector) throws XMLException {
         if(super.removeCausalConnector(connector)){
@@ -104,16 +77,18 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
         }
         return false;
     }
+
+
+    @Override
+    public boolean removeCausalConnector(String id) throws XMLException {
+        if(super.removeCausalConnector(id)){
+            impl.notifyRemoved(NCLElementSets.CONNECTORS, id);
+            return true;
+        }
+        return false;
+    }
     
     
-    /**
-     * Adiciona um importador de base à base de conectores.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(super.addImportBase(importBase)){
@@ -124,14 +99,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
     }
 
 
-    /**
-     * Remove um importador de base da base de conectores.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(super.removeImportBase(importBase)){
@@ -168,8 +135,8 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(hasImportBase()){
@@ -204,26 +171,26 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>importBase</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>importBase</i>.
-//     */
-//    protected I createImportBase() {
-//        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>causalConnector</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>causalConnector</i>.
-//     */
-//    protected C createCausalConnector() {
-//        return (C) new NCLCausalConnector(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>importBase</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>importBase</i>.
+     */
+    protected NCLImport createImportBase() throws XMLException {
+        return new NCLImport(NCLImportType.BASE);
+    }
+
+
+    /**
+     * Function to create the child element <i>causalConnector</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>causalConnector</i>.
+     */
+    protected NCLCausalConnector createCausalConnector(String id) throws XMLException {
+        return new NCLCausalConnector(id);
+    }
 }

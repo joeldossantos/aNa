@@ -41,6 +41,6 @@ import br.uff.midiacom.ana.NCLElement;
 
 
 public interface NCLAction<T extends NCLAction, P extends NCLElement, Ep extends NCLConnectorParam>
-        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep> {
+        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep>, NCLElement<T, P> {
 
 }

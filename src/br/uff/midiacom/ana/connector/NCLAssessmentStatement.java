@@ -44,40 +44,20 @@ import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLAssessmentStatementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLAttributeAssessmentPrototype;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLValueAssessmentPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define o elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma assertiva de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment>
         extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev> implements NCLStatement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLAssessmentStatement() {}
+    public NCLAssessmentStatement() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o comparador da assertiva.
-     * 
-     * @param comparator
-     *          comparador utilizado pela assertiva.
-     */
     @Override
     public void setComparator(NCLComparator comparator) {
         NCLComparator aux = this.comparator;
@@ -86,16 +66,6 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     }
     
     
-    /**
-     * Determina um valor de comparação a assertiva.
-     * 
-     * @param value
-     *          String representando o valor de comparação a ser utilizado.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor for uma String vazia.
-     *
-     * @see NCLValueAssessment
-     */
     @Override
     public void setValueAssessment(Ev value) {
         Ev aux = this.valueAssessment;
@@ -104,18 +74,6 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     }
     
         
-    /**
-     * Adiciona um atributo de comparação a assertiva.
-     * 
-     * @param attribute
-     *          elemento representando o atributo a ser adicionado.
-     * @return
-     *          verdadeiro se o atributo foi adicionado.
-     * @throws java.lang.Exception
-     *          se o número máximo de atributos for ultrapassado.
-     *
-     * @see ArrayList#add
-     */
     @Override
     public boolean addAttributeAssessment(Ea attribute) throws Exception {
         if(super.addAttributeAssessment(attribute)){
@@ -126,16 +84,6 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     }
     
     
-    /**
-     * Remove um atributo de comparação da assertiva.
-     * 
-     * @param attribute
-     *          elemento representando o atributo a ser removido.
-     * @return
-     *          verdadeiro se o atributo for removido.
-     *
-     * @see ArrayList#remove
-     */
     @Override
     public boolean removeAttributeAssessment(Ea attribute) throws XMLException {
         if(super.removeAttributeAssessment(attribute)){
@@ -176,8 +124,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(hasAttributeAssessment()){
@@ -210,26 +158,26 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>attributeAssessment</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>attributeAssessment</i>.
-//     */
-//    protected A createAttributeAssessment() {
-//        return (A) new NCLAttributeAssessment(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>valueAssessment</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>valueAssessment</i>.
-//     */
-//    protected V createValueAssessment() {
-//        return (V) new NCLValueAssessment(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>attributeAssessment</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>attributeAssessment</i>.
+     */
+    protected NCLAttributeAssessment createAttributeAssessment() throws XMLException {
+        return new NCLAttributeAssessment();
+    }
+
+
+    /**
+     * Function to create the child element <i>valueAssessment</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>valueAssessment</i>.
+     */
+    protected NCLValueAssessment createValueAssessment() throws XMLException {
+        return new NCLValueAssessment();
+    }
 }

@@ -39,38 +39,26 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundConditionPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
+import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma condição composta de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParam>
         extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep> implements NCLCondition<Ec, P, Ep> {
     
 
-    /**
-     * Construtor do elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLCompoundCondition() {}
+    public NCLCompoundCondition() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o operador da condição composta.
-     *
-     * @param operator
-     *          elemento representando o operador a ser atribuido.
-     */
     @Override
     public void setOperator(NCLConditionOperator operator) {
         NCLConditionOperator aux = this.operator;
@@ -79,16 +67,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     }
     
     
-    /**
-     * Adiciona uma condição a condição composta.
-     * 
-     * @param condition
-     *          elemento representando a condição a ser adicionada
-     * @return
-     *          verdadeiro se a condição foi adicionada.
-     *
-     * @see ArrayList#add
-     */
     @Override
     public boolean addCondition(Ec condition) throws XMLException {
         if(super.addCondition(condition)){
@@ -99,16 +77,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     }
 
 
-    /**
-     * Remove uma condição a condição composta.
-     *
-     * @param condition
-     *          elemento representando a condição a ser removida
-     * @return
-     *          verdadeiro se a condição foi removida.
-     *
-     * @see ArrayList#remove
-     */
     @Override
     public boolean removeCondition(Ec condition) throws XMLException {
         if(super.removeCondition(condition)){
@@ -119,16 +87,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     }
 
     
-    /**
-     * Adiciona uma assertiva a condição composta.
-     * 
-     * @param statement
-     *          elemento representando a assertiva a ser adicionada.
-     * @return
-     *          verdadeiro se a assertiva foi adicionada.
-     *
-     * @see ArrayList#add
-     */
     @Override
     public boolean addStatement(Es statement) throws XMLException {
         if(super.addStatement(statement)){
@@ -139,16 +97,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     }
 
 
-    /**
-     * Remove uma assertiva da condição composta.
-     *
-     * @param statement
-     *          elemento representando a assertiva a ser removida.
-     * @return
-     *          verdadeiro se a assertiva foi removida.
-     *
-     * @see ArrayList#remove
-     */
     @Override
     public boolean removeStatement(Es statement) throws XMLException {
         if(super.removeStatement(statement)){
@@ -219,8 +167,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() != null){
@@ -243,8 +191,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
 //            }
 //        }
 //    }
-//
-//
+
+
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //
@@ -265,52 +213,67 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
 //        addWarning("Could not find connectorParam in connector with id: " + id);
 //        return null;
 //    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>simpleCondition</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>simpleCondition</i>.
-//     */
-//    protected C createSimpleCondition() {
-//        return (C) new NCLSimpleCondition(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>compoundCondition</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>compoundCondition</i>.
-//     */
-//    protected C createCompoundCondition() {
-//        return (C) new NCLCompoundCondition(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>assessmentStatement</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>assessmentStatement</i>.
-//     */
-//    protected S createAssessmentStatement() {
-//        return (S) new NCLAssessmentStatement(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>compoundStatement</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>compoundStatement</i>.
-//     */
-//    protected S createCompoundStatement() {
-//        return (S) new NCLCompoundStatement(getReader(), this);
-//    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
+    }
+
+
+    /**
+     * Function to create the child element <i>simpleCondition</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>simpleCondition</i>.
+     */
+    protected NCLSimpleCondition createSimpleCondition() throws XMLException {
+        return new NCLSimpleCondition();
+    }
+
+
+    /**
+     * Function to create the child element <i>compoundCondition</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>compoundCondition</i>.
+     */
+    protected NCLCompoundCondition createCompoundCondition() throws XMLException {
+        return new NCLCompoundCondition();
+    }
+
+
+    /**
+     * Function to create the child element <i>assessmentStatement</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>assessmentStatement</i>.
+     */
+    protected NCLAssessmentStatement createAssessmentStatement() throws XMLException {
+        return new NCLAssessmentStatement();
+    }
+
+
+    /**
+     * Function to create the child element <i>compoundStatement</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>compoundStatement</i>.
+     */
+    protected NCLCompoundStatement createCompoundStatement() throws XMLException {
+        return new NCLCompoundStatement();
+    }
 }

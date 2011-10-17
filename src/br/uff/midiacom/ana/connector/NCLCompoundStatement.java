@@ -45,33 +45,19 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma assertiva composta de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement>
         extends NCLCompoundStatementPrototype<T, P, I, Es> implements NCLStatement<Es, P> {
 
 
-    /**
-     * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLCompoundStatement() {}
+    public NCLCompoundStatement() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
     
-    /**
-     * Determina o operador da assertiva composta.
-     * 
-     * @param operator
-     *          elemento representando o operador a ser atribuido.
-     */
     @Override
     public void setOperator(NCLOperator operator) {
         NCLOperator aux = this.operator;
@@ -80,30 +66,14 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
     }
     
         
-    /**
-     * Determina se a assertiva composta está negada.
-     * 
-     * @param isNegated
-     *          booleano que define se a assertiva está negada.
-     */
     @Override
     public void setIsNegated(Boolean isNegated) {
         Boolean aux = this.isNegated;
         super.setIsNegated(isNegated);
         impl.notifyAltered(NCLElementAttributes.ISNEGATED, aux, isNegated);
     }
-    
-        
-    /**
-     * Adiciona uma assertiva a assertiva composta.
-     * 
-     * @param statement
-     *          elemento representando a assertiva a ser adicionada.
-     * @return
-     *          verdadeiro se a assertiva foi adicionada.
-     *
-     * @see ArrayList#add
-     */
+
+
     @Override
     public boolean addStatement(Es statement) throws XMLException {
         if(super.addStatement(statement)){
@@ -112,18 +82,8 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
         }
         return false;
     }
-    
-    
-    /**
-     * Remove uma assertiva da assertiva composta.
-     *
-     * @param statement
-     *          elemento representando a assertiva a ser removida.
-     * @return
-     *          verdadeiro se a assertiva foi removida.
-     *
-     * @see ArrayList#remove
-     */
+
+
     @Override
     public boolean removeStatement(Es statement) throws XMLException {
         if(super.removeStatement(statement)){
@@ -162,8 +122,8 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
 //            addStatement(child);
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(hasStatement()){
@@ -191,26 +151,26 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>assessmentStatement</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>assessmentStatement</i>.
-//     */
-//    protected S createAssessmentStatement() {
-//        return (S) new NCLAssessmentStatement(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>compoundStatement</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>compoundStatement</i>.
-//     */
-//    protected S createCompoundStatement() {
-//        return (S) new NCLCompoundStatement(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>assessmentStatement</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>assessmentStatement</i>.
+     */
+    protected NCLAssessmentStatement createAssessmentStatement() throws XMLException {
+        return new NCLAssessmentStatement();
+    }
+
+
+    /**
+     * Function to create the child element <i>compoundStatement</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>compoundStatement</i>.
+     */
+    protected NCLCompoundStatement createCompoundStatement() throws XMLException {
+        return new NCLCompoundStatement();
+    }
 }

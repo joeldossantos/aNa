@@ -49,35 +49,21 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLSimpleActionPrototype;
+import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define uma ação simples de um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Er extends NCLRole, Ep extends NCLConnectorParam>
         extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep> implements NCLAction<Ea, P, Ep> {
 
 
-    /**
-     * Construtor do elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLSimpleAction() {}
+    public NCLSimpleAction() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Determina o valor de atribuição da ação.
-     *
-     * @param value
-     *          String representando o valor de atribuição.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
-     */
     @Override
     public void setValue(StringParamType value) {
         StringParamType aux = this.value;
@@ -86,12 +72,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o número mínimo de binds que devem usar essa ação.
-     *
-     * @param min
-     *          inteiro positivo representando o número mínimo.
-     */
     @Override
     public void setMin(Integer min) {
         Integer aux = this.min;
@@ -100,13 +80,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o número máximo de binds que devem usar essa ação.
-     *
-     * @param max
-     *          inteiro positivo representando o número máximo ou um inteiro negativo
-     *          caso o número máximo seja a String "umbouded".
-     */
     @Override
     public void setMax(MaxType max) {
         MaxType aux = this.max;
@@ -115,12 +88,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina como serão disparados o conjunto de binds que usam essa ação.
-     *
-     * @param qualifier
-     *          operador que representa como os binds serão disparados.
-     */
     @Override
     public void setQualifier(NCLActionOperator qualifier) {
         NCLActionOperator aux = this.qualifier;
@@ -129,12 +96,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o nome do papel de ação seguindo um dos nomes padrões.
-     *
-     * @param role
-     *          elemento representando o nome do papel.
-     */
     @Override
     public void setRole(Er role) {
         Er aux = this.role;
@@ -143,12 +104,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o tipo do evento da ação.
-     *
-     * @param eventType
-     *          elemento representando o tipo do evento da ação.
-     */
     @Override
     public void setEventType(NCLEventType eventType) {
         NCLEventType aux = this.eventType;
@@ -157,12 +112,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina a ação do evento.
-     *
-     * @param actionType
-     *          elemento representando a ação do evento.
-     */
     @Override
     public void setActionType(NCLEventAction actionType) {
         NCLEventAction aux = this.actionType;
@@ -171,12 +120,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o número de repetições da ação.
-     *
-     * @param repeat
-     *          inteiro representando o número de repetições.
-     */
     @Override
     public void setRepeat(IntegerParamType repeat) {
         IntegerParamType aux = this.repeat;
@@ -185,12 +128,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o delay entre repetições da ação.
-     *
-     * @param repeatDelay
-     *          inteiro representando o delay entre repetições.
-     */
     @Override
     public void setRepeatDelay(DoubleParamType repeatDelay) {
         DoubleParamType aux = this.repeatDelay;
@@ -199,12 +136,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina a duração da ação de atribuição.
-     *
-     * @param duration
-     *          inteiro representando a duração da atribuição.
-     */
     @Override
     public void setDuration(DoubleParamType duration) {
         DoubleParamType aux = this.duration;
@@ -213,13 +144,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    /**
-     * Determina o passo da ação de atribuição.
-     *
-     * @param by
-     *          inteiro positivo representando o passo da atribuição ou negativo
-     *          caso o passo seja definido como a String "indefinite".
-     */
     @Override
     public void setBy(ByParamType by) {
         ByParamType aux = this.by;
@@ -338,8 +262,8 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -358,8 +282,8 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 //        if(getParamBy() != null)
 //            setBy(parameterReference(getParamBy().getId()));
 //    }
-//
-//
+
+
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //
@@ -397,7 +321,14 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-//    protected R createRole(String name) {
-//        return (R) new NCLRole(name);
-//    }
+    /**
+     * Function to create a connector <i>role</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a connector <i>role</i>.
+     */
+    protected NCLRole createRole(String name) throws XMLException {
+        return new NCLRole(name);
+    }
 }

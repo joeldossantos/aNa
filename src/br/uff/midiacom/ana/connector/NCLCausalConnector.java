@@ -41,76 +41,39 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>causalConnector</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um conector de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParam>
         extends NCLCausalConnectorPrototype<T, P, I, Ec, Ea, Ep> implements NCLIdentifiableElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>causalConnector</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param id
-     *          identificador do conector.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          caso o identificador seja inválido.
-     */    
     public NCLCausalConnector(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
     
-    /**
-     * Atribui uma condição ao conector causal.
-     * 
-     * @param condition
-     *          elemento representando uma condição do conector.
-     */    
     @Override
     public void setCondition(Ec condition) {
         Ec aux = this.condition;
         super.setCondition(condition);
-        impl.notifyAltered(NCLElementSets.CONDITIONS, aux, condition);
+        impl.notifyAltered(NCLElementAttributes.CONDITION, aux, condition);
     }
     
     
-    /**
-     * Atribui uma ação ao conector causal.
-     * 
-     * @param action
-     *          elemento representando uma ação do conector.
-     */    
     @Override
     public void setAction(Ea action) {
         Ea aux = this.action;
         super.setAction(action);
-        impl.notifyAltered(NCLElementSets.ACTIONS, aux, action);
+        impl.notifyAltered(NCLElementAttributes.ACTION, aux, action);
     }
     
         
-    /**
-     * Adiciona um parâmetro ao conector causal NCL.     
-     * 
-     * @param param
-     *          parâmetro a ser adicionado ao conector.
-     * @return
-     *          verdadeiro se o parâmetro for adicionado.
-     *
-     * @see TreeSet#add
-     */    
     @Override
     public boolean addConnectorParam(Ep param) throws XMLException {
         if(super.addConnectorParam(param)){
@@ -121,33 +84,16 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     }
 
     
-    /**
-     * Remove um parâmetro do conector causal.
-     * 
-     * @param name
-     *          nome do parâmetro a ser removido do conector.
-     * @return
-     *          verdadeiro se o parâmetro for removido.
-     */    
     @Override
     public boolean removeConnectorParam(String name) throws XMLException {
-        for(Ep connp : conn_params){
-            if(connp.getName().equals(name))
-                return removeConnectorParam(connp);
+        if(super.removeConnectorParam(name)){
+            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, name);
+            return true;
         }
-
         return false;
     }
 
 
-    /**
-     * Remove um parâmetro do conector causal.
-     *
-     * @param param
-     *          parâmetro a ser removido do conector.
-     * @return
-     *          verdadeiro se o parâmetro for removido.
-     */
     @Override
     public boolean removeConnectorParam(Ep param) throws XMLException {
         if(super.removeConnectorParam(param)){
@@ -195,8 +141,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(hasConnectorParam()){
@@ -234,62 +180,62 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>connectorParam</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>connectorParam</i>.
-//     */
-//    protected P createConnectorParam() {
-//        return (P) new NCLConnectorParam(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>simpleCondition</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>simpleCondition</i>.
-//     */
-//    protected Co createSimpleCondition() {
-//        return (Co) new NCLSimpleCondition(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>compoundCondition</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>compoundCondition</i>.
-//     */
-//    protected Co createCompoundCondition() {
-//        return (Co) new NCLCompoundCondition(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>simpleAction</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>simpleAction</i>.
-//     */
-//    protected Ac createSimpleAction() {
-//        return (Ac) new NCLSimpleAction(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>compoundAction</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>compoundAction</i>.
-//     */
-//    protected Ac createCompoundAction() {
-//        return (Ac) new NCLCompoundAction(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>connectorParam</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>connectorParam</i>.
+     */
+    protected NCLConnectorParam createConnectorParam(String name) throws XMLException {
+        return new NCLConnectorParam(name);
+    }
+
+
+    /**
+     * Function to create the child element <i>simpleCondition</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>simpleCondition</i>.
+     */
+    protected NCLSimpleCondition createSimpleCondition() throws XMLException {
+        return new NCLSimpleCondition();
+    }
+
+
+    /**
+     * Function to create the child element <i>compoundCondition</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>compoundCondition</i>.
+     */
+    protected NCLCompoundCondition createCompoundCondition() throws XMLException {
+        return new NCLCompoundCondition();
+    }
+
+
+    /**
+     * Function to create the child element <i>simpleAction</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>simpleAction</i>.
+     */
+    protected NCLSimpleAction createSimpleAction() throws XMLException {
+        return new NCLSimpleAction();
+    }
+
+
+    /**
+     * Function to create the child element <i>compoundAction</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>compoundAction</i>.
+     */
+    protected NCLCompoundAction createCompoundAction() throws XMLException {
+        return new NCLCompoundAction();
+    }
 }

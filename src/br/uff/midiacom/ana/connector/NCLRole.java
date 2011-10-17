@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -45,110 +44,20 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-/**
- * Esta classe define um papel de conector da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePrototype<T, P> {
 
     
-    /**
-     * Construtor do papel.
-     * 
-     * @param name
-     *          String com o nome do papel.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o nome a ser atribuído for uma String vazia.
-     */
     public NCLRole(String name) throws XMLException {
         super(name);
-        impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Construtor do papel.
-     *
-     * @param name
-     *          elemento representando o nome do papel.
-     */
     public NCLRole(NCLDefaultConditionRole name) {
         super(name);
-        impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Construtor do papel.
-     *
-     * @param name
-     *          elemento representando o nome do papel.
-     */
     public NCLRole(NCLDefaultActionRole name) {
         super(name);
-        impl = (I) new NCLElementImpl(this);
-    }
-
-
-    /**
-     * Determina o nome do papel
-     *
-     * @param name
-     *          String com o nome do papel.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o nome a ser atribuído for uma String vazia.
-     */
-    @Override
-    public void setName(String name) throws XMLException {
-        String aux = this.name;
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
-    }
-
-
-    /**
-     * Determina o nome do papel seguindo um dos nomes de condição padrões.
-     *
-     * @param name
-     *          elemento representando o nome do papel.
-     */
-    @Override
-    public void setName(NCLDefaultConditionRole name) {
-        String aux = this.name;
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
-    }
-
-
-    /**
-     * Determina o nome do papel seguindo um dos nomes de ação padrões.
-     *
-     * @param name
-     *          elemento representando o nome do papel.
-     */
-    @Override
-    public void setName(NCLDefaultActionRole name) {
-        String aux = this.name;
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
-    }
-    
-    
-    /**
-     * Atribui um elemento pai ao papel.
-     *
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     * @return
-     *          verdadeiro se o elemento pai foi atribuido. Caso o papel já possua um elemento pai, o retorno será falso.
-     */
-    public boolean setParent(NCLElementImpl parent) {
-        if(this.parent != null && parent != null)
-            return false;
-
-        this.parent = parent;
-        return true;
     }
 }
