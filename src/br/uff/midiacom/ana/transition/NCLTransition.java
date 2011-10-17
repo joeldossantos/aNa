@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
@@ -53,12 +52,6 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define uma transição da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLTransition<T extends NCLTransition, P extends NCLElement, I extends NCLElementImpl>
         extends NCLTransitionPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 

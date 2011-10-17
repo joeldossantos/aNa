@@ -40,27 +40,16 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
 import java.util.TreeSet;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define uma base de transições da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTransition, Ei extends NCLImport>
         extends NCLTransitionBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
@@ -68,7 +57,10 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
     /**
      * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLTransitionBase() {}
+    public NCLTransitionBase() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
     /**
@@ -169,8 +161,8 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          elemento representando o elemento filho <i>importBase</i>.
      */
-    protected I createImportBase() {
-//        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    protected Ei createImportBase() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -181,7 +173,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          elemento representando o elemento filho <i>transition</i>.
      */
-    protected T createTransition() {
-//        return (T) new NCLTransition(getReader(), this);
+    protected Et createTransition(String id) throws XMLException {
+        return (Et) new NCLTransition(id);
     }
 }
