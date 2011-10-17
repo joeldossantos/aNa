@@ -49,38 +49,16 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define um parâmetro interno a um elemento <i>link</i> ou <i>bind</i>
- * da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLConnectorParam>
         extends NCLParamPrototype<T, P, I, Ec> implements NCLElement<T, P>{
     
     
-    /**
-     * Construtor do parâmetro interno a um elemento <i>link</i> ou <i>bind</i>.
-     * 
-     * @param paramType
-     *          define se o parâmetro é de um elemento <i>link</i> ou <i>bind</i>.
-     *
-     * @throws java.lang.NullPointerException
-     *          se o tipo for nulo.
-     */
     public NCLParam(NCLParamInstance paramType) throws XMLException {
         super(paramType);
         impl = (I) new NCLElementImpl(this);
     }
 
     
-    /**
-     * Attribui um <i>connectorParam</i> ao parâmetro.
-     * 
-     * @param connectorParam
-     *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
-     */
     @Override
     public void setName(Ec connectorParam) {
         Ec aux = this.name;
@@ -89,15 +67,6 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     }
     
         
-    /**
-     * Determina o valor do atributo value do parâmetro.
-     * 
-     * @param value
-     *          String contendo o valor a ser atribuído ao parâmetro.
-     *
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
-     */
     @Override
     public void setValue(StringType value) {
         StringType aux = this.value;

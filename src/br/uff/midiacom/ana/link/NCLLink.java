@@ -44,37 +44,22 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um elo de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLParam, Eb extends NCLBind, Ec extends NCLCausalConnector>
         extends NCLLinkPrototype<T, P, I, Ep, Eb, Ec> implements NCLIdentifiableElement<T, P>{
 
-    
 
-    /**
-     * Construtor do elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLLink() {}
+    public NCLLink() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Atribui um conector ao link.
-     * 
-     * @param xconnector
-     *          conector a ser atribuido ao link.
-     */
     @Override
     public void setXconnector(Ec xconnector) {
         Ec aux = this.xconnector;
@@ -83,16 +68,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Adiciona um parâmetro ao link.
-     * 
-     * @param param
-     *          elemento representando o parâmetro a ser adicionado.
-     * @return
-     *          verdadeiro se o parâmetro foi adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addLinkParam(Ep param) throws XMLException {
         if(super.addLinkParam(param)){
@@ -103,16 +78,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Remove um parâmetro do link.
-     * 
-     * @param param
-     *          elemento representando o parâmetro a ser removido.
-     * @return
-     *          verdadeiro se o parâmetro foi removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeLinkParam(Ep param) throws XMLException {
         if(super.removeLinkParam(param)){
@@ -123,16 +88,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Adiciona um bind ao link.
-     * 
-     * @param bind
-     *          elemento representando o bind a ser adicionado.
-     * @return
-     *          verdadeiro se o bind for adicionado.
-     *
-     * @see ArrayList#add
-     */
     @Override
     public boolean addBind(Eb bind) throws XMLException {
         if(super.addBind(bind)){
@@ -143,16 +98,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Remove um bind do link.
-     * 
-     * @param bind
-     *          elemento representando o bind a ser removido.
-     * @return
-     *          verdadeiro se o bind for removido.
-     *
-     * @see ArrayList#remove
-     */
     @Override
     public boolean removeBind(Eb bind) throws XMLException {
         if(super.removeBind(bind)){
@@ -191,8 +136,8 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() != null){
@@ -251,26 +196,26 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>linkParam</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>linkParam</i>.
-//     */
-//    protected P createLinkParam() {
-//        return (P) new NCLParam(NCLParamInstance.LINKPARAM, getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>bind</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>bind</i>.
-//     */
-//    protected B createBind() {
-//        return (B) new NCLBind(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>linkParam</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>linkParam</i>.
+     */
+    protected NCLParam createLinkParam() throws XMLException {
+        return new NCLParam(NCLParamInstance.LINKPARAM);
+    }
+
+
+    /**
+     * Function to create the child element <i>bind</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>bind</i>.
+     */
+    protected NCLBind createBind() throws XMLException {
+        return new NCLBind();
+    }
 }

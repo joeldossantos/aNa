@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLBindPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
@@ -52,29 +53,16 @@ import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define o elemento <i>bind</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um bind de um elo de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRole, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParam>
         extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep> implements NCLElement<T, P>{
 
 
-    /**
-     * Construtor do elemento <i>bind</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLBind() {}
+    public NCLBind() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Atribui um papel ao bind.
-     * 
-     * @param role
-     *          elemento representando o papel ao qual o bind será associado.
-     */
     @Override
     public void setRole(Er role) {
         Er aux = this.role;
@@ -83,12 +71,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Atribui um nó ao bind.
-     * 
-     * @param component
-     *          elemento representando o nó mapeado pelo bind.
-     */
     @Override
     public void setComponent(En component) {
         En aux = this.component;
@@ -97,12 +79,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Determina a interface do nó atribuído ao bind.
-     * 
-     * @param interfac
-     *          elemento representando a interface do nó.
-     */
     @Override
     public void setInterface(Ei interfac) {
         Ei aux = this.interfac;
@@ -111,12 +87,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
     
     
-    /**
-     * Atribui um descritor ao bind.
-     * 
-     * @param descriptor
-     *          elemento representando o descritor a ser atribuido.
-     */
     @Override
     public void setDescriptor(Ed descriptor) {
         Ed aux = this.descriptor;
@@ -125,16 +95,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
     
         
-    /**
-     * Adiciona um parâmetro ao bind.
-     *
-     * @param param
-     *          elemento representando o parâmetro a ser adicionado.
-     * @return
-     *          verdadeiro se o parâmetro foi adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addBindParam(Ep param) throws XMLException {
         if(super.addBindParam(param)){
@@ -145,16 +105,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
 
 
-    /**
-     * Remove um parâmetro do bind.
-     *
-     * @param param
-     *          elemento representando o parâmetro a ser removido.
-     * @return
-     *          verdadeiro se o parâmetro foi removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeBindParam(Ep param) throws XMLException {
         if(super.removeBindParam(param)){
@@ -192,8 +142,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() != null){
@@ -244,8 +194,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 //
 //        return false;
 //    }
-//
-//
+
+
 //    private R findRole(NCLCondition cond) {
 //        if(cond instanceof NCLSimpleCondition){
 //            if(((NCLSimpleCondition) cond).getRole().getName().equals(getRole().getName()))
@@ -269,8 +219,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 //        addWarning("Could not find role in connector with name: " + getRole().getName());
 //        return null;
 //    }
-//
-//
+
+
 //    private R findRole(NCLStatement stat) {
 //        if(stat instanceof NCLAssessmentStatement){
 //            List<NCLAttributeAssessment> attributes = ((NCLAssessmentStatement) stat).getAttributeAssessments();
@@ -291,8 +241,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 //        addWarning("Could not find role in connector with name: " + getRole().getName());
 //        return null;
 //    }
-//
-//
+
+
 //    private R findRole(NCLAction act) {
 //        if(act instanceof NCLSimpleAction){
 //            if(((NCLSimpleAction) act).getRole().getName().equals(getRole().getName()))
@@ -310,8 +260,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 //        addWarning("Could not find role in connector with name: " + getRole().getName());
 //        return null;
 //    }
-//
-//
+
+
 //    private void componentReference() {
 //        //Search for a component node in its parent
 //        if(getParent().getParent() == null){
@@ -334,8 +284,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 //
 //        addWarning("Could not find role in node with id: " + getComponent().getId());
 //    }
-//
-//
+
+
 //    private void interfaceReference() {
 //        //Search for the interface inside the node
 //        Set<I> ifaces;
@@ -415,14 +365,14 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>bindParam</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>bindParam</i>.
-//     */
-//    protected P createBindParam() {
-//        return (P) new NCLParam(NCLParamInstance.BINDPARAM, getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>bindParam</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>bindParam</i>.
+     */
+    protected NCLParam createBindParam() throws XMLException {
+        return new NCLParam(NCLParamInstance.BINDPARAM);
+    }
 }
