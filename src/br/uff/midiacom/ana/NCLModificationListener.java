@@ -70,10 +70,24 @@ public interface NCLModificationListener {
      *          elemento que teve seu conjunto de elementos filhos alterada (pai).
      * @param setName
      *          nome do conjunto de elementos que foi alterada.
-     * @param inserted
+     * @param removed
      *          elemento que foi removido da lista de elemento filhos (filho).
      **************************************************************************/
     public void removedElement(NCLElement source, NCLElementSets setName, NCLElement removed);
+
+
+    /***************************************************************************
+     * Método para notificar um objeto de que um elemento NCL (filho) foi removido
+     * em um conjunto de elementos NCL mantidos por um elemento NCL (pai).
+     *
+     * @param source
+     *          elemento que teve seu conjunto de elementos filhos alterada (pai).
+     * @param setName
+     *          nome do conjunto de elementos que foi alterada.
+     * @param removed
+     *          id do elemento que foi removido da lista de elemento filhos (filho).
+     **************************************************************************/
+    public void removedElement(NCLElement source, NCLElementSets setName, String removed);
 
 
     /***************************************************************************

@@ -90,7 +90,7 @@ public enum NCLElementAttributes {
     PLAYER("player"),
     POSITION("position"),
     QUALIFIER("qualifier"),
-//    RDFTREE("rdfTree"),
+    RDFTREE("rdfTree"),
     REFER("refer"),
     REGION("region"),
     RELATIVEBOTTOM("relativeBottom"),

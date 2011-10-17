@@ -76,11 +76,11 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
 
 
     /**
-     * Atribui um ouvinte para notificações de mudança do elemento. Caso o
-     * argumento seja nulo, não utilizará nenhum ouvinte.
+     * Sets the notification listener for the element. If the listener is null,
+     * the element will not notify its modifications.
      *
      * @param listener
-     *          objeto que receberá as notificações.
+     *          object to listen to modification notifications.
      */
     public void setModificationListener(NCLModificationListener listener) {
         this.listener = listener;
@@ -88,11 +88,11 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
 
 
     /**
-     * Retorna o ouvinte para notificações de mudança do elemento.
+     * Returns the element notification listener.
      *
      * @return
-     *          objeto que recebe as notificações ou null se nenhum ouvinte
-     *          estiver assiciado.
+     *          object to listen to modification notifications or null if no
+     *          listener is used.
      */
     public NCLModificationListener getModificationListener() {
         return listener;
@@ -118,12 +118,26 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
      *
      * @param setName
      *          name of the child set.
-     * @param inserted
+     * @param removed
      *          element removed.
      */
     public void notifyRemoved(NCLElementSets setName, NCLElement removed) {
         if(listener != null)
             (new NCLNotifier(1, listener, owner, setName, removed)).start();
+    }
+
+
+    /**
+     * Notify the listener about a child node removed.
+     *
+     * @param setName
+     *          name of the child set.
+     * @param removed
+     *          id of the element removed.
+     */
+    public void notifyRemoved(NCLElementSets setName, String removed) {
+        if(listener != null)
+            (new NCLNotifier(listener, owner, setName, removed)).start();
     }
 
 
@@ -150,6 +164,7 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
         private NCLElementAttributes attName;
         private NCLModificationListener listener;
         private Object oldV, newV;
+        private String other_id;
         private int type;
 
 
@@ -161,11 +176,21 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
             this.setName = setName;
             this.other = other;
         }
+        
+        
+        public NCLNotifier(NCLModificationListener listener, NCLElement source, NCLElementSets setName, String other) {
+            super();
+            this.type = 2;
+            this.listener = listener;
+            this.source = source;
+            this.setName = setName;
+            this.other_id = other;
+        }
 
 
         public NCLNotifier(NCLModificationListener listener, NCLElement source, NCLElementAttributes attName, Object oldV, Object newV) {
             super();
-            this.type = 2;
+            this.type = 3;
             this.listener = listener;
             this.source = source;
             this.attName = attName;
@@ -184,6 +209,9 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
                     listener.removedElement(source, setName, other);
                     return;
                 case 2:
+                    listener.removedElement(source, setName, other_id);
+                    return;
+                case 3:
                     listener.alteredElement(source, attName, oldV, newV);
                     return;
             }
