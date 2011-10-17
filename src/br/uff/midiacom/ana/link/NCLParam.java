@@ -40,16 +40,13 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLParamPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -61,11 +58,6 @@ import org.xml.sax.XMLReader;
  */
 public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLConnectorParam>
         extends NCLParamPrototype<T, P, I, Ec> implements NCLElement<T, P>{
-
-    private C name;
-    private String value;
-
-    private NCLParamInstance paramType;
     
     
     /**
@@ -77,38 +69,11 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
      * @throws java.lang.NullPointerException
      *          se o tipo for nulo.
      */
-    public NCLParam(NCLParamInstance paramType) throws NullPointerException {
-        if(paramType == null)
-            throw new NullPointerException("Null type");
-
-        this.paramType = paramType;
+    public NCLParam(NCLParamInstance paramType) throws XMLException {
+        super(paramType);
+        impl = (I) new NCLElementImpl(this);
     }
 
-
-    /**
-     * Construtor do parâmetro interno a um elemento <i>link</i> ou <i>bind</i>.
-     *
-     * @param paramType
-     *          define se o parâmetro é de um elemento <i>link</i> ou <i>bind</i>.
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     *
-     * @throws java.lang.NullPointerException
-     *          se o tipo for nulo.
-     */
-    public NCLParam(NCLParamInstance paramType, XMLReader reader, NCLElementImpl parent) throws NullPointerException {
-        if(paramType == null)
-            throw new NullPointerException("Null type");
-
-        this.paramType = paramType;
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-    }
-    
     
     /**
      * Attribui um <i>connectorParam</i> ao parâmetro.
@@ -116,22 +81,14 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
      * @param connectorParam
      *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
      */
-    public void setName(C connectorParam) {
-        notifyAltered(NCLElementAttributes.NAME, this.name, connectorParam);
-        this.name = connectorParam;
+    @Override
+    public void setName(Ec connectorParam) {
+        Ec aux = this.name;
+        super.setName(connectorParam);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
     }
     
-    
-    /**
-     * Retorna o <i>connectorParam</i> do parâmetro.
-     * 
-     * @return NCLConnectorParam representando o nome do parâmetro.
-     */
-    public C getName() {
-        return name;
-    }
-    
-    
+        
     /**
      * Determina o valor do atributo value do parâmetro.
      * 
@@ -141,117 +98,71 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(String value)  throws IllegalArgumentException {
-        if(value != null && "".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
-
-        notifyAltered(NCLElementAttributes.VALUE, this.value, value);
-        this.value = value;
-    }
-    
-    
-    /**
-     * Retorna o valor do atributo value do parâmetro.
-     * 
-     * @return
-     *          String contendo o valor atribuído ao parâmetro.
-     */
-    public String getValue() {
-        return value;
-    }
-
-
-    public NCLParamInstance getType() {
-        return paramType;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        
-        // param element and attributes declaration
-        content = space + "<" + paramType.toString();
-        if(getName() != null)
-            content += " name='" + getName().getName() + "'";
-        if(getValue() != null)
-            content += " value='" + getValue() + "'";
-        content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    public int compareTo(P other) {
-        return getName().compareTo(other.getName());
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("name"))
-                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//cast retirado na correcao das referencias
-                else if(attributes.getLocalName(i).equals("value"))
-                    setValue(attributes.getValue(i));
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
+    public void setValue(StringType value) {
+        StringType aux = this.value;
+        super.setValue(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
+    
+    
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("name"))
+//                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//cast retirado na correcao das referencias
+//                else if(attributes.getLocalName(i).equals("value"))
+//                    setValue(attributes.getValue(i));
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(getParent() == null)
+//            return;
+//
+//        if(getName() != null)
+//            nameReference();
+//    }
 
 
-    @Override
-    public void endDocument() {
-        if(getParent() == null)
-            return;
-
-        if(getName() != null)
-            nameReference();
-    }
-
-
-    private void nameReference() {
-        //Search for the connector parameter inside the connector
-        NCLElementImpl link = getParent();
-
-        while(!(link instanceof NCLLink)){
-            link = link.getParent();{
-                if(link == null){
-                    addWarning("Could not find a parent link");
-                    return;
-                }
-            }
-        }
-
-        if(((NCLLink) link).getXconnector() == null){
-            addWarning("Could not find a connector");
-            return;
-        }
-
-        Set<C> params = ((NCLLink) link).getXconnector().getConnectorParams();
-
-        for(C param : params){
-            if(param.getName().equals(getName().getName())){
-                setName(param);
-                return;
-            }
-        }
-
-        addWarning("Could not find connectorParam in connector with name: " + getName().getName());
-    }
+//    private void nameReference() {
+//        //Search for the connector parameter inside the connector
+//        NCLElementImpl link = getParent();
+//
+//        while(!(link instanceof NCLLink)){
+//            link = link.getParent();{
+//                if(link == null){
+//                    addWarning("Could not find a parent link");
+//                    return;
+//                }
+//            }
+//        }
+//
+//        if(((NCLLink) link).getXconnector() == null){
+//            addWarning("Could not find a connector");
+//            return;
+//        }
+//
+//        Set<C> params = ((NCLLink) link).getXconnector().getConnectorParams();
+//
+//        for(C param : params){
+//            if(param.getName().equals(getName().getName())){
+//                setName(param);
+//                return;
+//            }
+//        }
+//
+//        addWarning("Could not find connectorParam in connector with name: " + getName().getName());
+//    }
 
 
     public void load(Element element) throws XMLException {

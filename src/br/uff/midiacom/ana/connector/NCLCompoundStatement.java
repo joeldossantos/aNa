@@ -46,11 +46,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -63,37 +59,12 @@ import org.xml.sax.XMLReader;
 public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement>
         extends NCLCompoundStatementPrototype<T, P, I, Es> implements NCLStatement<Es, P> {
 
-    private NCLOperator operator;
-    private Boolean isNegated;
-    
-    private List<S> statements = new ArrayList<S>();
-
-    private boolean insideStatement;
-
 
     /**
      * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLCompoundStatement() {}
 
-
-    /**
-     * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLCompoundStatement(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
-
-        insideStatement = false;
-    }
-    
     
     /**
      * Determina o operador da assertiva composta.
@@ -101,46 +72,28 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      * @param operator
      *          elemento representando o operador a ser atribuido.
      */
+    @Override
     public void setOperator(NCLOperator operator) {
-        notifyAltered(NCLElementAttributes.OPERATOR, this.operator, operator);
-        this.operator = operator;
+        NCLOperator aux = this.operator;
+        super.setOperator(operator);
+        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
-    
-    /**
-     * Retorna o operador atribuido a assertiva composta.
-     * 
-     * @return
-     *          elemento representando o operador atribuido.
-     */
-    public NCLOperator getOperator() {
-        return operator;
-    }
-    
-    
+        
     /**
      * Determina se a assertiva composta está negada.
      * 
      * @param isNegated
      *          booleano que define se a assertiva está negada.
      */
+    @Override
     public void setIsNegated(Boolean isNegated) {
-        notifyAltered(NCLElementAttributes.ISNEGATED, this.isNegated, isNegated);
-        this.isNegated = isNegated;
+        Boolean aux = this.isNegated;
+        super.setIsNegated(isNegated);
+        impl.notifyAltered(NCLElementAttributes.ISNEGATED, aux, isNegated);
     }
     
-    
-    /**
-     * Retorna se a assertiva composta está negada.
-     * 
-     * @return
-     *          booleano que define se a assertiva está negada.
-     */
-    public Boolean getIsNegated() {
-        return isNegated;
-    }
-    
-    
+        
     /**
      * Adiciona uma assertiva a assertiva composta.
      * 
@@ -151,12 +104,10 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      *
      * @see ArrayList#add
      */
-    public boolean addStatement(S statement) {
-        if(statement!= null && statements.add(statement)){
-            //atribui este como parente do atributo
-            statement.setParent(this);
-
-            notifyInserted(NCLElementSets.STATEMENTS, statement);
+    @Override
+    public boolean addStatement(Es statement) throws XMLException {
+        if(super.addStatement(statement)){
+            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
             return true;
         }
         return false;
@@ -173,169 +124,56 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      *
      * @see ArrayList#remove
      */
-    public boolean removeStatement(S statement) {
-        if(statements.remove(statement)){
-            //Se statement existe, retira o seu parentesco
-            if(statement != null)
-                statement.setParent(null);
-
-            notifyRemoved(NCLElementSets.STATEMENTS, statement);
+    @Override
+    public boolean removeStatement(Es statement) throws XMLException {
+        if(super.removeStatement(statement)){
+            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
             return true;
         }
         return false;
     }
     
-    
-    /**
-     * Verifica se a assertiva composta possui uma assertiva.
-     * 
-     * @param statement
-     *          elemento representando a assertiva a ser verificada.
-     * @return
-     *          verdadeiro se a assertiva existe.
-     */
-    public boolean hasStatement(S statement) {
-        return statements.contains(statement);
-    }
-    
-    
-    /**
-     * Verifica se a assertiva composta possui pelo menos uma assertiva.
-     * 
-     * @return
-     *          verdadeiro se a assertiva composta possuir pelo menos uma assertiva.
-     */
-    public boolean hasStatement() {
-        return !statements.isEmpty();
-    }
-    
-    
-    /**
-     * Retorna as assertivas da assertiva composta.
-     *
-     * @return
-     *          lista contendo as assertivas da assertiva composta.
-     */
-    public List<S> getStatements() {
-        return statements;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
 
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<compoundStatement";
-        if(getOperator() != null)
-            content += " operator='" + getOperator().toString() + "'";
-        if(getIsNegated() != null)
-            content += " isNegated='" + getIsNegated().toString() + "'";
-        content += ">\n";
-
-        if(hasStatement()){
-            for(S statement : statements)
-                content += statement.parse(ident + 1);
-        }
-
-        content += space + "</compoundStatement>\n";
-
-        return content;
-    }
-    
-    
-    public int compareTo(S other) {
-        int comp = 0;
-
-        String this_stat, other_stat;
-        NCLCompoundStatement other_comp;
-
-        // Verifica se sao do mesmo tipo
-        if(!(other instanceof NCLCompoundStatement))
-            return 1;
-
-        other_comp = (NCLCompoundStatement) other;
-        
-        // Compara pelo operador
-        if(comp == 0){
-            if(getOperator() == null) this_stat = ""; else this_stat = getOperator().toString();
-            if(other_comp.getOperator() == null) other_stat = ""; else other_stat = other_comp.getOperator().toString();
-            comp = this_stat.compareTo(other_stat);
-        }
-
-        // Compara pelo isNegated
-        if(comp == 0){
-            if(getIsNegated() == null) this_stat = ""; else this_stat = getIsNegated().toString();
-            if(other_comp.getIsNegated() == null) other_stat = ""; else other_stat = other_comp.getIsNegated().toString();
-            comp = this_stat.compareTo(other_stat);
-        }
-
-        // Compara o número de statements
-        if(comp == 0)
-            comp = statements.size() - ((List) other_comp.getStatements()).size();
-
-        // Compara as statements
-        if(comp == 0){
-            Iterator it = other_comp.getStatements().iterator();
-            for(NCLStatement st : statements){
-                NCLStatement other_st = (NCLStatement) it.next();
-                comp = st.compareTo(other_st);
-                if(comp != 0)
-                    break;
-            }
-        }
-
-
-        return comp;
-    }
-    
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if(localName.equals("compoundStatement") && !insideStatement){
-            cleanWarnings();
-            cleanErrors();
-            insideStatement = true;
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("operator")){
-                    for(NCLOperator o : NCLOperator.values()){
-                        if(o.toString().equals(attributes.getValue(i)))
-                            setOperator(o);
-                    }
-                }
-                else if(attributes.getLocalName(i).equals("isNegated"))
-                    setIsNegated(new Boolean(attributes.getValue(i)));
-            }
-        }
-        else if(localName.equals("assessmentStatement")){
-            S child = createAssessmentStatement();
-            child.startElement(uri, localName, qName, attributes);
-            addStatement(child);
-        }
-        else if(localName.equals("compoundStatement") && insideStatement){
-            S child = createCompoundStatement();
-            child.startElement(uri, localName, qName, attributes);
-            addStatement(child);
-        }
-    }
-
-
-    @Override
-    public void endDocument() {
-        if(hasStatement()){
-            for(S statement : statements){
-                statement.endDocument();
-                addWarning(statement.getWarnings());
-                addError(statement.getErrors());
-            }
-        }
-    }
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        if(localName.equals("compoundStatement") && !insideStatement){
+//            cleanWarnings();
+//            cleanErrors();
+//            insideStatement = true;
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("operator")){
+//                    for(NCLOperator o : NCLOperator.values()){
+//                        if(o.toString().equals(attributes.getValue(i)))
+//                            setOperator(o);
+//                    }
+//                }
+//                else if(attributes.getLocalName(i).equals("isNegated"))
+//                    setIsNegated(new Boolean(attributes.getValue(i)));
+//            }
+//        }
+//        else if(localName.equals("assessmentStatement")){
+//            S child = createAssessmentStatement();
+//            child.startElement(uri, localName, qName, attributes);
+//            addStatement(child);
+//        }
+//        else if(localName.equals("compoundStatement") && insideStatement){
+//            S child = createCompoundStatement();
+//            child.startElement(uri, localName, qName, attributes);
+//            addStatement(child);
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(hasStatement()){
+//            for(S statement : statements){
+//                statement.endDocument();
+//                addWarning(statement.getWarnings());
+//                addError(statement.getErrors());
+//            }
+//        }
+//    }
 
 
     public void load(Element element) throws XMLException {
@@ -353,26 +191,26 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
     }
 
 
-    /**
-     * Função de criação do elemento filho <i>assessmentStatement</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>assessmentStatement</i>.
-     */
-    protected S createAssessmentStatement() {
-        return (S) new NCLAssessmentStatement(getReader(), this);
-    }
-
-
-    /**
-     * Função de criação do elemento filho <i>compoundStatement</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-     *
-     * @return
-     *          elemento representando o elemento filho <i>compoundStatement</i>.
-     */
-    protected S createCompoundStatement() {
-        return (S) new NCLCompoundStatement(getReader(), this);
-    }
+//    /**
+//     * Função de criação do elemento filho <i>assessmentStatement</i>.
+//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+//     *
+//     * @return
+//     *          elemento representando o elemento filho <i>assessmentStatement</i>.
+//     */
+//    protected S createAssessmentStatement() {
+//        return (S) new NCLAssessmentStatement(getReader(), this);
+//    }
+//
+//
+//    /**
+//     * Função de criação do elemento filho <i>compoundStatement</i>.
+//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+//     *
+//     * @return
+//     *          elemento representando o elemento filho <i>compoundStatement</i>.
+//     */
+//    protected S createCompoundStatement() {
+//        return (S) new NCLCompoundStatement(getReader(), this);
+//    }
 }

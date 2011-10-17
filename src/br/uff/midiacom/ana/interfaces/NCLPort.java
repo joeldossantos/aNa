@@ -37,23 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
-import br.uff.midiacom.ana.node.NCLContext;
-import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.ana.node.NCLSwitch;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -66,9 +57,6 @@ import org.xml.sax.XMLReader;
 public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
         extends NCLPortPrototype<T, P, I, En, Ei> implements NCLInterface<Ei, P> {
 
-    private N component;
-    private I interfac;
-
 
     /**
      * Construtor do elemento <i>port</i> da <i>Nested Context Language</i> (NCL).
@@ -78,24 +66,9 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador for inválido.
      */
-    public NCLPort(String id) throws NCLInvalidIdentifierException {
-        setId(id);
-    }
-
-
-    /**
-     * Construtor do elemento <i>port</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param reader
-     *          elemento representando o leitor XML do parser SAX.
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     */
-    public NCLPort(XMLReader reader, NCLElementImpl parent) {
-        setReader(reader);
-        setParent(parent);
-
-        getReader().setContentHandler(this);
+    public NCLPort(String id) throws XMLException {
+        super(id);
+        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -105,178 +78,129 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
      * @param component
      *          elemento representando o nó.
      */
-    public void setComponent(N component) {
-        notifyAltered(NCLElementAttributes.COMPONENT, this.component, component);
-        this.component = component;
+    @Override
+    public void setComponent(En component) {
+        En aux = this.component;
+        super.setComponent(component);
+        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
     }
     
-    
-    /**
-     * Retorna o nó atribuido a porta.
-     * 
-     * @return
-     *          elemento representando o nó.
-     */
-    public N getComponent() {
-        return component;
-    }
-    
-    
+        
     /**
      * Determina a interface de nó atributa a porta.
      * 
      * @param interfac
      *          elemento representando a interface do nó.
      */
-    public void setInterface(I interfac) {
-        notifyAltered(NCLElementAttributes.INTERFACE, this.interfac, interfac);
-        this.interfac = interfac;
-    }
-    
-    
-    /**
-     * Retorna a interface de nó atributa a porta.
-     * 
-     * @return
-     *          elemento representando a interface do nó.
-     */
-    public I getInterface() {
-        return interfac;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        
-        // <port> element and attributes declaration
-        content = space + "<port";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getComponent() != null)
-            content += " component='" + getComponent().getId() + "'";
-        if(getInterface() != null)
-            content += " interface='" + getInterface().getId() + "'";
-        content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    public int compareTo(I other) {
-        return getId().compareTo(other.getId());
-    }
-
-
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        try{
-            cleanWarnings();
-            cleanErrors();
-            for(int i = 0; i < attributes.getLength(); i++){
-                if(attributes.getLocalName(i).equals("id"))
-                    setId(attributes.getValue(i));
-                else if(attributes.getLocalName(i).equals("component"))
-                    setComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
-                else if(attributes.getLocalName(i).equals("interface"))
-                    setInterface((I) new NCLPort(attributes.getValue(i)));//cast retirado na correcao das referencias
-            }
-        }
-        catch(NCLInvalidIdentifierException ex){
-            addError(ex.getMessage());
-        }
+    public void setInterface(Ei interfac) {
+        Ei aux = this.interfac;
+        super.setInterface(interfac);
+        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
     }
-
-
-    @Override
-    public void endDocument() {
-        if(getParent() == null)
-            return;
-
-        if(getComponent() != null)
-            componentReference();
-
-        if(getComponent() != null && getInterface() != null)
-            interfaceReference();
-    }
-
-
-    private void componentReference() {
-        //Search for a component node in its parent
-        Set<N> nodes;
-        
-        if(getParent() instanceof NCLBody)
-            nodes = ((NCLBody) getParent()).getNodes();
-        else
-            nodes = ((NCLContext) getParent()).getNodes();
-
-        for(N node : nodes){
-            if(node.getId().equals(getComponent().getId())){
-                setComponent(node);
-                return;
-            }
-        }
-
-        addWarning("Could not find node with id: " + getComponent().getId());
-    }
-
-
-    private void interfaceReference() {
-        //Search for the interface inside the node
-        Set<I> ifaces;
-
-        if(getComponent() instanceof NCLMedia){
-            ifaces = ((NCLMedia) getComponent()).getAreas();
-            for(I iface : ifaces){
-                if(iface.getId().equals(getInterface().getId())){
-                    setInterface(iface);
-                    return;
-                }
-            }
-            ifaces = ((NCLMedia) getComponent()).getProperties();
-            for(I iface : ifaces){
-                if(iface.getId().equals(getInterface().getId())){
-                    setInterface(iface);
-                    return;
-                }
-            }
-        }
-        else if(getComponent() instanceof NCLContext){
-            ifaces = ((NCLContext) getComponent()).getPorts();
-            for(I iface : ifaces){
-                if(iface.getId().equals(getInterface().getId())){
-                    setInterface(iface);
-                    return;
-                }
-            }
-            ifaces = ((NCLContext) getComponent()).getProperties();
-            for(I iface : ifaces){
-                if(iface.getId().equals(getInterface().getId())){
-                    setInterface(iface);
-                    return;
-                }
-            }
-        }
-        else if(getComponent() instanceof NCLSwitch){
-            ifaces = ((NCLSwitch) getComponent()).getPorts();
-            for(I iface : ifaces){
-                if(iface.getId().equals(getInterface().getId())){
-                    setInterface(iface);
-                    return;
-                }
-            }
-        }
-
-        addWarning("Could not find interface with id: " + getInterface().getId());
-    }
+    
+    
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        try{
+//            cleanWarnings();
+//            cleanErrors();
+//            for(int i = 0; i < attributes.getLength(); i++){
+//                if(attributes.getLocalName(i).equals("id"))
+//                    setId(attributes.getValue(i));
+//                else if(attributes.getLocalName(i).equals("component"))
+//                    setComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
+//                else if(attributes.getLocalName(i).equals("interface"))
+//                    setInterface((I) new NCLPort(attributes.getValue(i)));//cast retirado na correcao das referencias
+//            }
+//        }
+//        catch(NCLInvalidIdentifierException ex){
+//            addError(ex.getMessage());
+//        }
+//    }
+//
+//
+//    @Override
+//    public void endDocument() {
+//        if(getParent() == null)
+//            return;
+//
+//        if(getComponent() != null)
+//            componentReference();
+//
+//        if(getComponent() != null && getInterface() != null)
+//            interfaceReference();
+//    }
+//
+//
+//    private void componentReference() {
+//        //Search for a component node in its parent
+//        Set<N> nodes;
+//
+//        if(getParent() instanceof NCLBody)
+//            nodes = ((NCLBody) getParent()).getNodes();
+//        else
+//            nodes = ((NCLContext) getParent()).getNodes();
+//
+//        for(N node : nodes){
+//            if(node.getId().equals(getComponent().getId())){
+//                setComponent(node);
+//                return;
+//            }
+//        }
+//
+//        addWarning("Could not find node with id: " + getComponent().getId());
+//    }
+//
+//
+//    private void interfaceReference() {
+//        //Search for the interface inside the node
+//        Set<I> ifaces;
+//
+//        if(getComponent() instanceof NCLMedia){
+//            ifaces = ((NCLMedia) getComponent()).getAreas();
+//            for(I iface : ifaces){
+//                if(iface.getId().equals(getInterface().getId())){
+//                    setInterface(iface);
+//                    return;
+//                }
+//            }
+//            ifaces = ((NCLMedia) getComponent()).getProperties();
+//            for(I iface : ifaces){
+//                if(iface.getId().equals(getInterface().getId())){
+//                    setInterface(iface);
+//                    return;
+//                }
+//            }
+//        }
+//        else if(getComponent() instanceof NCLContext){
+//            ifaces = ((NCLContext) getComponent()).getPorts();
+//            for(I iface : ifaces){
+//                if(iface.getId().equals(getInterface().getId())){
+//                    setInterface(iface);
+//                    return;
+//                }
+//            }
+//            ifaces = ((NCLContext) getComponent()).getProperties();
+//            for(I iface : ifaces){
+//                if(iface.getId().equals(getInterface().getId())){
+//                    setInterface(iface);
+//                    return;
+//                }
+//            }
+//        }
+//        else if(getComponent() instanceof NCLSwitch){
+//            ifaces = ((NCLSwitch) getComponent()).getPorts();
+//            for(I iface : ifaces){
+//                if(iface.getId().equals(getInterface().getId())){
+//                    setInterface(iface);
+//                    return;
+//                }
+//            }
+//        }
+//
+//        addWarning("Could not find interface with id: " + getInterface().getId());
+//    }
 
 
     public void load(Element element) throws XMLException {
