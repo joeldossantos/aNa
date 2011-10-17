@@ -54,25 +54,12 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
         extends NCLRuleBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
-     */
     public NCLRuleBase() throws XMLException {
         super();
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Adiciona uma regra a base de regras.
-     *
-     * @param rule
-     *          elemento representando a regra a ser adicionada.
-     * @return
-     *          verdadeiro se a regra foi adicionada.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addRule(Et rule) throws XMLException {
         if(super.addRule(rule)){
@@ -83,16 +70,6 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     }
 
 
-    /**
-     * Remove uma regra da base de regras.
-     *
-     * @param rule
-     *          elemento representando a regra a ser removida.
-     * @return
-     *          verdadeiro se a regra foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeRule(Et rule) throws XMLException {
         if(super.removeRule(rule)){
@@ -103,14 +80,16 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     }
 
 
-    /**
-     * Adiciona um importador de base à base de regras.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
-     */
+    @Override
+    public boolean removeRule(String id) throws XMLException {
+        if(super.removeRule(id)){
+            impl.notifyRemoved(NCLElementSets.RULES, id);
+            return true;
+        }
+        return false;
+    }
+
+
     @Override
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(super.addImportBase(importBase)){
@@ -121,14 +100,6 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     }
 
 
-    /**
-     * Remove um importador de base da base de regras.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(super.removeImportBase(importBase)){
@@ -207,11 +178,11 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
 
 
     /**
-     * Função de criação do elemento filho <i>importBase</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>importBase</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>importBase</i>.
+     *          element representing the child <i>importBase</i>.
      */
     protected NCLImport createImportBase() throws XMLException {
         return new NCLImport(NCLImportType.BASE);
@@ -219,11 +190,11 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
 
 
     /**
-     * Função de criação do elemento filho <i>rule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>rule</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>rule</i>.
+     *          element representing the child <i>rule</i>.
      */
     protected NCLRule createRule(String id) throws XMLException {
         return new NCLRule(id);
@@ -231,11 +202,11 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
 
 
     /**
-     * Função de criação do elemento filho <i>compositeRule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>compositeRule</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>compositeRule</i>.
+     *          element representing the child <i>compositeRule</i>.
      */
     protected NCLCompositeRule createCompositeRule(String id) throws XMLException {
         return new NCLCompositeRule(id);

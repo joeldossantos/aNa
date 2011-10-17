@@ -53,26 +53,12 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
         extends NCLRulePrototype<T, P, I, Ep> implements NCLTestRule<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>rule</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da regra.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da regra não for válido.
-     */
     public NCLRule(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui uma propriedade ao atributo var.
-     *
-     * @param var
-     *          elemento representando a propriedade associada ao atributo.
-     */
     @Override
     public void setVar(Ep var) {
         NCLElement aux = (NCLElement) this.var;
@@ -81,12 +67,6 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Atribui um comparador a regra.
-     *
-     * @param comparator
-     *          elemento representando o comparador da regra.
-     */
     @Override
     public void setComparator(NCLComparator comparator) {
         NCLComparator aux = this.comparator;
@@ -95,15 +75,6 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Atribui um valor de comparação a regra.
-     *
-     * @param value
-     *          String representando o valor de comparação.
-     *
-     * @throws IllegalArgumentException
-     *          se a String for vazia.
-     */
     @Override
     public void setValue(String value) throws XMLException {
         StringType aux = this.value;
