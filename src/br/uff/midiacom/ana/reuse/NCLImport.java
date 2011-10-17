@@ -39,57 +39,29 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.region.NCLRegion;
-import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Set;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define o elemento de importação da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion>
         extends NCLImportPrototype<T, P, I, Er> implements NCLElement<T, P> {
 
 
-    /**
-     * Construtor do elemento de importação.
-     * 
-     * @param type
-     *          tipo do elemento, importBase ou importNCL.
-     * 
-     * @throws java.lang.NullPointerException
-     *          se o tipo for nulo.
-     */
-    public NCLImport(NCLImportType type) throws NullPointerException, XMLException {
+    public NCLImport(NCLImportType type) throws XMLException {
         super(type);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui um alias ao elemento de importação.
-     *
-     * @param alias
-     *          String representando o alias.
-     */
     @Override
     public void setAlias(String alias) throws XMLException {
         StringType aux = this.alias;
@@ -98,17 +70,6 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Atribui o endereço do documento sendo importado.
-     *
-     * @param documentURI
-     *          String representando o endereço.
-     *
-     * @throws java.net.URISyntaxException
-     *          se o endereço não for válido.
-     *
-     * @see java.net.URI
-     */
     @Override
     public void setDocumentURI(SrcType documentURI) throws XMLException{
         SrcType aux = this.documentURI;
@@ -117,12 +78,6 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Atribui uma região ao importador.
-     *
-     * @param region
-     *          elemento representando a região associada.
-     */
     @Override
     public void setRegion(Er region) {
         Er aux = this.region;
@@ -165,47 +120,47 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
 //    }
 
 
-    private void regionReference() {
-        //Search for the interface inside the node
-        NCLElementImpl head = getParent();
+//    private void regionReference() {
+//        //Search for the interface inside the node
+//        NCLElementImpl head = getParent();
+//
+//        while(!(head instanceof NCLHead)){
+//            head = head.getParent();
+//            if(head == null){
+//                addWarning("Could not find a head");
+//                return;
+//            }
+//        }
+//
+//        if(!((NCLHead) head).hasRegionBase()){
+//            addWarning("Could not find a regionBase");
+//        }
+//
+//        R reg = null;
+//        for(NCLRegionBase base : (Set<NCLRegionBase>) ((NCLHead) head).getRegionBases()){
+//            reg = findRegion(base.getRegions());
+//        }
+//        if(reg == null)
+//            addWarning("Could not find region in regionBase with id: " + getRegion().getId());
+//
+//        setRegion(reg);
+//    }
 
-        while(!(head instanceof NCLHead)){
-            head = head.getParent();
-            if(head == null){
-                addWarning("Could not find a head");
-                return;
-            }
-        }
 
-        if(!((NCLHead) head).hasRegionBase()){
-            addWarning("Could not find a regionBase");
-        }
-
-        R reg = null;
-        for(NCLRegionBase base : (Set<NCLRegionBase>) ((NCLHead) head).getRegionBases()){
-            reg = findRegion(base.getRegions());
-        }
-        if(reg == null)
-            addWarning("Could not find region in regionBase with id: " + getRegion().getId());
-
-        setRegion(reg);
-    }
-
-
-    private R findRegion(Set<R> regions) {
-        for(R reg : regions){
-            if(reg.getId().equals(getRegion().getId()))
-                return (R) reg;
-            else if(reg.hasRegion())
-            {
-                R r = findRegion(reg.getRegions());
-                if(r != null)
-                    return (R) r;
-            }
-        }
-
-        return null;
-    }
+//    private R findRegion(Set<R> regions) {
+//        for(R reg : regions){
+//            if(reg.getId().equals(getRegion().getId()))
+//                return (R) reg;
+//            else if(reg.hasRegion())
+//            {
+//                R r = findRegion(reg.getRegions());
+//                if(r != null)
+//                    return (R) r;
+//            }
+//        }
+//
+//        return null;
+//    }
 
 
     public void load(Element element) throws XMLException {
@@ -214,11 +169,11 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
 
 
     public void setModificationListener(NCLModificationListener listener) {
-//        impl.setModificationListener(listener);
+        impl.setModificationListener(listener);
     }
 
 
     public NCLModificationListener getModificationListener() {
-//        return impl.getModificationListener();
+        return impl.getModificationListener();
     }
 }

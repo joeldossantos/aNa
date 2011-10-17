@@ -40,43 +40,25 @@ package br.uff.midiacom.ana.reuse;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
 import java.util.TreeSet;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define uma base de documentos importados da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLImport>
         extends NCLImportedDocumentBasePrototype<T, P, I, Ei> implements NCLIdentifiableElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>importedDocumentBase</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLImportedDocumentBase() {}
+    public NCLImportedDocumentBase() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
-    /**
-     * Adiciona um importador de documento à base de documentos importados.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addImportNCL(Ei importNCL) throws XMLException {
         if(super.addImportNCL(importNCL)){
@@ -87,14 +69,6 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
     }
 
 
-    /**
-     * Remove um importador de documento da base de documentos importados.
-     *
-     * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeImportNCL(Ei importNCL) throws XMLException {
         if(super.removeImportNCL(importNCL)){
@@ -146,23 +120,23 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
 
 
     public void setModificationListener(NCLModificationListener listener) {
-//        impl.setModificationListener(listener);
+        impl.setModificationListener(listener);
     }
 
 
     public NCLModificationListener getModificationListener() {
-//        return impl.getModificationListener();
+        return impl.getModificationListener();
     }
 
 
     /**
-     * Função de criação do elemento filho <i>importNCL</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>importNCL</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>importNCL</i>.
+     *          element representing the child <i>importNCL</i>.
      */
-    protected I createImportNCL() {
-//        return (I) new NCLImport(NCLImportType.NCL, getReader(), this);
+    protected NCLImport createImportNCL() throws XMLException {
+        return new NCLImport(NCLImportType.NCL);
     }
 }
