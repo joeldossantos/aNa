@@ -40,19 +40,16 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import java.util.TreeSet;
+import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define uma base de regras de teste da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTestRule, Ei extends NCLImport>
         extends NCLRuleBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
 
@@ -60,7 +57,10 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     /**
      * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLRuleBase() {}
+    public NCLRuleBase() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
 
     /**
@@ -111,6 +111,7 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      *
      * @see TreeSet#add
      */
+    @Override
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(super.addImportBase(importBase)){
             impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
@@ -190,6 +191,21 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
 //    }
 
 
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
+    }
+
+
     /**
      * Função de criação do elemento filho <i>importBase</i>.
      * Esta função deve ser sobrescrita em classes que estendem esta classe.
@@ -197,8 +213,8 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      * @return
      *          elemento representando o elemento filho <i>importBase</i>.
      */
-    protected I createImportBase() {
-//        return (I) new NCLImport(NCLImportType.BASE, getReader(), this);
+    protected NCLImport createImportBase() throws XMLException {
+        return new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -209,8 +225,8 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      * @return
      *          elemento representando o elemento filho <i>rule</i>.
      */
-    protected T createRule() {
-//        return (T) new NCLRule(getReader(), this);
+    protected NCLRule createRule(String id) throws XMLException {
+        return new NCLRule(id);
     }
 
 
@@ -221,7 +237,7 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      * @return
      *          elemento representando o elemento filho <i>compositeRule</i>.
      */
-    protected T createCompositeRule() {
-//        return (T) new NCLCompositeRule(getReader(), this);
+    protected NCLCompositeRule createCompositeRule(String id) throws XMLException {
+        return new NCLCompositeRule(id);
     }
 }

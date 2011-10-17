@@ -146,7 +146,7 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
      *
      * @see TreeSet#add
      */
-    public boolean addImportNCL(Ei importBase) throws XMLException {
+    public boolean addImportBase(Ei importBase) throws XMLException {
         return imports.add(importBase, (T) this);
     }
 

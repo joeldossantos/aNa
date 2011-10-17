@@ -38,34 +38,17 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.interfaces.NCLProperty;
-import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
-import br.uff.midiacom.ana.node.NCLContext;
-import br.uff.midiacom.ana.node.NCLMedia;
-import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.ana.node.NCLSwitch;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.Set;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define uma regra de teste da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLProperty>
         extends NCLRulePrototype<T, P, I, Ep> implements NCLTestRule<T, P> {
 
@@ -92,7 +75,7 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
      */
     @Override
     public void setVar(Ep var) {
-        NCLElement aux = this.var;
+        NCLElement aux = (NCLElement) this.var;
         super.setVar(var);
         impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
     }
@@ -122,14 +105,14 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
      *          se a String for vazia.
      */
     @Override
-    public void setValue(String value) throws IllegalArgumentException, XMLException {
+    public void setValue(String value) throws XMLException {
         StringType aux = this.value;
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
 
 
-    private void propertyReference() {
+//    private void propertyReference() {
         //Search for the interface inside the node
 //        NCLElementImpl doc = getParent();
 //
@@ -146,10 +129,10 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
 //        }
 //
 //        setVar(findProperty(((NCLDoc) doc).getBody().getNodes()));
-    }
+//    }
 
 
-    private P findProperty(Set<NCLNode> nodes) {
+//    private P findProperty(Set<NCLNode> nodes) {
 //        for(NCLNode n : nodes){
 //            if(n instanceof NCLMedia){
 //                if( ((NCLMedia) n).hasProperty()){
@@ -180,7 +163,7 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
 //
 //        addWarning("Could not find property with name: " + getVar().getName());
 //        return null;
-    }
+//    }
 
 
 //    @Override

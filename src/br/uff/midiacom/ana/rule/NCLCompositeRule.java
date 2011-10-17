@@ -49,12 +49,6 @@ import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
-/**
- * Esta classe define uma regra de teste composta da <i>Nested Context Language</i> (NCL).<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl>
         extends NCLCompositeRulePrototype<T, P, I> implements NCLTestRule<T, P> {
 
@@ -197,8 +191,8 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
      * @return
      *          elemento representando o elemento filho <i>compositeRule</i>.
      */
-    protected T createCompositeRule() {
-//        return (T) new NCLCompositeRule(getReader(), this);
+    protected NCLCompositeRule createCompositeRule(String id) throws XMLException {
+        return new NCLCompositeRule(id);
     }
 
 
@@ -209,7 +203,7 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
      * @return
      *          elemento representando o elemento filho <i>rule</i>.
      */
-    protected T createRule() {
-//        return (T) new NCLRule(getReader(), this);
+    protected NCLRule createRule(String id) throws XMLException {
+        return new NCLRule(id);
     }
 }
