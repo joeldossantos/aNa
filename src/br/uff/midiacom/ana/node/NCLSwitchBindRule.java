@@ -37,45 +37,26 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
-import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchBindRulePrototype;
-import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLException;
-import java.util.Set;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define o elemento <i>bindRule</i> de um switch da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um bind de um switch de um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Er extends NCLTestRule>
         extends NCLSwitchBindRulePrototype<T, P, I, En, Er> implements NCLElement<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLSwitchBindRule() {}
+    public NCLSwitchBindRule() throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+    }
 
     
-    /**
-     * Atribui um constituent ao bind.
-     *
-     * @param constituent
-     *          elemento representando o nó mapeado pelo bind.
-     */
     @Override
     public void setConstituent(En constituent) {
         En aux = this.constituent;
@@ -84,12 +65,6 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
     }
 
 
-    /**
-     * Atribui uma regra de avaliação ao bind.
-     *
-     * @param rule
-     *          elemento representando a regra de avaliação do bind.
-     */
     @Override
     public void setRule(Er rule) {
         Er aux = this.rule;
@@ -114,8 +89,8 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getParent() == null)
@@ -142,8 +117,8 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
 //
 //        addWarning("Could not find node in switch with id: " + getConstituent().getId());
 //    }
-//
-//
+
+
 //    private void ruleReference() {
 //        //Search for the interface inside the node
 //        Set<R> rules = getRules();

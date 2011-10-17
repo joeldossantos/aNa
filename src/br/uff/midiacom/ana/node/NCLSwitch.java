@@ -38,56 +38,26 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
-import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.XMLReader;
 
 
-/**
- * Esta classe define o elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define a apresentação de conteudos alternativos em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ep extends NCLSwitchPort, Eb extends NCLSwitchBindRule>
         extends NCLSwitchPrototype<T, P, I, En, Ep, Eb> implements NCLNode<En, P> {
 
 
-    /**
-     * Construtor do elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do switch.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do switch for inválido.
-     */
     public NCLSwitch(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui um switch para ser reutilizado pelo switch.
-     *
-     * @param refer
-     *          elemento representando o switch a ser reutilizado.
-     */
     @Override
     public void setRefer(T refer) {
         T aux = this.refer;
@@ -96,16 +66,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Adiciona uma porta ao switch.
-     *
-     * @param port
-     *          elemento representando a porta a ser adicionada.
-     * @return
-     *          Verdadeiro se a porta foi adicionada.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addPort(Ep port) throws XMLException {
         if(super.addPort(port)){
@@ -116,36 +76,16 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Remove uma porta do switch.
-     *
-     * @param id
-     *          identificador da porta a ser removida.
-     * @return
-     *          Verdadeiro se a porta foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removePort(String id) throws XMLException {
-        for(Ep port : ports){
-            if(port.getId().equals(id))
-                return removePort(port);
+        if(super.removePort(id)){
+            impl.notifyRemoved(NCLElementSets.PORTS, id);
+            return true;
         }
         return false;
     }
 
 
-    /**
-     * Remove uma porta do switch.
-     *
-     * @param port
-     *          elemento representando a porta a ser removida.
-     * @return
-     *          Verdadeiro se a porta foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removePort(Ep port) throws XMLException {
         if(super.removePort(port)){
@@ -156,12 +96,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Determina o componente padrão do switch.
-     *
-     * @param defaultComponent
-     *          elemento representando o componente padrão.
-     */
     @Override
     public void setDefaultComponent(En defaultComponent) {
         En aux = this.defaultComponent;
@@ -170,14 +104,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Adiciona um bind ao switch.
-     *
-     * @param bind
-     *          elemento representando o bind a ser adicionado.
-     *
-     * @see ArrayList#add
-     */
     @Override
     public boolean addBind(Eb bind) throws XMLException {
         if(super.addBind(bind)){
@@ -188,14 +114,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Remove um bind do switch.
-     *
-     * @param bind
-     *          elemento representando o bind a ser removido.
-     *
-     * @see ArrayList#remove
-     */
     @Override
     public boolean removeBind(Eb bind) throws XMLException {
         if(super.removeBind(bind)){
@@ -206,16 +124,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Adiciona um nó ao switch.
-     *
-     * @param node
-     *          elemento representando o nó a ser adicionado.
-     * @return
-     *          Verdadeiro se o nó foi adicionado.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addNode(En node) throws XMLException {
         if(super.addNode(node)){
@@ -226,36 +134,16 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    /**
-     * Remove um nó do switch.
-     *
-     * @param id
-     *          identificador do nó a ser removido.
-     * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
-    public boolean removeNode(String id) {
-        for(En node : nodes){
-            if(node.getId().equals(id))
-                return removeNode(node);
+    public boolean removeNode(String id) throws XMLException {
+        if(super.removeNode(id)){
+            impl.notifyRemoved(NCLElementSets.NODES, id);
+            return true;
         }
         return false;
     }
 
 
-    /**
-     * Remove um nó do switch.
-     *
-     * @param node
-     *          elemento representando um nó a ser removido.
-     * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeNode(En node) throws XMLException {
         if(super.removeNode(node)){
@@ -316,15 +204,15 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 //            addError(ex.getMessage());
 //        }
 //    }
-//
-//
+
+
 //    @Override
 //    public void endElement(String uri, String localName, String qName) {
 //        if(localName.equals("switch"))
 //            super.endElement(uri, localName, qName);
 //    }
-//
-//
+
+
 //    @Override
 //    public void endDocument() {
 //        if(getDefaultComponent() != null)
@@ -367,8 +255,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 //
 //        addWarning("Could not find node in switch with id: " + getDefaultComponent().getId());
 //    }
-//
-//
+
+
 //    private void switchReference() {
 //        //Search for the interface inside the node
 //        NCLElementImpl body = getParent();
@@ -383,8 +271,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 //
 //        setRefer(findSwitch(((NCLBody) body).getNodes()));
 //    }
-//
-//
+
+
 //    private S findSwitch(Set<N> nodes) {
 //        for(N n : nodes){
 //            if(n instanceof NCLContext){
@@ -427,62 +315,62 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-//    /**
-//     * Função de criação do elemento filho <i>bindRule</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>bindRule</i>.
-//     */
-//    protected B createBindRule() {
-//        return (B) new NCLSwitchBindRule(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>switchPort</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>switchPort</i>.
-//     */
-//    protected P createSwitchPort() {
-//        return (P) new NCLSwitchPort(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>media</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>media</i>.
-//     */
-//    protected N createMedia() {
-//        return (N) new NCLMedia(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>context</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>context</i>.
-//     */
-//    protected N createContext() {
-//        return (N) new NCLContext(getReader(), this);
-//    }
-//
-//
-//    /**
-//     * Função de criação do elemento filho <i>switch</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>switch</i>.
-//     */
-//    protected N createSwitch() {
-//        return (N) new NCLSwitch(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>bindRule</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>bindRule</i>.
+     */
+    protected NCLSwitchBindRule createBindRule() throws XMLException {
+        return new NCLSwitchBindRule();
+    }
+
+
+    /**
+     * Function to create the child element <i>switchPort</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>switchPort</i>.
+     */
+    protected NCLSwitchPort createSwitchPort(String id) throws XMLException {
+        return new NCLSwitchPort(id);
+    }
+
+
+    /**
+     * Function to create the child element <i>media</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>media</i>.
+     */
+    protected NCLMedia createMedia(String id) throws XMLException {
+        return new NCLMedia(id);
+    }
+
+
+    /**
+     * Function to create the child element <i>context</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>context</i>.
+     */
+    protected NCLContext createContext(String id) throws XMLException {
+        return new NCLContext(id);
+    }
+
+
+    /**
+     * Function to create the child element <i>switch</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>switch</i>.
+     */
+    protected NCLSwitch createSwitch(String id) throws XMLException {
+        return new NCLSwitch(id);
+    }
 }
