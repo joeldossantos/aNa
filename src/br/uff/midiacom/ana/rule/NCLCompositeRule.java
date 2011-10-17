@@ -45,7 +45,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLCompositeRulePrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
@@ -53,26 +52,12 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
         extends NCLCompositeRulePrototype<T, P, I> implements NCLTestRule<T, P> {
 
 
-    /**
-     * Construtor do elemento <i>compositeRule</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da regra.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da regra não for válido.
-     */
     public NCLCompositeRule(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
     }
 
 
-    /**
-     * Atribui um operador a regra composta.
-     *
-     * @param operator
-     *          elemento representando o operador da regra composta.
-     */
     @Override
     public void setOperator(NCLOperator operator) {
         NCLOperator aux = this.operator;
@@ -81,16 +66,6 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
-    /**
-     * Adiciona uma regra a regra composta.
-     *
-     * @param rule
-     *          elemento representando a regra a ser adicionada.
-     * @return
-     *          verdadeiro se a regra foi adicionada.
-     *
-     * @see TreeSet#add
-     */
     @Override
     public boolean addRule(T rule) throws XMLException {
         if(super.addRule(rule)){
@@ -101,20 +76,20 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
-    /**
-     * Remove uma regra da regra composta.
-     *
-     * @param rule
-     *          elemento representando a regra a ser removida.
-     * @return
-     *          verdadeiro se a regra foi removida.
-     *
-     * @see TreeSet#remove
-     */
     @Override
     public boolean removeRule(T rule) throws XMLException {
         if(super.removeRule(rule)){
             impl.notifyRemoved(NCLElementSets.RULES, rule);
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean removeRule(String id) throws XMLException {
+        if(super.removeRule(id)){
+            impl.notifyRemoved(NCLElementSets.RULES, id);
             return true;
         }
         return false;
@@ -185,11 +160,11 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
 
 
     /**
-     * Função de criação do elemento filho <i>compositeRule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>compositeRule</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>compositeRule</i>.
+     *          element representing the child <i>compositeRule</i>.
      */
     protected NCLCompositeRule createCompositeRule(String id) throws XMLException {
         return new NCLCompositeRule(id);
@@ -197,11 +172,11 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
 
 
     /**
-     * Função de criação do elemento filho <i>rule</i>.
-     * Esta função deve ser sobrescrita em classes que estendem esta classe.
+     * Function to create the child element <i>rule</i>.
+     * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          elemento representando o elemento filho <i>rule</i>.
+     *          element representing the child <i>rule</i>.
      */
     protected NCLRule createRule(String id) throws XMLException {
         return new NCLRule(id);
