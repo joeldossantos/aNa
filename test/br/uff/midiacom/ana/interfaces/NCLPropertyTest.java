@@ -116,26 +116,26 @@ public class NCLPropertyTest {
         }
     }
 
-    @Test
-    public void test2() {
-        try{
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-
-            NCLProperty instance = new NCLProperty(reader, null);
-            String expResult = "<property name='interacao' value='nao'/>\n";
-
-            reader.setContentHandler(instance);
-            reader.parse(new InputSource(new StringReader(expResult)));
-
-            String result = instance.parse(0);
-            //System.out.println(result);
-            assertEquals(expResult, result);
-        }
-        catch(SAXException ex){
-            fail(ex.getMessage());
-        }
-        catch(IOException ex){
-            fail(ex.getMessage());
-        }
-    }
+//    @Test
+//    public void test2() {
+//        try{
+//            XMLReader reader = XMLReaderFactory.createXMLReader();
+//
+//            NCLProperty instance = new NCLProperty(reader, null);
+//            String expResult = "<property name='interacao' value='nao'/>\n";
+//
+//            reader.setContentHandler(instance);
+//            reader.parse(new InputSource(new StringReader(expResult)));
+//
+//            String result = instance.parse(0);
+//            //System.out.println(result);
+//            assertEquals(expResult, result);
+//        }
+//        catch(SAXException ex){
+//            fail(ex.getMessage());
+//        }
+//        catch(IOException ex){
+//            fail(ex.getMessage());
+//        }
+//    }
 }
