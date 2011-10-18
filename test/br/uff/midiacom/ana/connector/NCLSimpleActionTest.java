@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.NCLInvalidIdentifierException;
+import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
 public class NCLSimpleActionTest {
 
     @Test
-    public void test_roleset() throws NCLInvalidIdentifierException, Exception {
+    public void test_roleset() throws XMLException {
         NCLSimpleAction nclel1, nclel2, nclel3, nclel4;
         boolean result = true;
 
