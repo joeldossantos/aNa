@@ -41,18 +41,18 @@ import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParam>
+public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParam>
         extends NCLIdentifiableElementPrototype<El, P, I> implements NCLLayoutDescriptor<El, P> {
 
     protected StringType player;
@@ -84,6 +84,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          se o identificador do descritor não for válido.
      */
     public NCLDescriptorPrototype(String id) throws XMLException {
+        super();
         setId(id);
         params = new ElementList<Ep, T>();
     }

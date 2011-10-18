@@ -63,6 +63,7 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      * Construtor do elemento <i>bind</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLBindPrototype() {
+        super();
         bindParams = new ElementList<Ep, T>();
     }
 

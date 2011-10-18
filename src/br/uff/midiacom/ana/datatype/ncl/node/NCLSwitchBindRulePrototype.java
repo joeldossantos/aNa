@@ -53,7 +53,9 @@ public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P 
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLSwitchBindRulePrototype() {}
+    public NCLSwitchBindRulePrototype() {
+        super();
+    }
 
     
     /**

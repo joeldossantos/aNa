@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
@@ -62,9 +63,10 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
      * @throws java.lang.NullPointerException
      *          se o tipo for nulo.
      */
-    public NCLParamPrototype(NCLParamInstance paramType) throws NullPointerException {
+    public NCLParamPrototype(NCLParamInstance paramType) throws XMLException {
+        super();
         if(paramType == null)
-            throw new NullPointerException("Null type");
+            throw new XMLException("Null type");
 
         this.paramType = paramType;
     }

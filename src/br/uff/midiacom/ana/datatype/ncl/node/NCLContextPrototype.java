@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
@@ -45,12 +46,11 @@ import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLElement, I extends XMLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
+public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
         extends NCLIdentifiableElementPrototype<En, P, I> implements NCLNode<En, P> {
 
     protected T refer;
@@ -71,6 +71,7 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
      *          se o identificador do contexto for inválido.
      */
     public NCLContextPrototype(String id) throws XMLException {
+        super();
         setId(id);
         ports = new IdentifiableElementList<Ept, T>();
         properties = new IdentifiableElementList<Epp, T>();

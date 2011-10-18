@@ -39,15 +39,15 @@ package br.uff.midiacom.ana.datatype.ncl.rule;
 
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLPropertyPrototype>
+public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLPropertyPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
     protected Ep var;
@@ -64,6 +64,7 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
      *          se o identificador da regra não for válido.
      */
     public NCLRulePrototype(String id) throws XMLException {
+        super();
         setId(id);
     }
 

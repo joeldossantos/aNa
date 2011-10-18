@@ -70,7 +70,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
     /**
      * Construtor do elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLSimpleActionPrototype() {}
+    public NCLSimpleActionPrototype() {
+        super();
+    }
 
 
     /**

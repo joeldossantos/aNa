@@ -64,7 +64,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
     /**
      * Construtor do elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLSimpleConditionPrototype() {}
+    public NCLSimpleConditionPrototype() {
+        super();
+    }
 
 
     /**

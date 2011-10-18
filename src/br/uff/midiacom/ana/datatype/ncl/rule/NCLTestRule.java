@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 
 
-public interface NCLTestRule<T extends NCLTestRule, P extends NCLElement> extends NCLIdentifiableElement<T, P> {
+public interface NCLTestRule<T extends NCLTestRule, P extends NCLElement>
+        extends NCLIdentifiableElement<T, P> {
 
 }

@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRulePrototype>
+public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRulePrototype>
         extends NCLIdentifiableElementPrototype<El, P, I> implements NCLIdentifiableElement<El, P> {
 
     protected IdentifiableElementList<El, T> descriptors;
@@ -63,6 +63,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      *          se o identificador do switch de descritor não for válido.
      */
     public NCLDescriptorSwitchPrototype(String id) throws XMLException {
+        super();
         setId(id);
         descriptors = new IdentifiableElementList<El, T>();
         binds = new ElementList<Eb, T>();

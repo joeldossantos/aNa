@@ -52,7 +52,9 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
     /**
      * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLValueAssessmentPrototype() {}
+    public NCLValueAssessmentPrototype() {
+        super();
+    }
 
 
     /**

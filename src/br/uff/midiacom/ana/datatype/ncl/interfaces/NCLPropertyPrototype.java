@@ -39,13 +39,13 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends XMLElementImpl, Ei extends NCLInterface>
+public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
         extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected StringType value;
@@ -60,6 +60,7 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          se o nome da propriedade não for válido.
      */
     public NCLPropertyPrototype(String name) throws XMLException {
+        super();
         setName(name);
     }    
 

@@ -38,13 +38,13 @@
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ei extends NCLInterface>
+public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
         extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected En component;
@@ -60,6 +60,7 @@ public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, 
      *          se o identificador for inválido.
      */
     public NCLPortPrototype(String id) throws XMLException{
+        super();
         setId(id);
     }
 

@@ -53,7 +53,9 @@ public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLE
     /**
      * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLMetadataPrototype() {}
+    public NCLMetadataPrototype() {
+        super();
+    }
 
 
     /**

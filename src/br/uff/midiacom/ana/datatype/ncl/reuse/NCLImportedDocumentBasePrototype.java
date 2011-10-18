@@ -38,14 +38,14 @@
 package br.uff.midiacom.ana.datatype.ncl.reuse;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
-public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBasePrototype, P extends NCLElement, I extends XMLElementImpl, Ei extends NCLImportPrototype>
+public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBasePrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLImportPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected ElementList<Ei, T> imports;
@@ -55,6 +55,7 @@ public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBaseP
      * Construtor do elemento <i>importedDocumentBase</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLImportedDocumentBasePrototype() {
+        super();
         imports = new ElementList<Ei, T>();
     }
 

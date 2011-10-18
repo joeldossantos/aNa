@@ -40,14 +40,14 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, I extends XMLElementImpl, Ei extends NCLInterface>
+public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
         extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected ArrayType coords;
@@ -69,6 +69,7 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          se o identificador da âncora for inválido.
      */
     public NCLAreaPrototype(String id) throws XMLException {
+        super();
         setId(id);
     }
 

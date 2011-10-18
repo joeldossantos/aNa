@@ -38,16 +38,16 @@
 package br.uff.midiacom.ana.datatype.ncl.transition;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P extends NCLElement, I extends XMLElementImpl, Et extends NCLTransitionPrototype, Ei extends NCLImportPrototype>
+public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTransitionPrototype, Ei extends NCLImportPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected IdentifiableElementList<Et, T> transitions;
@@ -58,6 +58,7 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
      * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLTransitionBasePrototype() {
+        super();
         transitions = new IdentifiableElementList<Et, T>();
         imports = new ElementList<Ei, T>();
     }

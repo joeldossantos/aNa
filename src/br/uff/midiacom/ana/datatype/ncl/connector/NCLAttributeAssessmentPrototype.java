@@ -59,7 +59,9 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
     /**
      * Construtor do elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLAttributeAssessmentPrototype() {}
+    public NCLAttributeAssessmentPrototype() {
+        super();
+    }
 
 
     /**

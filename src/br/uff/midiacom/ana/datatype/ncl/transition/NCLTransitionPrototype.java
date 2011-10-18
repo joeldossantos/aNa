@@ -43,13 +43,13 @@ import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends NCLElement, I extends XMLElementImpl>
+public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends NCLElement, I extends NCLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected NCLTransitionType type;
@@ -74,6 +74,7 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          se o identificador da transição não for válido.
      */
     public NCLTransitionPrototype(String id) throws XMLException {
+        super();
         setId(id);
     }
 

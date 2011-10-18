@@ -38,14 +38,14 @@
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
+public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P extends NCLElement, I extends NCLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
     
     protected StringType type;
@@ -62,6 +62,7 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
      *          se a String do tipo for vazia.
      */
     public NCLConnectorParamPrototype(String name) throws XMLException {
+        super();
         setName(name);
     }
 

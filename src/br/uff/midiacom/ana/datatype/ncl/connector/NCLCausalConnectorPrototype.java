@@ -38,14 +38,14 @@
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
+public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected Ec condition;
@@ -62,6 +62,7 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
      *          caso o identificador seja inválido.
      */    
     public NCLCausalConnectorPrototype(String id) throws XMLException {
+        super();
         this.setId(id);
         conn_params = new IdentifiableElementList<Ep, T>();
     }

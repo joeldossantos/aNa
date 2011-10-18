@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ep extends NCLSwitchPortPrototype, Eb extends NCLSwitchBindRulePrototype>
+public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ep extends NCLSwitchPortPrototype, Eb extends NCLSwitchBindRulePrototype>
         extends NCLIdentifiableElementPrototype<En, P, I> implements NCLNode<En, P> {
 
     protected T refer;
@@ -65,6 +65,7 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      *          se o identificador do switch for inválido.
      */
     public NCLSwitchPrototype(String id) throws XMLException {
+        super();
         setId(id);
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();

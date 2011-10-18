@@ -53,7 +53,9 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
     /**
      * Construtor do elemento <i>mapping</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLMappingPrototype() {}
+    public NCLMappingPrototype() {
+        super();
+    }
 
 
     /**

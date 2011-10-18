@@ -38,16 +38,16 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImportPrototype>
+public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImportPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected IdentifiableElementList<El, T> descriptors;
@@ -58,6 +58,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLDescriptorBasePrototype() {
+        super();
         descriptors = new IdentifiableElementList<El, T>();
         imports = new ElementList<Ei, T>();
     }

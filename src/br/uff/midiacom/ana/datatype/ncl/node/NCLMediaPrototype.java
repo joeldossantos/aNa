@@ -42,16 +42,16 @@ import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAreaPrototype, Ep extends NCLPropertyPrototype, Ed extends NCLLayoutDescriptor, En extends NCLNode>
+public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAreaPrototype, Ep extends NCLPropertyPrototype, Ed extends NCLLayoutDescriptor, En extends NCLNode>
         extends NCLIdentifiableElementPrototype<En, P, I> implements NCLNode<En, P> {
 
     protected SrcType src;
@@ -72,6 +72,7 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
      *          se o identificador da media for inválido.
      */
     public NCLMediaPrototype(String id) throws XMLException {
+        super();
         setId(id);
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();

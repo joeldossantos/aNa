@@ -67,6 +67,7 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
      *          se o tipo for nulo.
      */
     public NCLImportPrototype(NCLImportType type) throws XMLException {
+        super();
         if(type == null)
             throw new XMLException("Null type");
 

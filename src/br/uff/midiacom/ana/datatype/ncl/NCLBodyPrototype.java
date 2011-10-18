@@ -43,13 +43,12 @@ import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, I extends XMLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
+public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected T refer;
@@ -70,6 +69,7 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
      *          se o identificador do contexto for inválido.
      */
     public NCLBodyPrototype() throws XMLException {
+        super();
         ports = new IdentifiableElementList<Ept, T>();
         properties = new IdentifiableElementList<Epp, T>();
         nodes = new IdentifiableElementList<En, T>();

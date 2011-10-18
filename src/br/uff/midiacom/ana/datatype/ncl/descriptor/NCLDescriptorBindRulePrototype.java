@@ -53,7 +53,9 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBindRulePrototype() {}
+    public NCLDescriptorBindRulePrototype() {
+        super();
+    }
 
 
     /**

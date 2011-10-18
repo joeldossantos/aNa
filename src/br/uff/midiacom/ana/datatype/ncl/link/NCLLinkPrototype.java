@@ -38,16 +38,16 @@
 package br.uff.midiacom.ana.datatype.ncl.link;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLParamPrototype, Eb extends NCLBindPrototype, Ec extends NCLCausalConnectorPrototype>
+public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLParamPrototype, Eb extends NCLBindPrototype, Ec extends NCLCausalConnectorPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>{
 
     protected Ec xconnector;
@@ -59,6 +59,7 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
      * Construtor do elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLLinkPrototype() {
+        super();
         linkParams = new ElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
     }
