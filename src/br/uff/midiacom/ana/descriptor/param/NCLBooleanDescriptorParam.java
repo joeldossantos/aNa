@@ -38,16 +38,68 @@
 package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLBooleanDescriptorParamPrototype;
+import br.uff.midiacom.xml.XMLException;
+import org.w3c.dom.Element;
 
 
-public class NCLBooleanDescriptorParam<T extends NCLBooleanDescriptorParam, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
-        extends NCLBooleanDescriptorParamPrototype<T, P, I, Ep> {
+public class NCLBooleanDescriptorParam<T extends NCLBooleanDescriptorParam, P extends NCLElement, I extends NCLElementImpl>
+        extends NCLBooleanDescriptorParamPrototype<T, P, I> implements NCLDescriptorParam<T, P, Boolean> {
 
 
-    public NCLBooleanDescriptorParam() {
-        super();
-        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, Boolean>((T) this);
+    public NCLBooleanDescriptorParam() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
+
+
+    @Override
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        NCLAttributes aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+    }
+
+
+    @Override
+    public void setValue(Boolean value) {
+        Boolean aux = this.value;
+        super.setValue(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+
+    }
+
+    
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
+    }
+    //    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        cleanWarnings();
+//        cleanErrors();
+//        for(int i = 0; i < attributes.getLength(); i++){
+//            if(attributes.getLocalName(i).equals("name")){
+//                    for(NCLAttributes a : NCLAttributes.values()){
+//                        if(a.toString().equals(attributes.getValue(i)))
+//                            setName(a);
+//                    }
+//                }
+//            else if(attributes.getLocalName(i).equals("value"))
+//                setParamValue(attributes.getValue(i));
+//        }
+//    }
 }

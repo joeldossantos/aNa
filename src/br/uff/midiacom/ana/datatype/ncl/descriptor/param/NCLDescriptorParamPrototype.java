@@ -39,11 +39,11 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam, V>
+public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, P extends NCLElement, I extends XMLElementImpl, V>
         extends XMLElementPrototype<T, P, I> implements NCLDescriptorParam<T, P, V> {
 
     protected NCLAttributes name;
@@ -54,7 +54,7 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPr
      * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
      */
     public NCLDescriptorParamPrototype() {
-        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, V>((T) this);
+        super();
     }
 
 
@@ -65,7 +65,7 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPr
      *          Elemento representando o nome do parâmetro.
      */
     public void setName(NCLAttributes name) {
-        impl.setName(name);
+        this.name = name;
     }
 
 
@@ -76,7 +76,7 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPr
      *          elemento representando o nome do parâmetro.
      */
     public NCLAttributes getName() {
-        return impl.getName();
+        return name;
     }
 
 
@@ -89,7 +89,7 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPr
      *          se o valor não estiver de acordo com o esperado.
      */
     public void setValue(V value) {
-        impl.setValue(value);
+        this.value = value;
     }
 
 
@@ -100,17 +100,36 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPr
      *          valor do parâmetro.
      */
     public V getValue() {
-        return (V) impl.getValue();
+        return value;
     }
 
 
     public String parse(int ident) {
-        return impl.parse(ident);
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<descriptorParam";
+        if(getName() != null)
+            content += " name='" + getName().toString() + "'";
+        if((getValue() != null) || (this instanceof NCLColorDescriptorParamPrototype && ((NCLColorDescriptorParamPrototype) this).getIsTransparent() != null))
+            content += " value='" + getParamValue() + "'";
+        content += "/>\n";
+
+        return content;
     }
 
 
     public boolean compare(T other) {
-        return impl.compare(other);
+        return getName().equals(other.getName());
     }
 
 

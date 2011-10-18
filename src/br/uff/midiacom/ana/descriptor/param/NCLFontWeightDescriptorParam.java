@@ -38,17 +38,54 @@
 package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLFontWeightDescriptorParamPrototype;
+import br.uff.midiacom.xml.XMLException;
+import org.w3c.dom.Element;
 
 
-public class NCLFontWeightDescriptorParam<T extends NCLFontWeightDescriptorParam, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
-        extends NCLFontWeightDescriptorParamPrototype<T, P, I, Ep> {
+public class NCLFontWeightDescriptorParam<T extends NCLFontWeightDescriptorParam, P extends NCLElement, I extends NCLElementImpl>
+        extends NCLFontWeightDescriptorParamPrototype<T, P, I> implements NCLDescriptorParam<T, P, NCLFontWeight> {
 
 
-    public NCLFontWeightDescriptorParam() {
-        super();
-        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, NCLFontWeight>((T) this);
+    public NCLFontWeightDescriptorParam() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    }
+
+
+    @Override
+    public void setName(NCLAttributes name) throws IllegalArgumentException {
+        NCLAttributes aux = this.name;
+        super.setName(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+    }
+
+
+    @Override
+    public void setValue(NCLFontWeight value) {
+        NCLFontWeight aux = this.value;
+        super.setValue(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+
+    }
+
+
+    public void load(Element element) throws XMLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

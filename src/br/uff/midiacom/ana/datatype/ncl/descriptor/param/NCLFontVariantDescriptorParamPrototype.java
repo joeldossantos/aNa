@@ -40,10 +40,11 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.xml.XMLElementImpl;
 
 
-public class NCLFontVariantDescriptorParamPrototype<T extends NCLFontVariantDescriptorParamPrototype, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
-        extends NCLDescriptorParamPrototype<T, P, I, Ep, NCLFontVariant> {
+public class NCLFontVariantDescriptorParamPrototype<T extends NCLFontVariantDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
+        extends NCLDescriptorParamPrototype<T, P, I, NCLFontVariant> {
 
 
     public NCLFontVariantDescriptorParamPrototype() {
