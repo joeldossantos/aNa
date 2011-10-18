@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
 public class NCLCompoundStatementTest {
 
     @Test
-    public void test_roleset() throws XMLException {
+    public void test_roleset() throws XMLException, Exception {
         NCLCompoundStatement nclel1, nclel2, nclel3, nclel4;
         NCLAssessmentStatement nclela, nclelb, nclelc, ncleld;
         NCLAttributeAssessment nclelaa, nclelbb, nclelcc, ncleldd;

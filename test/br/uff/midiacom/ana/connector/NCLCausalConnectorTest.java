@@ -67,7 +67,7 @@ import static org.junit.Assert.*;
 public class NCLCausalConnectorTest {
 
     @Test
-    public void test1() throws XMLException {
+    public void test1() throws XMLException, Exception {
         NCLCausalConnector instance = new NCLCausalConnector("conn1");
 
         //Condicoes
