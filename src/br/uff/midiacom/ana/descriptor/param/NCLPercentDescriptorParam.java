@@ -37,83 +37,17 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLPercentDescriptorParamPrototype;
 
 
-/**
- * Esta classe define o elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parametro de descritor do tipo percentual
- * em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLPercentDescriptorParam<P extends NCLDescriptorParam> extends NCLDefaultDescriptorParam<P, Double> {
-
-    private Boolean relative;
+public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
+        extends NCLPercentDescriptorParamPrototype<T, P, I, Ep> {
 
 
     public NCLPercentDescriptorParam() {
         super();
-    }
-
-
-    public NCLPercentDescriptorParam(XMLReader reader, NCLElementImpl parent) {
-        super(reader, parent);
-    }
-
-
-    @Override
-    public void setName(NCLAttributes name) throws IllegalArgumentException {
-        if(!name.equals(NCLAttributes.TRANSPARENCY) && !name.equals(NCLAttributes.SOUND_LEVEL)
-                && !name.equals(NCLAttributes.BALANCE_LEVEL) && !name.equals(NCLAttributes.TREBLE_LEVEL)
-                && !name.equals(NCLAttributes.BASS_LEVEL))
-            throw new IllegalArgumentException("This parameter type can not be used with this name.");
-
-        super.setName(name);
-    }
-
-
-    @Override
-    public void setValue(Double value) throws IllegalArgumentException {
-        if(!relative && (value < 0 || value > 1))
-            throw new IllegalArgumentException("The value of the paramenter must be between 0 and 1");
-        if(relative && (value < 0 || value > 100))
-            throw new IllegalArgumentException("The relative value of the paramenter must be between 0 and 100");
-
-        super.setValue(value);
-    }
-
-
-    @Override
-    protected void setParamValue(String value) throws IllegalArgumentException {
-        int index = value.indexOf("%");
-        if(index > 0){
-            value = value.substring(0, index);
-            setRelative(true);
-        }
-
-        setValue(new Double(value));
-    }
-
-
-    @Override
-    protected String getParamValue() {
-        if(relative)
-            return (getValue().toString())+"%";
-        else
-            return getValue().toString();
-    }
-
-
-    public void setRelative(Boolean relative) {
-        this.relative = relative;
-    }
-
-
-    public Boolean getRelative() {
-        return relative;
+        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, Double>((T) this);
     }
 }

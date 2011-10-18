@@ -37,52 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor.param;
 
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
-import org.xml.sax.XMLReader;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLPlayerLifeDescriptorParamPrototype;
 
 
-/**
- * Esta classe define o elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parametro de descritor do tipo scroll
- * em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
-public class NCLPlayerLifeDescriptorParam<P extends NCLDescriptorParam> extends NCLDefaultDescriptorParam<P, NCLPlayerLife> {
+public class NCLPlayerLifeDescriptorParam<T extends NCLPlayerLifeDescriptorParam, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
+        extends NCLPlayerLifeDescriptorParamPrototype<T, P, I, Ep> {
 
 
     public NCLPlayerLifeDescriptorParam() {
         super();
-    }
-
-
-    public NCLPlayerLifeDescriptorParam(XMLReader reader, NCLElementImpl parent) {
-        super(reader, parent);
-    }
-
-
-    @Override
-    public void setName(NCLAttributes name) {
-        super.setName(NCLAttributes.PLAYER_LIFE);
-    }
-
-
-    @Override
-    protected void setParamValue(String value) throws IllegalArgumentException {
-        for(NCLPlayerLife player : NCLPlayerLife.values()){
-            if(value.equals(player.toString()))
-                setValue(player);
-        }
-
-        setValue(null);
-    }
-
-
-    @Override
-    protected String getParamValue() {
-        return getValue().toString();
+        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, NCLPlayerLife>((T) this);
     }
 }

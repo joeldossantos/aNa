@@ -38,17 +38,9 @@
 package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 
 
-/**
- * Esta classe define o elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
- * Este elemento é o elemento que define um parametro de descritor em um documento NCL.<br/>
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
- */
 public interface NCLDescriptorParam<T extends NCLDescriptorParam, P extends NCLElement, V>
-        extends br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParamPrototype<T, P, V> {
+        extends br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam<T, P, V>, NCLElement<T, P> {
 
 }

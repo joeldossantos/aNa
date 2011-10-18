@@ -42,7 +42,7 @@ import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParamPrototype;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -52,7 +52,7 @@ import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParamPrototype>
+public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParam>
         extends NCLIdentifiableElementPrototype<El, P, I> implements NCLLayoutDescriptor<El, P> {
 
     protected StringType player;

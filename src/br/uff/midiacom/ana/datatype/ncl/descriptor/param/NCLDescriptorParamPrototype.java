@@ -39,9 +39,23 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public interface NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, V> extends NCLElement<T, P> {
+public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam, V>
+        extends XMLElementPrototype<T, P, I> implements NCLDescriptorParam<T, P, V> {
+
+    protected NCLAttributes name;
+    protected V value;
+
+
+    /**
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLDescriptorParamPrototype() {
+        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, V>((T) this);
+    }
 
 
     /**
@@ -50,7 +64,9 @@ public interface NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototy
      * @param name
      *          Elemento representando o nome do parâmetro.
      */
-    public void setName(NCLAttributes name);
+    public void setName(NCLAttributes name) {
+        impl.setName(name);
+    }
 
 
     /**
@@ -59,7 +75,9 @@ public interface NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototy
      * @return
      *          elemento representando o nome do parâmetro.
      */
-    public NCLAttributes getName();
+    public NCLAttributes getName() {
+        return impl.getName();
+    }
 
 
     /**
@@ -70,7 +88,9 @@ public interface NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototy
      * @throws IllegalArgumentException
      *          se o valor não estiver de acordo com o esperado.
      */
-    public void setValue(V value) throws IllegalArgumentException;
+    public void setValue(V value) {
+        impl.setValue(value);
+    }
 
 
     /**
@@ -79,5 +99,37 @@ public interface NCLDescriptorParamPrototype<T extends NCLDescriptorParamPrototy
      * @return
      *          valor do parâmetro.
      */
-    public V getValue();
+    public V getValue() {
+        return (V) impl.getValue();
+    }
+
+
+    public String parse(int ident) {
+        return impl.parse(ident);
+    }
+
+
+    public boolean compare(T other) {
+        return impl.compare(other);
+    }
+
+
+    /**
+     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
+     * de forma a atribuir o valor do tipo correto para cada parâmetro de
+     * descritor.
+     *
+     * @param value
+     *          String representando o valor do parâmetro de descritor.
+     */
+    protected abstract void setParamValue(String value);
+
+
+    /**
+     * Retorna o valor do parâmetro como uma String.
+     *
+     * @return
+     *          String representando o valor do parâmetro do descritor.
+     */
+    protected abstract String getParamValue();
 }

@@ -39,21 +39,10 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 
 
-public abstract class NCLDefaultDescriptorParamPrototype<T extends NCLDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl, V>
-        extends XMLElementPrototype<T, P, I> implements NCLDescriptorParamPrototype<T, P, V> {
-
-    protected NCLAttributes name;
-    protected V value;
-
-
-    /**
-     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
-     */
-    public NCLDefaultDescriptorParamPrototype() {}
+public interface NCLDescriptorParam<T extends NCLDescriptorParam, P extends NCLElement, V>
+        extends NCLElement<T, P> {
 
 
     /**
@@ -62,9 +51,7 @@ public abstract class NCLDefaultDescriptorParamPrototype<T extends NCLDescriptor
      * @param name
      *          Elemento representando o nome do parâmetro.
      */
-    public void setName(NCLAttributes name) {
-        this.name = name;
-    }
+    public void setName(NCLAttributes name);
 
 
     /**
@@ -73,9 +60,7 @@ public abstract class NCLDefaultDescriptorParamPrototype<T extends NCLDescriptor
      * @return
      *          elemento representando o nome do parâmetro.
      */
-    public NCLAttributes getName() {
-        return name;
-    }
+    public NCLAttributes getName();
 
 
     /**
@@ -86,9 +71,7 @@ public abstract class NCLDefaultDescriptorParamPrototype<T extends NCLDescriptor
      * @throws IllegalArgumentException
      *          se o valor não estiver de acordo com o esperado.
      */
-    public void setValue(V value) throws IllegalArgumentException {
-        this.value = value;
-    }
+    public void setValue(V value) throws IllegalArgumentException;
 
 
     /**
@@ -97,56 +80,5 @@ public abstract class NCLDefaultDescriptorParamPrototype<T extends NCLDescriptor
      * @return
      *          valor do parâmetro.
      */
-    public V getValue() {
-        return value;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<descriptorParam";
-        if(getName() != null)
-            content += " name='" + getName().toString() + "'";
-        if((getValue() != null) || (this instanceof NCLColorDescriptorParamPrototype && ((NCLColorDescriptorParamPrototype)this).getIsTransparent() != null))
-            content += " value='" + getParamValue() + "'";
-        content += "/>\n";
-
-        return content;
-    }
-
-
-    public boolean compare(T other) {
-        return getName().equals(other.getName());
-    }
-
-
-    /**
-     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
-     * de forma a atribuir o valor do tipo correto para cada parâmetro de
-     * descritor.
-     *
-     * @param value
-     *          String representando o valor do parâmetro de descritor.
-     */
-    protected abstract void setParamValue(String value);
-
-
-    /**
-     * Retorna o valor do parâmetro como uma String.
-     *
-     * @return
-     *          String representando o valor do parâmetro do descritor.
-     */
-    protected abstract String getParamValue();
+    public V getValue();
 }

@@ -38,38 +38,98 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLScroll;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 
 
-public class NCLScrollDescriptorParamPrototype<T extends NCLScrollDescriptorParamPrototype, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
-        extends NCLDescriptorParamPrototype<T, P, I, Ep, NCLScroll> {
+public class NCLDescriptorParamImpl<T extends NCLIdentifiableElement, P extends NCLElement, Ed extends NCLDescriptorParam, Ep extends NCLDescriptorParamPrototype, V>
+        extends NCLElementImpl<T, P> {
+
+    protected NCLAttributes name;
+    private Ep owner;
+    protected V value;
 
 
-    public NCLScrollDescriptorParamPrototype() {
-        super();
+    /**
+     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     */
+    public NCLDescriptorParamImpl(Ep owner) {
+        this.owner = owner;
     }
 
 
-    @Override
+    /**
+     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
+     *
+     * @param name
+     *          Elemento representando o nome do parâmetro.
+     */
     public void setName(NCLAttributes name) {
-        super.setName(NCLAttributes.SCROLL);
+        this.name = name;
     }
 
 
-    @Override
-    protected void setParamValue(String value) throws IllegalArgumentException {
-        for(NCLScroll scroll : NCLScroll.values()){
-            if(value.equals(scroll.toString()))
-                setValue(scroll);
-        }
-
-        setValue(null);
+    /**
+     * Retorna o nome do parâmetro.
+     *
+     * @return
+     *          elemento representando o nome do parâmetro.
+     */
+    public NCLAttributes getName() {
+        return name;
     }
 
 
-    @Override
-    protected String getParamValue() {
-        return getValue().toString();
+    /**
+     * Atribui um valor ao parâmetro.
+     *
+     * @param value
+     *          valor do parâmetro.
+     * @throws IllegalArgumentException
+     *          se o valor não estiver de acordo com o esperado.
+     */
+    public void setValue(V value) {
+        this.value = value;
+    }
+
+
+    /**
+     * Retorna o valor do parâmetro.
+     *
+     * @return
+     *          valor do parâmetro.
+     */
+    public V getValue() {
+        return value;
+    }
+
+
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<descriptorParam";
+        if(getName() != null)
+            content += " name='" + getName().toString() + "'";
+        if((getValue() != null) || (owner instanceof NCLColorDescriptorParamPrototype && ((NCLColorDescriptorParamPrototype) owner).getIsTransparent() != null))
+            content += " value='" + owner.getParamValue() + "'";
+        content += "/>\n";
+
+        return content;
+    }
+
+
+    public boolean compare(Ed other) {
+        return getName().equals(other.getName());
     }
 }

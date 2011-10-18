@@ -39,15 +39,55 @@ package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLStringDescriptorParamPrototype;
+import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParamPrototype;
 
 
-public class NCLStringDescriptorParam<T extends NCLStringDescriptorParam, P extends NCLElement, I extends NCLDescriptorParamImpl, Ep extends NCLDescriptorParam>
-        extends NCLStringDescriptorParamPrototype<T, P, I, Ep> {
+public class NCLDescriptorParamImpl<T extends NCLIdentifiableElement, P extends NCLElement, Ed extends NCLDescriptorParam, Ep extends NCLDescriptorParamPrototype, V>
+        extends br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParamImpl<T, P, Ed, Ep, V> {
 
 
-    public NCLStringDescriptorParam() {
-        super();
-        impl = (I) new NCLDescriptorParamImpl<NCLIdentifiableElement, P, Ep, T, Boolean>((T) this);
+    public NCLDescriptorParamImpl(Ep owner) {
+        super(owner);
+    }
+
+
+    @Override
+    public void setName(NCLAttributes name) {
+        super.setName(name);
+    }
+
+
+    @Override
+    public void setValue(V value) throws IllegalArgumentException {
+        super.setValue(value);
+    }
+
+
+//    @Override
+//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+//        cleanWarnings();
+//        cleanErrors();
+//        for(int i = 0; i < attributes.getLength(); i++){
+//            if(attributes.getLocalName(i).equals("name")){
+//                    for(NCLAttributes a : NCLAttributes.values()){
+//                        if(a.toString().equals(attributes.getValue(i)))
+//                            setName(a);
+//                    }
+//                }
+//            else if(attributes.getLocalName(i).equals("value"))
+//                setParamValue(attributes.getValue(i));
+//        }
+//    }
+
+
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }
