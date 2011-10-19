@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Cores definidas pela <i>Nested Context Language</i> (NCL).
@@ -67,12 +69,13 @@ public enum NCLColor {
     private NCLColor(String name) {
         this.name = name;
     }
-    public static NCLColor getEnumType(String name){
+
+    public static NCLColor getEnumType(String name) throws NCLParsingException{
         for(NCLColor opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        return null;
+        throw new NCLParsingException("Could not find " + name +" type");
     }
 
     @Override

@@ -56,6 +56,12 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
         impl = (I) new NCLElementImpl(this);
     }
 
+    public NCLPort(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
+
 
     @Override
     public void setComponent(En component) {

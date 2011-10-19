@@ -47,8 +47,6 @@ import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.w3c.dom.Element;
 
 
@@ -164,7 +162,23 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.ALIAS.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setAlias(att_var);
+
+        att_name = NCLElementAttributes.DOCUMENTURI.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setDocumentURI(new SrcType(att_var));
+
+        att_name = NCLElementAttributes.REGION.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRegion(); // usar metodo de busca pelo id da regiao
     }
 
 

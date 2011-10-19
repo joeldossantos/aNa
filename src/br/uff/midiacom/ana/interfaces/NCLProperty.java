@@ -57,6 +57,11 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
         impl = (I) new NCLElementImpl(this);
     }    
 
+    public NCLProperty(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.NAME.toString()));
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
 
     public NCLProperty(NCLSystemVariable name) throws XMLException {
         super(name);

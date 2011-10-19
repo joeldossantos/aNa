@@ -58,6 +58,13 @@ public enum NCLComparator {
         this.name = name;
     }
 
+    public static NCLComparator getEnumType(String name){
+        for(NCLComparator opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        return null;
+    }
 
     @Override
     public String toString() {

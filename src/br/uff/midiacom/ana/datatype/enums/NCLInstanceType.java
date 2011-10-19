@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Tipos de instância usados no reúso de elementos da <i>Nested Context Language</i> (NCL).
@@ -50,6 +52,15 @@ public enum NCLInstanceType {
 
     private String name;
     private NCLInstanceType(String name) { this.name = name;}
+
+    public static NCLInstanceType getEnumType(String name) throws NCLParsingException{
+        for(NCLInstanceType opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+
     @Override
     public String toString() { return name; }
 }

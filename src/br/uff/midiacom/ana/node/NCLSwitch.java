@@ -44,8 +44,10 @@ import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
+import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ep extends NCLSwitchPort, Eb extends NCLSwitchBindRule>
@@ -301,7 +303,34 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.REFER.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRefer(); // método de busca pelo id
+
+        ch_name = NCLElementSets.PORTS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addPort((Ep) new NCLSwitchPort((Element) nl.item(i)));
+
+        att_name = NCLElementAttributes.DEFAULTCOMPONENT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setDefaultComponent(); // método de busca pelo id
+
+        ch_name = NCLElementSets.BINDS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addBind((Eb) new NCLSwitchBindRule((Element) nl.item(i)));
+
+        ch_name = NCLElementSets.NODES.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addNode((En) new Node((Element) nl.item(i)))); // criar métoda na interface
     }
 
 

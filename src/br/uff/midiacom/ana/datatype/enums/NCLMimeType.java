@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Mime Types dos elementos <i>media</i> da <i>Nested Context Language</i> (NCL).
@@ -70,6 +72,13 @@ public enum NCLMimeType {
         this.name = name;
     }
 
+    public static NCLMimeType getEnumType(String name) throws NCLParsingException{
+        for(NCLMimeType opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
 
     @Override
     public String toString() {
