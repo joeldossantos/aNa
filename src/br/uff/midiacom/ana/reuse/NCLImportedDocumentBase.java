@@ -45,8 +45,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLImport>
@@ -115,7 +115,19 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String ch_name;
+        int length;
+
+        ch_name = NCLElementSets.IMPORTS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+
+        for(int i=0; i<length; i++){
+            Element elem_child = (Element) nl.item(i);
+            NCLImport imp = new NCLImport(NCLImportType.BASE);
+            addImportNCL((Ei) imp);
+            imp.load(elem_child);
+        }
     }
 
 

@@ -58,6 +58,11 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
         impl = (I) new NCLElementImpl(this);
     }
 
+    public NCLRule(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
 
     @Override
     public void setVar(Ep var) {
@@ -174,7 +179,25 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.VAR.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setVar(); // tem que usar o método de busca pelo id da media
+
+        att_name = NCLElementAttributes.COMPARATOR.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setComparator(NCLComparator.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.VALUE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setValue(att_var);
     }
 
 

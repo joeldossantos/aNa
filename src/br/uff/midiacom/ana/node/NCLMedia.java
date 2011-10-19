@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
@@ -50,6 +51,7 @@ import br.uff.midiacom.ana.datatype.ncl.node.NCLMediaPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode>
@@ -82,7 +84,7 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     public void setDescriptor(Ed descriptor) {
         Ed aux = this.descriptor;
         super.setDescriptor(descriptor);
-        impl.notifyAltered(NCLElementAttributes.TYPE, aux, descriptor);
+        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
     }
     
 
@@ -300,8 +302,36 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws IllegalArgumentException, NCLParsingException, XMLException {
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.SRC.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setSrc(new SrcType(att_var));
+
+        att_name = NCLElementAttributes.TYPE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setType(NCLMimeType.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.DESCRIPTOR.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setDescriptor(); // usar metodo de busca pelo id do descritor
+
+        att_name = NCLElementAttributes.REFER.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRefer(); // usar metodo de busca pelo id da media
+
+        att_name = NCLElementAttributes.INSTANCE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setInstance(NCLInstanceType.getEnumType(att_var));
+
+
+        ch_name = NCLElementSets.AREAS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addArea((Ea) new NCLArea((Element) nl.item(i)));
     }
 
 

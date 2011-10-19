@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Tipos de transições da <i>Nested Context Language</i> (NCL).
@@ -53,12 +55,12 @@ public enum NCLTransitionType {
     private String name;
     private NCLTransitionType(String name) { this.name = name;}
 
-    public static NCLTransitionType getEnumType(String name){
+    public static NCLTransitionType getEnumType(String name) throws NCLParsingException{
         for(NCLTransitionType opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        return null;
+        throw new NCLParsingException("Could not find " + name +" type");
     }
 
     @Override

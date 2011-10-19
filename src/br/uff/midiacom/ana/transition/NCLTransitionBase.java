@@ -112,18 +112,15 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
 
     public void load(Element element) throws XMLException {
-        String att_name, ch_name;
+        String ch_name;
         int length;
 
         ch_name = NCLElementAttributes.TRANSITION.toString();
         NodeList nl = element.getElementsByTagName(ch_name);
         length = nl.getLength();
 
-        att_name = NCLElementAttributes.ID.toString();
-        for(int i=0; i<length; i++){
-            Element elem_child = (Element) nl.item(i);
-            addTransition((Et) new NCLTransition(elem_child.getAttribute(att_name)));
-        }
+        for(int i=0; i<length; i++)
+            addTransition((Et) new NCLTransition((Element) nl.item(i)));
     }
 
 

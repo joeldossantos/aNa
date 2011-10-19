@@ -59,6 +59,12 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
         impl = (I) new NCLElementImpl(this);
     }
 
+    public NCLArea(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
+
 
     @Override
     public void setCoords(ArrayType coords) {

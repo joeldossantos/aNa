@@ -40,10 +40,10 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
@@ -53,6 +53,11 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
 
     public NCLSwitchPort(String id) throws XMLException {
         super(id);
+        impl = (I) new NCLElementImpl(this);
+    }
+
+    public NCLSwitchPort(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
         impl = (I) new NCLElementImpl(this);
     }
 

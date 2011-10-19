@@ -59,6 +59,12 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
         impl = (I) new NCLElementImpl(this);
     }
 
+    public NCLLink(Element elem) throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
+
 
     @Override
     public void setXconnector(Ec xconnector) {

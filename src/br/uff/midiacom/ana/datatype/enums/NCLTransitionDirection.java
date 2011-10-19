@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Direção de uma transição da <i>Nested Context Language</i> (NCL).
@@ -49,13 +51,15 @@ public enum NCLTransitionDirection {
 
     private String name;
     private NCLTransitionDirection(String name) { this.name = name;}
-    public static NCLTransitionDirection getEnumType(String name){
+    
+    public static NCLTransitionDirection getEnumType(String name) throws NCLParsingException{
         for(NCLTransitionDirection opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        return null;
+        throw new NCLParsingException("Could not find " + name +" type");
     }
+
     @Override
     public String toString() { return name; }
 }

@@ -37,6 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * Subtipos de transições da <i>Nested Context Language</i> (NCL).
@@ -69,13 +73,15 @@ public enum NCLTransitionSubtype {
     private String name;
     private NCLTransitionType type;
     private NCLTransitionSubtype(String name, NCLTransitionType type) { this.name = name; this.type = type;}
-    public static NCLTransitionSubtype getEnumType(String name){
+
+    public static NCLTransitionSubtype getEnumType(String name) throws NCLParsingException{
         for(NCLTransitionSubtype opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        return null;
+        throw new NCLParsingException("Could not find " + name +" type");
     }
+    
     @Override
     public String toString() { return name; }
     public NCLTransitionType getType() { return type; }

@@ -41,13 +41,16 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import java.util.TreeSet;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTestRule, Ei extends NCLImport>
@@ -163,7 +166,26 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String ch_name;
+        int length;
+
+        ch_name = NCLElementAttributes.RULE.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+
+        for(int i=0; i<length; i++)
+            addRule((Et) (Element) nl.item(i));
+
+        ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+
+        for(int i=0; i<length; i++){
+            Element elem_child = (Element) nl.item(i);
+            NCLImport imp = new NCLImport(NCLImportType.BASE);
+            addImportBase((Ei) imp);
+            imp.load(elem_child);
+        }
     }
 
 
