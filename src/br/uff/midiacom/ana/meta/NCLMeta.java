@@ -73,21 +73,20 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        cleanWarnings();
-//        cleanErrors();
-//        for(int i = 0; i < attributes.getLength(); i++){
-//            if(attributes.getLocalName(i).equals("name"))
-//                setName(attributes.getValue(i));
-//            else if(attributes.getLocalName(i).equals("content"))
-//                setContent(attributes.getValue(i));
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.NAME.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setName(att_var);
+
+        att_name = NCLElementAttributes.CONTENT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setContent(att_var);
     }
 
 
