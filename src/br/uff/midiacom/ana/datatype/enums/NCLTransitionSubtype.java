@@ -69,6 +69,13 @@ public enum NCLTransitionSubtype {
     private String name;
     private NCLTransitionType type;
     private NCLTransitionSubtype(String name, NCLTransitionType type) { this.name = name; this.type = type;}
+    public static NCLTransitionSubtype getEnumType(String name){
+        for(NCLTransitionSubtype opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        return null;
+    }
     @Override
     public String toString() { return name; }
     public NCLTransitionType getType() { return type; }

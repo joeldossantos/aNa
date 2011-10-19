@@ -49,6 +49,13 @@ public enum NCLTransitionDirection {
 
     private String name;
     private NCLTransitionDirection(String name) { this.name = name;}
+    public static NCLTransitionDirection getEnumType(String name){
+        for(NCLTransitionDirection opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        return null;
+    }
     @Override
     public String toString() { return name; }
 }

@@ -52,6 +52,15 @@ public enum NCLTransitionType {
 
     private String name;
     private NCLTransitionType(String name) { this.name = name;}
+
+    public static NCLTransitionType getEnumType(String name){
+        for(NCLTransitionType opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        return null;
+    }
+
     @Override
     public String toString() { return name; }
 }
