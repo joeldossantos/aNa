@@ -151,7 +151,73 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.TYPE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setType(NCLTransitionType.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.SUBTYPE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setSubtype(NCLTransitionSubtype.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.DUR.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setDur(new TimeType(att_var));
+
+        att_name = NCLElementAttributes.STARTPROGRESS.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setStartProgress(new Double(att_var));
+
+        att_name = NCLElementAttributes.ENDPROGRESS.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setEndProgress(new Double(att_var));
+
+        att_name = NCLElementAttributes.DIRECTION.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setDirection(NCLTransitionDirection.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.FADECOLOR.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setFadeColor(NCLColor.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.HORREPEAT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setHorRepeat(new Integer(att_var));
+
+        att_name = NCLElementAttributes.VERTREPEAT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setVertRepeat(new Integer(att_var));
+
+        att_name = NCLElementAttributes.BORDERWIDTH.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setBorderWidth(new Integer(att_var));
+
+        att_name = NCLElementAttributes.BORDERCOLOR.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find" + att_name + "attribute.");
+        else
+            setBorderColor(NCLColor.getEnumType(att_var));
     }
 
 
