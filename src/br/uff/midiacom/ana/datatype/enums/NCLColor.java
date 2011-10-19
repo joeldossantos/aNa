@@ -67,7 +67,13 @@ public enum NCLColor {
     private NCLColor(String name) {
         this.name = name;
     }
-
+    public static NCLColor getEnumType(String name){
+        for(NCLColor opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        return null;
+    }
 
     @Override
     public String toString() {

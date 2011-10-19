@@ -41,12 +41,14 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTransition, Ei extends NCLImport>
@@ -110,7 +112,18 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, ch_name;
+        int length;
+
+        ch_name = NCLElementAttributes.TRANSITION.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+
+        att_name = NCLElementAttributes.ID.toString();
+        for(int i=0; i<length; i++){
+            Element elem_child = (Element) nl.item(i);
+            addTransition((Et) new NCLTransition(elem_child.getAttribute(att_name)));
+        }
     }
 
 
