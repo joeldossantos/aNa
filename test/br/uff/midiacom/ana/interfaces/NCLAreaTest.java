@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLSampleType;
@@ -44,12 +45,6 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class NCLAreaTest {
@@ -107,118 +102,58 @@ public class NCLAreaTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test6() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLArea instance = new NCLArea(reader, null);
-//            String expResult = "<area id='anchor' begin='5s' end='20s'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test7() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLArea instance = new NCLArea(reader, null);
-//            String expResult = "<area id='anchor' first='5f' last='20f'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test8() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLArea instance = new NCLArea(reader, null);
-//            String expResult = "<area id='anchor' coords='1,2,6,56'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test9() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLArea instance = new NCLArea(reader, null);
-//            String expResult = "<area id='anchor' label='bla'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test10() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLArea instance = new NCLArea(reader, null);
-//            String expResult = "<area id='anchor' text='texto' position='2'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test6() throws XMLException {
+        String expResult = "<area id='anchor' begin='5.0s' end='20.0s'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLArea instance = new NCLArea(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test7() throws XMLException {
+        String expResult = "<area id='anchor' first='5f' last='20f'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLArea instance = new NCLArea(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test8() throws XMLException {
+        String expResult = "<area id='anchor' coords='1.0,2.0,6.0,56.0'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLArea instance = new NCLArea(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test9() throws XMLException {
+        String expResult = "<area id='anchor' label='bla'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLArea instance = new NCLArea(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test10() throws XMLException {
+        String expResult = "<area id='anchor' text='texto' position='2'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLArea instance = new NCLArea(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }

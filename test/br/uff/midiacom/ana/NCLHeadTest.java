@@ -48,12 +48,6 @@ import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class NCLHeadTest {
@@ -84,29 +78,15 @@ public class NCLHeadTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test2() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLHead instance = new NCLHead(reader, null);
-//            String expResult = "<head>\n\t<importedDocumentBase/>\n\t<ruleBase/>\n\t<transitionBase/>\n\t<regionBase/>\n\t<descriptorBase/>\n\t<connectorBase/>"+
-//                "\n\t<meta name='autor' content='joel'/>\n\t<metadata>\narvore rdf\n\t</metadata>\n</head>\n";
-//
-//            reader.setContentHandler(instance);
-//            String xml = "<head>\n\t<importedDocumentBase/>\n\t<ruleBase/>\n\t<transitionBase/>\n\t<regionBase/>\n\t<descriptorBase/>\n\t<connectorBase/>"+
-//                "\n\t<meta name='autor' content='joel'/>\n\t<metadata>arvore rdf</metadata>\n</head>\n";
-//            reader.parse(new InputSource(new StringReader(xml)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test2() throws XMLException {
+        String expResult = "<head>\n\t<importedDocumentBase/>\n\t<ruleBase/>\n\t<transitionBase/>\n\t<regionBase/>\n\t<descriptorBase/>\n\t<connectorBase/>"+
+                "\n\t<meta name='autor' content='joel'/>\n\t<metadata>\narvore rdf\n\t</metadata>\n</head>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLHead instance = new NCLHead(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }

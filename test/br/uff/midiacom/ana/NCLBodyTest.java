@@ -43,12 +43,6 @@ import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class NCLBodyTest {
@@ -75,26 +69,14 @@ public class NCLBodyTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test2() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLBody instance = new NCLBody(reader, null);
-//            String expResult = "<body id='bod'>\n\t<meta name='autor' content='joel'/>\n\t<port id='pInicio' component='video'/>\n\t<media id='video'/>\n</body>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test2() throws XMLException {
+        String expResult = "<body id='bod'>\n\t<meta name='autor' content='joel'/>\n\t<port id='pInicio' component='video'/>\n\t<media id='video'/>\n</body>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLBody instance = new NCLBody(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }

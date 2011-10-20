@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
@@ -85,52 +86,28 @@ public class NCLMediaTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test3() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLMedia instance = new NCLMedia(reader, null);
-//            String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test4() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLMedia instance = new NCLMedia(reader, null);
-//            String expResult = "<media id='m1'>\n\t<area id='a1'/>\n\t<property name='top'/>\n</media>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
+    @Test
+    public void test3() throws XMLException {
+        String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLMedia instance = new NCLMedia(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test4() throws XMLException {
+        String expResult = "<media id='m1'>\n\t<area id='a1'/>\n\t<property name='top'/>\n</media>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLMedia instance = new NCLMedia(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
 //    @Test
 //    public void test5() {
 //        try{

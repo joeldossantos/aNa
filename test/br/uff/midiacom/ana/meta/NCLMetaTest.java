@@ -37,14 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.meta;
 
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.xml.XMLException;
-import java.io.IOException;
-import java.io.StringReader;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
 
@@ -61,25 +56,14 @@ public class NCLMetaTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test2() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLMeta meta = new NCLMeta(reader, null);
-//            String expResult = "<meta name='autor' content='joel'/>\n";
-//
-//            reader.setContentHandler(meta);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = meta.parse(0);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test2() throws XMLException {
+        String expResult = "<meta name='autor' content='joel'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLMeta instance = new NCLMeta(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }

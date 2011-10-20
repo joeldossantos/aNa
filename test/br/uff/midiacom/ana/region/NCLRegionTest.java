@@ -37,16 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class NCLRegionTest {
@@ -96,72 +91,36 @@ public class NCLRegionTest {
         assertEquals(expResult, result);
     }
     
-//    @Test
-//    public void test2() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLRegion instance = new NCLRegion(reader, null);
-//            String expResult = "<region id='rgTV' left='10%' right='20%' top='10%' bottom='20%' height='80%' width='80%' zIndex='1' title='Titulo de Teste'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test3() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLRegion instance = new NCLRegion(reader, null);
-//            String expResult = "<region id='rgTV' left='10' right='20' top='10' bottom='20' height='80' width='80' zIndex='1' title='Titulo de Teste'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test4() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLRegion instance = new NCLRegion(reader, null);
-//            String expResult = "<region id='rgTV'>\n\t<region id='rg1'/>\n</region>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test2() throws XMLException {
+        String expResult = "<region id='rgTV' left='10.0%' right='20.0%' top='10.0%' bottom='20.0%' height='80.0%' width='80.0%' zIndex='1' title='Titulo de Teste'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLRegion instance = new NCLRegion(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test3() throws XMLException {
+        String expResult = "<region id='rgTV' left='10.0' right='20.0' top='10.0' bottom='20.0' height='80.0' width='80.0' zIndex='1' title='Titulo de Teste'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLRegion instance = new NCLRegion(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test4() throws XMLException {
+        String expResult = "<region id='rgTV'>\n\t<region id='rg1'/>\n</region>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLRegion instance = new NCLRegion(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }
