@@ -51,6 +51,7 @@ import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRole, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParam>
@@ -61,6 +62,10 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
         super();
     }
 
+    public NCLBind(Element elem) throws XMLException {
+        super();
+        load(elem);
+    }
 
     @Override
     protected void createImpl() throws XMLException {
@@ -356,7 +361,34 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.ROLE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setRole(); // metodo de procura pelo id do role
+
+        att_name = NCLElementAttributes.COMPONENT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setComponent(); // metodo de procura pelo id da media
+
+        att_name = NCLElementAttributes.INTERFACE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setInterface(); // metodo de procura pelo id da interface
+
+        att_name = NCLElementAttributes.DESCRIPTOR.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setDescriptor(); // metodo de procura pelo id do descritor
+
+        ch_name = NCLElementSets.BINDPARAMS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addBindParam((Ep) new NCLParam((Element) nl.item(i), NCLParamInstance.BINDPARAM));
     }
 
 

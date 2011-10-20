@@ -42,12 +42,17 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.connector.NCLRole;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
+import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
+import br.uff.midiacom.ana.interfaces.NCLInterface;
+import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLParam, Eb extends NCLBind, Ec extends NCLCausalConnector>
@@ -63,7 +68,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
         super();
         load(elem);
     }
-
 
     @Override
     protected void createImpl() throws XMLException {
@@ -193,7 +197,26 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.XCONNECTOR.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setXconnector(); // metodo de busca pelo id do connector
+
+        ch_name = NCLElementSets.LINKPARAMS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addLinkParam((Ep) new NCLParam((Element) nl.item(i), NCLParamInstance.LINKPARAM));
+
+        ch_name = NCLElementSets.BINDS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addBind((Eb) new NCLBind((Element) nl.item(i)));
     }
 
 

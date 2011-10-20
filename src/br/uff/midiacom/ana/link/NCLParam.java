@@ -58,6 +58,11 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
         super(paramType);
     }
 
+    public NCLParam(Element elem, NCLParamInstance paramType) throws XMLException {
+        super(paramType);
+        load(elem);
+    }
+
 
     @Override
     protected void createImpl() throws XMLException {
@@ -141,7 +146,19 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.NAME.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setName(); // metodo de procura pelo id do connector
+
+        att_name = NCLElementAttributes.VALUE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setValue(att_var);
     }
 
 

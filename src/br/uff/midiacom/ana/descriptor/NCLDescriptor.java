@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
@@ -53,6 +54,7 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, El extends NCLLayoutDescriptor, Et extends NCLTransition, Ep extends NCLDescriptorParam>
@@ -532,8 +534,94 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
 //    }
 
 
-    public void load(Element element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException{
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.PLAYER.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setPlayer(att_var);
+
+        att_name = NCLElementAttributes.EXPLICITDUR.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setExplicitDur(new TimeType(att_var));
+
+        att_name = NCLElementAttributes.FREEZE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setFreeze(Boolean.parseBoolean(att_var));
+
+        att_name = NCLElementAttributes.MOVEUP.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setMoveUp(); // metodo de busca pelo id do descritor
+
+        att_name = NCLElementAttributes.MOVERIGHT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setMoveRight(); // metodo de busca pelo id do descritor
+
+        att_name = NCLElementAttributes.MOVELEFT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setMoveLeft(); // metodo de busca pelo id do descritor
+
+        att_name = NCLElementAttributes.MOVEDOWN.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setMoveDown(); // metodo de busca pelo id do descritor
+
+        att_name = NCLElementAttributes.FOCUSINDEX.toString();
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setFocusIndex(new Integer(att_var));
+            }catch(Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
+
+        att_name = NCLElementAttributes.FOCUSBORDERCOLOR.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setFocusBorderColor(NCLColor.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.FOCUSBORDERWIDTH.toString();
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setFocusBorderWidth(new Integer(att_var));
+            }catch(Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
+
+        att_name = NCLElementAttributes.FOCUSBORDERTRANSPARENCY.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setFocusBorderTransparency(new PercentageType(att_var));
+
+        att_name = NCLElementAttributes.FOCUSSRC.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setFocusSrc(new SrcType(att_var));
+
+        att_name = NCLElementAttributes.FOCUSSELSRC.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setFocusSelSrc(new SrcType(att_var));
+
+        att_name = NCLElementAttributes.BORDERCOLOR.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setSelBorderColor(NCLColor.getEnumType(att_var));
+
+        att_name = NCLElementAttributes.TRANSIN.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setTransIn(); // metodo de procura pelo id
+
+        att_name = NCLElementAttributes.TRANSOUT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setTransOut(); // metodo de procura pelo id
+
+        att_name = NCLElementAttributes.REGION.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRegion(); // metodo de procura pelo id
+
+
+        ch_name = NCLElementSets.DESCRIPTORPARAM.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addDescriptorParam((Ep) new NCLDescriptorParam((Element) nl.item(i))); // criar metodo na interface
     }
 
 

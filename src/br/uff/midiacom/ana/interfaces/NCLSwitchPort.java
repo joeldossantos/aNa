@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I extends NCLElementImpl, Em extends NCLMapping, Ei extends NCLInterface>
@@ -123,7 +124,14 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String ch_name;
+        int length;
+
+        ch_name = NCLElementSets.MAPPINGS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addMapping((Em) new NCLMapping((Element) nl.item(i)));
     }
 
 

@@ -188,7 +188,17 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.COMPONENT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setComponent(); // metodo de busca pelo id
+
+        att_name = NCLElementAttributes.INTERFACE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setInterface(); // metodo de busca pelo id
     }
 
 
