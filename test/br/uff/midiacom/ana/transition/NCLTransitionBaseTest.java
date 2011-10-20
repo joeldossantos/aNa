@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -81,47 +82,25 @@ public class NCLTransitionBaseTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test3() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
-//            String expResult = "<transitionBase id='tb'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test3() throws XMLException {
+        String expResult = "<transitionBase id='tb'/>\n";
 
-//    @Test
-//    public void test4() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLTransitionBase instance = new NCLTransitionBase(reader, null);
-//            String expResult = "<transitionBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<transition id='tr1' type='fade'/>\n</transitionBase>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLTransitionBase instance = new NCLTransitionBase(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test4() throws XMLException {
+        String expResult = "<transitionBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<transition id='tr1' type='fade'/>\n</transitionBase>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLTransitionBase instance = new NCLTransitionBase(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }

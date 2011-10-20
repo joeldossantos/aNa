@@ -37,17 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
-import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.xml.XMLException;
-import java.io.IOException;
-import java.io.StringReader;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
 
@@ -65,35 +59,28 @@ public class NCLRuleTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test2() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLRule rule = new NCLRule(reader, null);
-//            String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
-//
-//            reader.setContentHandler(rule);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = rule.parse(0);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
+    @Test
+    public void test2() throws XMLException {
+        String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLRule instance = new NCLRule(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
 //    @Test
 //    public void test3() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
+//        String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
 //
-//            NCLDoc doc = new NCLDoc();
-//            doc.setReader(reader);
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLRule instance = new NCLRule(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//
+//
 //            String xml = "<ncl><head><ruleBase>"+
 //                "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>"+
 //                "</ruleBase></head>"+
@@ -101,19 +88,9 @@ public class NCLRuleTest {
 //                "<property name='legenda' value='on'/>"+
 //                "</media></body></ncl>";
 //
-//            reader.setContentHandler(doc);
-//            reader.parse(new InputSource(new StringReader(xml)));
-//
 //            String expResult = "on";
 //            String result = ((NCLRule) doc.getHead().getRuleBase().getRules().iterator().next()).getVar().getValue();
 //            //System.out.println(result);
 //            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
 //    }
 }

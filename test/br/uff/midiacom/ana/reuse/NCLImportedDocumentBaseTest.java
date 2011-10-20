@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.reuse;
 
+import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.xml.XMLException;
@@ -75,49 +76,25 @@ public class NCLImportedDocumentBaseTest {
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test3() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLImportedDocumentBase instance = new NCLImportedDocumentBase(reader, null);
-//            String expResult = "<importedDocumentBase id='IDb'/>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test4() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLImportedDocumentBase instance = new NCLImportedDocumentBase(reader, null);
-//            String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(expResult)));
-//
-//            String result = instance.parse(0);
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test3() throws XMLException {
+        String expResult = "<importedDocumentBase id='IDb'/>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLImportedDocumentBase instance = new NCLImportedDocumentBase(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test4() throws XMLException {
+        String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
+
+        XMLLoader loader = new XMLLoader(expResult);
+        NCLImportedDocumentBase instance = new NCLImportedDocumentBase(loader.getElement());
+
+        String result = instance.parse(0);
+        assertEquals(expResult, result);
+    }
 }
