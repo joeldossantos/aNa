@@ -68,6 +68,12 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
     }
 
 
+    public NCLCompositeRulePrototype() throws XMLException {
+        super();
+        rules = new IdentifiableElementList<T, T>();
+    }
+
+
     /**
      * Atribui um operador a regra composta.
      *

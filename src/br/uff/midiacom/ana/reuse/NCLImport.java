@@ -60,6 +60,12 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     }
 
 
+    public NCLImport(NCLImportType type, Element element) throws XMLException {
+        super(type);
+        load(element);
+    }
+
+
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
@@ -88,40 +94,6 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
         super.setRegion(region);
         impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
     }
-
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("alias"))
-//                    setAlias(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("documentURI"))
-//                    setDocumentURI(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("region")){
-//                    setRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                }
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//        catch(URISyntaxException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-//
-//
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getRegion() != null)
-//            regionReference();
-//    }
 
 
 //    private void regionReference() {
@@ -170,21 +142,24 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the alias (required)
         att_name = NCLElementAttributes.ALIAS.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-        else
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setAlias(att_var);
-
-        att_name = NCLElementAttributes.DOCUMENTURI.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
         else
-            setDocumentURI(new SrcType(att_var));
+            throw new XMLException("Could not find " + att_name + " attribute.");
 
+        // set the documentURI (required)
+        att_name = NCLElementAttributes.DOCUMENTURI.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDocumentURI(new SrcType(att_var));
+        else
+            throw new XMLException("Could not find " + att_name + " attribute.");
+
+        // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
-//        if((att_var = element.getAttribute(att_name)) != null)
-//            setRegion(); // usar metodo de busca pelo id da regiao
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setRegion(); //@todo: usar metodo de busca pelo id da regiao
     }
 
 

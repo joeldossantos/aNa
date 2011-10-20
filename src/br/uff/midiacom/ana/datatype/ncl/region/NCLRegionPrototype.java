@@ -100,6 +100,12 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
     }
 
 
+    public NCLRegionPrototype() throws XMLException {
+        super();
+        regions = new IdentifiableElementList<T, T>();
+    }
+
+
     /**
      * Atribui um título para a região.
      * 

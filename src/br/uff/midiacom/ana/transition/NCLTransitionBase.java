@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -57,6 +58,12 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
     public NCLTransitionBase() throws XMLException {
         super();
+    }
+
+
+    public NCLTransitionBase(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -117,15 +124,29 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
 
     public void load(Element element) throws XMLException {
-        String ch_name;
-        int length;
+        String att_name, att_var;
+        NodeList nl;
 
-        ch_name = NCLElementAttributes.TRANSITION.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
 
-        for(int i=0; i<length; i++)
-            addTransition((Et) new NCLTransition((Element) nl.item(i)));
+                //create the imports
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
+                    addImportBase(createImportBase(el));
+                // create the transitions
+                if(el.getTagName().equals(NCLElementAttributes.TRANSITION.toString()))
+                    addTransition(createTransition(el));
+            }
+        }
     }
 
 
@@ -146,8 +167,8 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected NCLImport createImportBase() throws XMLException {
-        return new NCLImport(NCLImportType.BASE);
+    protected Ei createImportBase(Element element) throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE, element);
     }
 
 
@@ -158,7 +179,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          element representing the child <i>transition</i>.
      */
-    protected NCLTransition createTransition(String id) throws XMLException {
-        return new NCLTransition(id);
+    protected Et createTransition(Element element) throws XMLException {
+        return (Et) new NCLTransition(element);
     }
 }

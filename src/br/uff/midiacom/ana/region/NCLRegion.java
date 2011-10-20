@@ -61,9 +61,9 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
     }
 
 
-    public NCLRegion(Element elem) throws XMLException {
-        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        load(elem);
+    public NCLRegion(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 

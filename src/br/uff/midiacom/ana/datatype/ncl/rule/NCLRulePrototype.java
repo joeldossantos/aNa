@@ -69,6 +69,11 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
+    public NCLRulePrototype() throws XMLException {
+        super();
+    }
+
+
     /**
      * Atribui uma propriedade ao atributo var.
      *

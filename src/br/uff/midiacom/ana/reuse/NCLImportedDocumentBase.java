@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
@@ -55,6 +56,12 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
 
     public NCLImportedDocumentBase() throws XMLException {
         super();
+    }
+
+
+    public NCLImportedDocumentBase(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -84,54 +91,21 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("importedDocumentBase")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                }
-//            }
-//            else if(localName.equals("importNCL")){
-//                I child = createImportNCL();
-//                child.startElement(uri, localName, qName, attributes);
-//                addImportNCL(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-//
-//
-//    @Override
-//    public void endDocument() {
-//        if(hasImportNCL()){
-//            for(I imp : imports){
-//                imp.endDocument();
-//                addWarning(imp.getWarnings());
-//                addError(imp.getErrors());
-//            }
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
-        String ch_name;
-        int length;
+        String att_name, att_var, ch_name;
+        NodeList nl;
 
-        ch_name = NCLElementSets.IMPORTS.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
 
-        for(int i=0; i<length; i++){
-            Element elem_child = (Element) nl.item(i);
-            NCLImport imp = new NCLImport(NCLImportType.BASE);
-            addImportNCL((Ei) imp);
-            imp.load(elem_child);
+        // create the child nodes
+        ch_name = NCLElementAttributes.IMPORTNCL.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addImportNCL(createImportNCL(el));
         }
     }
 
@@ -153,7 +127,7 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
      * @return
      *          element representing the child <i>importNCL</i>.
      */
-    protected NCLImport createImportNCL() throws XMLException {
-        return new NCLImport(NCLImportType.NCL);
+    protected Ei createImportNCL(Element element) throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.NCL, element);
     }
 }

@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
@@ -58,9 +59,9 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
 
     
-    public NCLRule(Element elem) throws XMLException {
-        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        load(elem);
+    public NCLRule(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -148,62 +149,36 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
 //    }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("id"))
-//                    setId(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("var"))
-//                    setVar((P) new NCLProperty(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                else if(attributes.getLocalName(i).equals("comparator")){
-//                    for(NCLComparator c : NCLComparator.values()){
-//                        if(c.toString().equals(attributes.getValue(i)))
-//                            setComparator(c);
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("value"))
-//                    setValue(attributes.getValue(i));
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getVar() != null)
-//            propertyReference();
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the var (required)
         att_name = NCLElementAttributes.VAR.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-//        else
-//            setVar(); // tem que usar o método de busca pelo id da media
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setVar(); //@todo: tem que usar o método de busca pelo id da media
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the comparator (required)
         att_name = NCLElementAttributes.COMPARATOR.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-        else
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setComparator(NCLComparator.getEnumType(att_var));
-
-        att_name = NCLElementAttributes.VALUE.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
         else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the value (required)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setValue(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

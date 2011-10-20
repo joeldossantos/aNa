@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLCompositeRulePrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -56,6 +57,12 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
 
     public NCLCompositeRule(String id) throws XMLException {
         super(id);
+    }
+
+
+    public NCLCompositeRule(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -103,75 +110,39 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("compositeRule") && !insideRule){
-//                cleanWarnings();
-//                cleanErrors();
-//                insideRule = true;
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("operator")){
-//                        for(NCLOperator op : NCLOperator.values()){
-//                        if(op.toString().equals(attributes.getValue(i)))
-//                            setOperator(op);
-//                        }
-//                    }
-//                }
-//            }
-//            else if(localName.equals("compositeRule") && insideRule){
-//                // compositeRule e um elemento interno
-//                T child = createCompositeRule();
-//                child.startElement(uri, localName, qName, attributes);
-//                addRule(child);
-//            }
-//            else if(localName.equals("rule")){
-//                T child = createRule();
-//                child.startElement(uri, localName, qName, attributes);
-//                addRule(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-//
-//
-//    @Override
-//    public void endDocument() {
-//        if(hasRule()){
-//            for(T rule : rules){
-//                rule.endDocument();
-//                addWarning(rule.getWarnings());
-//                addError(rule.getErrors());
-//            }
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
-        String att_name, att_var, ch_name;
-        int length;
+        String att_name, att_var;
+        NodeList nl;
 
+        // set the id (required)
         att_name = NCLElementAttributes.ID.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-        else
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setId(att_var);
-
-        att_name = NCLElementAttributes.OPERATOR.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
         else
-            setOperator(NCLOperator.getEnumType(att_var));
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        ch_name = NCLElementAttributes.RULE.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addRule((T) new NCLRule((Element) nl.item(i)));
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the rules
+                if(el.getTagName().equals(NCLElementAttributes.RULE.toString()))
+                    addRule(createRule(el));
+                // create the compositeRules
+                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString()))
+                    addRule(createCompositeRule(el));
+            }
+        }
     }
 
 
@@ -192,8 +163,8 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
      * @return
      *          element representing the child <i>compositeRule</i>.
      */
-    protected NCLCompositeRule createCompositeRule(String id) throws XMLException {
-        return new NCLCompositeRule(id);
+    protected T createCompositeRule(Element element) throws XMLException {
+        return (T) new NCLCompositeRule(element);
     }
 
 
@@ -204,7 +175,7 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
      * @return
      *          element representing the child <i>rule</i>.
      */
-    protected NCLRule createRule(String id) throws XMLException {
-        return new NCLRule(id);
+    protected T createRule(Element element) throws XMLException {
+        return (T) new NCLRule(element);
     }
 }

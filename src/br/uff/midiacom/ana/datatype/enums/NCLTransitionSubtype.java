@@ -38,8 +38,6 @@
 package br.uff.midiacom.ana.datatype.enums;
 
 import br.uff.midiacom.ana.NCLParsingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -72,17 +70,30 @@ public enum NCLTransitionSubtype {
 
     private String name;
     private NCLTransitionType type;
-    private NCLTransitionSubtype(String name, NCLTransitionType type) { this.name = name; this.type = type;}
 
-    public static NCLTransitionSubtype getEnumType(String name) throws NCLParsingException{
+
+    private NCLTransitionSubtype(String name, NCLTransitionType type) {
+        this.name = name;
+        this.type = type;
+    }
+
+
+    public static NCLTransitionSubtype getEnumType(String name) throws NCLParsingException {
         for(NCLTransitionSubtype opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        throw new NCLParsingException("Could not find " + name +" value");
     }
-    
+
+
     @Override
-    public String toString() { return name; }
-    public NCLTransitionType getType() { return type; }
+    public String toString() {
+        return name;
+    }
+
+
+    public NCLTransitionType getType() {
+        return type;
+    }
 }

@@ -79,6 +79,11 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
     }
 
 
+    public NCLTransitionPrototype() throws XMLException {
+        super();
+    }
+
+
     /**
      * Atribui um tipo a transição.
      *
