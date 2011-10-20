@@ -73,6 +73,14 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
     }
 
 
+    public NCLSwitchPrototype() throws XMLException {
+        super();
+        ports = new IdentifiableElementList<Ep, T>();
+        binds = new ElementList<Eb, T>();
+        nodes = new IdentifiableElementList<En, T>();
+    }
+
+
     /**
      * Atribui um switch para ser reutilizado pelo switch.
      *

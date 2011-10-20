@@ -74,6 +74,11 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
     }
 
 
+    public NCLAreaPrototype() throws XMLException {
+        super();
+    }
+
+
     /**
      * Define uma âncora de conteudo representando porções espaciais.
      * x1,y1,x2,y2,...,xN,yN

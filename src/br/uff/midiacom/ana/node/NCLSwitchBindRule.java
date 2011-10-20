@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchBindRulePrototype;
 import br.uff.midiacom.ana.rule.NCLTestRule;
@@ -57,9 +58,9 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
     }
 
 
-    public NCLSwitchBindRule(Element elem) throws XMLException {
+    public NCLSwitchBindRule(Element element) throws XMLException {
         super();
-        load(elem);
+        load(element);
     }
 
 
@@ -83,37 +84,6 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
         super.setRule(rule);
         impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
     }
-
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("rule"))
-//                    setRule((R) new NCLRule(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                else if(attributes.getLocalName(i).equals("constituent"))
-//                    setConstituent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getConstituent() != null)
-//            constituentReference();
-//
-//        if(getRule() != null)
-//            ruleReference();
-//    }
 
 
 //    private void constituentReference() {
@@ -152,17 +122,19 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the constituent (required)
         att_name = NCLElementAttributes.CONSTITUENT.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-//        else
-//            setConstituent(); // metodo de busca pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setConstituent(); //@todo: metodo de busca pelo id
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the rule (required)
         att_name = NCLElementAttributes.RULE.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-//        else
-//            setRule(); // metodo de busca pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setRule(); //@todo: metodo de busca pelo id
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

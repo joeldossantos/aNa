@@ -75,7 +75,13 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          se o nome da propriedade não for válido.
      */
     public NCLPropertyPrototype(NCLSystemVariable name) throws XMLException {
+        super();
         setName(name);
+    }
+
+
+    public NCLPropertyPrototype() throws XMLException {
+        super();
     }
     
     

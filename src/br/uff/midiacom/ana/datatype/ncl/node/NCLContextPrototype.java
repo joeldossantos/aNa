@@ -82,6 +82,17 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
     }
 
 
+    public NCLContextPrototype() throws XMLException {
+        super();
+        ports = new IdentifiableElementList<Ept, T>();
+        properties = new IdentifiableElementList<Epp, T>();
+        nodes = new IdentifiableElementList<En, T>();
+        links = new IdentifiableElementList<El, T>();
+        metas = new ElementList<Em, T>();
+        metadatas = new ElementList<Emt, T>();
+    }
+
+
     /**
      * Atribui um contexto para ser reutilizado pelo contexto.
      *

@@ -65,6 +65,12 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
     }
 
 
+    public NCLSwitchPortPrototype() throws XMLException {
+        super();
+        mappings = new ElementList<Em, T>();
+    }
+
+
     /**
      * Adiciona um mapeamento a porta de switch.
      *

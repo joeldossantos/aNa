@@ -42,7 +42,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
-import br.uff.midiacom.ana.connector.NCLRole;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
@@ -52,6 +52,7 @@ import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -64,9 +65,9 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLLink(Element elem) throws XMLException {
+    public NCLLink(Element element) throws XMLException {
         super();
-        load(elem);
+        load(element);
     }
 
     @Override
@@ -121,60 +122,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
         }
         return false;
     }
-    
-    
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("link")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("xconnector"))
-//                        setXconnector((C) new NCLCausalConnector(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                }
-//            }
-//            else if(localName.equals("linkParam")){
-//                P child = createLinkParam();
-//                child.startElement(uri, localName, qName, attributes);
-//                addLinkParam(child);
-//            }
-//            else if(localName.equals("bind")){
-//                B child = createBind();
-//                child.startElement(uri, localName, qName, attributes);
-//                addBind(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getXconnector() != null)
-//                connectorReference();
-//        }
-//
-//        if(hasLinkParam()){
-//            for(P param : linkParams){
-//                param.endDocument();
-//                addWarning(param.getWarnings());
-//                addError(param.getErrors());
-//            }
-//        }
-//        if(hasBind()){
-//            for(B bind : binds){
-//                bind.endDocument();
-//                addWarning(bind.getWarnings());
-//                addError(bind.getErrors());
-//            }
-//        }
-//    }
 
 
 //    private void connectorReference() {
@@ -197,26 +144,36 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
 
 
     public void load(Element element) throws XMLException {
-        String att_name, att_var, ch_name;
-        int length;
+        String att_name, att_var;
+        NodeList nl;
 
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+
+        // set the xconnector (required)
         att_name = NCLElementAttributes.XCONNECTOR.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setXconnector(); //@todo: achar conector pelo id
         else
-            setXconnector(); // metodo de busca pelo id do connector
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        ch_name = NCLElementSets.LINKPARAMS.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addLinkParam((Ep) new NCLParam((Element) nl.item(i), NCLParamInstance.LINKPARAM));
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
 
-        ch_name = NCLElementSets.BINDS.toString();
-        nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addBind((Eb) new NCLBind((Element) nl.item(i)));
+                //create the areas
+                if(el.getTagName().equals(NCLElementAttributes.LINKPARAM.toString()))
+                    addLinkParam(createLinkParam(el));
+                // create the properties
+                if(el.getTagName().equals(NCLElementAttributes.BIND.toString()))
+                    addBind(createBind(el));
+            }
+        }
     }
 
 
@@ -237,8 +194,8 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>linkParam</i>.
      */
-    protected NCLParam createLinkParam() throws XMLException {
-        return new NCLParam(NCLParamInstance.LINKPARAM);
+    protected Ep createLinkParam(Element element) throws XMLException {
+        return (Ep) new NCLParam(NCLParamInstance.LINKPARAM, element);
     }
 
 
@@ -249,7 +206,7 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>bind</i>.
      */
-    protected NCLBind createBind() throws XMLException {
-        return new NCLBind();
+    protected Eb createBind(Element element) throws XMLException {
+        return (Eb) new NCLBind(element);
     }
 }

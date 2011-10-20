@@ -65,6 +65,11 @@ public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, 
     }
 
 
+    public NCLPortPrototype() throws XMLException{
+        super();
+    }
+
+
     /**
      * Atribui um nó a porta.
      * 

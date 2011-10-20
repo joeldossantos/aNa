@@ -54,14 +54,12 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
 
     public NCLMetadata() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
     }
 
 
-    public NCLMetadata(Element elem) throws XMLException {
+    public NCLMetadata(Element element) throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
-        load(elem);
+        load(element);
     }
 
 
@@ -76,29 +74,11 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
         StringType aux = this.rdfTree;
         super.setRDFTree(rdfTree);
         impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
-        
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        cleanWarnings();
-//        cleanErrors();
-//    }
-////TODO: o parser vai encarar o RDF como xml também, tem que recuprerar de outra forma
-//
-//    @Override
-//    public void characters(char[] ch, int start, int length) {
-//        setRDFTree(new String(ch, start, length));
-//    }
-
-
     public void load(Element element) throws XMLException {
-        String att_name, att_var;
-
-        att_name = NCLElementAttributes.RDFTREE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setRDFTree(att_var);
+        setRDFTree(element.getTextContent());
     }
 
 

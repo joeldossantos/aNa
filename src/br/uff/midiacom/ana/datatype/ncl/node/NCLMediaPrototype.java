@@ -77,6 +77,13 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
     }
+
+
+    public NCLMediaPrototype() throws XMLException {
+        super();
+        areas = new IdentifiableElementList<Ea, T>();
+        properties = new IdentifiableElementList<Ep, T>();
+    }
     
     
     /**

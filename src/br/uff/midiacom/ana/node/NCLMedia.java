@@ -51,6 +51,7 @@ import br.uff.midiacom.ana.datatype.ncl.node.NCLMediaPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -60,6 +61,12 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     
     public NCLMedia(String id) throws XMLException {
         super(id);
+    }
+
+
+    public NCLMedia(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -169,84 +176,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("media")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("src")){
-//                        try{
-//                            setSrc(attributes.getValue(i));
-//                        }
-//                        catch(URISyntaxException ex){
-//                            setSrc(new TimeType(attributes.getValue(i)));
-//                        }
-//                    }
-//                    else if(attributes.getLocalName(i).equals("type")){
-//                        for(NCLMimeType m : NCLMimeType.values()){
-//                            if(m.toString().equals(attributes.getValue(i)))
-//                                setType(m);
-//                        }
-//                    }
-//                    else if(attributes.getLocalName(i).equals("descriptor"))
-//                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("refer"))
-//                        setRefer((M) new NCLMedia(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("instance")){
-//                        for(NCLInstanceType in : NCLInstanceType.values()){
-//                            if(in.toString().equals(attributes.getValue(i)))
-//                                setInstance(in);
-//                        }
-//                    }
-//                }
-//            }
-//            else if(localName.equals("area")){
-//                A child = createArea();
-//                child.startElement(uri, localName, qName, attributes);
-//                addArea(child);
-//            }
-//            else if(localName.equals("property")){
-//                P child = createProperty();
-//                child.startElement(uri, localName, qName, attributes);
-//                addProperty(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getDescriptor() != null)
-//                descriptorReference();
-//            if(getRefer() != null)
-//                mediaReference();
-//        }
-//
-//        if(hasArea()){
-//            for(A area : areas){
-//                area.endDocument();
-//                addWarning(area.getWarnings());
-//                addError(area.getErrors());
-//            }
-//        }
-//        if(hasProperty()){
-//            for(P property : properties){
-//                property.endDocument();
-//                addWarning(property.getWarnings());
-//                addError(property.getErrors());
-//            }
-//        }
-//    }
-
-
 //    private void descriptorReference() {
 //        //Search for the interface inside the node
 //        Set<D> descriptors = getDescriptors();
@@ -307,36 +236,57 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 //    }
 
 
-    public void load(Element element) throws IllegalArgumentException, NCLParsingException, XMLException {
-        String att_name, att_var, ch_name;
-        int length;
+    public void load(Element element) throws XMLException {
+        String att_name, att_var;
+        NodeList nl;
 
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the src (optional)
         att_name = NCLElementAttributes.SRC.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setSrc(new SrcType(att_var));
 
+        // set the type (optional)
         att_name = NCLElementAttributes.TYPE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setType(NCLMimeType.getEnumType(att_var));
 
+        // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-//            setDescriptor(); // usar metodo de busca pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setDescriptor(); //@todo: usar metodo de busca pelo id do descritor
 
+        // set the refer (optional)
         att_name = NCLElementAttributes.REFER.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-//            setRefer(); // usar metodo de busca pelo id da media
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setRefer(); //@todo: usar metodo de busca pelo id da media
 
+        // set the instance (optional)
         att_name = NCLElementAttributes.INSTANCE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setInstance(NCLInstanceType.getEnumType(att_var));
 
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
 
-        ch_name = NCLElementSets.AREAS.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addArea((Ea) new NCLArea((Element) nl.item(i)));
+                //create the areas
+                if(el.getTagName().equals(NCLElementAttributes.AREA.toString()))
+                    addArea(createArea(el));
+                // create the properties
+                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString()))
+                    addProperty(createProperty(el));
+            }
+        }
     }
 
 
@@ -357,8 +307,8 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
      * @return
      *          element representing the child <i>area</i>.
      */
-    protected NCLArea createArea(String id) throws XMLException {
-        return new NCLArea(id);
+    protected Ea createArea(Element element) throws XMLException {
+        return (Ea) new NCLArea(element);
     }
 
 
@@ -369,7 +319,7 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
      * @return
      *          element representing the child <i>property</i>.
      */
-    protected NCLProperty createProperty(String name) throws XMLException {
-        return new NCLProperty(name);
+    protected Ep createProperty(Element element) throws XMLException {
+        return (Ep) new NCLProperty(element);
     }
 }

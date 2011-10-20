@@ -167,136 +167,69 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(!insideRegion){
-//                cleanWarnings();
-//                cleanErrors();
-//                insideRegion = true;
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("left")){
-//                        String value = attributes.getValue(i);
-//                        Boolean isRelative = attributes.getValue(i).contains("%");
-//                        if(isRelative)
-//                            value = value.substring(0, value.length() - 1);
-//                        setLeft(new Integer(value), isRelative);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("right")){
-//                        String value = attributes.getValue(i);
-//                        Boolean isRelative = attributes.getValue(i).contains("%");
-//                        if(isRelative)
-//                            value = value.substring(0, value.length() - 1);
-//                        setRight(new Integer(value), isRelative);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("top")){
-//                        String value = attributes.getValue(i);
-//                        Boolean isRelative = attributes.getValue(i).contains("%");
-//                        if(isRelative)
-//                            value = value.substring(0, value.length() - 1);
-//                        setTop(new Integer(value), isRelative);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("bottom")){
-//                        String value = attributes.getValue(i);
-//                        Boolean isRelative = attributes.getValue(i).contains("%");
-//                        if(isRelative)
-//                            value = value.substring(0, value.length() - 1);
-//                        setBottom(new Integer(value), isRelative);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("height")){
-//                        String value = attributes.getValue(i);
-//                        Boolean isRelative = attributes.getValue(i).contains("%");
-//                        if(isRelative)
-//                            value = value.substring(0, value.length() - 1);
-//                        setHeight(new Integer(value), isRelative);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("width")){
-//                        String value = attributes.getValue(i);
-//                        Boolean isRelative = attributes.getValue(i).contains("%");
-//                        if(isRelative)
-//                            value = value.substring(0, value.length() - 1);
-//                        setWidth(new Integer(value), isRelative);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("zIndex"))
-//                        setzIndex(new Integer(attributes.getValue(i)));
-//                    else if(attributes.getLocalName(i).equals("title"))
-//                        setTitle(attributes.getValue(i));
-//                }
-//            }
-//            else{
-//                // Region e um elemento interno
-//                R child = createRegion();
-//                child.startElement(uri, localName, qName, attributes);
-//                addRegion(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-//
-//
-//    @Override
-//    public void endDocument() {
-//        if(hasRegion()){
-//            for(R region : regions){
-//                region.endDocument();
-//                addWarning(region.getWarnings());
-//                addError(region.getErrors());
-//            }
-//        }
-//    }
-
-
-    public void load(Element element) throws XMLException, NCLParsingException {
+    public void load(Element element) throws XMLException {
         String att_name, att_var, ch_name;
-        int length;
+        NodeList nl;
 
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the title (optional)
         att_name = NCLElementAttributes.TITLE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setTitle(att_var);
 
+        // set the left (optional)
         att_name = NCLElementAttributes.LEFT.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setLeft(new RelativeType(att_var));
 
+        // set the right (optional)
         att_name = NCLElementAttributes.RIGHT.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setRight(new RelativeType(att_var));
 
+        // set the top (optional)
         att_name = NCLElementAttributes.TOP.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setTop(new RelativeType(att_var));
 
+        // set the bottom (optional)
         att_name = NCLElementAttributes.BOTTOM.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setBottom(new RelativeType(att_var));
 
+        // set the height (optional)
         att_name = NCLElementAttributes.HEIGHT.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setHeight(new RelativeType(att_var));
 
+        // set the width (optional)
         att_name = NCLElementAttributes.WIDTH.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setWidth(new RelativeType(att_var));
 
+        // set the zIndex (optional)
         att_name = NCLElementAttributes.ZINDEX.toString();
-        if((att_var = element.getAttribute(att_name)) != null){
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             try{
                 setzIndex(new Integer(att_var));
             }catch (Exception e){
-                throw new NCLParsingException("Could not set " + att_name + " value.");
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
             }
         }
 
-
+        // create the child nodes
         ch_name = NCLElementAttributes.REGION.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addRegion((T) new NCLRegion((Element) nl.item(i)));
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addRegion(createRegion(el));
+        }
     }
 
 
@@ -317,7 +250,7 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>region</i>.
      */
-    protected NCLRegion createRegion(String id) throws XMLException {
-        return new NCLRegion(id);
+    protected T createRegion(Element element) throws XMLException {
+        return (T) new NCLRegion(element);
     }
 }

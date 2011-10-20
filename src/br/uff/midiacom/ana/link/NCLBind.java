@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
@@ -62,10 +63,11 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
         super();
     }
 
-    public NCLBind(Element elem) throws XMLException {
+    public NCLBind(Element element) throws XMLException {
         super();
-        load(elem);
+        load(element);
     }
+
 
     @Override
     protected void createImpl() throws XMLException {
@@ -123,58 +125,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
         }
         return false;
     }
-
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("bind")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("role"))
-//                        setRole((R) new NCLRole(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("component"))
-//                        setComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("interface"))
-//                        setInterface((I) new NCLPort(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("descriptor"))
-//                        setDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                }
-//            }
-//            else if(localName.equals("bindParam")){
-//                P child = createBindParam();
-//                child.startElement(uri, localName, qName, attributes);
-//                addBindParam(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getRole() != null)
-//                roleReference();
-//            if(getComponent() != null)
-//                componentReference();
-//            if(getComponent() != null && getInterface() != null)
-//                interfaceReference();
-//            if(getDescriptor() != null)
-//                descriptorReference();
-//        }
-//
-//        if(hasBindParam()){
-//            for(P param : bindParams){
-//                param.endDocument();
-//                addWarning(param.getWarnings());
-//                addError(param.getErrors());
-//            }
-//        }
-//    }
 
 
 //    private boolean roleReference() {
@@ -362,33 +312,39 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 
     public void load(Element element) throws XMLException {
         String att_name, att_var, ch_name;
-        int length;
+        NodeList nl;
 
+        // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setRole(); //@todo: achar role do conector pelo nome
         else
-            setRole(); // metodo de procura pelo id do role
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the component (required)
         att_name = NCLElementAttributes.COMPONENT.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;// setComponent(); //@todo: tem que buscar component pelo id
         else
-            setComponent(); // metodo de procura pelo id da media
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the interface (optional)
         att_name = NCLElementAttributes.INTERFACE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setInterface(); // metodo de procura pelo id da interface
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;// setInterface(); //@todo: tem que buscar interface pelo id
 
+        // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setDescriptor(); // metodo de procura pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setDescriptor(); //@todo: usar metodo de busca pelo id do descritor
 
-        ch_name = NCLElementSets.BINDPARAMS.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addBindParam((Ep) new NCLParam((Element) nl.item(i), NCLParamInstance.BINDPARAM));
+        // create the child nodes
+        ch_name = NCLElementAttributes.BINDPARAM.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addBindParam(createBindParam(el));
+        }
     }
 
 
@@ -409,7 +365,7 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>bindParam</i>.
      */
-    protected NCLParam createBindParam() throws XMLException {
-        return new NCLParam(NCLParamInstance.BINDPARAM);
+    protected Ep createBindParam(Element element) throws XMLException {
+        return (Ep) new NCLParam(NCLParamInstance.BINDPARAM, element);
     }
 }

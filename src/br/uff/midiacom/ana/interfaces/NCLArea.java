@@ -60,9 +60,9 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLArea(Element elem) throws XMLException {
-        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        load(elem);
+    public NCLArea(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -134,91 +134,61 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
         super.setLabel(label);
         impl.notifyAltered(NCLElementAttributes.LABEL, aux, label);
     }
-    
-    
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("id"))
-//                    setId(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("coords")){
-//                    Vector<Integer>  coord = new Vector<Integer>();
-//                    String value = attributes.getValue(i);
-//                    while(value.contains(",")){
-//                        int index = value.indexOf(",");
-//                        coord.add(new Integer(value.substring(0, index)));
-//                        value = value.substring(index + 1);
-//                    }
-//                    coord.add(new Integer(value));
-//                    int[] a = new int[coord.size()];
-//                    for(int k = 0; k < coord.size(); k++)
-//                        a[k] = (int) coord.elementAt(k);
-//                    setCoords(a);
-//                }
-//                else if(attributes.getLocalName(i).equals("begin"))
-//                    setBegin(new TimeType(attributes.getValue(i)));
-//                else if(attributes.getLocalName(i).equals("end"))
-//                    setEnd(new TimeType(attributes.getValue(i)));
-//                else if(attributes.getLocalName(i).equals("text"))
-//                    setText(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("position"))
-//                    setPosition(new Integer(attributes.getValue(i)));
-//                else if(attributes.getLocalName(i).equals("first"))
-//                    setFirst(new SampleType(attributes.getValue(i)));
-//                else if(attributes.getLocalName(i).equals("last"))
-//                    setLast(new SampleType(attributes.getValue(i)));
-//                else if(attributes.getLocalName(i).equals("label"))
-//                    setLabel(attributes.getValue(i));
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
 
 
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the coords (optional)
         att_name = NCLElementAttributes.COORDS.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setCoords(new ArrayType(att_var));
 
+        // set the begin (optional)
         att_name = NCLElementAttributes.BEGIN.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setBegin(new TimeType(att_var));
 
+        // set the end (optional)
         att_name = NCLElementAttributes.END.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setEnd(new TimeType(att_var));
 
+        // set the text (optional)
         att_name = NCLElementAttributes.TEXT.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setText(att_var);
 
+        // set the position (optional)
         att_name = NCLElementAttributes.POSITION.toString();
-        if((att_var = element.getAttribute(att_name)) != null){
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             try{
                 setPosition(new Integer(att_var));
-            }
-            catch(NCLParsingException e){
-                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }catch(Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
             }
         }
 
+        // set the first (optional)
         att_name = NCLElementAttributes.FIRST.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setFirst(new SampleType(att_var));
 
+        // set the last (optional)
         att_name = NCLElementAttributes.LAST.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setLast(new SampleType(att_var));
 
+        // set the label (optional)
         att_name = NCLElementAttributes.LABEL.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setLabel(att_var);
     }
 

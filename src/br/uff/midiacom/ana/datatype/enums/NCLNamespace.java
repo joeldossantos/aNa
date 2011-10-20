@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores padronizados de Namespace do documento NCL (atributo <i>xmlns</i>.
@@ -53,6 +55,15 @@ public enum NCLNamespace {
 
     private NCLNamespace(String name) {
         this.name = name;
+    }
+
+
+    public static NCLNamespace getEnumType(String name) throws NCLParsingException{
+        for(NCLNamespace opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
     }
 
 

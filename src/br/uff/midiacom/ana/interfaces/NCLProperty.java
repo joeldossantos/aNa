@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
@@ -62,9 +63,9 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
     }
 
 
-    public NCLProperty(Element elem) throws XMLException {
-        super(elem.getAttribute(NCLElementAttributes.NAME.toString()));
-        load(elem);
+    public NCLProperty(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -96,39 +97,21 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
-    
-    
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("name"))
-//                    setName(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("value"))
-//                    setValue(attributes.getValue(i));
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
 
 
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(att_var);
         else
-            setName(att_name);
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the value (optional)
         att_name = NCLElementAttributes.VALUE.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-        else
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setValue(att_var);
     }
 

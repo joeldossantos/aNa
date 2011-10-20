@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
@@ -56,9 +57,9 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLPort(Element elem) throws XMLException {
-        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        load(elem);
+    public NCLPort(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -82,39 +83,6 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
         super.setInterface(interfac);
         impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
     }
-    
-    
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("id"))
-//                    setId(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("component"))
-//                    setComponent((N) new NCLContext(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                else if(attributes.getLocalName(i).equals("interface"))
-//                    setInterface((I) new NCLPort(attributes.getValue(i)));//cast retirado na correcao das referencias
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getComponent() != null)
-//            componentReference();
-//
-//        if(getComponent() != null && getInterface() != null)
-//            interfaceReference();
-//    }
 
 
 //    private void componentReference() {
@@ -190,15 +158,24 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
-        att_name = NCLElementAttributes.COMPONENT.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
         else
-            setComponent(); // metodo de busca pelo id
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the component (required)
+        att_name = NCLElementAttributes.COMPONENT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;// setComponent(); //@todo: tem que buscar component pelo id
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the interface (optional)
         att_name = NCLElementAttributes.INTERFACE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setInterface(); // metodo de busca pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;// setInterface(); //@todo: tem que buscar interface pelo id
     }
 
 

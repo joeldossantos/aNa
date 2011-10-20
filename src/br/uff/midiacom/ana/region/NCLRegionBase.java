@@ -49,6 +49,7 @@ import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -58,6 +59,12 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 
     public NCLRegionBase() throws XMLException {
         super();
+    }
+
+
+    public NCLRegionBase(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -162,30 +169,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 //        }
 //    }
 
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getParentRegion() != null)
-//                setParentRegion(findRegion(getRegions()));
-//        }
-//
-//        if(hasImportBase()){
-//            for(I imp : imports){
-//                imp.endDocument();
-//                addWarning(imp.getWarnings());
-//                addError(imp.getErrors());
-//            }
-//        }
-//        if(hasRegion()){
-//            for(R region : regions){
-//                region.endDocument();
-//                addWarning(region.getWarnings());
-//                addError(region.getErrors());
-//            }
-//        }
-//    }
-
    
 //    private R findRegion(Set<R> regions) {
 //        for(R reg : regions){
@@ -206,27 +189,38 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 
 
     public void load(Element element) throws XMLException {
-        String att_name, att_var, ch_name;
-        int length;
+        String att_name, att_var;
+        NodeList nl;
 
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+
+        // set the device (optional)
         att_name = NCLElementAttributes.DEVICE.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setDevice(att_var);
 
-        ch_name = NCLElementAttributes.REGION.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addRegion((Er) new NCLRegion((Element) nl.item(i)));
+        // set the region (optional)
+        att_name = NCLElementAttributes.REGION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setRegion(); //@todo: tem que usar o método de busca pelo id da regiao
 
-        ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
-        nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++){
-            Element elem_child = (Element) nl.item(i);
-            NCLImport imp = new NCLImport(NCLImportType.BASE);
-            addImportBase((Ei) imp);
-            imp.load(elem_child);
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the imports
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
+                    addImportBase(createImportBase(el));
+                // create the regions
+                if(el.getTagName().equals(NCLElementAttributes.REGION.toString()))
+                    addRegion(createRegion(el));
+            }
         }
     }
 
@@ -248,8 +242,8 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected NCLImport createImportBase() throws XMLException {
-        return new NCLImport(NCLImportType.BASE);
+    protected Ei createImportBase(Element element) throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE, element);
     }
 
 
@@ -260,7 +254,7 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>region</i>.
      */
-    protected NCLRegion createRegion(String id) throws XMLException {
-        return new NCLRegion(id);
+    protected Er createRegion(Element element) throws XMLException {
+        return (Er) new NCLRegion(element);
     }
 }

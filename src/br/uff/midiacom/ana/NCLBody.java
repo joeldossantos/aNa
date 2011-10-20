@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLBodyPrototype;
 import br.uff.midiacom.ana.interfaces.NCLPort;
@@ -50,6 +51,8 @@ import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
@@ -58,6 +61,12 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
     
     public NCLBody() throws XMLException {
         super();
+    }
+
+
+    public NCLBody(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -227,113 +236,58 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("body")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                }
-//            }
-//            else if(localName.equals("meta")){
-//                M child = createMeta();
-//                child.startElement(uri, localName, qName, attributes);
-//                addMeta(child);
-//            }
-//            else if(localName.equals("metadata")){
-//                MT child = createMetadata();
-//                child.startElement(uri, localName, qName, attributes);
-//                addMetadata(child);
-//            }
-//            else if(localName.equals("port")){
-//                Pt child = createPort();
-//                child.startElement(uri, localName, qName, attributes);
-//                addPort(child);
-//            }
-//            else if(localName.equals("property")){
-//                Pp child = createProperty();
-//                child.startElement(uri, localName, qName, attributes);
-//                addProperty(child);
-//            }
-//            else if(localName.equals("media")){
-//                N child = createMedia();
-//                child.startElement(uri, localName, qName, attributes);
-//                addNode(child);
-//            }
-//            else if(localName.equals("context")){
-//                N child = createContext();
-//                child.startElement(uri, localName, qName, attributes);
-//                addNode(child);
-//            }
-//            else if(localName.equals("switch")){
-//                N child = createSwitch();
-//                child.startElement(uri, localName, qName, attributes);
-//                addNode(child);
-//            }
-//            else if(localName.equals("link")){
-//                L child = createLink();
-//                child.startElement(uri, localName, qName, attributes);
-//                addLink(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(hasMeta()){
-//            for(M meta : metas){
-//                meta.endDocument();
-//                addWarning(meta.getWarnings());
-//                addError(meta.getErrors());
-//            }
-//        }
-//        if(hasMetadata()){
-//            for(MT metadata : metadatas){
-//                metadata.endDocument();
-//                addWarning(metadata.getWarnings());
-//                addError(metadata.getErrors());
-//            }
-//        }
-//        if(hasPort()){
-//            for(Pt port : ports){
-//                port.endDocument();
-//                addWarning(port.getWarnings());
-//                addError(port.getErrors());
-//            }
-//        }
-//        if(hasProperty()){
-//            for(Pp property : properties){
-//                property.endDocument();
-//                addWarning(property.getWarnings());
-//                addError(property.getErrors());
-//            }
-//        }
-//        if(hasNode()){
-//            for(N node : nodes){
-//                node.endDocument();
-//                addWarning(node.getWarnings());
-//                addError(node.getErrors());
-//            }
-//        }
-//        if(hasLink()){
-//            for(L link : links){
-//                link.endDocument();
-//                addWarning(link.getWarnings());
-//                addError(link.getErrors());
-//            }
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+        NodeList nl;
+
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+
+        // create the child nodes (except ports and links)
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                // create the property
+                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString()))
+                    addProperty(createProperty(el));
+                // create the meta
+                if(el.getTagName().equals(NCLElementAttributes.META.toString()))
+                    addMeta(createMeta(el));
+                // create the metadata
+                if(el.getTagName().equals(NCLElementAttributes.METADATA.toString()))
+                    addMetadata(createMetadata(el));
+                // create the media
+                if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString()))
+                    addNode(createMedia(el));
+                // create the context
+                if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString()))
+                    addNode(createContext(el));
+                // create the switch
+                if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString()))
+                    addNode(createSwitch(el));
+            }
+        }
+
+        // create the child nodes (ports and links)
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the port
+                if(el.getTagName().equals(NCLElementAttributes.PORT.toString()))
+                    addPort(createPort(el));
+                // create the link
+                if(el.getTagName().equals(NCLElementAttributes.LINK.toString()))
+                    addLink(createLink(el));
+            }
+        }
     }
 
 
@@ -354,8 +308,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>meta</i>.
      */
-    protected NCLMeta createMeta() throws XMLException {
-        return new NCLMeta();
+    protected Em createMeta(Element element) throws XMLException {
+        return (Em) new NCLMeta(element);
     }
 
 
@@ -366,8 +320,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>metadata</i>.
      */
-    protected NCLMetadata createMetadata() throws XMLException {
-        return new NCLMetadata();
+    protected Emt createMetadata(Element element) throws XMLException {
+        return (Emt) new NCLMetadata(element);
     }
 
 
@@ -378,8 +332,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>port</i>.
      */
-    protected NCLPort createPort(String id) throws XMLException {
-        return new NCLPort(id);
+    protected Ept createPort(Element element) throws XMLException {
+        return (Ept) new NCLPort(element);
     }
 
 
@@ -390,8 +344,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>property</i>.
      */
-    protected NCLProperty createProperty(String name) throws XMLException {
-        return new NCLProperty(name);
+    protected Epp createProperty(Element element) throws XMLException {
+        return (Epp) new NCLProperty(element);
     }
 
 
@@ -402,8 +356,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>media</i>.
      */
-    protected NCLMedia createMedia(String id) throws XMLException {
-        return new NCLMedia(id);
+    protected En createMedia(Element element) throws XMLException {
+        return (En) new NCLMedia(element);
     }
 
 
@@ -414,8 +368,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>context</i>.
      */
-    protected NCLContext createContext(String id) throws XMLException {
-        return new NCLContext(id);
+    protected En createContext(Element element) throws XMLException {
+        return (En) new NCLContext(element);
     }
 
 
@@ -426,8 +380,8 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>switch</i>.
      */
-    protected NCLSwitch createSwitch(String id) throws XMLException {
-        return new NCLSwitch(id);
+    protected En createSwitch(Element element) throws XMLException {
+        return (En) new NCLSwitch(element);
     }
 
 
@@ -438,7 +392,7 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>link</i>.
      */
-    protected NCLLink createLink() throws XMLException {
-        return new NCLLink();
+    protected El createLink(Element element) throws XMLException {
+        return (El) new NCLLink(element);
     }
 }

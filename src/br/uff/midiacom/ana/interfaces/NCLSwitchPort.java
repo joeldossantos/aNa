@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
@@ -57,8 +58,9 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-    public NCLSwitchPort(Element elem) throws XMLException {
-        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
+    public NCLSwitchPort(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -88,50 +90,24 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            if(localName.equals("switchPort")){
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                }
-//            }
-//            else if(localName.equals("mapping")){
-//                M child = createMapping();
-//                child.startElement(uri, localName, qName, attributes);
-//                addMapping(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(hasMapping()){
-//            for(M mapping : mappings){
-//                mapping.endDocument();
-//                addWarning(mapping.getWarnings());
-//                addError(mapping.getErrors());
-//            }
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
-        String ch_name;
-        int length;
+        String att_name, att_var, ch_name;
+        NodeList nl;
 
-        ch_name = NCLElementSets.MAPPINGS.toString();
-        NodeList nl = element.getElementsByTagName(ch_name);
-        length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addMapping((Em) new NCLMapping((Element) nl.item(i)));
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // create the child nodes
+        ch_name = NCLElementAttributes.MAPPING.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addMapping(createMapping(el));
+        }
     }
 
 
@@ -152,7 +128,7 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>mapping</i>.
      */
-    protected NCLMapping createMapping() throws XMLException {
-        return new NCLMapping();
+    protected Em createMapping(Element element) throws XMLException {
+        return (Em) new NCLMapping(element);
     }
 }

@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLParamPrototype;
@@ -58,9 +59,10 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
         super(paramType);
     }
 
-    public NCLParam(Element elem, NCLParamInstance paramType) throws XMLException {
+
+    public NCLParam(NCLParamInstance paramType, Element element) throws XMLException {
         super(paramType);
-        load(elem);
+        load(element);
     }
 
 
@@ -84,34 +86,6 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
-    
-    
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("name"))
-//                    setName((C) new NCLConnectorParam(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                else if(attributes.getLocalName(i).equals("value"))
-//                    setValue(attributes.getValue(i));
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-//
-//
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getName() != null)
-//            nameReference();
-//    }
 
 
 //    private void nameReference() {
@@ -148,17 +122,19 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            ;//setName(); //@todo: achar parametro do conector pelo nome
         else
-            setName(); // metodo de procura pelo id do connector
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
+        // set the value (required)
         att_name = NCLElementAttributes.VALUE.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find " + att_name + " attribute.");
-        else
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setValue(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

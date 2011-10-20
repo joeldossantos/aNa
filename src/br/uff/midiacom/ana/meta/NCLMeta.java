@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -57,9 +58,9 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLMeta(Element elem) throws XMLException {
+    public NCLMeta(Element element) throws XMLException {
         super();
-        load(elem);
+        load(element);
     }
 
 
@@ -88,17 +89,19 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
+        // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setName(att_var);
-
-        att_name = NCLElementAttributes.CONTENT.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
         else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the content (required)
+        att_name = NCLElementAttributes.CONTENT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setContent(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

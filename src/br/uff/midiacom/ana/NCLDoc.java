@@ -43,6 +43,9 @@ import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.ana.datatype.ncl.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -102,76 +105,45 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
      *          if an error occur while parsing the document.
      */
     public void loadXML(File xmlFile) throws NCLParsingException {
-//        try{
-//            setReader(XMLReaderFactory.createXMLReader());
-//
-//            getReader().setContentHandler(this);
-//            getReader().setErrorHandler(new NCLParsingErrorHandler(getReader()));
-//
-//            FileReader r = new FileReader(xmlFile);
-//            getReader().parse(new InputSource(r));
-//        }
-//        catch(SAXException ex){
-//            throw new NCLParsingException(ex.getMessage());
-//        }
-//        catch(FileNotFoundException ex){
-//            throw new NCLParsingException(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            throw new NCLParsingException(ex.getMessage());
-//        }
+        try{
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder parser = factory.newDocumentBuilder();
+            Document doc = parser.parse(xmlFile);
+            load(doc.getDocumentElement());
+        }catch(Exception e){
+            throw new NCLParsingException(e.fillInStackTrace());
+        }
     }
 
 
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("ncl")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("title"))
-//                        setTitle(attributes.getValue(i));
-//                }
-//                if(!uri.equals("")){
-//                    for(NCLNamespace ns : NCLNamespace.values()){
-//                        if(ns.toString().equals(uri))
-//                            setXmlns(ns);
-//                    }
-//                }
-//            }
-//            else if(localName.equals("head")){
-//                setHead(createHead());
-//                getHead().startElement(uri, localName, qName, attributes);
-//            }
-//            else if(localName.equals("body")){
-//                setBody(createBody());
-//                getBody().startElement(uri, localName, qName, attributes);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-//
-//
-//    public void endDocument() {
-//        if(getHead() != null){
-//            getHead().endDocument();
-//            addWarning(getHead().getWarnings());
-//            addError(getHead().getErrors());
-//        }
-//        if(getBody() != null){
-//            getBody().endDocument();
-//            addWarning(getBody().getWarnings());
-//            addError(getBody().getErrors());
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var, ch_name;
+        Element el;
+
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+
+        // set the title (optional)
+        att_name = NCLElementAttributes.TITLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setTitle(att_var);
+
+        // set the xmlns (optional)
+        att_name = NCLElementAttributes.XMLNS.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setXmlns(NCLNamespace.getEnumType(att_var));
+
+        // create the head
+        ch_name = NCLElementAttributes.HEAD.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        setHead(createHead(el));
+
+        // create the body
+        ch_name = NCLElementAttributes.BODY.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        setBody(createBody(el));
     }
 
 
@@ -192,8 +164,8 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
      * @return
      *          element representing the child <i>head</i>.
      */
-    protected NCLHead createHead() throws XMLException {
-        return new NCLHead();
+    protected Eh createHead(Element element) throws XMLException {
+        return (Eh) new NCLHead(element);
     }
 
 
@@ -204,7 +176,7 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
      * @return
      *          element representing the child <i>body</i>.
      */
-    protected NCLBody createBody() throws XMLException {
-        return new NCLBody();
+    protected Eb createBody(Element element) throws XMLException {
+        return (Eb) new NCLBody(element);
     }
 }
