@@ -117,7 +117,19 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.NAME.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setName(att_name);
+
+        att_name = NCLElementAttributes.VALUE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setValue(att_var);
     }
 
 
