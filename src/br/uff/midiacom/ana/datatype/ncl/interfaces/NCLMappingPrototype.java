@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ei extends NCLInterface>
@@ -53,7 +54,7 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
     /**
      * Construtor do elemento <i>mapping</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLMappingPrototype() {
+    public NCLMappingPrototype() throws XMLException {
         super();
     }
 

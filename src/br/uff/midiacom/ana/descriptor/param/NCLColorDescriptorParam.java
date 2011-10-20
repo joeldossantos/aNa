@@ -54,6 +54,12 @@ public class NCLColorDescriptorParam<T extends NCLColorDescriptorParam, P extend
 
 
     public NCLColorDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

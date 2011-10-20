@@ -54,7 +54,12 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
     
     public NCLConnectorParam(String name) throws XMLException {
         super(name);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

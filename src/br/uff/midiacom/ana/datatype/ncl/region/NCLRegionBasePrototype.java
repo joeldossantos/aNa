@@ -76,7 +76,7 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
     /**
      * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLRegionBasePrototype() {
+    public NCLRegionBasePrototype() throws XMLException {
         super();
         regions = new IdentifiableElementList<Er, T>();
         imports = new ElementList<Ei, T>();
@@ -103,7 +103,10 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      *          Retorna uma String representando o elemento device associado a <i>regionBase</i> em questao.
      */
     public String getDevice() {
-        return device.getValue();
+        if(device != null)
+            return device.getValue();
+        else
+            return null;
     }    
 
 

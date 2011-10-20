@@ -54,7 +54,7 @@ public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBaseP
     /**
      * Construtor do elemento <i>importedDocumentBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLImportedDocumentBasePrototype() {
+    public NCLImportedDocumentBasePrototype() throws XMLException {
         super();
         imports = new ElementList<Ei, T>();
     }

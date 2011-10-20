@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
@@ -53,15 +54,20 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
 
     public NCLMeta() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
     }
 
 
     public NCLMeta(Element elem) throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
         load(elem);
     }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    }
+
 
     @Override
     public void setName(String name) throws XMLException {
@@ -74,7 +80,7 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
     @Override
     public void setContent(String content) throws XMLException {
         StringType aux = this.mcontent;
-        super.setName(content);
+        super.setContent(content);
         impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
     }
 

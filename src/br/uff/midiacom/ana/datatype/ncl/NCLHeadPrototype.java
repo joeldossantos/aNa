@@ -69,7 +69,7 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
     /**
      * Construtor do elemento <i>head</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLHeadPrototype() {
+    public NCLHeadPrototype() throws XMLException {
         super();
         regionBases = new IdentifiableElementList<Erb, T>();
         metas = new ElementList<Em, T>();

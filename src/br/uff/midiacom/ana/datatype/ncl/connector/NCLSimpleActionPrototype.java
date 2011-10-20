@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
@@ -70,7 +71,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
     /**
      * Construtor do elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLSimpleActionPrototype() {
+    public NCLSimpleActionPrototype() throws XMLException {
         super();
     }
 

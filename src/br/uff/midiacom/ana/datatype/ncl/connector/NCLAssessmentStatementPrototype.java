@@ -57,7 +57,7 @@ public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPro
     /**
      * Construtor do elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLAssessmentStatementPrototype() {
+    public NCLAssessmentStatementPrototype() throws XMLException {
         super();
         attributeAssessments = new ElementList<Ea, T>();
     }

@@ -58,7 +58,7 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
     /**
      * Construtor do elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLLinkPrototype() {
+    public NCLLinkPrototype() throws XMLException {
         super();
         linkParams = new ElementList<Ep, T>();
         binds = new ElementList<Eb, T>();

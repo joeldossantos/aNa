@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
@@ -56,11 +57,19 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
         impl = (I) new NCLElementImpl(this);
     }
 
+
     public NCLMetadata(Element elem) throws XMLException {
         super();
         impl = (I) new NCLElementImpl(this);
         load(elem);
     }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    }
+
 
     @Override
     public void setRDFTree(String rdfTree) throws XMLException {

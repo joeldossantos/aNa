@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.connector.*;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -49,7 +50,6 @@ import br.uff.midiacom.ana.datatype.ncl.link.NCLBindPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
 
 
@@ -59,7 +59,12 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 
     public NCLBind() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
 

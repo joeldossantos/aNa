@@ -58,7 +58,12 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 
     public NCLRegionBase() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

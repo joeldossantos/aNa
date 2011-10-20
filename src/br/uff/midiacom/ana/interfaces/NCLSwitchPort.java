@@ -53,12 +53,17 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
 
     public NCLSwitchPort(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
     }
+
 
     public NCLSwitchPort(Element elem) throws XMLException {
         super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

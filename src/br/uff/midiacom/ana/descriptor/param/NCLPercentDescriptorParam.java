@@ -53,6 +53,12 @@ public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam, P ex
 
 
     public NCLPercentDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

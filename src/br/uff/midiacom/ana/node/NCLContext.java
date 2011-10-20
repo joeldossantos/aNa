@@ -62,7 +62,12 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
     
     public NCLContext(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 
@@ -391,12 +396,12 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
 
 
     public void load(Element element) throws XMLException {
-        String att_name, ch_name;
+        String att_name, att_var, ch_name;
         int length;
 
         att_name = NCLElementAttributes.REFER.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setRefer(); // usar metodo de busca por id para contextos
+//        if((att_var = element.getAttribute(att_name)) != null)
+//            setRefer(); // usar metodo de busca por id para contextos
 
 
         ch_name = NCLElementSets.PORTS.toString();
@@ -414,8 +419,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
         ch_name = NCLElementSets.NODES.toString();
         nl = element.getElementsByTagName(ch_name);
         length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addNode((En) new NCLNode((Element) nl.item(i))); // tem que fazer este método na interface
+//        for(int i=0; i<length; i++)
+//            addNode((En) new NCLNode((Element) nl.item(i))); // tem que fazer este método na interface
 
         ch_name = NCLElementSets.LINKS.toString();
         nl = element.getElementsByTagName(ch_name);

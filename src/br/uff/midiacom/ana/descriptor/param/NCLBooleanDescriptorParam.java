@@ -53,6 +53,12 @@ public class NCLBooleanDescriptorParam<T extends NCLBooleanDescriptorParam, P ex
 
 
     public NCLBooleanDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

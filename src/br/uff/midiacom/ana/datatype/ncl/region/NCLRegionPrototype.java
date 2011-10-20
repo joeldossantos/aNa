@@ -120,7 +120,10 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          String representando o título da região.
      */
     public String getTitle() {
-        return title.getValue();
+        if(title != null)
+            return title.getValue();
+        else
+            return null;
     }
 
 

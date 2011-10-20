@@ -57,7 +57,12 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
 
     public NCLTransitionBase() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

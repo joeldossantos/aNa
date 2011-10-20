@@ -57,7 +57,7 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
     /**
      * Construtor do elemento <i>transitionBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLTransitionBasePrototype() {
+    public NCLTransitionBasePrototype() throws XMLException {
         super();
         transitions = new IdentifiableElementList<Et, T>();
         imports = new ElementList<Ei, T>();

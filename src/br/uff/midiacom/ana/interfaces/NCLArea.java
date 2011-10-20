@@ -56,13 +56,18 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     
     public NCLArea(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
     }
+
 
     public NCLArea(Element elem) throws XMLException {
         super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        impl = (I) new NCLElementImpl(this);
         load(elem);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 
@@ -85,7 +90,7 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     @Override
     public void setEnd(TimeType end) {
         TimeType aux = this.end;
-        super.setBegin(end);
+        super.setEnd(end);
         impl.notifyAltered(NCLElementAttributes.END, aux, end);
     }
     

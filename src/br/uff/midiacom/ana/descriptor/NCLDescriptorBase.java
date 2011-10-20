@@ -55,7 +55,12 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
 
     public NCLDescriptorBase() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

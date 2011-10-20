@@ -52,7 +52,12 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
 
     public NCLDoc() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

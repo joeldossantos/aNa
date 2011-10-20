@@ -57,7 +57,7 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
     /**
      * Construtor do elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLConnectorBasePrototype() {
+    public NCLConnectorBasePrototype() throws XMLException {
         super();
         connectors = new IdentifiableElementList<Ec, T>();
         imports = new ElementList<Ei, T>();

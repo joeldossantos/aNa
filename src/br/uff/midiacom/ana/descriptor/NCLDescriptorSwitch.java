@@ -53,7 +53,12 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
 
     public NCLDescriptorSwitch(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

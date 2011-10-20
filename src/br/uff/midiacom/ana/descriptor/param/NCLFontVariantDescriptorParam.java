@@ -54,6 +54,12 @@ public class NCLFontVariantDescriptorParam<T extends NCLFontVariantDescriptorPar
 
 
     public NCLFontVariantDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

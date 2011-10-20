@@ -49,7 +49,7 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, P extends NCLElement, I extends XMLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
+public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
     protected IdentifiableElementList<Ept, T> ports;

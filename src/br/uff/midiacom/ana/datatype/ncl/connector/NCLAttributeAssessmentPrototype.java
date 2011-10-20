@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
@@ -59,7 +60,7 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
     /**
      * Construtor do elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLAttributeAssessmentPrototype() {
+    public NCLAttributeAssessmentPrototype() throws XMLException {
         super();
     }
 

@@ -57,7 +57,7 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
     /**
      * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLRuleBasePrototype() {
+    public NCLRuleBasePrototype() throws XMLException {
         super();
         rules = new IdentifiableElementList<Et, T>();
         imports = new ElementList<Ei, T>();

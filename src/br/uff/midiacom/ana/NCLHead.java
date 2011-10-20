@@ -58,7 +58,12 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
     
     public NCLHead() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
     

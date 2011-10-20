@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLPercentDescriptorParamPrototype<T extends NCLPercentDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
@@ -48,7 +49,7 @@ public class NCLPercentDescriptorParamPrototype<T extends NCLPercentDescriptorPa
     private Boolean relative;
 
 
-    public NCLPercentDescriptorParamPrototype() {
+    public NCLPercentDescriptorParamPrototype() throws XMLException {
         super();
     }
 

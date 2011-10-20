@@ -102,8 +102,8 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(StringType value)  throws IllegalArgumentException {
-        this.value = value;
+    public void setValue(String value)  throws XMLException {
+        this.value = new StringType(value);
     }
     
     
@@ -113,8 +113,11 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
      * @return
      *          String contendo o valor atribuído ao parâmetro.
      */
-    public StringType getValue() {
-        return value;
+    public String getValue() {
+        if(value != null)
+            return value.getValue();
+        else
+            return null;
     }
 
 

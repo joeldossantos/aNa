@@ -139,7 +139,10 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          String representando o valor atribuido.
      */
     public String getValue() {
-        return value.getValue();
+        if(value != null)
+            return value.getValue();
+        else
+            return null;
     }
     
     

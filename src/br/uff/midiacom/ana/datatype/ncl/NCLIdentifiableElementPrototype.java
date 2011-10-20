@@ -37,15 +37,21 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
-import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.XMLIdentifiableElementPrototype;
 
 
-public abstract class NCLIdentifiableElementPrototype<T extends NCLIdentifiableElement, P extends NCLElement, I extends XMLElementImpl>
+public abstract class NCLIdentifiableElementPrototype<T extends NCLIdentifiableElement, P extends NCLElement, I extends NCLElementImpl>
         extends XMLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
 
 
-    public NCLIdentifiableElementPrototype() {
+    public NCLIdentifiableElementPrototype() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>();
     }
 }

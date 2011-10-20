@@ -60,7 +60,12 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     
     public NCLMedia(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
     
@@ -316,11 +321,11 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if((att_var = element.getAttribute(att_name)) != null)
-            setDescriptor(); // usar metodo de busca pelo id do descritor
+//            setDescriptor(); // usar metodo de busca pelo id do descritor
 
         att_name = NCLElementAttributes.REFER.toString();
         if((att_var = element.getAttribute(att_name)) != null)
-            setRefer(); // usar metodo de busca pelo id da media
+//            setRefer(); // usar metodo de busca pelo id da media
 
         att_name = NCLElementAttributes.INSTANCE.toString();
         if((att_var = element.getAttribute(att_name)) != null)

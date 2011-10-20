@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLColorDescriptorParamPrototype<T extends NCLColorDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
@@ -50,7 +51,7 @@ public class NCLColorDescriptorParamPrototype<T extends NCLColorDescriptorParamP
     private Boolean isTransparent;
 
 
-    public NCLColorDescriptorParamPrototype() {
+    public NCLColorDescriptorParamPrototype() throws XMLException {
         super();
     }
 

@@ -41,13 +41,14 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLFontVariantDescriptorParamPrototype<T extends NCLFontVariantDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, NCLFontVariant> {
 
 
-    public NCLFontVariantDescriptorParamPrototype() {
+    public NCLFontVariantDescriptorParamPrototype() throws XMLException {
         super();
     }
 

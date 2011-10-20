@@ -40,13 +40,14 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLBooleanDescriptorParamPrototype<T extends NCLBooleanDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, Boolean> {
 
 
-    public NCLBooleanDescriptorParamPrototype() {
+    public NCLBooleanDescriptorParamPrototype() throws XMLException {
         super();
     }
 

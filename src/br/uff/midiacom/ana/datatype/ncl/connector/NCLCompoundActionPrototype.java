@@ -58,7 +58,7 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
     /**
      * Construtor do elemento <i>compoundAction</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLCompoundActionPrototype() {
+    public NCLCompoundActionPrototype() throws XMLException {
         super();
         actions = new ElementList<Ea, T>();
     }

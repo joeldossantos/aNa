@@ -55,14 +55,20 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
 
     public NCLRule(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
     }
 
+    
     public NCLRule(Element elem) throws XMLException {
         super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        impl = (I) new NCLElementImpl(this);
         load(elem);
     }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
+    }
+
 
     @Override
     public void setVar(Ep var) {
@@ -184,8 +190,8 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
         att_name = NCLElementAttributes.VAR.toString();
         if((att_var = element.getAttribute(att_name)) == null)
             throw new XMLException("Could not find " + att_name + " attribute.");
-        else
-            setVar(); // tem que usar o método de busca pelo id da media
+//        else
+//            setVar(); // tem que usar o método de busca pelo id da media
 
         att_name = NCLElementAttributes.COMPARATOR.toString();
         if((att_var = element.getAttribute(att_name)) == null)

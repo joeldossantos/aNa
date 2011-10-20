@@ -54,6 +54,12 @@ public class NCLFontWeightDescriptorParam<T extends NCLFontWeightDescriptorParam
 
 
     public NCLFontWeightDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

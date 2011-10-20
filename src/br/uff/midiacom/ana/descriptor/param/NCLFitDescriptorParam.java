@@ -54,6 +54,12 @@ public class NCLFitDescriptorParam<T extends NCLFitDescriptorParam, P extends NC
 
 
     public NCLFitDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

@@ -54,7 +54,12 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
 
     public NCLCausalConnector(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
     

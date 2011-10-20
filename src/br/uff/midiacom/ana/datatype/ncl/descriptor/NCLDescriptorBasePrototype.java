@@ -57,7 +57,7 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
     /**
      * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBasePrototype() {
+    public NCLDescriptorBasePrototype() throws XMLException {
         super();
         descriptors = new IdentifiableElementList<El, T>();
         imports = new ElementList<Ei, T>();

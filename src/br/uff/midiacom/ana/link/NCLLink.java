@@ -56,13 +56,18 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
 
     public NCLLink() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
     }
+
 
     public NCLLink(Element elem) throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
         load(elem);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

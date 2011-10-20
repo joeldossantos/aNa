@@ -54,7 +54,7 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
     /**
      * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLMetaPrototype() {
+    public NCLMetaPrototype() throws XMLException {
         super();
     }
 
@@ -79,7 +79,10 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
      *          String representando o nome do metadado.
      */
     public String getName() {
-        return name.getValue();
+        if(name != null)
+            return name.getValue();
+        else
+            return null;
     }
 
 
@@ -103,7 +106,10 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
      *          String representando o conteúdo do metadado.
      */
     public String getContent() {
-        return mcontent.getValue();
+        if(mcontent != null)
+            return mcontent.getValue();
+        else
+            return null;
     }
 
     

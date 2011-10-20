@@ -41,13 +41,14 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLPlayerLifeDescriptorParamPrototype<T extends NCLPlayerLifeDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, NCLPlayerLife> {
 
 
-    public NCLPlayerLifeDescriptorParamPrototype() {
+    public NCLPlayerLifeDescriptorParamPrototype() throws XMLException {
         super();
     }
 

@@ -59,7 +59,7 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
     /**
      * Construtor do elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLCompoundConditionPrototype() {
+    public NCLCompoundConditionPrototype() throws XMLException {
         super();
         conditions = new ElementList<Ec, T>();
         statements = new ElementList<Es, T>();

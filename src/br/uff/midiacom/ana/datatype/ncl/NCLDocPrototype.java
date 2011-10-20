@@ -50,7 +50,7 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
     protected Eb body;
 
 
-    public NCLDocPrototype() {
+    public NCLDocPrototype() throws XMLException {
         super();
     }
 

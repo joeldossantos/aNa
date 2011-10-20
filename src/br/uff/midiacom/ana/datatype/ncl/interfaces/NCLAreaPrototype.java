@@ -167,7 +167,10 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          String com conteúdo da âncora textual.
      */
     public String getText() {
-        return text.getValue();
+        if(text != null)
+            return text.getValue();
+        else
+            return null;
     }
     
     
@@ -267,7 +270,10 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          String contendo a identificacao da região do conteúdo.
      */
     public String getLabel() {
-        return label.getValue();
+        if(label != null)
+            return label.getValue();
+        else
+            return null;
     }
     
     

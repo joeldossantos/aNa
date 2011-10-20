@@ -41,13 +41,14 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLScrollDescriptorParamPrototype<T extends NCLScrollDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, NCLScroll> {
 
 
-    public NCLScrollDescriptorParamPrototype() {
+    public NCLScrollDescriptorParamPrototype() throws XMLException {
         super();
     }
 

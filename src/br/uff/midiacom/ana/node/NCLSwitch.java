@@ -56,7 +56,12 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 
     public NCLSwitch(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 
@@ -307,8 +312,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
         int length;
 
         att_name = NCLElementAttributes.REFER.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setRefer(); // método de busca pelo id
+//        if((att_var = element.getAttribute(att_name)) != null)
+//            setRefer(); // método de busca pelo id
 
         ch_name = NCLElementSets.PORTS.toString();
         NodeList nl = element.getElementsByTagName(ch_name);
@@ -318,7 +323,7 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 
         att_name = NCLElementAttributes.DEFAULTCOMPONENT.toString();
         if((att_var = element.getAttribute(att_name)) != null)
-            setDefaultComponent(); // método de busca pelo id
+//            setDefaultComponent(); // método de busca pelo id
 
         ch_name = NCLElementSets.BINDS.toString();
         nl = element.getElementsByTagName(ch_name);
@@ -329,8 +334,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
         ch_name = NCLElementSets.NODES.toString();
         nl = element.getElementsByTagName(ch_name);
         length = nl.getLength();
-        for(int i=0; i<length; i++)
-            addNode((En) new Node((Element) nl.item(i)))); // criar métoda na interface
+//        for(int i=0; i<length; i++)
+//            addNode((En) new Node((Element) nl.item(i)))); // criar métoda na interface
     }
 
 

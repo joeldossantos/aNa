@@ -40,13 +40,14 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLIntegerDescriptorParamPrototype<T extends NCLIntegerDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, Integer> {
 
 
-    public NCLIntegerDescriptorParamPrototype() {
+    public NCLIntegerDescriptorParamPrototype() throws XMLException {
         super();
     }
 

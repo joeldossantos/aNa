@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -56,7 +57,12 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
 
     public NCLImport(NCLImportType type) throws XMLException {
         super(type);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
 
@@ -177,8 +183,8 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
             setDocumentURI(new SrcType(att_var));
 
         att_name = NCLElementAttributes.REGION.toString();
-        if((att_var = element.getAttribute(att_name)) != null)
-            setRegion(); // usar metodo de busca pelo id da regiao
+//        if((att_var = element.getAttribute(att_name)) != null)
+//            setRegion(); // usar metodo de busca pelo id da regiao
     }
 
 

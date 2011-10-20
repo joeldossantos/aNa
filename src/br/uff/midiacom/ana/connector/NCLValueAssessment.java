@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -53,7 +54,12 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
 
     public NCLValueAssessment() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
 

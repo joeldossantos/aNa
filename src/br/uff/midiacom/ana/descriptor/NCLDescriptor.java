@@ -61,7 +61,12 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
 
     public NCLDescriptor(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

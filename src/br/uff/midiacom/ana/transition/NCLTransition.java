@@ -59,7 +59,6 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     
     public NCLTransition(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
     }
 
 
@@ -67,6 +66,12 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
         super(elem.getAttribute(NCLElementAttributes.ID.toString()));
         impl = (I) new NCLElementImpl(this);
         load(elem);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

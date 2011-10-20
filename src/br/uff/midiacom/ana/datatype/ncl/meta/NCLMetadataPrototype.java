@@ -53,7 +53,7 @@ public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLE
     /**
      * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLMetadataPrototype() {
+    public NCLMetadataPrototype() throws XMLException {
         super();
     }
 
@@ -78,7 +78,10 @@ public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLE
      *          String representando a árvore RDF.
      */
     public String getRDFTree() {
-        return rdfTree.getValue();
+        if(rdfTree != null)
+            return rdfTree.getValue();
+        else
+            return null;
     }
 
 

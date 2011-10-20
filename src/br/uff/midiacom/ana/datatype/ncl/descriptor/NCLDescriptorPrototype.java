@@ -110,7 +110,10 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          String contendo o nome da ferramenta.
      */
     public String getPlayer() {
-        return player.getValue();
+        if(player != null)
+            return player.getValue();
+        else
+            return null;
     }
 
 
@@ -562,7 +565,7 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
         if(getRegion() != null)
             content += " region='" + getRegion().getId() + "'";
         if(getExplicitDur() != null)
-            content += " explicitDur='" + getExplicitDur() + "s'";
+            content += " explicitDur='" + getExplicitDur().parse() + "'";
         if(getFreeze() != null)
             content += " freeze='" + getFreeze().toString() + "'";
         if(getPlayer() != null)
@@ -582,11 +585,11 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
         if(getFocusBorderWidth() != null)
             content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
         if(getFocusBorderTransparency() != null)
-            content += " focusBorderTransparency='" + getFocusBorderTransparency() + "%'";
+            content += " focusBorderTransparency='" + getFocusBorderTransparency().parse() + "'";
         if(getFocusSrc() != null)
-            content += " focusSrc='" + getFocusSrc() + "'";
+            content += " focusSrc='" + getFocusSrc().parse() + "'";
         if(getFocusSelSrc() != null)
-            content += " focusSelSrc='" + getFocusSelSrc() + "'";
+            content += " focusSelSrc='" + getFocusSelSrc().parse() + "'";
         if(getSelBorderColor() != null)
             content += " SelBorderColor='" + getSelBorderColor().toString() + "'";
         if(getTransIn() != null)

@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Er extends NCLTestRule>
@@ -53,7 +54,7 @@ public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P 
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLSwitchBindRulePrototype() {
+    public NCLSwitchBindRulePrototype() throws XMLException {
         super();
     }
 

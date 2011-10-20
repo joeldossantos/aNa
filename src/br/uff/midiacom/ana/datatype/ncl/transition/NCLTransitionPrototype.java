@@ -323,6 +323,7 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
     
     public String parse(int ident) {
         String space, content;
+        Object aux;
 
         if(ident < 0)
             ident = 0;
@@ -335,30 +336,30 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
 
         // param element and attributes declaration
         content = space + "<transition";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getType() != null)
-            content += " type='" + getType().toString() + "'";
-        if(getSubtype() != null)
-            content += " subtype='" + getSubtype().toString() + "'";
-        if(getDur() != null)
-            content += " dur='" + getDur() + "'";
-        if(getStartProgress() != null)
-            content += " startProgress='" + getStartProgress() + "'";
-        if(getEndProgress() != null)
-            content += " endProgress='" + getEndProgress() + "'";
-        if(getDirection() != null)
-            content += " direction='" + getDirection().toString() + "'";
-        if(getFadeColor() != null)
-            content += " fadeColor='" + getFadeColor().toString() + "'";
-        if(getHorRepeat() != null)
-            content += " horRepeat='" + getHorRepeat() + "'";
-        if(getVertRepeat() != null)
-            content += " vertRepeat='" + getVertRepeat() + "'";
-        if(getBorderWidth() != null)
-            content += " borderWidth='" + getBorderWidth() + "'";
-        if(getBorderColor() != null)
-            content += " borderColor='" + getBorderColor().toString() + "'";
+        if((aux = getId()) != null)
+            content += " id='" + (String) aux + "'";
+        if((aux = getType()) != null)
+            content += " type='" + ((NCLTransitionType) aux).toString() + "'";
+        if((aux = getSubtype()) != null)
+            content += " subtype='" + ((NCLTransitionSubtype) aux).toString() + "'";
+        if((aux = getDur()) != null)
+            content += " dur='" + ((TimeType) aux).parse() + "'";
+        if((aux = getStartProgress()) != null)
+            content += " startProgress='" + (Double) aux + "'";
+        if((aux = getEndProgress()) != null)
+            content += " endProgress='" + (Double) aux + "'";
+        if((aux = getDirection()) != null)
+            content += " direction='" + ((NCLTransitionDirection) aux).toString() + "'";
+        if((aux = getFadeColor()) != null)
+            content += " fadeColor='" + ((NCLColor) aux).toString() + "'";
+        if((aux = getHorRepeat()) != null)
+            content += " horRepeat='" + (Integer) aux + "'";
+        if((aux = getVertRepeat()) != null)
+            content += " vertRepeat='" + (Integer) aux + "'";
+        if((aux = getBorderWidth()) != null)
+            content += " borderWidth='" + (Integer) aux + "'";
+        if((aux = getBorderColor()) != null)
+            content += " borderColor='" + ((NCLColor) aux).toString() + "'";
         content += "/>\n";
 
         return content;

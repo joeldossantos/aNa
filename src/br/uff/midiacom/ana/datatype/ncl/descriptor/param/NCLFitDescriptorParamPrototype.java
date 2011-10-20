@@ -41,13 +41,14 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFit;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLFitDescriptorParamPrototype<T extends NCLFitDescriptorParamPrototype, P extends NCLElement, I extends XMLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, NCLFit> {
 
 
-    public NCLFitDescriptorParamPrototype() {
+    public NCLFitDescriptorParamPrototype() throws XMLException {
         super();
     }
 

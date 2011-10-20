@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
@@ -55,7 +56,12 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     
     public NCLParam(NCLParamInstance paramType) throws XMLException {
         super(paramType);
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
     
@@ -68,7 +74,7 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     
         
     @Override
-    public void setValue(StringType value) {
+    public void setValue(String value) throws XMLException {
         StringType aux = this.value;
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);

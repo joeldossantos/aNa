@@ -57,7 +57,7 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
     /**
      * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLCompoundStatementPrototype() {
+    public NCLCompoundStatementPrototype() throws XMLException {
         super();
         statements = new ElementList<Es, T>();
     }

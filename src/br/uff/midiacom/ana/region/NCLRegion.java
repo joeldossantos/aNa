@@ -58,14 +58,18 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
 
     public NCLRegion(String id) throws XMLException {
         super(id);
-        impl = (I) new NCLElementImpl(this);
     }
 
 
     public NCLRegion(Element elem) throws XMLException {
         super(elem.getAttribute(NCLElementAttributes.ID.toString()));
-        impl = (I) new NCLElementImpl(this);
         load(elem);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

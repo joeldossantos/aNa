@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, P extends NCLElement, I extends XMLElementImpl, V>
@@ -53,7 +54,7 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, 
     /**
      * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorParamPrototype() {
+    public NCLDescriptorParamPrototype() throws XMLException {
         super();
     }
 

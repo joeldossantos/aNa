@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLConnectorParamPrototype>
@@ -52,7 +53,7 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
     /**
      * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLValueAssessmentPrototype() {
+    public NCLValueAssessmentPrototype() throws XMLException {
         super();
     }
 
@@ -65,7 +66,8 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public NCLValueAssessmentPrototype(AssValueParamType<Ep> value) throws IllegalArgumentException {
+    public NCLValueAssessmentPrototype(AssValueParamType<Ep> value) throws XMLException {
+        super();
         setValue(value);
     }
     

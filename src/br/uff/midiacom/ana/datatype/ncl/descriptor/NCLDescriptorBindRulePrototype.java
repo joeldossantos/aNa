@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Er extends NCLTestRule>
@@ -53,7 +54,7 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
     /**
      * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
      */
-    public NCLDescriptorBindRulePrototype() {
+    public NCLDescriptorBindRulePrototype() throws XMLException {
         super();
     }
 

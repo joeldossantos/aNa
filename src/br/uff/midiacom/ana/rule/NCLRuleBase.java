@@ -59,7 +59,12 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
 
     public NCLRuleBase() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<T, P>(this);
     }
 
 

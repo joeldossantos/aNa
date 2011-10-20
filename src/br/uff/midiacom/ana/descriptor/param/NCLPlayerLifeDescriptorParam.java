@@ -54,6 +54,12 @@ public class NCLPlayerLifeDescriptorParam<T extends NCLPlayerLifeDescriptorParam
 
 
     public NCLPlayerLifeDescriptorParam() throws XMLException {
+        super();
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 

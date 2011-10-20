@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchBindRulePrototype;
@@ -53,13 +54,18 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
 
     public NCLSwitchBindRule() throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
     }
+
 
     public NCLSwitchBindRule(Element elem) throws XMLException {
         super();
-        impl = (I) new NCLElementImpl(this);
         load(elem);
+    }
+
+
+    @Override
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
     
@@ -149,14 +155,14 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
         att_name = NCLElementAttributes.CONSTITUENT.toString();
         if((att_var = element.getAttribute(att_name)) == null)
             throw new XMLException("Could not find " + att_name + " attribute.");
-        else
-            setConstituent(); // metodo de busca pelo id
+//        else
+//            setConstituent(); // metodo de busca pelo id
 
         att_name = NCLElementAttributes.RULE.toString();
         if((att_var = element.getAttribute(att_name)) == null)
             throw new XMLException("Could not find " + att_name + " attribute.");
-        else
-            setRule(); // metodo de busca pelo id
+//        else
+//            setRule(); // metodo de busca pelo id
     }
 
 
