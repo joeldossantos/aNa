@@ -48,8 +48,8 @@ import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, Ei extends NCLImport>
@@ -201,7 +201,28 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.DEVICE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setDevice(att_var);
+
+        ch_name = NCLElementAttributes.REGION.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addRegion((Er) new NCLRegion((Element) nl.item(i)));
+
+        ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++){
+            Element elem_child = (Element) nl.item(i);
+            NCLImport imp = new NCLImport(NCLImportType.BASE);
+            addImportBase((Ei) imp);
+            imp.load(elem_child);
+        }
     }
 
 

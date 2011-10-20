@@ -45,11 +45,15 @@ import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLContextPrototype;
+import br.uff.midiacom.ana.link.NCLBind;
+import br.uff.midiacom.ana.link.NCLParam;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
@@ -387,7 +391,49 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.REFER.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRefer(); // usar metodo de busca por id para contextos
+
+
+        ch_name = NCLElementSets.PORTS.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addPort((Ept) new NCLPort((Element) nl.item(i)));
+
+        ch_name = NCLElementSets.PROPERTIES.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addProperty((Epp) new NCLProperty((Element) nl.item(i)));
+
+        ch_name = NCLElementSets.NODES.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addNode((En) new NCLNode((Element) nl.item(i))); // tem que fazer este método na interface
+
+        ch_name = NCLElementSets.LINKS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addLink((El) new NCLLink((Element) nl.item(i)));
+
+        ch_name = NCLElementSets.METAS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addMeta((Em) new NCLMeta((Element) nl.item(i)));
+
+        ch_name = NCLElementSets.METADATAS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addMetadata((Emt) new NCLMetadata((Element) nl.item(i)));
     }
 
 

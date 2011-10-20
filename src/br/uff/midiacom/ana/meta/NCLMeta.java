@@ -57,6 +57,12 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
     }
 
 
+    public NCLMeta(Element elem) throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
+
     @Override
     public void setName(String name) throws XMLException {
         StringType aux = this.name;

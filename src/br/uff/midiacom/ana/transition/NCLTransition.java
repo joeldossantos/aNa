@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
@@ -59,6 +60,13 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     public NCLTransition(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
+    }
+
+
+    public NCLTransition(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
     }
 
 
@@ -150,73 +158,81 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws XMLException, NCLParsingException {
         String att_name, att_var;
 
         att_name = NCLElementAttributes.TYPE.toString();
         if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
+            throw new XMLException("Could not find " + att_name + " attribute.");
         else
             setType(NCLTransitionType.getEnumType(att_var));
 
         att_name = NCLElementAttributes.SUBTYPE.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
+        if((att_var = element.getAttribute(att_name)) != null)
             setSubtype(NCLTransitionSubtype.getEnumType(att_var));
-
+        
         att_name = NCLElementAttributes.DUR.toString();
         if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
+            throw new XMLException("Could not find " + att_name + " attribute.");
         else
             setDur(new TimeType(att_var));
 
         att_name = NCLElementAttributes.STARTPROGRESS.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
-            setStartProgress(new Double(att_var));
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                Double d = new Double(att_var);
+                setStartProgress(d);
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
 
         att_name = NCLElementAttributes.ENDPROGRESS.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
-            setEndProgress(new Double(att_var));
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setEndProgress(new Double(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
 
         att_name = NCLElementAttributes.DIRECTION.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
+        if((att_var = element.getAttribute(att_name)) != null)
             setDirection(NCLTransitionDirection.getEnumType(att_var));
 
         att_name = NCLElementAttributes.FADECOLOR.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
+        if((att_var = element.getAttribute(att_name)) != null)
             setFadeColor(NCLColor.getEnumType(att_var));
 
         att_name = NCLElementAttributes.HORREPEAT.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
-            setHorRepeat(new Integer(att_var));
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setHorRepeat(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
 
         att_name = NCLElementAttributes.VERTREPEAT.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
-            setVertRepeat(new Integer(att_var));
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setVertRepeat(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
 
         att_name = NCLElementAttributes.BORDERWIDTH.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
-            setBorderWidth(new Integer(att_var));
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setBorderWidth(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
 
         att_name = NCLElementAttributes.BORDERCOLOR.toString();
-        if((att_var = element.getAttribute(att_name)) == null)
-            throw new XMLException("Could not find" + att_name + "attribute.");
-        else
+        if((att_var = element.getAttribute(att_name)) != null)
             setBorderColor(NCLColor.getEnumType(att_var));
     }
 

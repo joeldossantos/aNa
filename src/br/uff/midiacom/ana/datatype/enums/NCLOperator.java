@@ -54,6 +54,13 @@ public enum NCLOperator {
         this.name = name;
     }
 
+    public static NCLOperator getEnumType(String name){
+        for(NCLOperator opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        return null;
+    }
 
     @Override
     public String toString() {

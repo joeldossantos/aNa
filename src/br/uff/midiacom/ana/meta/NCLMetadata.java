@@ -56,6 +56,11 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
         impl = (I) new NCLElementImpl(this);
     }
 
+    public NCLMetadata(Element elem) throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
 
     @Override
     public void setRDFTree(String rdfTree) throws XMLException {

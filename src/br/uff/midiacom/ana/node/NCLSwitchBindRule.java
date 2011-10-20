@@ -56,6 +56,12 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
         impl = (I) new NCLElementImpl(this);
     }
 
+    public NCLSwitchBindRule(Element elem) throws XMLException {
+        super();
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
+    }
+
     
     @Override
     public void setConstituent(En constituent) {
@@ -138,7 +144,19 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.CONSTITUENT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setConstituent(); // metodo de busca pelo id
+
+        att_name = NCLElementAttributes.RULE.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setRule(); // metodo de busca pelo id
     }
 
 

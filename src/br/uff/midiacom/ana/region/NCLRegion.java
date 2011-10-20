@@ -41,14 +41,15 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.TreeSet;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLElementImpl>
@@ -58,6 +59,13 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
     public NCLRegion(String id) throws XMLException {
         super(id);
         impl = (I) new NCLElementImpl(this);
+    }
+
+
+    public NCLRegion(Element elem) throws XMLException {
+        super(elem.getAttribute(NCLElementAttributes.ID.toString()));
+        impl = (I) new NCLElementImpl(this);
+        load(elem);
     }
 
 
@@ -238,8 +246,53 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var, ch_name;
+        int length;
+
+        att_name = NCLElementAttributes.TITLE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setTitle(att_var);
+
+        att_name = NCLElementAttributes.LEFT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setLeft(new RelativeType(att_var));
+
+        att_name = NCLElementAttributes.RIGHT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRight(new RelativeType(att_var));
+
+        att_name = NCLElementAttributes.TOP.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setTop(new RelativeType(att_var));
+
+        att_name = NCLElementAttributes.BOTTOM.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setBottom(new RelativeType(att_var));
+
+        att_name = NCLElementAttributes.HEIGHT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setHeight(new RelativeType(att_var));
+
+        att_name = NCLElementAttributes.WIDTH.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setWidth(new RelativeType(att_var));
+
+        att_name = NCLElementAttributes.ZINDEX.toString();
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setzIndex(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
+
+
+        ch_name = NCLElementAttributes.REGION.toString();
+        NodeList nl = element.getElementsByTagName(ch_name);
+        length = nl.getLength();
+        for(int i=0; i<length; i++)
+            addRegion((T) new NCLRegion((Element) nl.item(i)));
     }
 
 
