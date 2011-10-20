@@ -94,7 +94,11 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.RDFTREE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setRDFTree(att_var);
     }
 
 

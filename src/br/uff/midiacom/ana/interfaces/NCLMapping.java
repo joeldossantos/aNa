@@ -56,6 +56,11 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
         super();
     }
 
+    public NCLMapping(Element elem) throws XMLException {
+        super();
+        load(elem);
+    }
+
 
     @Override
     protected void createImpl() throws XMLException {
@@ -75,7 +80,7 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
     public void setInterface(Ei interfac) {
         Ei aux = this.interfac;
         super.setInterface(interfac);
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, interfac);
+        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
     }
 
 
@@ -180,7 +185,17 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+        
+        att_name = NCLElementAttributes.COMPONENT.toString();
+        if((att_var = element.getAttribute(att_name)) == null)
+            throw new XMLException("Could not find " + att_name + " attribute.");
+        else
+            setComponent(); // metodo de busca pelo id
+
+        att_name = NCLElementAttributes.INTERFACE.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setInterface(); // metodo de busca pelo id
     }
 
 

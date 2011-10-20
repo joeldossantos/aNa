@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -180,7 +181,45 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        att_name = NCLElementAttributes.COORDS.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setCoords(new ArrayType(att_var));
+
+        att_name = NCLElementAttributes.BEGIN.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setBegin(new TimeType(att_var));
+
+        att_name = NCLElementAttributes.END.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setEnd(new TimeType(att_var));
+
+        att_name = NCLElementAttributes.TEXT.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setText(att_var);
+
+        att_name = NCLElementAttributes.POSITION.toString();
+        if((att_var = element.getAttribute(att_name)) != null){
+            try{
+                setPosition(new Integer(att_var));
+            }
+            catch(NCLParsingException e){
+                throw new NCLParsingException("Could not set " + att_name + " value.");
+            }
+        }
+
+        att_name = NCLElementAttributes.FIRST.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setFirst(new SampleType(att_var));
+
+        att_name = NCLElementAttributes.LAST.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setLast(new SampleType(att_var));
+
+        att_name = NCLElementAttributes.LABEL.toString();
+        if((att_var = element.getAttribute(att_name)) != null)
+            setLabel(att_var);
     }
 
 
