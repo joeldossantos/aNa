@@ -54,16 +54,16 @@ public class NCLRegionTest {
     @Test
     public void testRegion1() throws XMLException {
         NCLRegion region = new NCLRegion("rgTV");
-        region.setLeft(new RelativeType(10));
-        region.setRight(new RelativeType(20));
-        region.setTop(new RelativeType(10));
-        region.setBottom(new RelativeType(20));
-        region.setWidth(new RelativeType(80));
-        region.setHeight(new RelativeType(80));
+        region.setLeft(new RelativeType(10, true));
+        region.setRight(new RelativeType(20, true));
+        region.setTop(new RelativeType(10, true));
+        region.setBottom(new RelativeType(20, true));
+        region.setWidth(new RelativeType(80, true));
+        region.setHeight(new RelativeType(80, true));
         region.setzIndex(1);
         region.setTitle("Titulo de Teste");
 
-        String expResult = "<region id='rgTV' left='10%' right='20%' top='10%' bottom='20%' height='80%' width='80%' zIndex='1' title='Titulo de Teste'/>\n";
+        String expResult = "<region id='rgTV' left='10.0%' right='20.0%' top='10.0%' bottom='20.0%' height='80.0%' width='80.0%' zIndex='1' title='Titulo de Teste'/>\n";
         String result = region.parse(0);
         assertEquals(expResult, result);
     }
@@ -80,7 +80,7 @@ public class NCLRegionTest {
         region.setzIndex(1);
         region.setTitle("Titulo de Teste");
 
-        String expResult = "<region id='rgTV' left='10' right='20' top='10' bottom='20' height='80' width='80' zIndex='1' title='Titulo de Teste'/>\n";
+        String expResult = "<region id='rgTV' left='10.0' right='20.0' top='10.0' bottom='20.0' height='80.0' width='80.0' zIndex='1' title='Titulo de Teste'/>\n";
         String result = region.parse(0);
         assertEquals(expResult, result);
     }

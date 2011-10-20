@@ -70,7 +70,7 @@ public class NCLTransitionTest {
         trans.setBorderWidth(20);
         trans.setBorderColor(NCLColor.BLUE);
 
-        String expResult = "<transition id='tr1' type='fade' subtype='crossfade' dur='5s' startProgress='0.1' endProgress='0.9'"+
+        String expResult = "<transition id='tr1' type='fade' subtype='crossfade' dur='5.0s' startProgress='0.1' endProgress='0.9'"+
                 " direction='forward' fadeColor='black' horRepeat='4' vertRepeat='6' borderWidth='20' borderColor='blue'/>\n";
         String result = trans.parse(0);
         assertEquals(expResult, result);

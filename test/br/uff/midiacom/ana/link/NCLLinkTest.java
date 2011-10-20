@@ -69,7 +69,7 @@ public class NCLLinkTest {
 
         NCLParam p = new NCLParam(NCLParamInstance.LINKPARAM);
         p.setName(new NCLConnectorParam("var"));
-        p.setValue(new StringType("10"));
+        p.setValue("10");
 
         l.addLinkParam(p);
         l.addBind(b);

@@ -82,15 +82,15 @@ public class NCLDescriptorTest {
         descriptor.setFocusIndex(10);
         descriptor.setFocusBorderColor(NCLColor.BLACK);
         descriptor.setFocusBorderWidth(5);
-        descriptor.setFocusBorderTransparency(new PercentageType(1));
+        descriptor.setFocusBorderTransparency(new PercentageType(1, true));
         descriptor.setFocusSrc(new SrcType("foco.jpg"));
         descriptor.setFocusSelSrc(new SrcType("sel.jpg"));
         descriptor.setSelBorderColor(NCLColor.AQUA);
         descriptor.setTransIn(new NCLTransition("tin"));
         descriptor.setTransOut(new NCLTransition("tout"));
 
-        String expResult = "<descriptor id='dTV' region='rgTV' explicitDur='20s' freeze='true' player='teste' moveLeft='1' moveRight='2' moveDown='3' moveUp='4'"+
-                " focusIndex='10' focusBorderColor='black' focusBorderWidth='5' focusBorderTransparency='1%' focusSrc='foco.jpg'"+
+        String expResult = "<descriptor id='dTV' region='rgTV' explicitDur='20.0s' freeze='true' player='teste' moveLeft='1' moveRight='2' moveDown='3' moveUp='4'"+
+                " focusIndex='10' focusBorderColor='black' focusBorderWidth='5' focusBorderTransparency='1.0%' focusSrc='foco.jpg'"+
                 " focusSelSrc='sel.jpg' SelBorderColor='aqua' transIn='tin' transOut='tout'/>\n";
         String result = descriptor.parse(0);
         assertEquals(expResult, result);

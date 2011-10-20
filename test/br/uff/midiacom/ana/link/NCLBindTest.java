@@ -79,7 +79,7 @@ public class NCLBindTest {
         b.setComponent(new NCLMedia("video"));
         NCLParam p = new NCLParam(NCLParamInstance.BINDPARAM);
         p.setName(new NCLConnectorParam("var"));
-        p.setValue(new StringType("10"));
+        p.setValue("10");
         b.addBindParam(p);
 
         String expResult = "<bind role='set' component='video'>\n\t<bindParam name='var' value='10'/>\n</bind>\n";

@@ -57,29 +57,29 @@ public class NCLTimeTest {
 
 	@Test
 	public void testToString_t1() {
-		String expResult = "10s";
-		String result = t1.toString();
+		String expResult = "10.0s";
+		String result = t1.parse();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testToString_t2() {
-		String expResult = "10.100s";
-		String result = t2.toString();
+		String expResult = "10.1s";
+		String result = t2.parse();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testToString_t3() {
 		String expResult = "20:54:54.2548";
-		String result = t3.toString();
+		String result = t3.parse();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testToString_t4() {
 		String expResult = "154:10:22:23:55:55.1568";
-		String result = t4.toString();
+		String result = t4.parse();
 		assertEquals(expResult, result);
 	}
 
@@ -219,67 +219,67 @@ public class NCLTimeTest {
 
 	@Test
 	public void testGetSecond_t2() {
-		Double expResult = 10.0;
+		Double expResult = 10.1;
 		Double result = t2.getSecond();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testGetSecond_t3() {
-		Double expResult = 54.0;
+		Double expResult = 54.2548;
 		Double result = t3.getSecond();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testGetSecond_t4() {
-		Double expResult = 55.0;
+		Double expResult = 55.1568;
 		Double result = t4.getSecond();
 		assertEquals(expResult, result);
 	}
 
         @Test
         public void testStringToTime_t1() {
-            String expResult = "1:12:23:12:56:2.100";
+            String expResult = "1:12:23:12:56:2.1";
             TimeType t = new TimeType(expResult);
 
-            String result = t.toString();
+            String result = t.parse();
             assertEquals(expResult, result);
         }
 
         @Test
         public void testStringToTime_t2() {
-            String expResult = "125:56:2.100";
+            String expResult = "125:56:2.1";
             TimeType t = new TimeType(expResult);
 
-            String result = t.toString();
+            String result = t.parse();
             assertEquals(expResult, result);
         }
 
         @Test
         public void testStringToTime_t3() {
-            String expResult = "200.100s";
+            String expResult = "200.1s";
             TimeType t = new TimeType(expResult);
 
-            String result = t.toString();
+            String result = t.parse();
             assertEquals(expResult, result);
         }
 
         @Test
         public void testStringToTime_t4() {
-            String expResult = "100s";
+            String expResult = "100.0s";
             TimeType t = new TimeType(expResult);
 
-            String result = t.toString();
+            String result = t.parse();
             assertEquals(expResult, result);
         }
 
         @Test
         public void testStringToTime_t5() {
-            String expResult = "1:12:23:12:56:2";
+            String expResult = "1:12:23:12:56:2.0";
             TimeType t = new TimeType(expResult);
 
-            String result = t.toString();
+            String result = t.parse();
             assertEquals(expResult, result);
         }
 }

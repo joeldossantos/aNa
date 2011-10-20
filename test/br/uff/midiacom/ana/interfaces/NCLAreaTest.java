@@ -60,7 +60,7 @@ public class NCLAreaTest {
         area.setBegin(new TimeType(5));
         area.setEnd(new TimeType(20));
 
-        String expResult = "<area id='anchor' begin='5s' end='20s'/>\n";
+        String expResult = "<area id='anchor' begin='5.0s' end='20.0s'/>\n";
         String result = area.parse(0);
         assertEquals(expResult, result);
     }
@@ -81,7 +81,7 @@ public class NCLAreaTest {
         NCLArea area = new NCLArea("anchor");
         area.setCoords(new ArrayType("1, 2, 6, 56"));
         
-        String expResult = "<area id='anchor' coords='1,2,6,56'/>\n";
+        String expResult = "<area id='anchor' coords='1.0,2.0,6.0,56.0'/>\n";
         String result = area.parse(0);
         assertEquals(expResult, result);
     }
