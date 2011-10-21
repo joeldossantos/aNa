@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Tipos de eventos de uma mídia da <i>Nested Context Language</i> (NCL).
@@ -50,6 +52,15 @@ public enum NCLEventType {
 
     private String name;
     private NCLEventType(String name) { this.name = name;}
+
+    public static NCLEventType getEnumType(String name) throws NCLParsingException {
+        for(NCLEventType opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" value");
+    }
+
     @Override
     public String toString() { return name; }
 }

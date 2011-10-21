@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Operadores lógicos para condições compostas da <i>Nested Context Language</i> (NCL).
@@ -54,6 +56,13 @@ public enum NCLConditionOperator {
         this.name = name;
     }
 
+    public static NCLConditionOperator getEnumType(String name) throws NCLParsingException{
+        for(NCLConditionOperator opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
 
     @Override
     public String toString() {

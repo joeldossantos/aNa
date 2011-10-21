@@ -89,6 +89,11 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
         params = new ElementList<Ep, T>();
     }
 
+    public NCLDescriptorPrototype() throws XMLException {
+        super();
+        params = new ElementList<Ep, T>();
+    }
+
 
     /**
      * Identifica o node da ferramenta de apresentação utilizada pelo descritor.

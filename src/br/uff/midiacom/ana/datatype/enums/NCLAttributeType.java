@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores do atributo <i>attributeType</i> do elemento
@@ -52,6 +54,15 @@ public enum NCLAttributeType {
 
     private String name;
     private NCLAttributeType(String name) { this.name = name;}
+
+    public static NCLAttributeType getEnumType(String name) throws NCLParsingException {
+        for(NCLAttributeType opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" value");
+    }
+
     @Override
     public String toString() { return name; }
 }

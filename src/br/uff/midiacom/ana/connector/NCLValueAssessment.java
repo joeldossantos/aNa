@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLValueAssessmentPrototype;
@@ -138,8 +139,15 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws NCLParsingException, XMLException {
+        String att_name, att_var;
+
+        // set the value (required)
+        att_name = NCLElementAttributes.VALUEASSESSMENT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(new AssValueParamType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

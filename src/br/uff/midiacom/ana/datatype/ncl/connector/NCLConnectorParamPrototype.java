@@ -66,6 +66,9 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
         setName(name);
     }
 
+    public NCLConnectorParamPrototype() throws XMLException {
+        super();
+    }
 
     /**
      * Atribui um nome ao parâmetro

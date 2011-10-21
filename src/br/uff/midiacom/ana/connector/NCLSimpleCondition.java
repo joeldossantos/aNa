@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
@@ -59,6 +60,11 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 
     public NCLSimpleCondition() throws XMLException {
         super();
+    }
+
+    public NCLSimpleCondition(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -234,8 +240,55 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var;
+
+        // set the role (required)
+        att_name = NCLElementAttributes.ROLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRole(createRole(att_name));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the min (optional)
+        att_name = NCLElementAttributes.MIN.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setMin(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
+
+        // set the max (optional)
+        att_name = NCLElementAttributes.MAX.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setMax(new MaxType(att_var));
+
+        // set the qualifier (optional)
+        att_name = NCLElementAttributes.QUALIFIER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setQualifier(NCLConditionOperator.getEnumType(att_var));
+
+        // set the key (optional)
+        att_name = NCLElementAttributes.KEY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setKey(new KeyParamType(att_var));
+
+        // set the eventType (optional)
+        att_name = NCLElementAttributes.EVENTTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setEventType(NCLEventType.getEnumType(att_var));
+
+        // set the transition (optional)
+        att_name = NCLElementAttributes.TRANSITION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setTransition(NCLEventTransition.getEnumType(att_var));
+
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
     }
 
 
@@ -256,7 +309,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
      * @return
      *          element representing a connector <i>role</i>.
      */
-    protected NCLRole createRole(String name) throws XMLException {
-        return new NCLRole(name);
+    protected Er createRole(String name) throws XMLException {
+        return (Er) new NCLRole(name);
     }
 }

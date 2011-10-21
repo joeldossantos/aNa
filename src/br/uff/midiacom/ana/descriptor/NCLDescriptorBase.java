@@ -47,6 +47,8 @@ import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImport>
@@ -167,7 +169,24 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        NodeList nl;
+
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the descriptors
+                if(el.getTagName().equals(NCLElementSets.DESCRIPTORS.toString()))
+                    addDescriptor(createDescriptor(el));
+
+                // create the importBases
+                if(el.getTagName().equals(NCLElementSets.IMPORTS.toString()))
+                    addImportBase(createImportBase(el));
+            }
+        }
     }
 
 
@@ -188,8 +207,8 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected NCLImport createImportBase() throws XMLException {
-        return new NCLImport(NCLImportType.BASE);
+    protected Ei createImportBase(Element element) throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE, element);
     }
 
 
@@ -200,8 +219,8 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>descriptor</i>.
      */
-    protected NCLDescriptor createDescriptor(String id) throws XMLException {
-        return new NCLDescriptor(id);
+    protected El createDescriptor(Element element) throws XMLException {
+        return (El) new NCLDescriptor(element);
     }
 
 
@@ -212,7 +231,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>descriptorSwitch</i>.
      */
-    protected NCLDescriptorSwitch createDescriptorSwitch(String id) throws XMLException {
-        return new NCLDescriptorSwitch(id);
+    protected El createDescriptorSwitch(String id) throws XMLException {
+        return (El) new NCLDescriptorSwitch(id);
     }
 }

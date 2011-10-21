@@ -41,12 +41,14 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement>
@@ -142,8 +144,29 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var, ch_name;
+        NodeList nl;
+
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the isNegated (optional)
+        att_name = NCLElementAttributes.ISNEGATED.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setIsNegated(Boolean.parseBoolean(att_var));
+
+        // create the assessmentStatement nodes
+        ch_name = NCLElementSets.STATEMENTS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addStatement(createAssessmentStatement(el));
+        }
     }
 
 
@@ -164,8 +187,8 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      * @return
      *          element representing the child <i>assessmentStatement</i>.
      */
-    protected NCLAssessmentStatement createAssessmentStatement() throws XMLException {
-        return new NCLAssessmentStatement();
+    protected Es createAssessmentStatement(Element element) throws XMLException {
+        return (Es) new NCLAssessmentStatement(element);
     }
 
 

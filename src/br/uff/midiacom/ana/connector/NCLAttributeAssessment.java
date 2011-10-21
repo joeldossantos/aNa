@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
@@ -57,6 +58,11 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
 
     public NCLAttributeAssessment() throws XMLException {
         super();
+    }
+
+    public NCLAttributeAssessment(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -192,8 +198,32 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var;
+
+        // set the role (required)
+        att_name = NCLElementAttributes.ROLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRole(createRole(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the eventType (required)
+        att_name = NCLElementAttributes.EVENTTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setEventType(NCLEventType.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the key (optional)
+        att_name = NCLElementAttributes.KEY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setKey(new KeyParamType(att_var));
+
+        // set the attributeType (optional)
+        att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setAttributeType(NCLAttributeType.getEnumType(att_var));
     }
 
 
@@ -214,7 +244,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
      * @return
      *          element representing a connector <i>role</i>.
      */
-    protected NCLRole createRole(String name) throws XMLException {
-        return new NCLRole(name);
+    protected Er createRole(String name) throws XMLException {
+        return (Er) new NCLRole(name);
     }
 }

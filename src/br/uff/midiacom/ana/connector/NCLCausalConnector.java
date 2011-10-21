@@ -41,11 +41,14 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParam>
@@ -54,6 +57,11 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
 
     public NCLCausalConnector(String id) throws XMLException {
         super(id);
+    }
+
+    public NCLCausalConnector(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -170,8 +178,34 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var, ch_name;
+        NodeList nl;
+
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the condition (optional) --> NÃO DEVERIA SER addCondition?
+        att_name = NCLElementAttributes.CONDITION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setCondition();
+
+        // set the action (optional) --> NÃO DEVERIA SER addAction?
+        att_name = NCLElementAttributes.ACTION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setAction();
+
+        // create the connectorParam nodes
+        ch_name = NCLElementSets.CONNECTOR_PARAMS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addConnectorParam(createConnectorParam(el));
+        }
     }
 
 
@@ -192,8 +226,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>connectorParam</i>.
      */
-    protected NCLConnectorParam createConnectorParam(String name) throws XMLException {
-        return new NCLConnectorParam(name);
+    protected Ep createConnectorParam(Element element) throws XMLException {
+        return (Ep) new NCLConnectorParam(element);
     }
 
 

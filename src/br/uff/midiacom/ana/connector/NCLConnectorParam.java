@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -54,6 +55,11 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
     
     public NCLConnectorParam(String name) throws XMLException {
         super(name);
+    }
+
+    public NCLConnectorParam(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -97,8 +103,22 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws NCLParsingException, XMLException {
+        String att_name, att_var;
+
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the type (required)
+        att_name = NCLElementAttributes.TYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setType(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

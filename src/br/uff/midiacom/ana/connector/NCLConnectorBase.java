@@ -47,6 +47,8 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCausalConnector, Ei extends NCLImport>
@@ -162,7 +164,24 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        NodeList nl;
+
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the connectors
+                if(el.getTagName().equals(NCLElementSets.CONNECTORS.toString()))
+                    addCausalConnector(createCausalConnector(el));
+
+                // create the imports
+                if(el.getTagName().equals(NCLElementSets.IMPORTS.toString()))
+                    addImportBase(createImportBase(el));
+            }
+        }
     }
 
 
@@ -183,8 +202,8 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected NCLImport createImportBase() throws XMLException {
-        return new NCLImport(NCLImportType.BASE);
+    protected Ei createImportBase(Element element) throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE, element);
     }
 
 
@@ -195,7 +214,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      * @return
      *          element representing the child <i>causalConnector</i>.
      */
-    protected NCLCausalConnector createCausalConnector(String id) throws XMLException {
-        return new NCLCausalConnector(id);
+    protected Ec createCausalConnector(Element element) throws XMLException {
+        return (Ec) new NCLCausalConnector(element);
     }
 }

@@ -40,11 +40,14 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorSwitchPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRule>
@@ -196,8 +199,38 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws NCLParsingException, XMLException {
+        String att_name, att_var;
+        NodeList nl;
+
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the defaultDescriptor (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDefaultDescriptor(); // metodo procura pelo id
+
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the descriptors
+                if(el.getTagName().equals(NCLElementSets.DESCRIPTORS.toString()))
+                    addDescriptor(createDescriptor(el));
+
+                // create the binds
+                if(el.getTagName().equals(NCLElementSets.BINDS.toString()))
+                    addBind(createBindRule(el));
+            }
+        }
     }
 
 
@@ -218,8 +251,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
      * @return
      *          element representing the child <i>bindRule</i>.
      */
-    protected NCLDescriptorBindRule createBindRule() throws XMLException {
-        return new NCLDescriptorBindRule();
+    protected Eb createBindRule(Element element) throws XMLException {
+        return (Eb) new NCLDescriptorBindRule(element);
     }
 
 
@@ -230,7 +263,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
      * @return
      *          element representing the child <i>descriptor</i>.
      */
-    protected NCLDescriptor createDescriptor(String id) throws XMLException {
-        return new NCLDescriptor(id);
+    protected El createDescriptor(Element element) throws XMLException {
+        return (El) new NCLDescriptor(element);
     }
 }
