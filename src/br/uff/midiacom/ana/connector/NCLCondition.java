@@ -40,7 +40,17 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 
 
-public interface NCLCondition<T extends NCLCondition, P extends NCLElement, Ep extends NCLConnectorParam>
+public interface NCLCondition<T extends NCLCondition, P extends NCLElement, Ep extends NCLConnectorParam, Er extends NCLRole>
         extends br.uff.midiacom.ana.datatype.ncl.connector.NCLCondition<T, P, Ep>, NCLElement<T, P> {
 
+    
+    /**
+     * Searches for a role inside a condition.
+     * 
+     * @param name
+     *          name of the role to be found.
+     * @return 
+     *          role or null if no role was found.
+     */
+    public Er findRole(String name);
 }

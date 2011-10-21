@@ -39,9 +39,34 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.interfaces.NCLInterface;
+import br.uff.midiacom.xml.XMLException;
 
 
-public interface NCLNode<T extends NCLNode, P extends NCLElement>
+public interface NCLNode<T extends NCLNode, P extends NCLElement, Ei extends NCLInterface>
         extends br.uff.midiacom.ana.datatype.ncl.node.NCLNode<T, P>, NCLIdentifiableElement<T, P> {
 
+    
+    /**
+     * Searches for a interface inside an node and its descendants. The interface
+     * could be: area, property, port, switchPort.
+     * 
+     * @param id
+     *          id of the interface to be found.
+     * @return 
+     *          interface or null if no interface was found.
+     */
+    public Ei findInterface(String id) throws XMLException;
+    
+    
+    /**
+     * Searches for an node inside an node and its descendants. The node will be
+     * searched inside contexts and switches.
+     * 
+     * @param id
+     *          id of the node to be found.
+     * @return 
+     *          node or null if no node was found.
+     */
+    public T findNode(String id) throws XMLException;
 }

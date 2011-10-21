@@ -51,7 +51,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParam>
+public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParam, Er extends NCLRole>
         extends NCLCausalConnectorPrototype<T, P, I, Ec, Ea, Ep> implements NCLIdentifiableElement<T, P> {
 
 
@@ -168,6 +168,29 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    /**
+     * Searches for a role inside the connector.
+     * 
+     * @param name
+     *          name of the role to be found.
+     * @return 
+     *          role or null if no role was found.
+     */
+    public Er findRole(String name) {
+        Er result;
+        
+        result = (Er) getCondition().findRole(name);
+        if(result != null)
+            return result;
+        
+        result = (Er) getAction().findRole(name);
+        if(result != null)
+            return result;
+        
+        return null;
     }
 
 

@@ -52,8 +52,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement>
-        extends NCLCompoundStatementPrototype<T, P, I, Es> implements NCLStatement<Es, P> {
+public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement, Er extends NCLRole>
+        extends NCLCompoundStatementPrototype<T, P, I, Es> implements NCLStatement<Es, P, Er> {
 
 
     public NCLCompoundStatement() throws XMLException {
@@ -150,6 +150,19 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Er findRole(String name) {
+        Er result;
+        
+        for(Es statement : statements){
+            result = (Er) statement.findRole(name);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

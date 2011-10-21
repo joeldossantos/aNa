@@ -39,9 +39,21 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.xml.XMLException;
 
 
 public interface NCLTestRule<T extends NCLTestRule, P extends NCLElement>
         extends br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
+    
+    /**
+     * Searches for a rule inside a compositeRule and its descendants.
+     * The rule can be a rule or a compositeRule.
+     * 
+     * @param id
+     *          id of the rule to be found.
+     * @return 
+     *          rule or null if no rule was found.
+     */
+    public T findRule(String id) throws XMLException;
 }

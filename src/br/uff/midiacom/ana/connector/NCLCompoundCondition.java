@@ -53,8 +53,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParam>
-        extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep> implements NCLCondition<Ec, P, Ep> {
+public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParam, Er extends NCLRole>
+        extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep> implements NCLCondition<Ec, P, Ep, Er> {
     
 
     public NCLCompoundCondition() throws XMLException {
@@ -199,6 +199,19 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Er findRole(String name) {
+        Er result;
+        
+        for(Ec condition : conditions){
+            result = (Er) condition.findRole(name);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

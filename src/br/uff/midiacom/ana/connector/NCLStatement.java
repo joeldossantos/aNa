@@ -40,8 +40,17 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 
 
-public interface NCLStatement<T extends NCLStatement, P extends NCLElement>
+public interface NCLStatement<T extends NCLStatement, P extends NCLElement, Er extends NCLRole>
         extends br.uff.midiacom.ana.datatype.ncl.connector.NCLStatement<T, P>, NCLElement<T, P> {
 
 
+    /**
+     * Searches for a role inside a statement.
+     * 
+     * @param name
+     *          name of the role to be found.
+     * @return 
+     *          role or null if no role was found.
+     */
+    public Er findRole(String name);
 }

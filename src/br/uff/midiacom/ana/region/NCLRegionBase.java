@@ -138,56 +138,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("regionBase")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("device"))
-//                        setDevice(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("region"))
-//                        setParentRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                }
-//            }
-//            else if(localName.equals("importBase")){
-//                I child = createImportBase();
-//                child.startElement(uri, localName, qName, attributes);
-//                addImportBase(child);
-//            }
-//            else if(localName.equals("region")){
-//                R child = createRegion();
-//                child.startElement(uri, localName, qName, attributes);
-//                addRegion(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-   
-//    private R findRegion(Set<R> regions) {
-//        for(R reg : regions){
-//            if(reg.hasRegion()){
-//                NCLRegion r = findRegion(reg.getRegions());
-//                if(r != null)
-//                    return (R) r;
-//            }
-//            else{
-//                if(reg.getId().equals(getParentRegion().getId()))
-//                    return (R) reg;
-//            }
-//        }
-//
-//        addWarning("Could not find region in regionBase with id: " + getParentRegion().getId());
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
         NodeList nl;
@@ -232,6 +182,27 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    /**
+     * Searches for a region inside a regionBase and its descendants.
+     * 
+     * @param id
+     *          id of the region to be found.
+     * @return 
+     *          region or null if no region was found.
+     */
+    public Er findRegion(String id) throws XMLException {
+        Er result;
+        
+        for(Er region : regions){
+            result = (Er) region.findRegion(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

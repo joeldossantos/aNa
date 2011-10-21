@@ -53,8 +53,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Ep extends NCLConnectorParam>
-        extends NCLCompoundActionPrototype<T, P, I, Ea, Ep> implements NCLAction<Ea, P, Ep> {
+public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Ep extends NCLConnectorParam, Er extends NCLRole>
+        extends NCLCompoundActionPrototype<T, P, I, Ea, Ep> implements NCLAction<Ea, P, Ep, Er> {
 
 
     public NCLCompoundAction() throws XMLException {
@@ -173,6 +173,19 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Er findRole(String name) {
+        Er result;
+        
+        for(Ea action : actions){
+            result = (Er) action.findRole(name);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

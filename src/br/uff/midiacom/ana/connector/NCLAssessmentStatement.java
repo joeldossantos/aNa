@@ -52,8 +52,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment>
-        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev> implements NCLStatement<T, P> {
+public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment, Er extends NCLRole>
+        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev> implements NCLStatement<T, P, Er> {
 
 
     public NCLAssessmentStatement() throws XMLException {
@@ -145,6 +145,19 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Er findRole(String name) {
+        Er result;
+        
+        for(Ea attribute : attributeAssessments){
+            result = (Er) attribute.findRole(name);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

@@ -39,9 +39,32 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.xml.XMLException;
 
 
 public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor, P extends NCLElement>
         extends br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor<T, P>, NCLIdentifiableElement<T, P> {
 
+    
+    /**
+     * Searches for a descriptor inside a descriptorSwitch and its descendants.
+     * The descriptor can be a descriptor or a descriptorSwitch.
+     * 
+     * @param id
+     *          id of the descriptor to be found.
+     * @return 
+     *          descriptor or null if no descriptor was found.
+     */
+    public T findDescriptor(String id) throws XMLException;
+    
+    
+    /**
+     * Searches for a descriptor inside a descriptorSwitch and its descendants.
+     * 
+     * @param focusIndex
+     *          focusIndex of the descriptor to be found.
+     * @return 
+     *          descriptor or null if no descriptor was found.
+     */
+    public T findDescriptor(Integer focusIndex) throws XMLException;
 }

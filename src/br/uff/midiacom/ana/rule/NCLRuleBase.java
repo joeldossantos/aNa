@@ -161,6 +161,28 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    /**
+     * Searches for a rule inside a ruleBase and its descendants.
+     * The rule can be a rule or a compositeRule.
+     * 
+     * @param id
+     *          id of the rule to be found.
+     * @return 
+     *          rule or null if no rule was found.
+     */
+    public Et findRule(String id) throws XMLException {
+        Et result;
+        
+        for(Et rule : rules){
+            result = (Et) rule.findRule(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
 
 
     /**

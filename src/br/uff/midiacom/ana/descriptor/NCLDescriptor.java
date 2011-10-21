@@ -489,6 +489,22 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    public El findDescriptor(String id) throws XMLException {
+        if(getId().equals(id))
+            return (El) this;
+        else
+            return null;
+    }
+    
+    
+    public El findDescriptor(Integer focusIndex) throws XMLException {
+        if(this.focusIndex == focusIndex)
+            return (El) this;
+        else
+            return null;
+    }
 
 
     private Ep createParamByType(Element element) throws XMLException {

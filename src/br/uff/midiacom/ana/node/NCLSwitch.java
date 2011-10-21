@@ -45,14 +45,15 @@ import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
+import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ep extends NCLSwitchPort, Eb extends NCLSwitchBindRule>
-        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb> implements NCLNode<En, P> {
+public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface, Ep extends NCLSwitchPort, Eb extends NCLSwitchBindRule>
+        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb> implements NCLNode<En, P, Ei> {
 
 
     public NCLSwitch(String id) throws XMLException {
@@ -277,6 +278,41 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Ei findInterface(String id) throws XMLException {
+        Ei result;
+        
+        // search as a switchPort
+        result = (Ei) ports.get(id);
+        if(result != null)
+            return result;
+        
+        // search in inner nodes
+        for(En node : nodes){
+            result = (Ei) node.findInterface(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
+    
+    
+    public En findNode(String id) throws XMLException {
+        En result;
+        
+        if(getId().equals(id))
+            return (En) this;
+        
+        for(En node : nodes){
+            result = (En) node.findNode(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

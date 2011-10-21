@@ -154,6 +154,22 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    public T findRule(String id) throws XMLException {
+        T result;
+        
+        if(getId().equals(id))
+            return (T) this;
+        
+        for(T rule : rules){
+            result = (T) rule.findRule(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
 
 
     /**

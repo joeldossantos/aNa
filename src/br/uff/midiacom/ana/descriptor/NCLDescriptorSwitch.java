@@ -177,6 +177,35 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    public El findDescriptor(String id) throws XMLException {
+        El result;
+        
+        if(getId().equals(id))
+            return (El) this;
+        
+        for(El desc : descriptors){
+            result = (El) desc.findDescriptor(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
+    
+    
+    public El findDescriptor(Integer focusIndex) throws XMLException {
+        El result;
+        
+        for(El desc : descriptors){
+            result = (El) desc.findDescriptor(focusIndex);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
 
 
     /**

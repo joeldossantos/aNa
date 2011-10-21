@@ -190,4 +190,12 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    public T findRule(String id) throws XMLException {
+        if(getId().equals(id))
+            return (T) this;
+        else
+            return null;
+    }
 }

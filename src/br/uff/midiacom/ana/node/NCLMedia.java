@@ -55,8 +55,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode>
-        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P> {
+public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode, Ei extends NCLInterface>
+        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P, Ei> {
     
     
     public NCLMedia(String id) throws XMLException {
@@ -297,6 +297,31 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Ei findInterface(String id) throws XMLException {
+        Ei result;
+        
+        // search as a property
+        result = (Ei) properties.get(id);
+        if(result != null)
+            return result;
+        
+        // search as an area
+        result = (Ei) areas.get(id);
+        if(result != null)
+            return result;
+        
+        return null;
+    }
+    
+    
+    public En findNode(String id) {
+        if(getId().equals(id))
+            return (En) this;
+        else
+            return null;
     }
 
 

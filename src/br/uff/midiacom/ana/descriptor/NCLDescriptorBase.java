@@ -161,6 +161,49 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    /**
+     * Searches for a descriptor inside the descriptorBase and its descendants.
+     * The descriptor can be a descriptor or a descriptorSwitch.
+     * 
+     * @param id
+     *          id of the descriptor to be found.
+     * @return 
+     *          interface or null if no descriptor was found.
+     */
+    public El findDescriptor(String id) throws XMLException {
+        El result;
+        
+        for(El desc : descriptors){
+            result = (El) desc.findDescriptor(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
+    
+    
+    /**
+     * Searches for a descriptor inside a descriptorBase and its descendants.
+     * 
+     * @param focusIndex
+     *          focusIndex of the descriptor to be found.
+     * @return 
+     *          descriptor or null if no descriptor was found.
+     */
+    public El findDescriptor(Integer focusIndex) throws XMLException {
+        El result;
+        
+        for(El desc : descriptors){
+            result = (El) desc.findDescriptor(focusIndex);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
 
 
     /**

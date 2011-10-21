@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
 
 
 public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Er extends NCLRole, Ep extends NCLConnectorParam>
-        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep> implements NCLAction<Ea, P, Ep> {
+        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep> implements NCLAction<Ea, P, Ep, Er> {
 
 
     public NCLSimpleAction() throws XMLException {
@@ -274,6 +274,14 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Er findRole(String name) {
+        if(role.getName().equals(name))
+            return role;
+        else
+            return null;
     }
 
 

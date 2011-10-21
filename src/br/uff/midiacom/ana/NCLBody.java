@@ -40,6 +40,7 @@ package br.uff.midiacom.ana;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLBodyPrototype;
+import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.link.NCLLink;
@@ -55,7 +56,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
+public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, Ei extends NCLInterface, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
         extends NCLBodyPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLIdentifiableElement<T, P> {
 
     
@@ -300,6 +301,67 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
         return impl.getModificationListener();
     }
 
+    
+    /**
+     * Searches for a interface inside the body and its descendants. The interface
+     * could be: area, property, port, switchPort.
+     * 
+     * @param id
+     *          id of the interface to be found.
+     * @return 
+     *          interface or null if no interface was found.
+     */
+    public Ei findInterface(String id) throws XMLException {
+        Ei result;
+        
+        // search as a property
+        result = (Ei) properties.get(id);
+        if(result != null)
+            return result;
+        
+        // search as a port
+        result = (Ei) ports.get(id);
+        if(result != null)
+            return result;
+        
+        // search in inner nodes
+        for(En node : nodes){
+            result = (Ei) node.findInterface(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
+    
+    
+    /**
+     * Searches for an node inside the body and its descendants. The node will be
+     * searched inside contexts and switches.
+     * 
+     * @param id
+     *          id of the node to be found.
+     * @return 
+     *          node or null if no node was found.
+     */
+    public En findNode(String id) throws XMLException {
+        En result;
+        
+        // search in the body
+        result = nodes.get(id);
+        if(result != null)
+            return result;
+        
+        // search in inner nodes
+        for(En node : nodes){
+            result = (En) node.findNode(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
+    
 
     /**
      * Function to create the child element <i>meta</i>.

@@ -49,14 +49,15 @@ import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLContextPrototype;
+import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
-        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLNode<En, P> {
+public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, Ei extends NCLInterface, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
+        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLNode<En, P, Ei> {
     
     
     public NCLContext(String id) throws XMLException {
@@ -356,6 +357,46 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Ei findInterface(String id) throws XMLException {
+        Ei result;
+        
+        // search as a property
+        result = (Ei) properties.get(id);
+        if(result != null)
+            return result;
+        
+        // search as a port
+        result = (Ei) ports.get(id);
+        if(result != null)
+            return result;
+        
+        // search in inner nodes
+        for(En node : nodes){
+            result = (Ei) node.findInterface(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
+    
+    
+    public En findNode(String id) throws XMLException {
+        En result;
+        
+        if(getId().equals(id))
+            return (En) this;
+        
+        for(En node : nodes){
+            result = (En) node.findNode(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
     }
 
 

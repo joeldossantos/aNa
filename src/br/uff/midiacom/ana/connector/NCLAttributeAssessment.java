@@ -177,6 +177,14 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    public Er findRole(String name) {
+        if(role.getName().equals(name))
+            return role;
+        else
+            return null;
+    }
 
 
     /**

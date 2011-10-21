@@ -241,6 +241,30 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+    
+    
+    /**
+     * Searches for a region inside a region and its descendants.
+     * 
+     * @param id
+     *          id of the region to be found.
+     * @return 
+     *          region or null if no region was found.
+     */
+    public T findRegion(String id) throws XMLException {
+        T result;
+        
+        if(getId().equals(id))
+            return (T) this;
+        
+        for(T region : regions){
+            result = (T) region.findRegion(id);
+            if(result != null)
+                return result;
+        }
+        
+        return null;
+    }
 
 
     /**

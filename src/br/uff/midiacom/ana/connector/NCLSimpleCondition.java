@@ -55,7 +55,7 @@ import org.w3c.dom.Element;
 
 
 public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Er extends NCLRole, Ep extends NCLConnectorParam>
-        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep> implements NCLCondition<Ec, P, Ep> {
+        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep> implements NCLCondition<Ec, P, Ep, Er> {
 
 
     public NCLSimpleCondition() throws XMLException {
@@ -220,6 +220,14 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
+    }
+    
+    
+    public Er findRole(String name) {
+        if(role.getName().equals(name))
+            return role;
+        else
+            return null;
     }
 
 
