@@ -42,10 +42,7 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
-/**
- *
- * @author joel
- */
+
 public class KeyParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<KeyParamType, NCLKey, P>{
 
 
@@ -73,12 +70,7 @@ public class KeyParamType<P extends NCLConnectorParamPrototype> extends Paramete
 
     @Override
     protected NCLKey createValue(String value) throws XMLException {
-        for(NCLKey k : NCLKey.values()){
-            if(k.toString().equals(value))
-                return k;
-        }
-
-        throw new XMLException("Could not find Key value.");
+        return NCLKey.getEnumType(value);
     }
 
 

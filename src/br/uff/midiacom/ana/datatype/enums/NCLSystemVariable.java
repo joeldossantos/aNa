@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Nomes das variáveis de sistema (que não tem argumento) da <i>Nested Context Language</i> (NCL).
@@ -87,7 +89,21 @@ public enum NCLSystemVariable {
 
 
     private String name;
-    private NCLSystemVariable(String name) { this.name = name;}
+    
+    private NCLSystemVariable(String name) {
+        this.name = name;
+    }
+    
+    public static NCLSystemVariable getEnumType(String name) throws NCLParsingException{
+        for(NCLSystemVariable opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+    
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

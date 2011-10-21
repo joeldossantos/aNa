@@ -60,6 +60,12 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     public NCLCompoundCondition() throws XMLException {
         super();
     }
+    
+    
+    public NCLCompoundCondition(Element element) throws XMLException {
+        super();
+        load(element);
+    }
 
 
     @Override
@@ -124,84 +130,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("compoundCondition") && !insideCondition){
-//                cleanWarnings();
-//                cleanErrors();
-//                insideCondition = true;
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("operator")){
-//                        for(NCLConditionOperator o : NCLConditionOperator.values()){
-//                            if(o.toString().equals(attributes.getValue(i)))
-//                                setOperator(o);
-//                        }
-//                    }
-//                    else if(attributes.getLocalName(i).equals("delay")){
-//                        String var = attributes.getValue(i);
-//                        if(var.contains("$")){
-//                            var = var.substring(1);
-//                            setDelay((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
-//                        }
-//                        else{
-//                            var = var.substring(0, var.length() - 1);
-//                            setDelay(new Integer(var));
-//                        }
-//                    }
-//                }
-//            }
-//            else if(localName.equals("simpleCondition")){
-//                C child = createSimpleCondition();
-//                child.startElement(uri, localName, qName, attributes);
-//                addCondition(child);
-//            }
-//            else if(localName.equals("compoundCondition") && insideCondition){
-//                C child = createCompoundCondition();
-//                child.startElement(uri, localName, qName, attributes);
-//                addCondition(child);
-//            }
-//            else if(localName.equals("assessmentStatement")){
-//                S child = createAssessmentStatement();
-//                child.startElement(uri, localName, qName, attributes);
-//                addStatement(child);
-//            }
-//            else if(localName.equals("compoundStatement")){
-//                S child = createCompoundStatement();
-//                child.startElement(uri, localName, qName, attributes);
-//                addStatement(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getParamDelay() != null)
-//                setDelay(parameterReference(getParamDelay().getId()));
-//        }
-//
-//        if(hasCondition()){
-//            for(C condition : conditions){
-//                condition.endDocument();
-//                addWarning(condition.getWarnings());
-//                addError(condition.getErrors());
-//            }
-//        }
-//        if(hasStatement()){
-//            for(S statement : statements){
-//                statement.endDocument();
-//                addWarning(statement.getWarnings());
-//                addError(statement.getErrors());
-//            }
-//        }
-//    }
-
-
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //
@@ -247,13 +175,18 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
             if(nd instanceof Element){
                 Element el = (Element) nl.item(i);
 
-                //create the conditions
-                if(el.getTagName().equals(NCLElementSets.CONDITIONS.toString()))
-                    addCondition(createSimpleCondition(el)); // --> Como saber se é simple ou compound?
-
-                // create the assessments
-                if(el.getTagName().equals(NCLElementSets.STATEMENTS.toString()))
-                    addStatement(createAssessmentStatement(el)); // --> Como saber se é simple ou compound?
+                //create the simpleCondition
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString()))
+                    addCondition(createSimpleCondition(el));
+                // create the compoundCondition
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString()))
+                    addCondition(createCompoundCondition(el));
+                //create the assessmentStatement
+                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString()))
+                    addStatement(createAssessmentStatement(el));
+                // create the compoundStatement
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString()))
+                    addStatement(createCompoundStatement(el));
             }
         }
     }
@@ -288,8 +221,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>compoundCondition</i>.
      */
-    protected NCLCompoundCondition createCompoundCondition() throws XMLException {
-        return new NCLCompoundCondition();
+    protected Ec createCompoundCondition(Element element) throws XMLException {
+        return (Ec) new NCLCompoundCondition();
     }
 
 
@@ -312,7 +245,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>compoundStatement</i>.
      */
-    protected NCLCompoundStatement createCompoundStatement() throws XMLException {
-        return new NCLCompoundStatement();
+    protected Es createCompoundStatement(Element element) throws XMLException {
+        return (Es) new NCLCompoundStatement(element);
     }
 }

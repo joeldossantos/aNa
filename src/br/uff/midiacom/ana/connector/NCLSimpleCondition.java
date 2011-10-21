@@ -61,7 +61,8 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     public NCLSimpleCondition() throws XMLException {
         super();
     }
-
+    
+    
     public NCLSimpleCondition(Element element) throws XMLException {
         super();
         load(element);
@@ -136,86 +137,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
         super.setDelay(delay);
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
-
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("role")){
-//                    R child = createRole(attributes.getValue(i));
-//                    setRole(child);
-//                }
-//                else if(attributes.getLocalName(i).equals("key")){
-//                    String value = attributes.getValue(i);
-//                    if(value.contains("$")){
-//                        value = value.substring(1);
-//                        setKey((P) new NCLConnectorParam(value));//cast retirado na correcao das referencias
-//                    }
-//                    else{
-//                        for(NCLKey k : NCLKey.values()){
-//                            if(k.toString().equals(value))
-//                                setKey(k);
-//                        }
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("delay")){
-//                    String value = attributes.getValue(i);
-//                    if(value.contains("$")){
-//                        value = value.substring(1);
-//                        setDelay((P) new NCLConnectorParam(value));//cast retirado na correcao das referencias
-//                    }
-//                    else{
-//                        value = value.substring(0, value.length() - 1);
-//                        setDelay(new Integer(value));
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("min"))
-//                    setMin(new Integer(attributes.getValue(i)));
-//                else if(attributes.getLocalName(i).equals("max")){
-//                    if(attributes.getValue(i).equals("unbounded"))
-//                        setMax(-1);
-//                    else
-//                        setMax(new Integer(attributes.getValue(i)));
-//                }
-//                else if(attributes.getLocalName(i).equals("qualifier")){
-//                    for(NCLConditionOperator q : NCLConditionOperator.values()){
-//                        if(q.toString().equals(attributes.getValue(i)))
-//                            setQualifier(q);
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("eventType")){
-//                    for(NCLEventType e : NCLEventType.values()){
-//                        if(e.toString().equals(attributes.getValue(i)))
-//                            setEventType(e);
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("transition")){
-//                    for(NCLEventTransition t : NCLEventTransition.values()){
-//                        if(t.toString().equals(attributes.getValue(i)))
-//                            setTransition(t);
-//                    }
-//                }
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getParamDelay() != null)
-//            setDelay(parameterReference(getParamDelay().getId()));
-//        if(getParamKey() != null)
-//            setKey(parameterReference(getParamKey().getId()));
-//    }
 
 
 //    private P parameterReference(String id) {

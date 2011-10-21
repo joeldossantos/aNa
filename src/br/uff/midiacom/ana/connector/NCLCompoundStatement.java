@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -57,6 +58,12 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
 
     public NCLCompoundStatement() throws XMLException {
         super();
+    }
+    
+    
+    public NCLCompoundStatement(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -100,52 +107,10 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
         }
         return false;
     }
-    
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        if(localName.equals("compoundStatement") && !insideStatement){
-//            cleanWarnings();
-//            cleanErrors();
-//            insideStatement = true;
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("operator")){
-//                    for(NCLOperator o : NCLOperator.values()){
-//                        if(o.toString().equals(attributes.getValue(i)))
-//                            setOperator(o);
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("isNegated"))
-//                    setIsNegated(new Boolean(attributes.getValue(i)));
-//            }
-//        }
-//        else if(localName.equals("assessmentStatement")){
-//            S child = createAssessmentStatement();
-//            child.startElement(uri, localName, qName, attributes);
-//            addStatement(child);
-//        }
-//        else if(localName.equals("compoundStatement") && insideStatement){
-//            S child = createCompoundStatement();
-//            child.startElement(uri, localName, qName, attributes);
-//            addStatement(child);
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(hasStatement()){
-//            for(S statement : statements){
-//                statement.endDocument();
-//                addWarning(statement.getWarnings());
-//                addError(statement.getErrors());
-//            }
-//        }
-//    }
 
 
     public void load(Element element) throws XMLException, NCLParsingException {
-        String att_name, att_var, ch_name;
+        String att_name, att_var;
         NodeList nl;
 
         // set the operator (required)
@@ -158,14 +123,22 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
         // set the isNegated (optional)
         att_name = NCLElementAttributes.ISNEGATED.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setIsNegated(Boolean.parseBoolean(att_var));
+            setIsNegated(Boolean.valueOf(att_var));
 
-        // create the assessmentStatement nodes
-        ch_name = NCLElementSets.STATEMENTS.toString();
-        nl = element.getElementsByTagName(ch_name);
+        // create the child nodes
+        nl = element.getChildNodes();
         for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            addStatement(createAssessmentStatement(el));
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the assessmentStatement
+                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString()))
+                    addStatement(createAssessmentStatement(el));
+                // create the compoundStatement
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString()))
+                    addStatement(createCompoundStatement(el));
+            }
         }
     }
 
@@ -199,7 +172,7 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      * @return
      *          element representing the child <i>compoundStatement</i>.
      */
-    protected NCLCompoundStatement createCompoundStatement() throws XMLException {
-        return new NCLCompoundStatement();
+    protected Es createCompoundStatement(Element element) throws XMLException {
+        return (Es) new NCLCompoundStatement(element);
     }
 }

@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores padronizados para o elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
@@ -49,7 +51,21 @@ public enum NCLDefaultValueAssessment {
 
 
     private String name;
-    private NCLDefaultValueAssessment(String name) { this.name = name;}
+    
+    private NCLDefaultValueAssessment(String name) {
+        this.name = name;
+    }
+    
+    public static NCLDefaultValueAssessment getEnumType(String name) throws NCLParsingException{
+        for(NCLDefaultValueAssessment opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+    
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores do parâmetro player life
@@ -47,7 +49,21 @@ public enum NCLPlayerLife {
     KEEP("keep");
 
     private String name;
-    private NCLPlayerLife(String name) { this.name = name;}
+    
+    private NCLPlayerLife(String name) {
+        this.name = name;
+    }
+
+    public static NCLPlayerLife getEnumType(String name) throws NCLParsingException{
+        for(NCLPlayerLife opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+
     @Override
-    public String toString() { return name;}
+    public String toString() {
+        return name;
+    }
 }

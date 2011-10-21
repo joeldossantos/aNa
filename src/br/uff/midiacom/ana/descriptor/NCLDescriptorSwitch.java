@@ -57,6 +57,12 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     public NCLDescriptorSwitch(String id) throws XMLException {
         super(id);
     }
+    
+    
+    public NCLDescriptorSwitch(Element element) throws XMLException {
+        super();
+        load(element);
+    }
 
 
     @Override
@@ -123,84 +129,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("descriptorSwitch")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                }
-//            }
-//            else if(localName.equals("bindRule")){
-//                B child = createBindRule();
-//                child.startElement(uri, localName, qName, attributes);
-//                addBind(child);
-//            }
-//            else if(localName.equals("descriptor")){
-//                D child = createDescriptor();
-//                child.startElement(uri, localName, qName, attributes);
-//                addDescriptor(child);
-//            }
-//            else if(localName.equals("defaultDescriptor")){
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("descriptor"))
-//                        setDefaultDescriptor((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                }
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endElement(String uri, String localName, String qName) {
-//        if(localName.equals("descriptorSwitch"))
-//            super.endElement(uri, localName, qName);
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getDefaultDescriptor() != null)
-//            defaultDescriptorReference();
-//
-//        if(hasBind()){
-//            for(B bind : binds){
-//                bind.endDocument();
-//                addWarning(bind.getWarnings());
-//                addError(bind.getErrors());
-//            }
-//        }
-//        if(hasDescriptor()){
-//            for(D descriptor : descriptors){
-//                descriptor.endDocument();
-//                addWarning(descriptor.getWarnings());
-//                addError(descriptor.getErrors());
-//            }
-//        }
-//    }
-
-
-//    private void defaultDescriptorReference() {
-//        //Search for a component node in its parent
-//        for(D descriptor : descriptors){
-//            if(descriptor.getId().equals(getDefaultDescriptor().getId())){
-//                setDefaultDescriptor(descriptor);
-//                return;
-//            }
-//        }
-//
-//        addWarning("Could not find descriptor in descriptorSwitch with id: " + getDefaultDescriptor().getId());
-//    }
-
-
-    public void load(Element element) throws NCLParsingException, XMLException {
-        String att_name, att_var;
+    public void load(Element element) throws XMLException {
+        String att_name, att_var, ch_name;
         NodeList nl;
 
         // set the id (required)
@@ -210,25 +140,30 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the defaultDescriptor (optional)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDefaultDescriptor(); // metodo procura pelo id
+        // create the descriptorSwitch child nodes
+        ch_name = NCLElementAttributes.DESCRIPTOR.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addDescriptor(createDescriptor(el));
+        }
 
-        // create the child nodes
+        // create the child nodes (ports, binds and defaultComponent)
         nl = element.getChildNodes();
         for(int i=0; i < nl.getLength(); i++){
             Node nd = nl.item(i);
             if(nd instanceof Element){
                 Element el = (Element) nl.item(i);
 
-                //create the descriptors
-                if(el.getTagName().equals(NCLElementSets.DESCRIPTORS.toString()))
-                    addDescriptor(createDescriptor(el));
-
-                // create the binds
-                if(el.getTagName().equals(NCLElementSets.BINDS.toString()))
+                // create the bindRule
+                if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString()))
                     addBind(createBindRule(el));
+                // create the defaultDescriptor
+                if(el.getTagName().equals(NCLElementAttributes.DEFAULTDESCRIPTOR.toString())){
+                    att_name = NCLElementAttributes.DESCRIPTOR.toString();
+                    if(!(att_var = el.getAttribute(att_name)).isEmpty())
+                        setDefaultDescriptor(descriptors.get(att_var));
+                }
             }
         }
     }

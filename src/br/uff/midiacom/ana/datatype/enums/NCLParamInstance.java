@@ -47,7 +47,13 @@ public enum NCLParamInstance {
     BINDPARAM("bindParam");
 
     private String name;
-    private NCLParamInstance(String name) { this.name = name;}
+    
+    private NCLParamInstance(String name) {
+        this.name = name;
+    }
+    
     @Override
-    public String toString() { return name;}
+    public String toString() {
+        return name;
+    }
 }

@@ -44,10 +44,21 @@ import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorPrototype;
+import br.uff.midiacom.ana.descriptor.param.NCLBooleanDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLColorDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLFitDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLFontVariantDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLFontWeightDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLPercentDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLPlayerLifeDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLScrollDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLStringDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.xml.XMLException;
@@ -64,7 +75,8 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     public NCLDescriptor(String id) throws XMLException {
         super(id);
     }
-
+    
+    
     public NCLDescriptor(Element element) throws XMLException {
         super();
         load(element);
@@ -233,193 +245,6 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("descriptor")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("region"))
-//                        setRegion((R) new NCLRegion(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("explicitDur")){
-//                        String value = attributes.getValue(i);
-//                        if(value.contains("s"))
-//                            value = value.substring(0, value.length() - 1);
-//                        setExplicitDur(new Integer(value));
-//                    }
-//                    else if(attributes.getLocalName(i).equals("freeze"))
-//                        setFreeze(Boolean.valueOf(attributes.getValue(i)));
-//                    else if(attributes.getLocalName(i).equals("player"))
-//                        setPlayer(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("moveLeft")){
-//                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
-//                        d.setFocusIndex(new Integer(attributes.getValue(i)));
-//                        setMoveLeft((D) d);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("moveRight")){
-//                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
-//                        d.setFocusIndex(new Integer(attributes.getValue(i)));
-//                        setMoveRight((D) d);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("moveDown")){
-//                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
-//                        d.setFocusIndex(new Integer(attributes.getValue(i)));
-//                        setMoveDown((D) d);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("moveUp")){
-//                        NCLDescriptor d = new NCLDescriptor("_" + attributes.getValue(i));//cast retirado na correcao das referencias
-//                        d.setFocusIndex(new Integer(attributes.getValue(i)));
-//                        setMoveUp((D) d);
-//                    }
-//                    else if(attributes.getLocalName(i).equals("focusIndex"))
-//                        setFocusIndex(new Integer(attributes.getValue(i)));
-//                    else if(attributes.getLocalName(i).equals("focusBorderColor")){
-//                        for(NCLColor c : NCLColor.values()){
-//                            if(c.toString().equals(attributes.getValue(i)))
-//                                setFocusBorderColor(c);
-//                        }
-//                    }
-//                    else if(attributes.getLocalName(i).equals("focusBorderWidth"))
-//                        setFocusBorderWidth(new Integer(attributes.getValue(i)));
-//                    else if(attributes.getLocalName(i).equals("focusBorderTransparency")){
-//                        String value = attributes.getValue(i);
-//                        if(value.contains("%"))
-//                            value = value.substring(0, value.length() - 1);
-//                        setFocusBorderTransparency(new Integer(value));
-//                    }
-//                    else if(attributes.getLocalName(i).equals("focusSrc"))
-//                        setFocusSrc(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("focusSelSrc"))
-//                        setFocusSelSrc(attributes.getValue(i));
-//                    else if(attributes.getLocalName(i).equals("SelBorderColor")){
-//                        for(NCLColor c : NCLColor.values()){
-//                            if(c.toString().equals(attributes.getValue(i)))
-//                                setSelBorderColor(c);
-//                        }
-//                    }
-//                    else if(attributes.getLocalName(i).equals("transIn"))
-//                        setTransIn((T) new NCLTransition(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                    else if(attributes.getLocalName(i).equals("transOut"))
-//                        setTransOut((T) new NCLTransition(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                }
-//            }
-//            else if(localName.equals("descriptorParam")){
-//                P child = createParamByType(attributes);
-//                //@todo verificar o nome para definir o tipo do parâmetro
-//                child.startElement(uri, localName, qName, attributes);
-//                addDescriptorParam(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//        catch(URISyntaxException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getRegion() != null)
-//                regionReference();
-//
-//            if(getMoveUp() != null || getMoveDown() != null || getMoveLeft() != null || getMoveRight() != null)
-//                descriptorReference();
-//
-//            if(getTransIn() != null)
-//                setTransIn(transitionReference(getTransIn()));
-//
-//            if(getTransOut() != null)
-//                setTransOut(transitionReference(getTransOut()));
-//        }
-//
-//        if(hasDescriptorParam()){
-//            for(P param : params){
-//                param.endDocument();
-//                addWarning(param.getWarnings());
-//                addError(param.getErrors());
-//            }
-//        }
-//    }
-
-
-//    private P createParamByType(Attributes attributes) {
-//        NCLAttributes att = NCLAttributes.DEFAULT;
-//        for(int i = 0; i < attributes.getLength(); i++){
-//            if(attributes.getLocalName(i).equals("name")){
-//                for(NCLAttributes a : NCLAttributes.values()){
-//                    if(a.toString().equals(attributes.getValue(i)))
-//                        att = a;
-//                }
-//            }
-//        }
-//
-//        switch(att){
-//            case TOP:
-//                return createDoubleDescriptorParam();
-//            case LEFT:
-//                return createDoubleDescriptorParam();
-//            case BOTTOM:
-//                return createDoubleDescriptorParam();
-//            case RIGHT:
-//                return createDoubleDescriptorParam();
-//            case WIDTH:
-//                return createDoubleDescriptorParam();
-//            case HEIGHT:
-//                return createDoubleDescriptorParam();
-//            case LOCATION:
-//                return createStringDescriptorParam();
-//            case SIZE:
-//                return createStringDescriptorParam();
-//            case BOUNDS:
-//                return createStringDescriptorParam();
-//            case BACKGROUND:
-//                return createColorDescriptorParam();
-//            case VISIBLE:
-//                return createBooleanDescriptorParam();
-//            case TRANSPARENCY:
-//                return createPercentDescriptorParam();
-//            case FIT:
-//                return createFitDescriptorParam();
-//            case SCROLL:
-//                return createScrollDescriptorParam();
-//            case STYLE:
-//                return createStringDescriptorParam();
-//            case SOUND_LEVEL:
-//                return createPercentDescriptorParam();
-//            case BALANCE_LEVEL:
-//                return createPercentDescriptorParam();
-//            case TREBLE_LEVEL:
-//                return createPercentDescriptorParam();
-//            case BASS_LEVEL:
-//                return createPercentDescriptorParam();
-//            case ZINDEX:
-//                return createDoubleDescriptorParam();
-//            case FONT_FAMILY:
-//                return createStringDescriptorParam();
-//            case FONT_SIZE:
-//                return createDoubleDescriptorParam();
-//            case FONT_VARIANT:
-//                return createFontVariantDescriptorParam();
-//            case FONT_WEIGHT:
-//                return createFontWeightDescriptorParam();
-//            case FONT_COLOR:
-//                return createColorDescriptorParam();
-//            case REUSE_PLAYER:
-//                return createBooleanDescriptorParam();
-//            case PLAYER_LIFE:
-//                return createPlayerLifeDescriptorParam();
-//            default:
-//                return createStringDescriptorParam();
-//        }
-//    }
-
-
 //    private void regionReference() {
 //        //Search for the interface inside the node
 //        NCLElementImpl head = getParent();
@@ -555,37 +380,37 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setPlayer(att_var);
 
-        // set the player (optional)
+        // set the explicitDur (optional)
         att_name = NCLElementAttributes.EXPLICITDUR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setExplicitDur(new TimeType(att_var));
 
-        // set the player (optional)
+        // set the freeze (optional)
         att_name = NCLElementAttributes.FREEZE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setFreeze(Boolean.parseBoolean(att_var));
 
-        // set the player (optional)
+        // set the moveUp (optional)
         att_name = NCLElementAttributes.MOVEUP.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setMoveUp(); // metodo de busca pelo id do descritor
+            ;//setMoveUp(); //@todo: metodo de busca pelo id do descritor
 
-        // set the player (optional)
+        // set the moveRight (optional)
         att_name = NCLElementAttributes.MOVERIGHT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setMoveRight(); // metodo de busca pelo id do descritor
+            ;//setMoveRight(); //@todo: metodo de busca pelo id do descritor
 
-        // set the player (optional)
+        // set the moveLeft (optional)
         att_name = NCLElementAttributes.MOVELEFT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setMoveLeft(); // metodo de busca pelo id do descritor
+            ;//setMoveLeft(); //@todo: metodo de busca pelo id do descritor
 
-        // set the player (optional)
+        // set the moveDown (optional)
         att_name = NCLElementAttributes.MOVEDOWN.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setMoveDown(); // metodo de busca pelo id do descritor
+            ;//setMoveDown(); //@todo: metodo de busca pelo id do descritor
 
-        // set the player (optional)
+        // set the focusIndex (optional)
         att_name = NCLElementAttributes.FOCUSINDEX.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             try{
@@ -595,11 +420,12 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
             }
         }
 
-        // set the player (optional)
+        // set the focusBorderColor (optional)
         att_name = NCLElementAttributes.FOCUSBORDERCOLOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setFocusBorderColor(NCLColor.getEnumType(att_var));
 
+        // set the focusBorderWidth (optional)
         att_name = NCLElementAttributes.FOCUSBORDERWIDTH.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             try{
@@ -609,48 +435,48 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
             }
         }
 
-        // set the player (optional)
+        // set the focusBorderTransparency (optional)
         att_name = NCLElementAttributes.FOCUSBORDERTRANSPARENCY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setFocusBorderTransparency(new PercentageType(att_var));
 
-        // set the player (optional)
+        // set the focusSrc (optional)
         att_name = NCLElementAttributes.FOCUSSRC.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setFocusSrc(new SrcType(att_var));
 
-        // set the player (optional)
+        // set the focusSelSrc (optional)
         att_name = NCLElementAttributes.FOCUSSELSRC.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setFocusSelSrc(new SrcType(att_var));
 
-        // set the player (optional)
-        att_name = NCLElementAttributes.BORDERCOLOR.toString();
+        // set the selBorderColor (optional)
+        att_name = NCLElementAttributes.SELBORDERCOLOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setSelBorderColor(NCLColor.getEnumType(att_var));
 
-        // set the player (optional)
+        // set the transIn (optional)
         att_name = NCLElementAttributes.TRANSIN.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setTransIn(); // metodo de procura pelo id
+            ;//setTransIn(); //@todo: metodo de procura pelo id
 
-        // set the player (optional)
+        // set the transOut (optional)
         att_name = NCLElementAttributes.TRANSOUT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setTransOut(); // metodo de procura pelo id
+            ;//setTransOut(); //@todo: metodo de procura pelo id
 
-        // set the player (optional)
+        // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRegion(); // metodo de procura pelo id
+            ;//setRegion(); //@todo: metodo de procura pelo id
 
 
-        // create the descriptorBase nodes
-        ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
+        // create the descriptor child nodes
+        ch_name = NCLElementAttributes.DESCRIPTORPARAM.toString();
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addDescriptorParam(()); // jel
+            addDescriptorParam(createParamByType(el));
         }
     }
 
@@ -663,61 +489,135 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     public NCLModificationListener getModificationListener() {
         return impl.getModificationListener();
     }
+
+
+    private Ep createParamByType(Element element) throws XMLException {
+        String att_name, att_var;
+        NCLAttributes att = NCLAttributes.DEFAULT;
+        
+        att_name = NCLElementAttributes.NAME.toString();
+        if((att_var = element.getAttribute(att_name)).isEmpty())
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        
+        for(NCLAttributes a : NCLAttributes.values()){
+            if(a.toString().equals(att_var))
+                att = a;
+        }
+
+        switch(att){
+            case TOP:
+                return createDoubleDescriptorParam(element);
+            case LEFT:
+                return createDoubleDescriptorParam(element);
+            case BOTTOM:
+                return createDoubleDescriptorParam(element);
+            case RIGHT:
+                return createDoubleDescriptorParam(element);
+            case WIDTH:
+                return createDoubleDescriptorParam(element);
+            case HEIGHT:
+                return createDoubleDescriptorParam(element);
+            case LOCATION:
+                return createStringDescriptorParam(element);
+            case SIZE:
+                return createStringDescriptorParam(element);
+            case BOUNDS:
+                return createStringDescriptorParam(element);
+            case BACKGROUND:
+                return createColorDescriptorParam(element);
+            case VISIBLE:
+                return createBooleanDescriptorParam(element);
+            case TRANSPARENCY:
+                return createPercentDescriptorParam(element);
+            case FIT:
+                return createFitDescriptorParam(element);
+            case SCROLL:
+                return createScrollDescriptorParam(element);
+            case STYLE:
+                return createStringDescriptorParam(element);
+            case SOUND_LEVEL:
+                return createPercentDescriptorParam(element);
+            case BALANCE_LEVEL:
+                return createPercentDescriptorParam(element);
+            case TREBLE_LEVEL:
+                return createPercentDescriptorParam(element);
+            case BASS_LEVEL:
+                return createPercentDescriptorParam(element);
+            case ZINDEX:
+                return createDoubleDescriptorParam(element);
+            case FONT_FAMILY:
+                return createStringDescriptorParam(element);
+            case FONT_SIZE:
+                return createDoubleDescriptorParam(element);
+            case FONT_VARIANT:
+                return createFontVariantDescriptorParam(element);
+            case FONT_WEIGHT:
+                return createFontWeightDescriptorParam(element);
+            case FONT_COLOR:
+                return createColorDescriptorParam(element);
+            case REUSE_PLAYER:
+                return createBooleanDescriptorParam(element);
+            case PLAYER_LIFE:
+                return createPlayerLifeDescriptorParam(element);
+            default:
+                return createStringDescriptorParam(element);
+        }
+    }
     
 
-//    /**
-//     * Função de criação do elemento filho <i>descriptorParam</i>.
-//     * Esta função deve ser sobrescrita em classes que estendem esta classe.
-//     *
-//     * @return
-//     *          elemento representando o elemento filho <i>descriptorParam</i>.
-//     */
-//    protected P createStringDescriptorParam() {
-//        return (P) new NCLStringDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected Ep createDoubleDescriptorParam(Element element) throws XMLException {
-//        return (Ep) new NCLDescriptorParam(element);
-//    }
-//
-//
-//    protected P createBooleanDescriptorParam() {
-//        return (P) new NCLBooleanDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createColorDescriptorParam() {
-//        return (P) new NCLColorDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createPercentDescriptorParam() {
-//        return (P) new NCLPercentDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createFitDescriptorParam() {
-//        return (P) new NCLFitDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createScrollDescriptorParam() {
-//        return (P) new NCLScrollDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createFontVariantDescriptorParam() {
-//        return (P) new NCLFontVariantDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createFontWeightDescriptorParam() {
-//        return (P) new NCLFontWeightDescriptorParam(getReader(), this);
-//    }
-//
-//
-//    protected P createPlayerLifeDescriptorParam() {
-//        return (P) new NCLPlayerLifeDescriptorParam(getReader(), this);
-//    }
+    /**
+     * Function to create the child element <i>descriptorParam</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the child <i>descriptorParam</i>.
+     */
+    protected Ep createStringDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLStringDescriptorParam(element);
+    }
+
+
+    protected Ep createDoubleDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLDoubleDescriptorParam(element);
+    }
+
+
+    protected Ep createBooleanDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLBooleanDescriptorParam(element);
+    }
+
+
+    protected Ep createColorDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLColorDescriptorParam(element);
+    }
+
+
+    protected Ep createPercentDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLPercentDescriptorParam(element);
+    }
+
+
+    protected Ep createFitDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLFitDescriptorParam(element);
+    }
+
+
+    protected Ep createScrollDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLScrollDescriptorParam(element);
+    }
+
+
+    protected Ep createFontVariantDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLFontVariantDescriptorParam(element);
+    }
+
+
+    protected Ep createFontWeightDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLFontWeightDescriptorParam(element);
+    }
+
+
+    protected Ep createPlayerLifeDescriptorParam(Element element) throws XMLException {
+        return (Ep) new NCLPlayerLifeDescriptorParam(element);
+    }
 }

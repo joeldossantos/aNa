@@ -58,7 +58,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     public NCLCausalConnector(String id) throws XMLException {
         super(id);
     }
-
+    
+    
     public NCLCausalConnector(Element element) throws XMLException {
         super();
         load(element);
@@ -117,68 +118,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("causalConnector")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                }
-//            }
-//            else if(localName.equals("connectorParam")){
-//                P child = createConnectorParam();
-//                child.startElement(uri, localName, qName, attributes);
-//                addConnectorParam(child);
-//            }
-//            else if(localName.equals("simpleCondition")){
-//                setCondition(createSimpleCondition());
-//                getCondition().startElement(uri, localName, qName, attributes);
-//            }
-//            else if(localName.equals("compoundCondition")){
-//                setCondition(createCompoundCondition());
-//                getCondition().startElement(uri, localName, qName, attributes);
-//            }
-//            else if(localName.equals("simpleAction")){
-//                setAction(createSimpleAction());
-//                getAction().startElement(uri, localName, qName, attributes);
-//            }
-//            else if(localName.equals("compoundAction")){
-//                setAction(createCompoundAction());
-//                getAction().startElement(uri, localName, qName, attributes);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(hasConnectorParam()){
-//            for(P param : conn_params){
-//                param.endDocument();
-//                addWarning(param.getWarnings());
-//                addError(param.getErrors());
-//            }
-//        }
-//        if(getCondition() != null){
-//            getCondition().endDocument();
-//            addWarning(getCondition().getWarnings());
-//            addError(getCondition().getErrors());
-//        }
-//        if(getAction() != null){
-//            getAction().endDocument();
-//            addWarning(getAction().getWarnings());
-//            addError(getAction().getErrors());
-//        }
-//    }
-
-
-    public void load(Element element) throws XMLException, NCLParsingException {
+    public void load(Element element) throws XMLException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
@@ -189,22 +129,34 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the condition (optional) --> NÃO DEVERIA SER addCondition?
-        att_name = NCLElementAttributes.CONDITION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setCondition();
-
-        // set the action (optional) --> NÃO DEVERIA SER addAction?
-        att_name = NCLElementAttributes.ACTION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setAction();
-
         // create the connectorParam nodes
-        ch_name = NCLElementSets.CONNECTOR_PARAMS.toString();
+        ch_name = NCLElementAttributes.CONNECTORPARAM.toString();
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
             addConnectorParam(createConnectorParam(el));
+        }
+        
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the simpleCondition
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString()))
+                    setCondition(createSimpleCondition(el));
+                // create the compoundCondition
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString()))
+                    setCondition(createCompoundCondition(el));
+                //create the simpleAction
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString()))
+                    setAction(createSimpleAction(el));
+                // create the compoundAction
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString()))
+                    setAction(createCompoundAction(el));
+            }
         }
     }
 
@@ -238,8 +190,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>simpleCondition</i>.
      */
-    protected NCLSimpleCondition createSimpleCondition() throws XMLException {
-        return new NCLSimpleCondition();
+    protected Ec createSimpleCondition(Element element) throws XMLException {
+        return (Ec) new NCLSimpleCondition(element);
     }
 
 
@@ -250,8 +202,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>compoundCondition</i>.
      */
-    protected NCLCompoundCondition createCompoundCondition() throws XMLException {
-        return new NCLCompoundCondition();
+    protected Ec createCompoundCondition(Element element) throws XMLException {
+        return (Ec) new NCLCompoundCondition();
     }
 
 
@@ -262,8 +214,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>simpleAction</i>.
      */
-    protected NCLSimpleAction createSimpleAction() throws XMLException {
-        return new NCLSimpleAction();
+    protected Ea createSimpleAction(Element element) throws XMLException {
+        return (Ea) new NCLSimpleAction(element);
     }
 
 
@@ -274,7 +226,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>compoundAction</i>.
      */
-    protected NCLCompoundAction createCompoundAction() throws XMLException {
-        return new NCLCompoundAction();
+    protected Ea createCompoundAction(Element element) throws XMLException {
+        return (Ea) new NCLCompoundAction(element);
     }
 }

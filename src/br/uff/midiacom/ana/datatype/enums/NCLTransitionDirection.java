@@ -50,7 +50,10 @@ public enum NCLTransitionDirection {
 
 
     private String name;
-    private NCLTransitionDirection(String name) { this.name = name;}
+    
+    private NCLTransitionDirection(String name) {
+        this.name = name;
+    }
     
     public static NCLTransitionDirection getEnumType(String name) throws NCLParsingException{
         for(NCLTransitionDirection opt : values()){
@@ -61,5 +64,7 @@ public enum NCLTransitionDirection {
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

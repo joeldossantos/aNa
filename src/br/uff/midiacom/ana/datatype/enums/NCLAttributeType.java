@@ -53,7 +53,10 @@ public enum NCLAttributeType {
 
 
     private String name;
-    private NCLAttributeType(String name) { this.name = name;}
+    
+    private NCLAttributeType(String name) {
+        this.name = name;
+    }
 
     public static NCLAttributeType getEnumType(String name) throws NCLParsingException {
         for(NCLAttributeType opt : values()){
@@ -64,5 +67,7 @@ public enum NCLAttributeType {
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

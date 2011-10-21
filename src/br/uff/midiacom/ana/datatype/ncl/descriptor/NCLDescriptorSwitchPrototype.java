@@ -68,6 +68,13 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
         descriptors = new IdentifiableElementList<El, T>();
         binds = new ElementList<Eb, T>();
     }
+    
+    
+    public NCLDescriptorSwitchPrototype() throws XMLException {
+        super();
+        descriptors = new IdentifiableElementList<El, T>();
+        binds = new ElementList<Eb, T>();
+    }
 
 
     /**

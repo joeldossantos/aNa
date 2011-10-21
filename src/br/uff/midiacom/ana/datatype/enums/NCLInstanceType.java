@@ -51,7 +51,10 @@ public enum NCLInstanceType {
 
 
     private String name;
-    private NCLInstanceType(String name) { this.name = name;}
+    
+    private NCLInstanceType(String name) {
+        this.name = name;
+    }
 
     public static NCLInstanceType getEnumType(String name) throws NCLParsingException{
         for(NCLInstanceType opt : values()){
@@ -62,5 +65,7 @@ public enum NCLInstanceType {
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

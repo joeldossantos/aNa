@@ -56,7 +56,8 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
     public NCLConnectorParam(String name) throws XMLException {
         super(name);
     }
-
+    
+    
     public NCLConnectorParam(Element element) throws XMLException {
         super();
         load(element);
@@ -85,24 +86,6 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("name"))
-//                    setName(attributes.getValue(i));
-//                else if(attributes.getLocalName(i).equals("type"))
-//                    setType(attributes.getValue(i));
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
     public void load(Element element) throws NCLParsingException, XMLException {
         String att_name, att_var;
 
@@ -113,12 +96,10 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the type (required)
+        // set the type (optional)
         att_name = NCLElementAttributes.TYPE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setType(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

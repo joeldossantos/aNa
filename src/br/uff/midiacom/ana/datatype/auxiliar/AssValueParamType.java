@@ -5,7 +5,7 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
 
-public class AssValueParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<ByParamType, AssValueType, P>{
+public class AssValueParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<AssValueParamType, AssValueType, P>{
 
 
     public AssValueParamType(AssValueType value) throws XMLException {

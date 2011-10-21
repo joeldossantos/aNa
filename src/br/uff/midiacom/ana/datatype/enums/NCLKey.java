@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Teclas do controle remoto definidas pela <i>Nested Context Language</i> (NCL).
@@ -109,7 +111,21 @@ public enum NCLKey {
 
 
     private String name;
-    private NCLKey(String name) { this.name = name;}
+    
+    private NCLKey(String name) {
+        this.name = name;
+    }
+    
+    public static NCLKey getEnumType(String name) throws NCLParsingException{
+        for(NCLKey opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+    
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

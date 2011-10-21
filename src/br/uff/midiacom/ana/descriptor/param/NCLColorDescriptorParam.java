@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -55,6 +56,12 @@ public class NCLColorDescriptorParam<T extends NCLColorDescriptorParam, P extend
 
     public NCLColorDescriptorParam() throws XMLException {
         super();
+    }
+    
+    
+    public NCLColorDescriptorParam(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -82,7 +89,21 @@ public class NCLColorDescriptorParam<T extends NCLColorDescriptorParam, P extend
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(NCLAttributes.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the value (required)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(NCLColor.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

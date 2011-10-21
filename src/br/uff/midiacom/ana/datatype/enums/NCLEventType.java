@@ -51,7 +51,10 @@ public enum NCLEventType {
 
 
     private String name;
-    private NCLEventType(String name) { this.name = name;}
+    
+    private NCLEventType(String name) {
+        this.name = name;
+    }
 
     public static NCLEventType getEnumType(String name) throws NCLParsingException {
         for(NCLEventType opt : values()){
@@ -62,5 +65,7 @@ public enum NCLEventType {
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

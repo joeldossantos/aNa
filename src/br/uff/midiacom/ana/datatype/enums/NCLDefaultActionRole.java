@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Papéis padronizados para ações da <i>Nested Context Language</i> (NCL).
@@ -52,7 +54,21 @@ public enum NCLDefaultActionRole {
 
 
     private String name;
-    private NCLDefaultActionRole(String name) { this.name = name;}
+    
+    private NCLDefaultActionRole(String name) {
+        this.name = name;
+    }
+    
+    public static NCLDefaultActionRole getEnumType(String name) throws NCLParsingException{
+        for(NCLDefaultActionRole opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+    
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

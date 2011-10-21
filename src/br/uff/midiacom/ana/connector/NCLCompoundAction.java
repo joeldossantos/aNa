@@ -49,6 +49,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundActionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -58,6 +59,12 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 
     public NCLCompoundAction() throws XMLException {
         super();
+    }
+    
+    
+    public NCLCompoundAction(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -103,67 +110,6 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("compoundAction") && !insideAction){
-//                cleanWarnings();
-//                cleanErrors();
-//                insideAction = true;
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("operator")){
-//                        for(NCLActionOperator o : NCLActionOperator.values()){
-//                            if(o.toString().equals(attributes.getValue(i)))
-//                                setOperator(o);
-//                        }
-//                    }
-//                    else if(attributes.getLocalName(i).equals("delay")){
-//                        String var = attributes.getValue(i);
-//                        if(var.contains("$")){
-//                            var = var.substring(1);
-//                            setDelay((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
-//                        }
-//                        else{
-//                            var = var.substring(0, var.length() - 1);
-//                            setDelay(new Integer(var));
-//                        }
-//                    }
-//                }
-//            }
-//            else if(localName.equals("simpleAction")){
-//                A child = createSimpleAction();
-//                child.startElement(uri, localName, qName, attributes);
-//                addAction(child);
-//            }
-//            else if(localName.equals("compoundAction") && insideAction){
-//                A child = createCompoundAction();
-//                child.startElement(uri, localName, qName, attributes);
-//                addAction(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() != null){
-//            if(getParamDelay() != null)
-//                setDelay(parameterReference(getParamDelay().getId()));
-//        }
-//
-//        if(hasAction()){
-//            for(A action : actions){
-//                action.endDocument();
-//                addWarning(action.getWarnings());
-//                addError(action.getErrors());
-//            }
-//        }
-//    }
-
-
 //    private P parameterReference(String id) {
 //        NCLElementImpl connector = getParent();
 //
@@ -200,14 +146,22 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType(att_var));
+            setDelay(new DoubleParamType<Ep>(att_var));
 
-        // create the action nodes
-        ch_name = NCLElementSets.ACTIONS.toString();
-        nl = element.getElementsByTagName(ch_name);
+        // create the child nodes
+        nl = element.getChildNodes();
         for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            addAction(createSimpleAction(el)); // --> Como saber se é simple ou compound?
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the simpleAction
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString()))
+                    addAction(createSimpleAction(el));
+                // create the compoundAction
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString()))
+                    addAction(createCompoundAction(el));
+            }
         }
     }
 
@@ -241,7 +195,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
      * @return
      *          element representing the child <i>compoundAction</i>.
      */
-    protected NCLCompoundAction createCompoundAction() throws XMLException {
-        return new NCLCompoundAction();
+    protected Ea createCompoundAction(Element element) throws XMLException {
+        return (Ea) new NCLCompoundAction(element);
     }
 }

@@ -88,7 +88,8 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
         setId(id);
         params = new ElementList<Ep, T>();
     }
-
+    
+    
     public NCLDescriptorPrototype() throws XMLException {
         super();
         params = new ElementList<Ep, T>();

@@ -59,7 +59,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     public NCLAttributeAssessment() throws XMLException {
         super();
     }
-
+    
+    
     public NCLAttributeAssessment(Element element) throws XMLException {
         super();
         load(element);
@@ -89,8 +90,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     
         
     @Override
-    public void setKey(KeyParamType key) {
-        KeyParamType aux = this.key;
+    public void setKey(KeyParamType<Ep> key) {
+        KeyParamType<Ep> aux = this.key;
         super.setKey(key);
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
@@ -105,75 +106,11 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     
         
     @Override
-    public void setOffset(IntegerParamType offset) {
-        IntegerParamType aux = this.offset;
+    public void setOffset(IntegerParamType<Ep> offset) {
+        IntegerParamType<Ep> aux = this.offset;
         super.setOffset(offset);
         impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
     }
-    
-    
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("role")){
-//                    R child = createRole(attributes.getValue(i));
-//                    setRole(child);
-//                }
-//                else if(attributes.getLocalName(i).equals("key")){
-//                    String value = attributes.getValue(i);
-//                    if(value.contains("$")){
-//                        value = value.substring(1);
-//                        setKey((P) new NCLConnectorParam(value));//cast retirado na correcao das referencias
-//                    }
-//                    else{
-//                        for(NCLKey k : NCLKey.values()){
-//                            if(k.toString().equals(value))
-//                                setKey(k);
-//                        }
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("offset")){
-//                    String value = attributes.getValue(i);
-//                    if(value.contains("$")){
-//                        value = value.substring(1);
-//                        setOffset((P) new NCLConnectorParam(value));//cast retirado na correcao das referencias
-//                    }
-//                    else
-//                        setOffset(new Integer(value));
-//                }
-//                else if(attributes.getLocalName(i).equals("eventType")){
-//                    for(NCLEventType e : NCLEventType.values()){
-//                        if(e.toString().equals(attributes.getValue(i)))
-//                            setEventType(e);
-//                    }
-//                }
-//                else if(attributes.getLocalName(i).equals("attributeType")){
-//                    for(NCLAttributeType t : NCLAttributeType.values()){
-//                        if(t.toString().equals(attributes.getValue(i)))
-//                            setAttributeType(t);
-//                    }
-//                }
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getParamKey() != null)
-//            setKey(parameterReference(getParamKey().getId()));
-//        if(getParamOffset() != null)
-//            setOffset(parameterReference(getParamOffset().getId()));
-//    }
 
 
 //    private P parameterReference(String id) {
@@ -218,12 +155,17 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
         // set the key (optional)
         att_name = NCLElementAttributes.KEY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setKey(new KeyParamType(att_var));
+            setKey(new KeyParamType<Ep>(att_var));
 
         // set the attributeType (optional)
         att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setAttributeType(NCLAttributeType.getEnumType(att_var));
+        
+        // set the offset (optional)
+        att_name = NCLElementAttributes.OFFSET.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOffset(new IntegerParamType<Ep>(att_var));
     }
 
 

@@ -53,7 +53,10 @@ public enum NCLEventTransition {
 
 
     private String name;
-    private NCLEventTransition(String name) { this.name = name;}
+    
+    private NCLEventTransition(String name) {
+        this.name = name;
+    }
 
     public static NCLEventTransition getEnumType(String name) throws NCLParsingException {
         for(NCLEventTransition opt : values()){
@@ -64,5 +67,7 @@ public enum NCLEventTransition {
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

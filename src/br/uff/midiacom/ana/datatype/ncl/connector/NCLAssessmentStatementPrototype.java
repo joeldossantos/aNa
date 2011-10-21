@@ -132,9 +132,9 @@ public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPro
      *
      * @see ArrayList#add
      */
-    public boolean addAttributeAssessment(Ea attribute) throws Exception {
+    public boolean addAttributeAssessment(Ea attribute) throws XMLException {
         if(attributeAssessments.size() == 2)
-            throw new Exception("can't have more than two attributes");
+            throw new XMLException("can't have more than two attributes");
         
         return attributeAssessments.add(attribute, (T) this);
     }

@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores do parâmetro fit
@@ -50,7 +52,21 @@ public enum NCLFit {
     SLICE("slice");
 
     private String name;
-    private NCLFit(String name) { this.name = name;}
+    
+    private NCLFit(String name) {
+        this.name = name;
+    }
+
+    public static NCLFit getEnumType(String name) throws NCLParsingException{
+        for(NCLFit opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+
     @Override
-    public String toString() { return name;}
+    public String toString() {
+        return name;
+    }
 }

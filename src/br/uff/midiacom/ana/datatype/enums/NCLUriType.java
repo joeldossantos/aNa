@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Tipos de URI definidas para o atributo <i>src</i> do elemento
@@ -54,7 +56,21 @@ public enum NCLUriType {
 
 
     private String name;
-    private NCLUriType(String name) { this.name = name;}
+    
+    private NCLUriType(String name) {
+        this.name = name;
+    }
+    
+    public static NCLUriType getEnumType(String name) throws NCLParsingException{
+        for(NCLUriType opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+    
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }

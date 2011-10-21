@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores do parâmetro font variant
@@ -47,7 +49,21 @@ public enum NCLFontVariant {
     SMALL_CAPS("small-caps");
 
     private String name;
-    private NCLFontVariant(String name) { this.name = name;}
+    
+    private NCLFontVariant(String name) {
+        this.name = name;
+    }
+
+    public static NCLFontVariant getEnumType(String name) throws NCLParsingException{
+        for(NCLFontVariant opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+
     @Override
-    public String toString() { return name;}
+    public String toString() {
+        return name;
+    }
 }

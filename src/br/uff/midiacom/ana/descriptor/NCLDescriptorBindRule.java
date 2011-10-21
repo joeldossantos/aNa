@@ -56,7 +56,8 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
     public NCLDescriptorBindRule() throws XMLException {
         super();
     }
-
+    
+    
     public NCLDescriptorBindRule(Element element) throws XMLException {
         super();
         load(element);
@@ -83,37 +84,6 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
         super.setRule(rule);
         impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
     }
-
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("rule"))
-//                    setRule((R) new NCLRule(attributes.getValue(i)));//cast retirado na correcao das referencias
-//                else if(attributes.getLocalName(i).equals("constituent"))
-//                    setConstituent((D) new NCLDescriptor(attributes.getValue(i)));//cast retirado na correcao das referencias
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getConstituent() != null)
-//            constituentReference();
-//
-//        if(getRule() != null)
-//            ruleReference();
-//    }
 
 
 //    private void constituentReference() {
@@ -155,14 +125,14 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
         // set the constituint (required)
         att_name = NCLElementAttributes.CONSTITUENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setConstituent( ); // metodo procura pelo id
+            ;//setConstituent( ); //@todo: metodo procura pelo id
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the rule (required)
         att_name = NCLElementAttributes.RULE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRule(); // metodo procura pelo id
+            ;//setRule(); //@todo: metodo procura pelo id
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }

@@ -56,6 +56,11 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     public NCLValueAssessment() throws XMLException {
         super();
     }
+    
+    public NCLValueAssessment(Element element) throws XMLException {
+        super();
+        load(element);
+    }
 
 
     @Override
@@ -71,50 +76,11 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     
 
     @Override
-    public void setValue(AssValueParamType value) {
-        AssValueParamType aux = this.value;
+    public void setValue(AssValueParamType<Ep> value) {
+        AssValueParamType<Ep> aux = this.value;
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, value);
     }
-
-
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            cleanWarnings();
-//            cleanErrors();
-//            for(int i = 0; i < attributes.getLength(); i++){
-//                if(attributes.getLocalName(i).equals("value")){
-//                    String var = attributes.getValue(i);
-//                    if(var.contains("$")){
-//                        var = var.substring(1);
-//                        setValue((P) new NCLConnectorParam(var));//cast retirado na correcao das referencias
-//                    }
-//                    else{
-//                        setValue(var);
-//                        //Try to find the value in one of the standard values
-//                        for(NCLDefaultValueAssessment v : NCLDefaultValueAssessment.values()){
-//                            if(v.toString().equals(var))
-//                                setValue(v);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(getParent() == null)
-//            return;
-//
-//        if(getParamValue() != null)
-//            setValue(parameterReference(getParamValue().getId()));
-//    }
 
 
 //    private P parameterReference(String id) {
@@ -145,7 +111,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
         // set the value (required)
         att_name = NCLElementAttributes.VALUEASSESSMENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new AssValueParamType(att_var));
+            setValue(new AssValueParamType<Ep>(att_var));
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }

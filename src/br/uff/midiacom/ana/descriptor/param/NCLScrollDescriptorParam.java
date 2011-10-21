@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
@@ -56,6 +57,13 @@ public class NCLScrollDescriptorParam<T extends NCLScrollDescriptorParam, P exte
     public NCLScrollDescriptorParam() throws XMLException {
         super();
     }
+    
+    
+    public NCLScrollDescriptorParam(Element element) throws XMLException {
+        super();
+        load(element);
+    }
+    
 
     @Override
     protected void createImpl() throws XMLException {
@@ -81,7 +89,21 @@ public class NCLScrollDescriptorParam<T extends NCLScrollDescriptorParam, P exte
 
 
     public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String att_name, att_var;
+
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(NCLAttributes.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the value (required)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(NCLScroll.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

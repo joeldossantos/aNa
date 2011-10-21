@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
@@ -57,6 +58,12 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
 
     public NCLDescriptorBase() throws XMLException {
         super();
+    }
+    
+    
+    public NCLDescriptorBase(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -116,60 +123,14 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
     }
 
 
-//    @Override
-//    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-//        try{
-//            if(localName.equals("descriptorBase")){
-//                cleanWarnings();
-//                cleanErrors();
-//                for(int i = 0; i < attributes.getLength(); i++){
-//                    if(attributes.getLocalName(i).equals("id"))
-//                        setId(attributes.getValue(i));
-//                }
-//            }
-//            else if(localName.equals("importBase")){
-//                I child = createImportBase();
-//                child.startElement(uri, localName, qName, attributes);
-//                addImportBase(child);
-//            }
-//            else if(localName.equals("descriptor")){
-//                D child = createDescriptor();
-//                child.startElement(uri, localName, qName, attributes);
-//                addDescriptor(child);
-//            }
-//            else if(localName.equals("descriptorSwitch")){
-//                D child = createDescriptorSwitch();
-//                child.startElement(uri, localName, qName, attributes);
-//                addDescriptor(child);
-//            }
-//        }
-//        catch(NCLInvalidIdentifierException ex){
-//            addError(ex.getMessage());
-//        }
-//    }
-
-
-//    @Override
-//    public void endDocument() {
-//        if(hasImportBase()){
-//            for(I imp : imports){
-//                imp.endDocument();
-//                addWarning(imp.getWarnings());
-//                addError(imp.getErrors());
-//            }
-//        }
-//        if(hasDescriptor()){
-//            for(D descriptor : descriptors){
-//                descriptor.endDocument();
-//                addWarning(descriptor.getWarnings());
-//                addError(descriptor.getErrors());
-//            }
-//        }
-//    }
-
-
     public void load(Element element) throws XMLException {
+        String att_name, att_var;
         NodeList nl;
+
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
 
         // create the child nodes
         nl = element.getChildNodes();
@@ -178,13 +139,15 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
             if(nd instanceof Element){
                 Element el = (Element) nl.item(i);
 
-                //create the descriptors
-                if(el.getTagName().equals(NCLElementSets.DESCRIPTORS.toString()))
-                    addDescriptor(createDescriptor(el));
-
-                // create the importBases
-                if(el.getTagName().equals(NCLElementSets.IMPORTS.toString()))
+                //create the imports
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
                     addImportBase(createImportBase(el));
+                //create the descriptor
+                if(el.getTagName().equals(NCLElementAttributes.DESCRIPTOR.toString()))
+                    addDescriptor(createDescriptor(el));
+                // create the descriptorSwitch
+                if(el.getTagName().equals(NCLElementAttributes.DESCRIPTORSWITCH.toString()))
+                    addDescriptor(createDescriptorSwitch(el));
             }
         }
     }
@@ -231,7 +194,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>descriptorSwitch</i>.
      */
-    protected El createDescriptorSwitch(String id) throws XMLException {
-        return (El) new NCLDescriptorSwitch(id);
+    protected El createDescriptorSwitch(Element element) throws XMLException {
+        return (El) new NCLDescriptorSwitch(element);
     }
 }

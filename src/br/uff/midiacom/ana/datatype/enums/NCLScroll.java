@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Valores do parâmetro scroll
@@ -50,7 +52,21 @@ public enum NCLScroll {
     AUTOMATIC("automatic");
 
     private String name;
-    private NCLScroll(String name) { this.name = name;}
+    
+    private NCLScroll(String name) {
+        this.name = name;
+    }
+
+    public static NCLScroll getEnumType(String name) throws NCLParsingException{
+        for(NCLScroll opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" type");
+    }
+
     @Override
-    public String toString() { return name;}
+    public String toString() {
+        return name;
+    }
 }

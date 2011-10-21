@@ -47,7 +47,13 @@ public enum NCLImportType {
     NCL("importNCL");
 
     private String name;
-    private NCLImportType(String name) { this.name = name;}
+    
+    private NCLImportType(String name) {
+        this.name = name;
+    }
+    
     @Override
-    public String toString() { return name;}
+    public String toString() {
+        return name;
+    }
 }
