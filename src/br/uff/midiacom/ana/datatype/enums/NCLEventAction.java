@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Ações possíveis de serem realizadas sobre máquinas de estados de uma
@@ -53,6 +55,15 @@ public enum NCLEventAction {
 
     private String name;
     private NCLEventAction(String name) { this.name = name;}
+
+    public static NCLEventAction getEnumType(String name) throws NCLParsingException {
+        for(NCLEventAction opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" value");
+    }
+
     @Override
     public String toString() { return name; }
 }

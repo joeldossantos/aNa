@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -48,6 +49,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundConditionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParam>
@@ -221,8 +224,38 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLConditionOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
+
+        // create the child nodes
+        nl = element.getChildNodes();
+        for(int i=0; i < nl.getLength(); i++){
+            Node nd = nl.item(i);
+            if(nd instanceof Element){
+                Element el = (Element) nl.item(i);
+
+                //create the conditions
+                if(el.getTagName().equals(NCLElementSets.CONDITIONS.toString()))
+                    addCondition(createSimpleCondition(el)); // --> Como saber se é simple ou compound?
+
+                // create the assessments
+                if(el.getTagName().equals(NCLElementSets.STATEMENTS.toString()))
+                    addStatement(createAssessmentStatement(el)); // --> Como saber se é simple ou compound?
+            }
+        }
     }
 
 
@@ -243,8 +276,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>simpleCondition</i>.
      */
-    protected NCLSimpleCondition createSimpleCondition() throws XMLException {
-        return new NCLSimpleCondition();
+    protected Ec createSimpleCondition(Element element) throws XMLException {
+        return (Ec) new NCLSimpleCondition(element);
     }
 
 
@@ -267,8 +300,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>assessmentStatement</i>.
      */
-    protected NCLAssessmentStatement createAssessmentStatement() throws XMLException {
-        return new NCLAssessmentStatement();
+    protected Es createAssessmentStatement(Element element) throws XMLException {
+        return (Es) new NCLAssessmentStatement(element);
     }
 
 

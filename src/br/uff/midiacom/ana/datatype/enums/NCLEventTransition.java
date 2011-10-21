@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Transições dos estados dos eventos de uma mídia da <i>Nested Context Language</i> (NCL).
@@ -52,6 +54,15 @@ public enum NCLEventTransition {
 
     private String name;
     private NCLEventTransition(String name) { this.name = name;}
+
+    public static NCLEventTransition getEnumType(String name) throws NCLParsingException {
+        for(NCLEventTransition opt : values()){
+            if(name.equals(opt.name))
+                return opt;
+        }
+        throw new NCLParsingException("Could not find " + name +" value");
+    }
+
     @Override
     public String toString() { return name; }
 }

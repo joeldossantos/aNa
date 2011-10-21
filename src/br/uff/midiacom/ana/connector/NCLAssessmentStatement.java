@@ -41,12 +41,16 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLAssessmentStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment>
@@ -55,6 +59,11 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
 
     public NCLAssessmentStatement() throws XMLException {
         super();
+    }
+
+    public NCLAssessmentStatement(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -149,8 +158,29 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws NCLParsingException, XMLException {
+        String att_name, att_var, ch_name;
+        NodeList nl;
+
+        // set the comparator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setComparator(NCLComparator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the value (optional)
+        att_name = NCLElementAttributes.VALUEASSESSMENT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValueAssessment(createValueAssessment());
+
+        // create the attributeAssessment nodes
+        ch_name = NCLElementSets.ATTRIBUTEASSESSMENTS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addAttributeAssessment(createAttributeAssessment(el));
+        }
     }
 
 
@@ -171,8 +201,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
      * @return
      *          element representing the child <i>attributeAssessment</i>.
      */
-    protected NCLAttributeAssessment createAttributeAssessment() throws XMLException {
-        return new NCLAttributeAssessment();
+    protected Ea createAttributeAssessment(Element element) throws XMLException {
+        return (Ea) new NCLAttributeAssessment(element);
     }
 
 
@@ -183,7 +213,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
      * @return
      *          element representing the child <i>valueAssessment</i>.
      */
-    protected NCLValueAssessment createValueAssessment() throws XMLException {
-        return new NCLValueAssessment();
+    protected Ev createValueAssessment() throws XMLException {
+        return (Ev) new NCLValueAssessment();
     }
 }

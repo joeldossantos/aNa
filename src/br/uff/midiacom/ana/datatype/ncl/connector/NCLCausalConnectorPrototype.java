@@ -66,6 +66,11 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
         this.setId(id);
         conn_params = new IdentifiableElementList<Ep, T>();
     }
+
+    public NCLCausalConnectorPrototype() throws XMLException {
+        super();
+        conn_params = new IdentifiableElementList<Ep, T>();
+    }
     
     
     /**
