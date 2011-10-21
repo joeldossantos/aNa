@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -48,6 +49,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundActionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Ep extends NCLConnectorParam>
@@ -184,8 +186,29 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var, ch_name;
+        NodeList nl;
+
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLActionOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
+
+        // create the action nodes
+        ch_name = NCLElementSets.ACTIONS.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            addAction(createSimpleAction(el)); // --> Como saber se é simple ou compound?
+        }
     }
 
 
@@ -206,8 +229,8 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
      * @return
      *          element representing the child <i>simpleAction</i>.
      */
-    protected NCLSimpleAction createSimpleAction() throws XMLException {
-        return new NCLSimpleAction();
+    protected Ea createSimpleAction(Element element) throws XMLException {
+        return (Ea) new NCLSimpleAction(element);
     }
 
 

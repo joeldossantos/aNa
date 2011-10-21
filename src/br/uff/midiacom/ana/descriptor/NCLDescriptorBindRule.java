@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBindRulePrototype;
 import br.uff.midiacom.ana.rule.NCLTestRule;
@@ -54,6 +55,11 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
 
     public NCLDescriptorBindRule() throws XMLException {
         super();
+    }
+
+    public NCLDescriptorBindRule(Element element) throws XMLException {
+        super();
+        load(element);
     }
 
 
@@ -143,8 +149,22 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
 //    }
 
 
-    public void load(Element element) throws XMLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+
+        // set the constituint (required)
+        att_name = NCLElementAttributes.CONSTITUENT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setConstituent( ); // metodo procura pelo id
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the rule (required)
+        att_name = NCLElementAttributes.RULE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRule(); // metodo procura pelo id
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
 

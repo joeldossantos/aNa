@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.ByParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
@@ -49,6 +50,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
+import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLSimpleActionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
@@ -63,6 +65,10 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
         super();
     }
 
+    public NCLSimpleAction(Element element) throws XMLException {
+        super();
+        load(element);
+    }
 
     @Override
     protected void createImpl() throws XMLException {
@@ -90,7 +96,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     public void setMax(MaxType max) {
         MaxType aux = this.max;
         super.setMax(max);
-        impl.notifyAltered(NCLElementAttributes.MIN, aux, max);
+        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
     }
 
 
@@ -312,8 +318,75 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 //    }
 
 
-    public void load(Element element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void load(Element element) throws XMLException, NCLParsingException {
+        String att_name, att_var;
+
+        // set the role (required)
+        att_name = NCLElementAttributes.ROLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRole(createRole(att_name));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+        // set the value (optional)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(new StringParamType(att_var));
+
+        // set the min (optional)
+        att_name = NCLElementAttributes.MIN.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setMin(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
+
+        // set the max (optional)
+        att_name = NCLElementAttributes.MAX.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setMax(new MaxType(att_var));
+
+        // set the qualifier (optional)
+        att_name = NCLElementAttributes.QUALIFIER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setQualifier(NCLActionOperator.getEnumType(att_var));
+
+        // set the eventType (optional)
+        att_name = NCLElementAttributes.EVENTTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setEventType(NCLEventType.getEnumType(att_var));
+
+        // set the actionType (optional)
+        att_name = NCLElementAttributes.ACTIONTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setActionType(NCLEventAction.getEnumType(att_var));
+
+        // set the repeatDelay (optional)
+        att_name = NCLElementAttributes.REPEATDELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRepeatDelay(new DoubleParamType(att_var));
+
+        // set the repeat (optional)
+        att_name = NCLElementAttributes.REPEAT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRepeat(new IntegerParamType(att_var));
+
+        // set the duration (optional)
+        att_name = NCLElementAttributes.DURATION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDuration(new DoubleParamType(att_var));
+
+        // set the by (optional)
+        att_name = NCLElementAttributes.BY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setBy(new ByParamType(att_var));
+
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
     }
 
 
@@ -334,7 +407,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
      * @return
      *          element representing a connector <i>role</i>.
      */
-    protected NCLRole createRole(String name) throws XMLException {
-        return new NCLRole(name);
+    protected Er createRole(String name) throws XMLException {
+        return (Er) new NCLRole(name);
     }
 }
