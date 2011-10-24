@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
@@ -70,7 +71,7 @@ import org.w3c.dom.NodeList;
 
 
 public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, El extends NCLLayoutDescriptor, Et extends NCLTransition, Ep extends NCLDescriptorParam>
-        extends NCLDescriptorPrototype<T, P, I, Er, El, Et, Ep> implements NCLLayoutDescriptor<El, P> {
+        extends NCLDescriptorPrototype<T, P, I, Er, El, Et, Ep> implements NCLLayoutDescriptor<El, P>, PostReferenceElement {
 
 
     public NCLDescriptor(String id) throws XMLException {
@@ -281,8 +282,10 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
             }catch(Exception e){
                 throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
             }
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            T desc = (T) new NCLDescriptor(att_var);
+            desc.setFocusIndex(aux);
             setMoveUp(desc);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
 
         // set the moveRight (optional)
@@ -294,8 +297,10 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
             }catch(Exception e){
                 throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
             }
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            T desc = (T) new NCLDescriptor(att_var);
+            desc.setFocusIndex(aux);
             setMoveRight(desc);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
 
         // set the moveLeft (optional)
@@ -307,8 +312,10 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
             }catch(Exception e){
                 throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
             }
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            T desc = (T) new NCLDescriptor(att_var);
+            desc.setFocusIndex(aux);
             setMoveLeft(desc);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
 
         // set the moveDown (optional)
@@ -320,8 +327,10 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
             }catch(Exception e){
                 throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
             }
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            T desc = (T) new NCLDescriptor(att_var);
+            desc.setFocusIndex(aux);
             setMoveDown(desc);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
 
         // set the focusIndex (optional)
@@ -555,5 +564,34 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
 
     protected Ep createPlayerLifeDescriptorParam(Element element) throws XMLException {
         return (Ep) new NCLPlayerLifeDescriptorParam(element);
+    }
+    
+    
+    public void fixReference() throws XMLException {
+        Integer aux;
+        
+        // set the moveUp (optional)
+        if((aux = getMoveUp().getFocusIndex()) != null){
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveUp(desc);
+        }
+
+        // set the moveRight (optional)
+        if((aux = getMoveRight().getFocusIndex()) != null){
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveRight(desc);
+        }
+
+        // set the moveLeft (optional)
+        if((aux = getMoveLeft().getFocusIndex()) != null){
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveLeft(desc);
+        }
+
+        // set the moveDown (optional)
+        if((aux = getMoveDown().getFocusIndex()) != null){
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveDown(desc);
+        }
     }
 }

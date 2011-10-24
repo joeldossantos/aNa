@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLContextPrototype;
@@ -58,7 +59,7 @@ import org.w3c.dom.NodeList;
 
 
 public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, Ei extends NCLInterface, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
-        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLNode<En, P, Ei> {
+        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLNode<En, P, Ei>, PostReferenceElement {
     
     
     public NCLContext(String id) throws XMLException {
@@ -304,8 +305,9 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
         // set the refer (optional)
         att_name = NCLElementAttributes.REFER.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), att_var);
+            T ref = (T) new NCLContext(att_var);
             setRefer(ref);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
     }
 
@@ -357,6 +359,17 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
         }
         
         return null;
+    }
+    
+    
+    public void fixReference() throws XMLException {
+        String aux;
+        
+        // set the refer (optional)
+        if((aux = getRefer().getId()) != null){
+            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
+            setRefer(ref);
+        }
     }
 
 

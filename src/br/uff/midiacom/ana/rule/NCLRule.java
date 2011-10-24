@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
@@ -52,7 +53,7 @@ import org.w3c.dom.Element;
 
 
 public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLProperty>
-        extends NCLRulePrototype<T, P, I, Ep> implements NCLTestRule<T, P> {
+        extends NCLRulePrototype<T, P, I, Ep> implements NCLTestRule<T, P>, PostReferenceElement {
 
 
     public NCLRule(String id) throws XMLException {
@@ -109,8 +110,9 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
         // set the var (required)
         att_name = NCLElementAttributes.VAR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ep prop = (Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), att_var);
+            Ep prop = (Ep) new NCLProperty(att_var);
             setVar(prop);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -146,5 +148,16 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
             return (T) this;
         else
             return null;
+    }
+    
+    
+    public void fixReference() throws XMLException {
+        String aux;
+        
+        // set the var (required)
+        if((aux = getVar().getName()) != null){
+            Ep prop = (Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux);
+            setVar(prop);
+        }
     }
 }

@@ -40,6 +40,7 @@ package br.uff.midiacom.ana;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
+import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -52,11 +53,13 @@ import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
 public class NCLReferenceManager {
 
     private static NCLReferenceManager instance = new NCLReferenceManager();
+    private TreeSet<PostReferenceElement> references = new TreeSet<PostReferenceElement>();
     
     
     private NCLReferenceManager() {}
@@ -88,7 +91,7 @@ public class NCLReferenceManager {
         return result;
     }
     
-    //****
+    
     public NCLProperty findPropertyReference(NCLDoc doc, String name) throws XMLException {
         NCLBody body = (NCLBody) doc.getBody();
         
@@ -103,7 +106,7 @@ public class NCLReferenceManager {
         return result;
     }
     
-    //****
+    
     public NCLDescriptor findDescriptorReference(NCLDoc doc, Integer focusIndex) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
@@ -221,7 +224,7 @@ public class NCLReferenceManager {
         return result;
     }
     
-    //****
+    
     public NCLNode findNodeReference(NCLDoc doc, String id) throws XMLException {
         NCLBody body = (NCLBody) doc.getBody();
         
@@ -234,5 +237,16 @@ public class NCLReferenceManager {
             throw new NCLParsingException("Could not find node in ruleBase with id: " + id);
         
         return result;
+    }
+    
+    
+    public void waitReference(PostReferenceElement element) {
+        references.add(element);
+    }
+    
+    
+    public void fixReferences() throws XMLException {
+        for(PostReferenceElement el : references)
+            el.fixReference();
     }
 }

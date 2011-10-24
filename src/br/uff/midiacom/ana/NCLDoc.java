@@ -142,6 +142,9 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
         ch_name = NCLElementAttributes.BODY.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
         setBody(createBody(el));
+        
+        // fix the references needed
+        NCLReferenceManager.getInstance().fixReferences();
     }
 
 

@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
@@ -57,7 +58,7 @@ import org.w3c.dom.NodeList;
 
 
 public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode, Ei extends NCLInterface>
-        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P, Ei> {
+        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P, Ei>, PostReferenceElement {
     
     
     public NCLMedia(String id) throws XMLException {
@@ -229,8 +230,9 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
         // set the refer (optional)
         att_name = NCLElementAttributes.REFER.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), att_var);
+            T ref = (T) new NCLMedia(att_var);
             setRefer(ref);
+            NCLReferenceManager.getInstance().waitReference(this);
         }
     }
 
@@ -267,6 +269,17 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
             return (En) this;
         else
             return null;
+    }
+    
+    
+    public void fixReference() throws XMLException {
+        String aux;
+        
+        // set the refer (optional)
+        if((aux = getRefer().getId()) != null){
+            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
+            setRefer(ref);
+        }
     }
 
 
