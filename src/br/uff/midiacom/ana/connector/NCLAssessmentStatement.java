@@ -83,9 +83,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     
     @Override
     public void setValueAssessment(Ev value) {
-        Ev aux = this.valueAssessment;
         super.setValueAssessment(value);
-        impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, value);
+        impl.notifyInserted(NCLElementSets.VALUEASSESSMENT, value);
     }
     
         
@@ -110,7 +109,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
 
 
     public void load(Element element) throws XMLException {
-        String att_name, att_var, ch_name;
+        String att_name, att_var;
         NodeList nl;
 
         // set the comparator (required)

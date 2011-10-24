@@ -53,6 +53,7 @@ public enum NCLElementSets {
     CONNECTORS("connectors"),
     CONNECTOR_PARAMS("connector_params"),
     CONNECTORBASE("connectorBase"),
+    DEFAULTCOMPONENT("defaultComponent"),
     DESCRIPTORS("descriptors"),
     DESCRIPTORPARAM("descriptorParam"),
     DESCRIPTORBASE("descriptorBase"),

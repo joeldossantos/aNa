@@ -111,7 +111,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 
 
     public void load(Element element) throws XMLException, NCLParsingException {
-        String att_name, att_var, ch_name;
+        String att_name, att_var;
         NodeList nl;
 
         // set the operator (required)
