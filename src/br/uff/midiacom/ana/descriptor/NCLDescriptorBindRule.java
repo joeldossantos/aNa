@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBindRulePrototype;
 import br.uff.midiacom.ana.rule.NCLTestRule;
@@ -86,53 +87,31 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
     }
 
 
-//    private void constituentReference() {
-//        //Search for a component node in its parent
-//        Set<D> descriptors = ((NCLDescriptorSwitch) getParent()).getDescriptors();
-//
-//        for(D descriptor : descriptors){
-//            if(descriptor.getId().equals(getConstituent().getId())){
-//                setConstituent(descriptor);
-//                return;
-//            }
-//        }
-//
-//        addWarning("Could not find descriptor in descriptorSwitch with id: " + getConstituent().getId());
-//    }
-
-
-//    private void ruleReference() {
-//        //Search for the interface inside the node
-//        Set<R> rules = getRules();
-//        if(rules == null)
-//            return;
-//
-//        for(R rul : rules){
-//            if(rul.getId().equals(getRule().getId())){
-//                setRule(rul);
-//                return;
-//            }
-//        }
-//        //@todo: regras internas a regras compostas podem ser utilizadas?
-//
-//        addWarning("Could not find rule in ruleBase with id: " + getRule().getId());
-//    }
-
-
-    public void load(Element element) throws NCLParsingException {
+    public void load(Element element) throws XMLException {
         String att_name, att_var;
 
         // set the constituint (required)
         att_name = NCLElementAttributes.CONSTITUENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setConstituent( ); //@todo: metodo procura pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            P aux;
+            if((aux = (P) getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            El desc = (El) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
+            if(desc == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            setConstituent(desc);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the rule (required)
         att_name = NCLElementAttributes.RULE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRule(); //@todo: metodo procura pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Er rul = (Er) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
+            setRule(rul);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }

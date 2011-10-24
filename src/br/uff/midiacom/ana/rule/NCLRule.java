@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
@@ -95,60 +96,6 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
 
 
-//    private void propertyReference() {
-        //Search for the interface inside the node
-//        NCLElementImpl doc = getParent();
-//
-//        while(!(doc instanceof NCLDoc)){
-//            doc = doc.getParent();
-//            if(doc == null){
-//                addWarning("Could not find a root element");
-//                return;
-//            }
-//        }
-//
-//        if(((NCLDoc) doc).getBody() == null){
-//            addWarning("Could not find a body");
-//        }
-//
-//        setVar(findProperty(((NCLDoc) doc).getBody().getNodes()));
-//    }
-
-
-//    private P findProperty(Set<NCLNode> nodes) {
-//        for(NCLNode n : nodes){
-//            if(n instanceof NCLMedia){
-//                if( ((NCLMedia) n).hasProperty()){
-//                    Set<P> properties = ((NCLMedia) n).getProperties();
-//                    for(P prop : properties){
-//                        if(prop.getName().equals(getVar().getName()))
-//                            return prop;
-//                    }
-//                }
-//            }
-//            else if(n instanceof NCLContext){
-//                if( ((NCLContext) n).hasNode()){
-//                    Set<NCLNode> cnodes = ((NCLContext) n).getNodes();
-//                    NCLProperty p = findProperty(cnodes);
-//                    if(p != null)
-//                        return (P) p;
-//                }
-//            }
-//            else if(n instanceof NCLSwitch){
-//                if( ((NCLSwitch) n).hasNode()){
-//                    Set<NCLNode> snodes = ((NCLSwitch) n).getNodes();
-//                    NCLProperty p = findProperty(snodes);
-//                    if(p != null)
-//                        return (P) p;
-//                }
-//            }
-//        }
-//
-//        addWarning("Could not find property with name: " + getVar().getName());
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
@@ -161,8 +108,10 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
 
         // set the var (required)
         att_name = NCLElementAttributes.VAR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setVar(); //@todo: tem que usar o método de busca pelo id da media
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Ep prop = (Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), att_var);
+            setVar(prop);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 

@@ -83,35 +83,13 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     }
 
 
-//    private P parameterReference(String id) {
-//        NCLElementImpl connector = getParent();
-//
-//        while(!(connector instanceof NCLCausalConnector)){
-//            connector = connector.getParent();
-//            if(connector == null){
-//                addWarning("Could not find a parent connector");
-//                return null;
-//            }
-//        }
-//
-//        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
-//        for(P param : params){
-//            if(param.getId().equals(id))
-//                return param;
-//        }
-//
-//        addWarning("Could not find connectorParam in connector with id: " + id);
-//        return null;
-//    }
-
-
     public void load(Element element) throws NCLParsingException, XMLException {
         String att_name, att_var;
 
         // set the value (required)
         att_name = NCLElementAttributes.VALUEASSESSMENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new AssValueParamType<Ep>(att_var));
+            setValue(new AssValueParamType<Ep>(att_var, this));
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }

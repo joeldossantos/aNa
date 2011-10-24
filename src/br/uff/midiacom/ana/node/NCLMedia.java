@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
@@ -176,66 +177,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-//    private void descriptorReference() {
-//        //Search for the interface inside the node
-//        Set<D> descriptors = getDescriptors();
-//        for(D desc : descriptors){
-//            if(desc.getId().equals(getDescriptor().getId())){
-//                setDescriptor(desc);
-//                return;
-//            }
-//        }
-//        //@todo: descritores internos a switch de descritores podem ser utilizados?
-//
-//        addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
-//    }
-
-
-//    private void mediaReference() {
-//        //Search for the interface inside the node
-//        NCLElementImpl body = getParent();
-//
-//        while(!(body instanceof NCLBody)){
-//            body = body.getParent();
-//            if(body == null){
-//                addWarning("Could not find a body");
-//                return;
-//            }
-//        }
-//
-//        setRefer(findMedia(((NCLBody) body).getNodes()));
-//    }
-
-
-//    private M findMedia(Set<N> nodes) {
-//        for(N n : nodes){
-//            if(n instanceof NCLMedia){
-//                if(n.getId().equals(getRefer().getId()))
-//                    return (M) n;
-//            }
-//            else if(n instanceof NCLContext){
-//                if( ((NCLContext) n).hasNode()){
-//                    Set<N> cnodes = ((NCLContext) n).getNodes();
-//                    M m = findMedia(cnodes);
-//                    if(m != null)
-//                        return (M) m;
-//                }
-//            }
-//            else if(n instanceof NCLSwitch){
-//                if( ((NCLSwitch) n).hasNode()){
-//                    Set<N> snodes = ((NCLSwitch) n).getNodes();
-//                    M m = findMedia(snodes);
-//                    if(m != null)
-//                        return (M) m;
-//                }
-//            }
-//        }
-//
-//        addWarning("Could not find media with id: " + getRefer().getId());
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
         NodeList nl;
@@ -259,13 +200,10 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
 
         // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setDescriptor(); //@todo: usar metodo de busca pelo id do descritor
-
-        // set the refer (optional)
-        att_name = NCLElementAttributes.REFER.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRefer(); //@todo: usar metodo de busca pelo id da media
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
+            setDescriptor(desc);
+        }
 
         // set the instance (optional)
         att_name = NCLElementAttributes.INSTANCE.toString();
@@ -286,6 +224,13 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
                 if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString()))
                     addProperty(createProperty(el));
             }
+        }
+
+        // set the refer (optional)
+        att_name = NCLElementAttributes.REFER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), att_var);
+            setRefer(ref);
         }
     }
 

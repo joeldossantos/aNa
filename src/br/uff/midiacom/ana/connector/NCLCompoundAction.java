@@ -110,28 +110,6 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
     }
 
 
-//    private P parameterReference(String id) {
-//        NCLElementImpl connector = getParent();
-//
-//        while(!(connector instanceof NCLCausalConnector)){
-//            connector = connector.getParent();
-//            if(connector == null){
-//                addWarning("Could not find a parent connector");
-//                return null;
-//            }
-//        }
-//
-//        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
-//        for(P param : params){
-//            if(param.getId().equals(id))
-//                return param;
-//        }
-//
-//        addWarning("Could not find connectorParam in connector with id: " + id);
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException, NCLParsingException {
         String att_name, att_var, ch_name;
         NodeList nl;
@@ -146,7 +124,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType<Ep>(att_var));
+            setDelay(new DoubleParamType<Ep>(att_var, this));
 
         // create the child nodes
         nl = element.getChildNodes();

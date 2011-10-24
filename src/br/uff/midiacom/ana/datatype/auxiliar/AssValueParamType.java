@@ -1,5 +1,8 @@
 package br.uff.midiacom.ana.datatype.auxiliar;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
@@ -7,6 +10,8 @@ import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
 public class AssValueParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<AssValueParamType, AssValueType, P>{
 
+    private NCLElement parent;
+    
 
     public AssValueParamType(AssValueType value) throws XMLException {
         super(value);
@@ -21,12 +26,25 @@ public class AssValueParamType<P extends NCLConnectorParamPrototype> extends Par
     public AssValueParamType(String value) throws XMLException {
         super(value);
     }
+    
+    
+    public AssValueParamType(String value, NCLElement parent) throws XMLException {
+        super(value);
+        
+        this.parent = parent;
+    }
 
 
     @Override
-    protected P createParam(String param) {
-        //@todo: criar método para procurar o parâmetro
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected P createParam(String param) throws XMLException {
+        NCLElement connector = (NCLElement) parent.getParent();
+        while(!(connector instanceof NCLCausalConnector)){
+            connector = (NCLElement) connector.getParent();
+            if(connector == null)
+                throw new NCLParsingException("Could not find a parent connector");
+        }
+        
+        return (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
     }
 
 

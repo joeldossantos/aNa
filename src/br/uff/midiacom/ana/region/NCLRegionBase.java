@@ -152,11 +152,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setDevice(att_var);
 
-        // set the region (optional)
-        att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRegion(); //@todo: tem que usar o método de busca pelo id da regiao
-
         // create the child nodes
         nl = element.getChildNodes();
         for(int i=0; i < nl.getLength(); i++){
@@ -172,6 +167,11 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
                     addRegion(createRegion(el));
             }
         }
+
+        // set the region (optional)
+        att_name = NCLElementAttributes.REGION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setParentRegion(findRegion(att_var));
     }
 
 

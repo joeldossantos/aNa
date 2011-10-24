@@ -86,89 +86,34 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
     }
 
 
-//    private void componentReference() {
-//        //Search for a component node in its parent
-//        if(getParent().getParent() == null){
-//            addWarning("Could not find a parent switch");
-//            return;
-//        }
-//
-//        Set<N> nodes = ((NCLSwitch) getParent().getParent()).getNodes();
-//
-//        for(N node : nodes){
-//            if(node.getId().equals(getComponent().getId())){
-//                setComponent(node);
-//                return;
-//            }
-//        }
-//
-//        addWarning("Could not find node in switch with id: " + getComponent().getId());
-//    }
-
-
-//    private void interfaceReference() {
-//        //Search for the interface inside the node
-//        Set<I> ifaces;
-//        if(getComponent() instanceof NCLMedia){
-//            ifaces = ((NCLMedia) getComponent()).getAreas();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//            ifaces = ((NCLMedia) getComponent()).getProperties();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//        }
-//        else if(getComponent() instanceof NCLContext){
-//            ifaces = ((NCLContext) getComponent()).getPorts();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//            ifaces = ((NCLContext) getComponent()).getProperties();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//        }
-//        else if(getComponent() instanceof NCLSwitch){
-//            ifaces = ((NCLSwitch) getComponent()).getPorts();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//        }
-//
-//        addWarning("Could not find interface with id: " + getInterface().getId());
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
         // set the component (required)
         att_name = NCLElementAttributes.COMPONENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;// setComponent(); //@todo: tem que buscar component pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            P aux;
+            if((aux = (P) getParent()) == null && (aux = (P) aux.getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            En refEl = (En) ((En) aux).findNode(att_var);
+            if(refEl == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            setComponent(refEl);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the interface (optional)
         att_name = NCLElementAttributes.INTERFACE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;// setInterface(); //@todo: tem que buscar interface pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Ei refEl = (Ei) getComponent().findInterface(att_var);
+            if(refEl == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            setInterface(refEl);
+        }
     }
 
 

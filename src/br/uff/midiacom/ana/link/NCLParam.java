@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLParamPrototype;
@@ -88,44 +89,15 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     }
 
 
-//    private void nameReference() {
-//        //Search for the connector parameter inside the connector
-//        NCLElementImpl link = getParent();
-//
-//        while(!(link instanceof NCLLink)){
-//            link = link.getParent();{
-//                if(link == null){
-//                    addWarning("Could not find a parent link");
-//                    return;
-//                }
-//            }
-//        }
-//
-//        if(((NCLLink) link).getXconnector() == null){
-//            addWarning("Could not find a connector");
-//            return;
-//        }
-//
-//        Set<C> params = ((NCLLink) link).getXconnector().getConnectorParams();
-//
-//        for(C param : params){
-//            if(param.getName().equals(getName().getName())){
-//                setName(param);
-//                return;
-//            }
-//        }
-//
-//        addWarning("Could not find connectorParam in connector with name: " + getName().getName());
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
         // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setName(); //@todo: achar parametro do conector pelo nome
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Ec par = (Ec) NCLReferenceManager.getInstance().findParamReference(impl.getDoc(), att_var);
+            setName(par);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 

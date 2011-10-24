@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
@@ -169,49 +170,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-//    private void switchReference() {
-//        //Search for the interface inside the node
-//        NCLElementImpl body = getParent();
-//
-//        while(!(body instanceof NCLBody)){
-//            body = body.getParent();
-//            if(body == null){
-//                addWarning("Could not find a body");
-//                return;
-//            }
-//        }
-//
-//        setRefer(findSwitch(((NCLBody) body).getNodes()));
-//    }
-
-
-//    private S findSwitch(Set<N> nodes) {
-//        for(N n : nodes){
-//            if(n instanceof NCLContext){
-//                if( ((NCLContext) n).hasNode()){
-//                    Set<N> cnodes = ((NCLContext) n).getNodes();
-//                        S s = findSwitch(cnodes);
-//                        if(s != null)
-//                            return (S) s;
-//                }
-//            }
-//            else if(n instanceof NCLSwitch){
-//                if(n.getId().equals(getRefer().getId()))
-//                    return (S) n;
-//                else if( ((NCLSwitch) n).hasNode()){
-//                    Set<N> snodes = ((NCLSwitch) n).getNodes();
-//                    S s = findSwitch(snodes);
-//                    if(s != null)
-//                        return (S) s;
-//                }
-//            }
-//        }
-//
-//        addWarning("Could not find switch with id: " + getRefer().getId());
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
         NodeList nl;
@@ -222,11 +180,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
             setId(att_var);
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-        // set the refer (optional)
-        att_name = NCLElementAttributes.REFER.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRefer(); //@todo: método de busca pelo id
 
         // create the child nodes (except ports and binds)
         nl = element.getChildNodes();
@@ -267,6 +220,13 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
                         setDefaultComponent(nodes.get(att_var));
                 }
             }
+        }
+
+        // set the refer (optional)
+        att_name = NCLElementAttributes.REFER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), att_var);
+            setRefer(ref);
         }
     }
 

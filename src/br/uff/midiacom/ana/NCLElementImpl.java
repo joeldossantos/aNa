@@ -73,6 +73,26 @@ public class NCLElementImpl<T extends NCLIdentifiableElement, P extends NCLEleme
         }
         return false;
     }
+    
+    
+    /**
+     * Walk through the element parents until it finds the document root element.
+     * 
+     * @return 
+     *          element representing the document root.
+     */
+    public NCLDoc getDoc() throws NCLParsingException {
+        NCLElement doc = getParent();
+
+        while(!(doc instanceof NCLDoc)){
+            doc = (NCLElement) doc.getParent();
+            if(doc == null){
+                throw new NCLParsingException("Could not find document root element.");
+            }
+        }
+        
+        return (NCLDoc) doc;
+    }
 
 
     /**

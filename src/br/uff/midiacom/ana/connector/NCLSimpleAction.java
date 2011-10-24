@@ -173,28 +173,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-//    private P parameterReference(String id) {
-//        NCLElementImpl connector = getParent();
-//
-//        while(!(connector instanceof NCLCausalConnector)){
-//            connector = connector.getParent();
-//            if(connector == null){
-//                addWarning("Could not find a parent connector");
-//                return null;
-//            }
-//        }
-//
-//        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
-//        for(P param : params){
-//            if(param.getId().equals(id))
-//                return param;
-//        }
-//
-//        addWarning("Could not find connectorParam in connector with id: " + id);
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException, NCLParsingException {
         String att_name, att_var;
 
@@ -208,7 +186,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
         // set the value (optional)
         att_name = NCLElementAttributes.VALUE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new StringParamType<Ep>(att_var));
+            setValue(new StringParamType<Ep>(att_var, this));
 
         // set the min (optional)
         att_name = NCLElementAttributes.MIN.toString();
@@ -243,27 +221,27 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
         // set the repeatDelay (optional)
         att_name = NCLElementAttributes.REPEATDELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRepeatDelay(new DoubleParamType<Ep>(att_var));
+            setRepeatDelay(new DoubleParamType<Ep>(att_var, this));
 
         // set the repeat (optional)
         att_name = NCLElementAttributes.REPEAT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRepeat(new IntegerParamType<Ep>(att_var));
+            setRepeat(new IntegerParamType<Ep>(att_var, this));
 
         // set the duration (optional)
         att_name = NCLElementAttributes.DURATION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDuration(new DoubleParamType<Ep>(att_var));
+            setDuration(new DoubleParamType<Ep>(att_var, this));
 
         // set the by (optional)
         att_name = NCLElementAttributes.BY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setBy(new ByParamType<Ep>(att_var));
+            setBy(new ByParamType<Ep>(att_var, this));
 
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType<Ep>(att_var));
+            setDelay(new DoubleParamType<Ep>(att_var, this));
     }
 
 

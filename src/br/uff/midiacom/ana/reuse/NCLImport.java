@@ -41,6 +41,8 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -96,49 +98,6 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     }
 
 
-//    private void regionReference() {
-//        //Search for the interface inside the node
-//        NCLElementImpl head = getParent();
-//
-//        while(!(head instanceof NCLHead)){
-//            head = head.getParent();
-//            if(head == null){
-//                addWarning("Could not find a head");
-//                return;
-//            }
-//        }
-//
-//        if(!((NCLHead) head).hasRegionBase()){
-//            addWarning("Could not find a regionBase");
-//        }
-//
-//        R reg = null;
-//        for(NCLRegionBase base : (Set<NCLRegionBase>) ((NCLHead) head).getRegionBases()){
-//            reg = findRegion(base.getRegions());
-//        }
-//        if(reg == null)
-//            addWarning("Could not find region in regionBase with id: " + getRegion().getId());
-//
-//        setRegion(reg);
-//    }
-
-
-//    private R findRegion(Set<R> regions) {
-//        for(R reg : regions){
-//            if(reg.getId().equals(getRegion().getId()))
-//                return (R) reg;
-//            else if(reg.hasRegion())
-//            {
-//                R r = findRegion(reg.getRegions());
-//                if(r != null)
-//                    return (R) r;
-//            }
-//        }
-//
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var;
 
@@ -147,19 +106,21 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setAlias(att_var);
         else
-            throw new XMLException("Could not find " + att_name + " attribute.");
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the documentURI (required)
         att_name = NCLElementAttributes.DOCUMENTURI.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setDocumentURI(new SrcType(att_var));
         else
-            throw new XMLException("Could not find " + att_name + " attribute.");
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRegion(); //@todo: usar metodo de busca pelo id da regiao
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
+            setRegion(reg);
+        }
     }
 
 

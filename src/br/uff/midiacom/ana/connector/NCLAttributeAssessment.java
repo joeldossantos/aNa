@@ -113,28 +113,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     }
 
 
-//    private P parameterReference(String id) {
-//        NCLElementImpl connector = getParent();
-//
-//        while(!(connector instanceof NCLCausalConnector)){
-//            connector = connector.getParent();
-//            if(connector == null){
-//                addWarning("Could not find a parent connector");
-//                return null;
-//            }
-//        }
-//
-//        Set<P> params = ((NCLCausalConnector) connector).getConnectorParams();
-//        for(P param : params){
-//            if(param.getId().equals(id))
-//                return param;
-//        }
-//
-//        addWarning("Could not find connectorParam in connector with id: " + id);
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException, NCLParsingException {
         String att_name, att_var;
 
@@ -155,7 +133,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
         // set the key (optional)
         att_name = NCLElementAttributes.KEY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setKey(new KeyParamType<Ep>(att_var));
+            setKey(new KeyParamType<Ep>(att_var, this));
 
         // set the attributeType (optional)
         att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
@@ -165,7 +143,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
         // set the offset (optional)
         att_name = NCLElementAttributes.OFFSET.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setOffset(new IntegerParamType<Ep>(att_var));
+            setOffset(new IntegerParamType<Ep>(att_var, this));
     }
 
 

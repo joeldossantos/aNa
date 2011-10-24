@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
@@ -127,216 +128,59 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
 
 
-//    private boolean roleReference() {
-//        //Search for the role inside the connector
-//        if(((NCLLink) getParent()).getXconnector() == null){
-//            addWarning("Could not find a connector");
-//            return false;
-//        }
-//
-//        NCLCondition cond = ((NCLLink) getParent()).getXconnector().getCondition();
-//        if(cond != null){
-//            NCLRole r = findRole(cond);
-//            if(r != null){
-//                setRole((R) r);
-//                return true;
-//            }
-//        }
-//
-//        NCLAction act = ((NCLLink) getParent()).getXconnector().getAction();
-//        if(act != null){
-//            NCLRole r = findRole(act);
-//            if(r != null){
-//                setRole((R) r);
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
-
-//    private R findRole(NCLCondition cond) {
-//        if(cond instanceof NCLSimpleCondition){
-//            if(((NCLSimpleCondition) cond).getRole().getName().equals(getRole().getName()))
-//                return (R) ((NCLSimpleCondition) cond).getRole();
-//        }
-//        else if(cond instanceof NCLCompoundCondition){
-//            List<NCLCondition> conditions = ((NCLCompoundCondition)cond).getConditions();
-//            for(NCLCondition c : conditions){
-//                NCLRole r = findRole(c);
-//                if(r != null)
-//                    return (R) r;
-//            }
-//            List<NCLStatement> statements = ((NCLCompoundCondition)cond).getStatements();
-//            for(NCLStatement s : statements){
-//                NCLRole r = findRole(s);
-//                if(r != null)
-//                    return (R) r;
-//            }
-//        }
-//
-//        addWarning("Could not find role in connector with name: " + getRole().getName());
-//        return null;
-//    }
-
-
-//    private R findRole(NCLStatement stat) {
-//        if(stat instanceof NCLAssessmentStatement){
-//            List<NCLAttributeAssessment> attributes = ((NCLAssessmentStatement) stat).getAttributeAssessments();
-//            for(NCLAttributeAssessment at : attributes){
-//                if(at.getRole().getName().equals(getRole().getName()))
-//                    return (R) at.getRole();
-//            }
-//        }
-//        else if(stat instanceof NCLCompoundStatement){
-//            List<NCLStatement> statements = ((NCLCompoundStatement)stat).getStatements();
-//            for(NCLStatement s : statements){
-//                NCLRole r = findRole(s);
-//                if(r != null)
-//                    return (R) r;
-//            }
-//        }
-//
-//        addWarning("Could not find role in connector with name: " + getRole().getName());
-//        return null;
-//    }
-
-
-//    private R findRole(NCLAction act) {
-//        if(act instanceof NCLSimpleAction){
-//            if(((NCLSimpleAction) act).getRole().getName().equals(getRole().getName()))
-//                return (R) ((NCLSimpleAction) act).getRole();
-//        }
-//        else if(act instanceof NCLCompoundAction){
-//            List<NCLAction> actions = ((NCLCompoundAction)act).getActions();
-//            for(NCLAction a : actions){
-//                NCLRole r = findRole(a);
-//                if(r != null)
-//                    return (R) r;
-//            }
-//        }
-//
-//        addWarning("Could not find role in connector with name: " + getRole().getName());
-//        return null;
-//    }
-
-
-//    private void componentReference() {
-//        //Search for a component node in its parent
-//        if(getParent().getParent() == null){
-//            addWarning("Could not find a link parent");
-//            return;
-//        }
-//
-//        Set<N> nodes;
-//        if(getParent().getParent() instanceof NCLBody)
-//            nodes = ((NCLBody) getParent().getParent()).getNodes();
-//        else
-//            nodes = ((NCLContext) getParent().getParent()).getNodes();
-//
-//        for(N node : nodes){
-//            if(node.getId().equals(getComponent().getId())){
-//                setComponent(node);
-//                return;
-//            }
-//        }
-//
-//        addWarning("Could not find role in node with id: " + getComponent().getId());
-//    }
-
-
-//    private void interfaceReference() {
-//        //Search for the interface inside the node
-//        Set<I> ifaces;
-//        if(getComponent() instanceof NCLMedia){
-//            ifaces = ((NCLMedia) getComponent()).getAreas();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//            ifaces = ((NCLMedia) getComponent()).getProperties();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//        }
-//        else if(getComponent() instanceof NCLContext){
-//            ifaces = ((NCLContext) getComponent()).getPorts();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//            ifaces = ((NCLContext) getComponent()).getProperties();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//        }
-//        else if(getComponent() instanceof NCLSwitch){
-//            ifaces = ((NCLSwitch) getComponent()).getPorts();
-//            for(I iface : ifaces){
-//                if(iface.getId().equals(getInterface().getId())){
-//                    setInterface(iface);
-//                    return;
-//                }
-//            }
-//        }
-//
-//        addWarning("Could not find interface with id: " + getInterface().getId());
-//    }
-
-
-//    private void descriptorReference() {
-//        //Search for the descriptor inside the node
-//        Set<D> descriptors = getDescriptors();
-//        for(D desc : descriptors){
-//            if(desc.getId().equals(getDescriptor().getId())){
-//                setDescriptor(desc);
-//                return;
-//            }
-//        }
-//        //@todo: descritores internos a switch de descritores podem ser utilizados?
-//
-//        addWarning("Could not find descriptor in descriptorBase with id: " + getDescriptor().getId());
-//    }
-
-
     public void load(Element element) throws XMLException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
         // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRole(); //@todo: achar role do conector pelo nome
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            P aux;
+            if((aux = (P) getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            NCLCausalConnector conn = (NCLCausalConnector) ((NCLLink) aux).getXconnector();
+            if(conn == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            Er rol = (Er) conn.findRole(att_var);
+            setRole(rol);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the component (required)
         att_name = NCLElementAttributes.COMPONENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;// setComponent(); //@todo: tem que buscar component pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            P aux;
+            if((aux = (P) getParent()) == null && (aux = (P) aux.getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            En refEl = (En) ((En) aux).findNode(att_var);
+            if(refEl == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            setComponent(refEl);
+        }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the interface (optional)
         att_name = NCLElementAttributes.INTERFACE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;// setInterface(); //@todo: tem que buscar interface pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Ei refEl = (Ei) getComponent().findInterface(att_var);
+            if(refEl == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            setInterface(refEl);
+        }
 
         // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setDescriptor(); //@todo: usar metodo de busca pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
+            setDescriptor(desc);
+        }
 
         // create the child nodes
         ch_name = NCLElementAttributes.BINDPARAM.toString();

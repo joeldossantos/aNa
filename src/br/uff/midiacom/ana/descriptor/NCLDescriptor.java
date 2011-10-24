@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
@@ -245,125 +246,6 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     }
 
 
-//    private void regionReference() {
-//        //Search for the interface inside the node
-//        NCLElementImpl head = getParent();
-//
-//        while(!(head instanceof NCLHead)){
-//            head = head.getParent();
-//            if(head == null){
-//                addWarning("Could not find a head");
-//                return;
-//            }
-//        }
-//
-//        if(!((NCLHead) head).hasRegionBase()){
-//            addWarning("Could not find a regionBase");
-//        }
-//
-//        R reg = null;
-//        for(NCLRegionBase base : (Set<NCLRegionBase>) ((NCLHead) head).getRegionBases()){
-//            reg = findRegion(base.getRegions());
-//        }
-//        if(reg == null)
-//            addWarning("Could not find region in regionBase with id: " + getRegion().getId());
-//
-//        setRegion(reg);
-//    }
-
-
-//    private R findRegion(Set<R> regions) {
-//        for(R reg : regions){
-//            if(reg.getId().equals(getRegion().getId()))
-//                return (R) reg;
-//            else if(reg.hasRegion())
-//            {
-//                R r = findRegion(reg.getRegions());
-//                if(r != null)
-//                    return (R) r;
-//            }
-//        }
-//
-//        return null;
-//    }
-
-
-//    private void descriptorReference() {
-//        //Search for the interface inside the node
-//        NCLElementImpl head = getParent();
-//
-//        while(!(head instanceof NCLHead)){
-//            head = head.getParent();
-//            if(head == null){
-//                addWarning("Could not find a head");
-//                return;
-//            }
-//        }
-//
-//        if(((NCLHead) head).getDescriptorBase() == null){
-//            addWarning("Could not find a descriptorBase");
-//            return;
-//        }
-//        if(getMoveUp() != null)
-//            setMoveUp(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveUp()));
-//        if(getMoveDown() != null)
-//            setMoveDown(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveDown()));
-//        if(getMoveLeft() != null)
-//            setMoveLeft(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveLeft()));
-//        if(getMoveRight() != null)
-//            setMoveRight(findDescriptor(((NCLHead) head).getDescriptorBase().getDescriptors(), getMoveRight()));
-//    }
-
-
-//    private D findDescriptor(Set<NCLLayoutDescriptor> descriptors, D move) {
-//        for(NCLLayoutDescriptor descriptor : descriptors){
-//            if(descriptor instanceof NCLDescriptorSwitch){
-//                NCLDescriptor desc = findDescriptor(((NCLDescriptorSwitch)descriptor).getDescriptors(), move);
-//                if(desc != null)
-//                    return (D) desc;
-//            }
-//            else{
-//                int indexa, indexb;
-//                if(((NCLDescriptor) descriptor).getFocusIndex() != null) indexa = ((NCLDescriptor) descriptor).getFocusIndex(); else indexa = 0;
-//                if(move.getFocusIndex() != null) indexb = move.getFocusIndex(); else indexb = 0;
-//                if(indexa == indexb)
-//                    return (D) descriptor;
-//            }
-//        }
-//
-//        addWarning("Could not find descriptor in descriptorBase with focusIndex: " + move.getFocusIndex());
-//        return null;
-//    }
-
-
-//    private T transitionReference(T transition) {
-//        //Search for the interface inside the node
-//        NCLElementImpl head = getParent();
-//
-//        while(!(head instanceof NCLHead)){
-//            head = head.getParent();
-//            if(head == null){
-//                addWarning("Could not find a head");
-//                return null;
-//            }
-//        }
-//
-//        if(((NCLHead) head).getTransitionBase() == null){
-//            addWarning("Could not find a transitionBase");
-//            return null;
-//        }
-//
-//        Set<T> transitions = ((NCLHead) head).getTransitionBase().getTransitions();
-//        for(T trans : transitions){
-//            if(trans.getId().equals(transition.getId()))
-//             return (T) trans;
-//        }
-//
-//        addWarning("Could not find transition in transitionBase with id: " + transition.getId());
-//        return null;
-//    }
-
-
     public void load(Element element) throws XMLException, NCLParsingException{
         String att_name, att_var, ch_name;
         NodeList nl;
@@ -392,23 +274,55 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
 
         // set the moveUp (optional)
         att_name = NCLElementAttributes.MOVEUP.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setMoveUp(); //@todo: metodo de busca pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Integer aux;
+            try{
+                aux = new Integer(att_var);
+            }catch(Exception e){
+                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            }
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveUp(desc);
+        }
 
         // set the moveRight (optional)
         att_name = NCLElementAttributes.MOVERIGHT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setMoveRight(); //@todo: metodo de busca pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Integer aux;
+            try{
+                aux = new Integer(att_var);
+            }catch(Exception e){
+                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            }
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveRight(desc);
+        }
 
         // set the moveLeft (optional)
         att_name = NCLElementAttributes.MOVELEFT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setMoveLeft(); //@todo: metodo de busca pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Integer aux;
+            try{
+                aux = new Integer(att_var);
+            }catch(Exception e){
+                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            }
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveLeft(desc);
+        }
 
         // set the moveDown (optional)
         att_name = NCLElementAttributes.MOVEDOWN.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setMoveDown(); //@todo: metodo de busca pelo id do descritor
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Integer aux;
+            try{
+                aux = new Integer(att_var);
+            }catch(Exception e){
+                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            }
+            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+            setMoveDown(desc);
+        }
 
         // set the focusIndex (optional)
         att_name = NCLElementAttributes.FOCUSINDEX.toString();
@@ -457,18 +371,24 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
 
         // set the transIn (optional)
         att_name = NCLElementAttributes.TRANSIN.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setTransIn(); //@todo: metodo de procura pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
+            setTransIn(tran);
+        }
 
         // set the transOut (optional)
         att_name = NCLElementAttributes.TRANSOUT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setTransOut(); //@todo: metodo de procura pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
+            setTransOut(tran);
+        }
 
         // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            ;//setRegion(); //@todo: metodo de procura pelo id
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
+            setRegion(reg);
+        }
 
 
         // create the descriptor child nodes
