@@ -77,25 +77,22 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
     
     @Override
     public void setImportedDocumentBase(Eib importedDocumentBase) {
-        Eib aux = this.importedDocumentBase;
         super.setImportedDocumentBase(importedDocumentBase);
-        impl.notifyAltered(NCLElementAttributes.IMPORTEDDOCUMENTBASE, aux, importedDocumentBase);
+        impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importedDocumentBase);
     }
 
 
     @Override
     public void setRuleBase(Erl ruleBase) {
-        Erl aux = this.ruleBase;
         super.setRuleBase(ruleBase);
-        impl.notifyAltered(NCLElementAttributes.RULEBASE, aux, ruleBase);
+        impl.notifyInserted(NCLElementSets.RULEBASE, ruleBase);
     }
 
 
     @Override
     public void setTransitionBase(Etb transitionBase) {
-        Etb aux = this.transitionBase;
         super.setTransitionBase(transitionBase);
-        impl.notifyAltered(NCLElementAttributes.TRANSITIONBASE, aux, transitionBase);
+        impl.notifyInserted(NCLElementSets.TRANSITIONBASE, transitionBase);
     }
 
 
@@ -131,17 +128,15 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
 
     @Override
     public void setDescriptorBase(Edb descriptorBase) {
-        Edb aux = this.descriptorBase;
         super.setDescriptorBase(descriptorBase);
-        impl.notifyAltered(NCLElementAttributes.DESCRIPTORBASE, aux, descriptorBase);
+        impl.notifyInserted(NCLElementSets.DESCRIPTORBASE, descriptorBase);
     }
 
     
     @Override
     public void setConnectorBase(Ecb connectorBase) {
-        Ecb aux = this.connectorBase;
         super.setConnectorBase(connectorBase);
-        impl.notifyAltered(NCLElementAttributes.CONNECTORBASE, aux, connectorBase);
+        impl.notifyInserted(NCLElementSets.CONNECTORBASE, connectorBase);
     }
 
 
