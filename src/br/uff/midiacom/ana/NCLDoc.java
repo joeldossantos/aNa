@@ -81,17 +81,15 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
 
     @Override
     public void setHead(Eh head) {
-        Eh aux = this.head;
         super.setHead(head);
-        impl.notifyAltered(NCLElementAttributes.HEAD, aux, head);
+        impl.notifyInserted(NCLElementSets.HEAD, head);
     }
 
 
     @Override
     public void setBody(Eb body) {
-        Eb aux = this.body;
         super.setBody(body);
-        impl.notifyAltered(NCLElementAttributes.BODY, aux, body);
+        impl.notifyInserted(NCLElementSets.BODY, body);
     }
 
 

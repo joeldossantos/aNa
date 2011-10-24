@@ -123,9 +123,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
 
     @Override
     public void setDefaultDescriptor(El defaultDescriptor) {
-        El aux = this.defaultDescriptor;
         super.setDefaultDescriptor(defaultDescriptor);
-        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, defaultDescriptor);
+        impl.notifyInserted(NCLElementSets.DESCRIPTORS, defaultDescriptor);
     }
 
 

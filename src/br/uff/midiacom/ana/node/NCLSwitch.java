@@ -114,9 +114,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
 
     @Override
     public void setDefaultComponent(En defaultComponent) {
-        En aux = this.defaultComponent;
         super.setDefaultComponent(defaultComponent);
-        impl.notifyAltered(NCLElementAttributes.DEFAULTCOMPONENT, aux, defaultComponent);
+        impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, defaultComponent);
     }
 
 

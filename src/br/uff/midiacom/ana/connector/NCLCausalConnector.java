@@ -74,17 +74,15 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     
     @Override
     public void setCondition(Ec condition) {
-        Ec aux = this.condition;
         super.setCondition(condition);
-        impl.notifyAltered(NCLElementAttributes.CONDITION, aux, condition);
+        impl.notifyInserted(NCLElementSets.CONDITIONS, condition);
     }
     
     
     @Override
     public void setAction(Ea action) {
-        Ea aux = this.action;
         super.setAction(action);
-        impl.notifyAltered(NCLElementAttributes.ACTION, aux, action);
+        impl.notifyInserted(NCLElementSets.ACTIONS, action);
     }
     
         
