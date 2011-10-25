@@ -187,17 +187,20 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
         // create the importedDocumentBase
         ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setImportedDocumentBase(createImportedDocumentBase(el));
+        if(el != null)
+            setImportedDocumentBase(createImportedDocumentBase(el));
 
         // create the ruleBase
         ch_name = NCLElementAttributes.RULEBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setRuleBase(createRuleBase(el));
+        if(el != null)
+            setRuleBase(createRuleBase(el));
 
         // create the transitionBase
         ch_name = NCLElementAttributes.TRANSITIONBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setTransitionBase(createTransitionBase(el));
+        if(el != null)
+            setTransitionBase(createTransitionBase(el));
 
         // create the child nodes (regionBases, metas and metadatas)
         NodeList nl = element.getChildNodes();
@@ -221,12 +224,14 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
         // create the descriptorBase
         ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setDescriptorBase(createDescriptorBase(el));
+        if(el != null)
+            setDescriptorBase(createDescriptorBase(el));
 
         // create the connectorBase
         ch_name = NCLElementAttributes.CONNECTORBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setConnectorBase(createConnectorBase(el));
+        if(el != null)
+            setConnectorBase(createConnectorBase(el));
     }
 
 
