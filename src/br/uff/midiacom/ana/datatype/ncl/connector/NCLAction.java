@@ -52,7 +52,7 @@ public interface NCLAction<T extends NCLAction, P extends NCLElement, Ep extends
      * @throws java.lang.IllegalArgumentException
      *          se o inteiro for negativo.
      */
-    public void setDelay(DoubleParamType<Ep> delay);
+    public void setDelay(DoubleParamType<Ep, T> delay);
     
     
     /**
@@ -61,5 +61,5 @@ public interface NCLAction<T extends NCLAction, P extends NCLElement, Ep extends
      * @return
      *          inteiro contendo o atraso, em segundos.
      */
-    public DoubleParamType getDelay();
+    public DoubleParamType<Ep, T> getDelay();
 }

@@ -57,12 +57,6 @@ public class NCLFontWeightDescriptorParam<T extends NCLFontWeightDescriptorParam
     public NCLFontWeightDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLFontWeightDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

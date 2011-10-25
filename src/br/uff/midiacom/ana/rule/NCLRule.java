@@ -61,9 +61,8 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
 
     
-    public NCLRule(Element element) throws XMLException {
+    public NCLRule() throws XMLException {
         super();
-        load(element);
     }
 
 

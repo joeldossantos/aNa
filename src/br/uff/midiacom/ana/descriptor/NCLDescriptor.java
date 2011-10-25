@@ -79,9 +79,8 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     }
     
     
-    public NCLDescriptor(Element element) throws XMLException {
+    public NCLDescriptor() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -247,7 +246,7 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     }
 
 
-    public void load(Element element) throws XMLException, NCLParsingException{
+    public void load(Element element) throws XMLException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
@@ -405,7 +404,9 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addDescriptorParam(createParamByType(el));
+            Ep inst = createParamByType(el);
+            addDescriptorParam(inst);
+            inst.load(el);
         }
     }
 
@@ -451,61 +452,61 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
 
         switch(att){
             case TOP:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case LEFT:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case BOTTOM:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case RIGHT:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case WIDTH:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case HEIGHT:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case LOCATION:
-                return createStringDescriptorParam(element);
+                return createStringDescriptorParam();
             case SIZE:
-                return createStringDescriptorParam(element);
+                return createStringDescriptorParam();
             case BOUNDS:
-                return createStringDescriptorParam(element);
+                return createStringDescriptorParam();
             case BACKGROUND:
-                return createColorDescriptorParam(element);
+                return createColorDescriptorParam();
             case VISIBLE:
-                return createBooleanDescriptorParam(element);
+                return createBooleanDescriptorParam();
             case TRANSPARENCY:
-                return createPercentDescriptorParam(element);
+                return createPercentDescriptorParam();
             case FIT:
-                return createFitDescriptorParam(element);
+                return createFitDescriptorParam();
             case SCROLL:
-                return createScrollDescriptorParam(element);
+                return createScrollDescriptorParam();
             case STYLE:
-                return createStringDescriptorParam(element);
+                return createStringDescriptorParam();
             case SOUND_LEVEL:
-                return createPercentDescriptorParam(element);
+                return createPercentDescriptorParam();
             case BALANCE_LEVEL:
-                return createPercentDescriptorParam(element);
+                return createPercentDescriptorParam();
             case TREBLE_LEVEL:
-                return createPercentDescriptorParam(element);
+                return createPercentDescriptorParam();
             case BASS_LEVEL:
-                return createPercentDescriptorParam(element);
+                return createPercentDescriptorParam();
             case ZINDEX:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case FONT_FAMILY:
-                return createStringDescriptorParam(element);
+                return createStringDescriptorParam();
             case FONT_SIZE:
-                return createDoubleDescriptorParam(element);
+                return createDoubleDescriptorParam();
             case FONT_VARIANT:
-                return createFontVariantDescriptorParam(element);
+                return createFontVariantDescriptorParam();
             case FONT_WEIGHT:
-                return createFontWeightDescriptorParam(element);
+                return createFontWeightDescriptorParam();
             case FONT_COLOR:
-                return createColorDescriptorParam(element);
+                return createColorDescriptorParam();
             case REUSE_PLAYER:
-                return createBooleanDescriptorParam(element);
+                return createBooleanDescriptorParam();
             case PLAYER_LIFE:
-                return createPlayerLifeDescriptorParam(element);
+                return createPlayerLifeDescriptorParam();
             default:
-                return createStringDescriptorParam(element);
+                return createStringDescriptorParam();
         }
     }
     
@@ -517,53 +518,53 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>descriptorParam</i>.
      */
-    protected Ep createStringDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLStringDescriptorParam(element);
+    protected Ep createStringDescriptorParam() throws XMLException {
+        return (Ep) new NCLStringDescriptorParam();
     }
 
 
-    protected Ep createDoubleDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLDoubleDescriptorParam(element);
+    protected Ep createDoubleDescriptorParam() throws XMLException {
+        return (Ep) new NCLDoubleDescriptorParam();
     }
 
 
-    protected Ep createBooleanDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLBooleanDescriptorParam(element);
+    protected Ep createBooleanDescriptorParam() throws XMLException {
+        return (Ep) new NCLBooleanDescriptorParam();
     }
 
 
-    protected Ep createColorDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLColorDescriptorParam(element);
+    protected Ep createColorDescriptorParam() throws XMLException {
+        return (Ep) new NCLColorDescriptorParam();
     }
 
 
-    protected Ep createPercentDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLPercentDescriptorParam(element);
+    protected Ep createPercentDescriptorParam() throws XMLException {
+        return (Ep) new NCLPercentDescriptorParam();
     }
 
 
-    protected Ep createFitDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLFitDescriptorParam(element);
+    protected Ep createFitDescriptorParam() throws XMLException {
+        return (Ep) new NCLFitDescriptorParam();
     }
 
 
-    protected Ep createScrollDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLScrollDescriptorParam(element);
+    protected Ep createScrollDescriptorParam() throws XMLException {
+        return (Ep) new NCLScrollDescriptorParam();
     }
 
 
-    protected Ep createFontVariantDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLFontVariantDescriptorParam(element);
+    protected Ep createFontVariantDescriptorParam() throws XMLException {
+        return (Ep) new NCLFontVariantDescriptorParam();
     }
 
 
-    protected Ep createFontWeightDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLFontWeightDescriptorParam(element);
+    protected Ep createFontWeightDescriptorParam() throws XMLException {
+        return (Ep) new NCLFontWeightDescriptorParam();
     }
 
 
-    protected Ep createPlayerLifeDescriptorParam(Element element) throws XMLException {
-        return (Ep) new NCLPlayerLifeDescriptorParam(element);
+    protected Ep createPlayerLifeDescriptorParam() throws XMLException {
+        return (Ep) new NCLPlayerLifeDescriptorParam();
     }
     
     

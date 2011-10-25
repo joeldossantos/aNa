@@ -43,10 +43,13 @@ import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.ana.datatype.ncl.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
+import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 
 public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElementImpl, Eh extends NCLHead, Eb extends NCLBody>
@@ -102,13 +105,17 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
      * @throws NCLParsingException
      *          if an error occur while parsing the document.
      */
-    public void loadXML(File xmlFile) throws NCLParsingException {
+    public void loadXML(File xmlFile) throws XMLException {
         try{
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder parser = factory.newDocumentBuilder();
             Document doc = parser.parse(xmlFile);
             load(doc.getDocumentElement());
-        }catch(Exception e){
+        }catch(SAXException e){
+            throw new NCLParsingException(e.fillInStackTrace());
+        }catch(ParserConfigurationException e){
+            throw new NCLParsingException(e.fillInStackTrace());
+        }catch(IOException e){
             throw new NCLParsingException(e.fillInStackTrace());
         }
     }
@@ -136,12 +143,20 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
         // create the head
         ch_name = NCLElementAttributes.HEAD.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setHead(createHead(el));
+        if(el != null){
+            Eh inst = createHead();
+            setHead(inst);
+            inst.load(el);
+        }
 
         // create the body
         ch_name = NCLElementAttributes.BODY.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        setBody(createBody(el));
+        if(el != null){
+            Eb inst = createBody();
+            setBody(inst);
+            inst.load(el);
+        }
         
         // fix the references needed
         NCLReferenceManager.getInstance().fixReferences();
@@ -165,8 +180,8 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
      * @return
      *          element representing the child <i>head</i>.
      */
-    protected Eh createHead(Element element) throws XMLException {
-        return (Eh) new NCLHead(element);
+    protected Eh createHead() throws XMLException {
+        return (Eh) new NCLHead();
     }
 
 
@@ -177,7 +192,7 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
      * @return
      *          element representing the child <i>body</i>.
      */
-    protected Eb createBody(Element element) throws XMLException {
-        return (Eb) new NCLBody(element);
+    protected Eb createBody() throws XMLException {
+        return (Eb) new NCLBody();
     }
 }

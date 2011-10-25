@@ -60,12 +60,6 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
     public NCLCompoundAction() throws XMLException {
         super();
     }
-    
-    
-    public NCLCompoundAction(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -103,7 +97,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
 
 
     @Override
-    public void setDelay(DoubleParamType delay) {
+    public void setDelay(DoubleParamType<Ep, Ea> delay) {
         DoubleParamType aux = this.delay;
         super.setDelay(delay);
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
@@ -124,7 +118,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType<Ep>(att_var, this));
+            setDelay(new DoubleParamType(att_var, this));
 
         // create the child nodes
         nl = element.getChildNodes();
@@ -134,11 +128,17 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
                 Element el = (Element) nl.item(i);
 
                 //create the simpleAction
-                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString()))
-                    addAction(createSimpleAction(el));
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
+                    Ea inst = createSimpleAction();
+                    addAction(inst);
+                    inst.load(el);
+                }
                 // create the compoundAction
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString()))
-                    addAction(createCompoundAction(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
+                    Ea inst = createCompoundAction();
+                    addAction(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -174,8 +174,8 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
      * @return
      *          element representing the child <i>simpleAction</i>.
      */
-    protected Ea createSimpleAction(Element element) throws XMLException {
-        return (Ea) new NCLSimpleAction(element);
+    protected Ea createSimpleAction() throws XMLException {
+        return (Ea) new NCLSimpleAction();
     }
 
 
@@ -186,7 +186,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction, P extends NCLElement
      * @return
      *          element representing the child <i>compoundAction</i>.
      */
-    protected Ea createCompoundAction(Element element) throws XMLException {
-        return (Ea) new NCLCompoundAction(element);
+    protected Ea createCompoundAction() throws XMLException {
+        return (Ea) new NCLCompoundAction();
     }
 }

@@ -58,12 +58,6 @@ public class NCLScrollDescriptorParam<T extends NCLScrollDescriptorParam, P exte
         super();
     }
     
-    
-    public NCLScrollDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-    
 
     @Override
     protected void createImpl() throws XMLException {

@@ -96,7 +96,8 @@ public class NCLRegionTest {
         String expResult = "<region id='rgTV' left='10.0%' right='20.0%' top='10.0%' bottom='20.0%' height='80.0%' width='80.0%' zIndex='1' title='Titulo de Teste'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRegion instance = new NCLRegion(loader.getElement());
+        NCLRegion instance = new NCLRegion();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -107,7 +108,8 @@ public class NCLRegionTest {
         String expResult = "<region id='rgTV' left='10.0' right='20.0' top='10.0' bottom='20.0' height='80.0' width='80.0' zIndex='1' title='Titulo de Teste'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRegion instance = new NCLRegion(loader.getElement());
+        NCLRegion instance = new NCLRegion();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -118,7 +120,8 @@ public class NCLRegionTest {
         String expResult = "<region id='rgTV'>\n\t<region id='rg1'/>\n</region>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRegion instance = new NCLRegion(loader.getElement());
+        NCLRegion instance = new NCLRegion();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

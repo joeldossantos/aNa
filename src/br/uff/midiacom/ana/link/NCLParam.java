@@ -61,12 +61,6 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     }
 
 
-    public NCLParam(NCLParamInstance paramType, Element element) throws XMLException {
-        super(paramType);
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
@@ -95,7 +89,16 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
         // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ec par = (Ec) NCLReferenceManager.getInstance().findParamReference(impl.getDoc(), att_var);
+            P aux;
+            if((aux = (P) getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            if(paramType.equals(NCLParamInstance.BINDPARAM) && (aux = (P) aux.getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            Ec par = (Ec) ((NCLLink) aux).getXconnector().getConnectorParams().get(att_var);
+            if(par == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
             setName(par);
         }
         else

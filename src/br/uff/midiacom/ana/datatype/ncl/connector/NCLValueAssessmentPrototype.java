@@ -47,7 +47,7 @@ import br.uff.midiacom.xml.XMLException;
 public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLConnectorParamPrototype>
         extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
 
-    protected AssValueParamType<Ep> value;
+    protected AssValueParamType<Ep, T> value;
     
 
     /**
@@ -66,7 +66,7 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public NCLValueAssessmentPrototype(AssValueParamType<Ep> value) throws XMLException {
+    public NCLValueAssessmentPrototype(AssValueParamType<Ep, T> value) throws XMLException {
         super();
         setValue(value);
     }
@@ -80,7 +80,7 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(AssValueParamType<Ep> value) {
+    public void setValue(AssValueParamType<Ep, T> value) {
         this.value = value;
     }
     
@@ -92,7 +92,7 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
      * @return
      *          String contendo o valor da assertiva.
      */
-    public AssValueParamType<Ep> getValue() {
+    public AssValueParamType<Ep, T> getValue() {
         return value;
     }
     

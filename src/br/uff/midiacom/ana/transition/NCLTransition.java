@@ -62,9 +62,8 @@ public class NCLTransition<T extends NCLTransition, P extends NCLElement, I exte
     }
 
 
-    public NCLTransition(Element element) throws XMLException {
+    public NCLTransition() throws XMLException {
         super();
-        load(element);
     }
 
 

@@ -74,7 +74,8 @@ public class NCLBodyTest {
         String expResult = "<body id='bod'>\n\t<meta name='autor' content='joel'/>\n\t<port id='pInicio' component='video'/>\n\t<media id='video'/>\n</body>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLBody instance = new NCLBody(loader.getElement());
+        NCLBody instance = new NCLBody();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

@@ -63,12 +63,6 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLHead(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
@@ -187,20 +181,29 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
         // create the importedDocumentBase
         ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null)
-            setImportedDocumentBase(createImportedDocumentBase(el));
+        if(el != null){
+            Eib inst = createImportedDocumentBase();
+            setImportedDocumentBase(inst);
+            inst.load(el);
+        }
 
         // create the ruleBase
         ch_name = NCLElementAttributes.RULEBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null)
-            setRuleBase(createRuleBase(el));
+        if(el != null){
+            Erl inst = createRuleBase();
+            setRuleBase(inst);
+            inst.load(el);
+        }
 
         // create the transitionBase
         ch_name = NCLElementAttributes.TRANSITIONBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null)
-            setTransitionBase(createTransitionBase(el));
+        if(el != null){
+            Etb inst = createTransitionBase();
+            setTransitionBase(inst);
+            inst.load(el);
+        }
 
         // create the child nodes (regionBases, metas and metadatas)
         NodeList nl = element.getChildNodes();
@@ -210,28 +213,43 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
                 el = (Element) nl.item(i);
 
                 // create the regionBase
-                if(el.getTagName().equals(NCLElementAttributes.REGIONBASE.toString()))
-                    addRegionBase(createRegionBase(el));
+                if(el.getTagName().equals(NCLElementAttributes.REGIONBASE.toString())){
+                    Erb inst = createRegionBase();
+                    addRegionBase(inst);
+                    inst.load(el);
+                }
                 // create the meta
-                if(el.getTagName().equals(NCLElementAttributes.META.toString()))
-                    addMeta(createMeta(el));
+                if(el.getTagName().equals(NCLElementAttributes.META.toString())){
+                    Em inst = createMeta();
+                    addMeta(inst);
+                    inst.load(el);
+                }
                 // create the metadata
-                if(el.getTagName().equals(NCLElementAttributes.METADATA.toString()))
-                    addMetadata(createMetadata(el));
+                if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
+                    Emt inst = createMetadata();
+                    addMetadata(inst);
+                    inst.load(el);
+                }
             }
         }
 
         // create the descriptorBase
         ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null)
-            setDescriptorBase(createDescriptorBase(el));
+        if(el != null){
+            Edb inst = createDescriptorBase();
+            setDescriptorBase(inst);
+            inst.load(el);
+        }
 
         // create the connectorBase
         ch_name = NCLElementAttributes.CONNECTORBASE.toString();
         el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null)
-            setConnectorBase(createConnectorBase(el));
+        if(el != null){
+            Ecb inst = createConnectorBase();
+            setConnectorBase(inst);
+            inst.load(el);
+        }
     }
 
 
@@ -252,8 +270,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>importedDocumentBase</i>.
      */
-    protected Eib createImportedDocumentBase(Element element) throws XMLException {
-        return (Eib) new NCLImportedDocumentBase(element);
+    protected Eib createImportedDocumentBase() throws XMLException {
+        return (Eib) new NCLImportedDocumentBase();
     }
 
 
@@ -264,8 +282,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>ruleBase</i>.
      */
-    protected Erl createRuleBase(Element element) throws XMLException {
-        return (Erl) new NCLRuleBase(element);
+    protected Erl createRuleBase() throws XMLException {
+        return (Erl) new NCLRuleBase();
     }
 
 
@@ -276,8 +294,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>transitionBase</i>.
      */
-    protected Etb createTransitionBase(Element element) throws XMLException {
-        return (Etb) new NCLTransitionBase(element);
+    protected Etb createTransitionBase() throws XMLException {
+        return (Etb) new NCLTransitionBase();
     }
 
 
@@ -288,8 +306,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>regionBase</i>.
      */
-    protected Erb createRegionBase(Element element) throws XMLException {
-        return (Erb) new NCLRegionBase(element);
+    protected Erb createRegionBase() throws XMLException {
+        return (Erb) new NCLRegionBase();
     }
 
 
@@ -300,8 +318,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>descriptorBase</i>.
      */
-    protected Edb createDescriptorBase(Element element) throws XMLException {
-        return (Edb) new NCLDescriptorBase(element);
+    protected Edb createDescriptorBase() throws XMLException {
+        return (Edb) new NCLDescriptorBase();
     }
 
 
@@ -312,8 +330,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>connectorBase</i>.
      */
-    protected Ecb createConnectorBase(Element element) throws XMLException {
-        return (Ecb) new NCLConnectorBase(element);
+    protected Ecb createConnectorBase() throws XMLException {
+        return (Ecb) new NCLConnectorBase();
     }
 
 
@@ -324,8 +342,8 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>meta</i>.
      */
-    protected Em createMeta(Element element) throws XMLException {
-        return (Em) new NCLMeta(element);
+    protected Em createMeta() throws XMLException {
+        return (Em) new NCLMeta();
     }
 
 
@@ -336,7 +354,7 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>metadata</i>.
      */
-    protected Emt createMetadata(Element element) throws XMLException {
-        return (Emt) new NCLMetadata(element);
+    protected Emt createMetadata() throws XMLException {
+        return (Emt) new NCLMetadata();
     }
 }

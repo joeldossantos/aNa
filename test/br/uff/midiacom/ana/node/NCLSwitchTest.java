@@ -67,7 +67,8 @@ public class NCLSwitchTest {
         String expResult = "<switch id='escolhe'>\n\t<bindRule rule='rpt' constituent='m1'/>\n\t<defaultComponent component='m1'/>\n\t<media id='m1'/>\n\t<switch id='s1'/>\n</switch>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLSwitch instance = new NCLSwitch(loader.getElement());
+        NCLSwitch instance = new NCLSwitch();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

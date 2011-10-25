@@ -57,12 +57,6 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
     public NCLDescriptorBindRule() throws XMLException {
         super();
     }
-    
-    
-    public NCLDescriptorBindRule(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

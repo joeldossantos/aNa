@@ -52,14 +52,14 @@ import br.uff.midiacom.xml.datatype.number.MaxType;
 public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
         extends XMLElementPrototype<Ec, P, I> implements NCLCondition<Ec, P, Ep> {
 
-    protected KeyParamType<Ep> key;
+    protected KeyParamType<Ep, T> key;
     protected Integer min;
     protected MaxType max;
     protected NCLConditionOperator qualifier;
     protected NCLEventType eventType;
     protected NCLEventTransition transition;
     protected Er role;
-    protected DoubleParamType<Ep> delay;
+    protected DoubleParamType<Ep, Ec> delay;
     
 
     /**
@@ -176,7 +176,7 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      * @param key
      *          elemento representando a tecla da condição.
      */
-    public void setKey(KeyParamType<Ep> key) {
+    public void setKey(KeyParamType<Ep, T> key) {
         this.key = key;
     }
 
@@ -187,7 +187,7 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      * @return
      *          elemento representando a tecla da condição.
      */
-    public KeyParamType<Ep> getKey() {
+    public KeyParamType<Ep, T> getKey() {
         return key;
     }
 
@@ -236,12 +236,12 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
     }
 
 
-    public void setDelay(DoubleParamType<Ep> delay) {
+    public void setDelay(DoubleParamType<Ep, Ec> delay) {
         this.delay = delay;
     }
 
 
-    public DoubleParamType<Ep> getDelay() {
+    public DoubleParamType<Ep, Ec> getDelay() {
         return delay;
     }
 

@@ -77,7 +77,8 @@ public class NCLTransitionTest {
                 " direction='forward' fadeColor='black' horRepeat='4' vertRepeat='6' borderWidth='20' borderColor='blue'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLTransition instance = new NCLTransition(loader.getElement());
+        NCLTransition instance = new NCLTransition();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

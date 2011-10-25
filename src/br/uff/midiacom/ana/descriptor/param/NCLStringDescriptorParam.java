@@ -56,12 +56,6 @@ public class NCLStringDescriptorParam<T extends NCLStringDescriptorParam, P exte
     public NCLStringDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLStringDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

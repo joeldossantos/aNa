@@ -56,11 +56,10 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
     public NCLConnectorParam(String name) throws XMLException {
         super(name);
     }
-    
-    
-    public NCLConnectorParam(Element element) throws XMLException {
+
+
+    public NCLConnectorParam() throws XMLException {
         super();
-        load(element);
     }
 
 

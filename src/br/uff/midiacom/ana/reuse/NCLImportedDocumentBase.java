@@ -59,12 +59,6 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
     }
 
 
-    public NCLImportedDocumentBase(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
@@ -105,7 +99,9 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addImportNCL(createImportNCL(el));
+            Ei inst = createImportNCL();
+            addImportNCL(inst);
+            inst.load(el);
         }
     }
 
@@ -127,7 +123,7 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
      * @return
      *          element representing the child <i>importNCL</i>.
      */
-    protected Ei createImportNCL(Element element) throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.NCL, element);
+    protected Ei createImportNCL() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.NCL);
     }
 }

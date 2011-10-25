@@ -60,9 +60,8 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
-    public NCLCompositeRule(Element element) throws XMLException {
+    public NCLCompositeRule() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -136,11 +135,17 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
                 Element el = (Element) nl.item(i);
 
                 //create the rules
-                if(el.getTagName().equals(NCLElementAttributes.RULE.toString()))
-                    addRule(createRule(el));
+                if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
+                    T inst = createRule(); 
+                    addRule(inst);
+                    inst.load(el);
+                }
                 // create the compositeRules
-                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString()))
-                    addRule(createCompositeRule(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
+                    T inst = createCompositeRule();
+                    addRule(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -179,8 +184,8 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
      * @return
      *          element representing the child <i>compositeRule</i>.
      */
-    protected T createCompositeRule(Element element) throws XMLException {
-        return (T) new NCLCompositeRule(element);
+    protected T createCompositeRule() throws XMLException {
+        return (T) new NCLCompositeRule();
     }
 
 
@@ -191,7 +196,7 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
      * @return
      *          element representing the child <i>rule</i>.
      */
-    protected T createRule(Element element) throws XMLException {
-        return (T) new NCLRule(element);
+    protected T createRule() throws XMLException {
+        return (T) new NCLRule();
     }
 }

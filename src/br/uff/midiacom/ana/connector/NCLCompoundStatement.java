@@ -59,12 +59,6 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
     public NCLCompoundStatement() throws XMLException {
         super();
     }
-    
-    
-    public NCLCompoundStatement(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -133,11 +127,17 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
                 Element el = (Element) nl.item(i);
 
                 //create the assessmentStatement
-                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString()))
-                    addStatement(createAssessmentStatement(el));
+                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
+                    Es inst = createAssessmentStatement();
+                    addStatement(inst);
+                    inst.load(el);
+                }
                 // create the compoundStatement
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString()))
-                    addStatement(createCompoundStatement(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
+                    Es inst = createCompoundStatement();
+                    addStatement(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -173,8 +173,8 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      * @return
      *          element representing the child <i>assessmentStatement</i>.
      */
-    protected Es createAssessmentStatement(Element element) throws XMLException {
-        return (Es) new NCLAssessmentStatement(element);
+    protected Es createAssessmentStatement() throws XMLException {
+        return (Es) new NCLAssessmentStatement();
     }
 
 
@@ -185,7 +185,7 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
      * @return
      *          element representing the child <i>compoundStatement</i>.
      */
-    protected Es createCompoundStatement(Element element) throws XMLException {
-        return (Es) new NCLCompoundStatement(element);
+    protected Es createCompoundStatement() throws XMLException {
+        return (Es) new NCLCompoundStatement();
     }
 }

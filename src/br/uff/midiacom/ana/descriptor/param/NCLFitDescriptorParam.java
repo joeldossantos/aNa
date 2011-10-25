@@ -57,12 +57,6 @@ public class NCLFitDescriptorParam<T extends NCLFitDescriptorParam, P extends NC
     public NCLFitDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLFitDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

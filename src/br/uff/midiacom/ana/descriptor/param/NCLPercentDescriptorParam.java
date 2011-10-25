@@ -56,12 +56,6 @@ public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam, P ex
     public NCLPercentDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLPercentDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

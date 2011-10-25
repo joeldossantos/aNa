@@ -60,9 +60,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     }
     
     
-    public NCLCausalConnector(Element element) throws XMLException {
+    public NCLCausalConnector() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -132,7 +131,9 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addConnectorParam(createConnectorParam(el));
+            Ep inst = createConnectorParam();
+            addConnectorParam(inst);
+            inst.load(el);
         }
         
         // create the child nodes
@@ -143,17 +144,29 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
                 Element el = (Element) nl.item(i);
 
                 //create the simpleCondition
-                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString()))
-                    setCondition(createSimpleCondition(el));
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
+                    Ec inst = createSimpleCondition();
+                    setCondition(inst);
+                    inst.load(el);
+                }
                 // create the compoundCondition
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString()))
-                    setCondition(createCompoundCondition(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
+                    Ec inst = createCompoundCondition();
+                    setCondition(inst);
+                    inst.load(el);
+                }
                 //create the simpleAction
-                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString()))
-                    setAction(createSimpleAction(el));
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
+                    Ea inst = createSimpleAction();
+                    setAction(inst);
+                    inst.load(el);
+                }
                 // create the compoundAction
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString()))
-                    setAction(createCompoundAction(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
+                    Ea inst = createCompoundAction();
+                    setAction(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -199,8 +212,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>connectorParam</i>.
      */
-    protected Ep createConnectorParam(Element element) throws XMLException {
-        return (Ep) new NCLConnectorParam(element);
+    protected Ep createConnectorParam() throws XMLException {
+        return (Ep) new NCLConnectorParam();
     }
 
 
@@ -211,8 +224,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>simpleCondition</i>.
      */
-    protected Ec createSimpleCondition(Element element) throws XMLException {
-        return (Ec) new NCLSimpleCondition(element);
+    protected Ec createSimpleCondition() throws XMLException {
+        return (Ec) new NCLSimpleCondition();
     }
 
 
@@ -223,7 +236,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>compoundCondition</i>.
      */
-    protected Ec createCompoundCondition(Element element) throws XMLException {
+    protected Ec createCompoundCondition() throws XMLException {
         return (Ec) new NCLCompoundCondition();
     }
 
@@ -235,8 +248,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>simpleAction</i>.
      */
-    protected Ea createSimpleAction(Element element) throws XMLException {
-        return (Ea) new NCLSimpleAction(element);
+    protected Ea createSimpleAction() throws XMLException {
+        return (Ea) new NCLSimpleAction();
     }
 
 
@@ -247,7 +260,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
      * @return
      *          element representing the child <i>compoundAction</i>.
      */
-    protected Ea createCompoundAction(Element element) throws XMLException {
-        return (Ea) new NCLCompoundAction(element);
+    protected Ea createCompoundAction() throws XMLException {
+        return (Ea) new NCLCompoundAction();
     }
 }

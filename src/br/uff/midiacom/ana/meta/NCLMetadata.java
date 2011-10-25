@@ -57,12 +57,6 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
     }
 
 
-    public NCLMetadata(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);

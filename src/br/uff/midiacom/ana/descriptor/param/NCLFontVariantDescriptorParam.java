@@ -57,12 +57,6 @@ public class NCLFontVariantDescriptorParam<T extends NCLFontVariantDescriptorPar
     public NCLFontVariantDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLFontVariantDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

@@ -61,12 +61,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
     }
 
 
-    public NCLTransitionBase(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
@@ -140,11 +134,17 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
                 Element el = (Element) nl.item(i);
 
                 //create the imports
-                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
-                    addImportBase(createImportBase(el));
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+                    Ei inst = createImportBase();
+                    addImportBase(inst);
+                    inst.load(el);
+                }
                 // create the transitions
-                if(el.getTagName().equals(NCLElementAttributes.TRANSITION.toString()))
-                    addTransition(createTransition(el));
+                if(el.getTagName().equals(NCLElementAttributes.TRANSITION.toString())){
+                    Et inst = createTransition();
+                    addTransition(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -167,8 +167,8 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected Ei createImportBase(Element element) throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE, element);
+    protected Ei createImportBase() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -179,7 +179,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
      * @return
      *          element representing the child <i>transition</i>.
      */
-    protected Et createTransition(Element element) throws XMLException {
-        return (Et) new NCLTransition(element);
+    protected Et createTransition() throws XMLException {
+        return (Et) new NCLTransition();
     }
 }

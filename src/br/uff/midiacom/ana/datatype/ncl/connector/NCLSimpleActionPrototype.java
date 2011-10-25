@@ -54,18 +54,18 @@ import br.uff.midiacom.xml.datatype.number.MaxType;
 public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAction, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
         extends XMLElementPrototype<Ea, P, I> implements NCLAction<Ea, P, Ep> {
 
-    protected StringParamType<Ep> value;
+    protected StringParamType<Ep, T> value;
     protected Integer min;
     protected MaxType max;
     protected NCLActionOperator qualifier;
     protected NCLEventType eventType;
     protected NCLEventAction actionType;
-    protected IntegerParamType<Ep> repeat;
-    protected DoubleParamType<Ep> repeatDelay;
-    protected DoubleParamType<Ep> duration;
-    protected ByParamType<Ep> by;
+    protected IntegerParamType<Ep, T> repeat;
+    protected DoubleParamType<Ep, T> repeatDelay;
+    protected DoubleParamType<Ep, T> duration;
+    protected ByParamType<Ep, T> by;
     protected Er role;
-    protected DoubleParamType<Ep> delay;
+    protected DoubleParamType<Ep, Ea> delay;
 
 
     /**
@@ -84,7 +84,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(StringParamType<Ep> value) {
+    public void setValue(StringParamType<Ep, T> value) {
         this.value = value;
     }
     
@@ -95,7 +95,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @return
      *          String representando o valor de atribuição.
      */
-    public StringParamType<Ep> getValue() {
+    public StringParamType<Ep, T> getValue() {
         return value;
     }
     
@@ -250,7 +250,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @param repeat
      *          inteiro representando o número de repetições.
      */
-    public void setRepeat(IntegerParamType<Ep> repeat) {
+    public void setRepeat(IntegerParamType<Ep, T> repeat) {
         this.repeat = repeat;
     }
 
@@ -261,7 +261,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @return
      *          inteiro representando o número de repetições.
      */
-    public IntegerParamType<Ep> getRepeat() {
+    public IntegerParamType<Ep, T> getRepeat() {
         return repeat;
     }
 
@@ -272,7 +272,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @param repeatDelay
      *          inteiro representando o delay entre repetições.
      */
-    public void setRepeatDelay(DoubleParamType<Ep> repeatDelay) {
+    public void setRepeatDelay(DoubleParamType<Ep, T> repeatDelay) {
         this.repeatDelay = repeatDelay;
     }
 
@@ -283,7 +283,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @return
      *          inteiro representando o delay entre repetições.
      */
-    public DoubleParamType<Ep> getRepeatDelay() {
+    public DoubleParamType<Ep, T> getRepeatDelay() {
         return repeatDelay;
     }
 
@@ -294,7 +294,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @param duration
      *          inteiro representando a duração da atribuição.
      */
-    public void setDuration(DoubleParamType<Ep> duration) {
+    public void setDuration(DoubleParamType<Ep, T> duration) {
         this.duration = duration;
     }
 
@@ -305,7 +305,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      * @return
      *          inteiro representando a duração da atribuição.
      */
-    public DoubleParamType<Ep> getDuration() {
+    public DoubleParamType<Ep, T> getDuration() {
         return duration;
     }
 
@@ -317,7 +317,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          inteiro positivo representando o passo da atribuição ou negativo
      *          caso o passo seja definido como a String "indefinite".
      */
-    public void setBy(ByParamType<Ep> by) {
+    public void setBy(ByParamType<Ep, T> by) {
         this.by = by;
     }
 
@@ -329,17 +329,17 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          inteiro representando o passo da atribuição. Retorna -1 se o
      *          o passo for "indefinite".
      */
-    public ByParamType<Ep> getBy() {
+    public ByParamType<Ep, T> getBy() {
         return by;
     }
 
 
-    public void setDelay(DoubleParamType<Ep> delay) {
+    public void setDelay(DoubleParamType<Ep, Ea> delay) {
         this.delay = delay;
     }
 
 
-    public DoubleParamType<Ep> getDelay() {
+    public DoubleParamType<Ep, Ea> getDelay() {
         return delay;
     }
     

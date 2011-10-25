@@ -60,7 +60,8 @@ public class NCLMetadataTest {
         String expResult = "<metadata>\n<rdf:RDF></rdf:RDF>\n</metadata>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLMetadata instance = new NCLMetadata(loader.getElement());
+        NCLMetadata instance = new NCLMetadata();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

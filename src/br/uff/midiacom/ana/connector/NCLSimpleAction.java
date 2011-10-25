@@ -65,12 +65,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
     
     
-    public NCLSimpleAction(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-    
-    
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
@@ -78,7 +72,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
 
     @Override
-    public void setValue(StringParamType value) {
+    public void setValue(StringParamType<Ep, T> value) {
         StringParamType aux = this.value;
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
@@ -134,7 +128,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
 
     @Override
-    public void setRepeat(IntegerParamType repeat) {
+    public void setRepeat(IntegerParamType<Ep, T> repeat) {
         IntegerParamType aux = this.repeat;
         super.setRepeat(repeat);
         impl.notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
@@ -142,7 +136,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
 
     @Override
-    public void setRepeatDelay(DoubleParamType repeatDelay) {
+    public void setRepeatDelay(DoubleParamType<Ep, T> repeatDelay) {
         DoubleParamType aux = this.repeatDelay;
         super.setRepeatDelay(repeatDelay);
         impl.notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
@@ -150,7 +144,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
 
     @Override
-    public void setDuration(DoubleParamType duration) {
+    public void setDuration(DoubleParamType<Ep, T> duration) {
         DoubleParamType aux = this.duration;
         super.setDuration(duration);
         impl.notifyAltered(NCLElementAttributes.DURATION, aux, duration);
@@ -158,7 +152,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
 
     @Override
-    public void setBy(ByParamType by) {
+    public void setBy(ByParamType<Ep, T> by) {
         ByParamType aux = this.by;
         super.setBy(by);
         impl.notifyAltered(NCLElementAttributes.BY, aux, by);
@@ -166,7 +160,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
 
 
     @Override
-    public void setDelay(DoubleParamType delay) {
+    public void setDelay(DoubleParamType<Ep, Ea> delay) {
         DoubleParamType aux = this.delay;
         super.setDelay(delay);
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
@@ -179,14 +173,14 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
         // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRole(createRole(att_name));
+            setRole(createRole(att_var));
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
         // set the value (optional)
         att_name = NCLElementAttributes.VALUE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new StringParamType<Ep>(att_var, this));
+            setValue(new StringParamType(att_var, this));
 
         // set the min (optional)
         att_name = NCLElementAttributes.MIN.toString();
@@ -221,27 +215,27 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
         // set the repeatDelay (optional)
         att_name = NCLElementAttributes.REPEATDELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRepeatDelay(new DoubleParamType<Ep>(att_var, this));
+            setRepeatDelay(new DoubleParamType(att_var, this));
 
         // set the repeat (optional)
         att_name = NCLElementAttributes.REPEAT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRepeat(new IntegerParamType<Ep>(att_var, this));
+            setRepeat(new IntegerParamType(att_var, this));
 
         // set the duration (optional)
         att_name = NCLElementAttributes.DURATION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDuration(new DoubleParamType<Ep>(att_var, this));
+            setDuration(new DoubleParamType(att_var, this));
 
         // set the by (optional)
         att_name = NCLElementAttributes.BY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setBy(new ByParamType<Ep>(att_var, this));
+            setBy(new ByParamType(att_var, this));
 
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType<Ep>(att_var, this));
+            setDelay(new DoubleParamType(att_var, this));
     }
 
 

@@ -59,12 +59,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
     public NCLConnectorBase() throws XMLException {
         super();
     }
-    
-    
-    public NCLConnectorBase(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -140,11 +134,17 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
                 Element el = (Element) nl.item(i);
 
                 //create the imports
-                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
-                    addImportBase(createImportBase(el));
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+                    Ei inst = createImportBase();
+                    addImportBase(inst);
+                    inst.load(el);
+                }
                 // create the connectors
-                if(el.getTagName().equals(NCLElementAttributes.CAUSALCONNECTOR.toString()))
-                    addCausalConnector(createCausalConnector(el));
+                if(el.getTagName().equals(NCLElementAttributes.CAUSALCONNECTOR.toString())){
+                    Ec inst = createCausalConnector();
+                    addCausalConnector(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -167,8 +167,8 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected Ei createImportBase(Element element) throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE, element);
+    protected Ei createImportBase() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -179,7 +179,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
      * @return
      *          element representing the child <i>causalConnector</i>.
      */
-    protected Ec createCausalConnector(Element element) throws XMLException {
-        return (Ec) new NCLCausalConnector(element);
+    protected Ec createCausalConnector() throws XMLException {
+        return (Ec) new NCLCausalConnector();
     }
 }

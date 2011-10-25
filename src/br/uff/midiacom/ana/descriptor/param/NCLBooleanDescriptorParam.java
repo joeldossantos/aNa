@@ -56,12 +56,6 @@ public class NCLBooleanDescriptorParam<T extends NCLBooleanDescriptorParam, P ex
     public NCLBooleanDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLBooleanDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

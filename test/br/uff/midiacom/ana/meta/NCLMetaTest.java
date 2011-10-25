@@ -61,7 +61,8 @@ public class NCLMetaTest {
         String expResult = "<meta name='autor' content='joel'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLMeta instance = new NCLMeta(loader.getElement());
+        NCLMeta instance = new NCLMeta();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

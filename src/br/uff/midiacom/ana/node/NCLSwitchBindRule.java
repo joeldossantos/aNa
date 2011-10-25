@@ -59,12 +59,6 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
     }
 
 
-    public NCLSwitchBindRule(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);

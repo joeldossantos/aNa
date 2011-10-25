@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.xml.XMLException;
@@ -66,38 +67,27 @@ public class NCLContextTest {
         String expResult = "<context id='ctx'>\n\t<port id='pInicio' component='video'/>\n\t<media id='video'/>\n</context>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLContext instance = new NCLContext(loader.getElement());
+        NCLContext instance = new NCLContext();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test3() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLDoc instance = new NCLDoc();
-//            instance.setReader(reader);
-//            String xml = "<ncl><body>"+
-//                    "<context id='da' refer='db'/>"+
-//                    "<context id='db'>"+
-//                    "<media id='m1'/>"+
-//                    "</context></body></ncl>";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(xml)));
-//
-//            String expResult = "m1";
-//            String result = ((NCLMedia) ((NCLContext) instance.getBody().getNodes().iterator().next()).getRefer().getNodes().iterator().next()).getId();
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test3() throws XMLException {
+        String xml = "<ncl><body>"+
+                "<context id='da' refer='db'/>"+
+                "<context id='db'>"+
+                "<media id='m1'/>"+
+                "</context></body></ncl>";
+        
+        XMLLoader loader = new XMLLoader(xml);
+        NCLDoc instance = new NCLDoc();
+        instance.load(loader.getElement());
+
+        String expResult = "m1";
+        String result = ((NCLMedia) ((NCLContext) instance.getBody().getNodes().get("da")).getRefer().getNodes().iterator().next()).getId();
+        assertEquals(expResult, result);
+    }
 }

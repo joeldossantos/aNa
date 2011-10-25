@@ -61,9 +61,8 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
     }
 
 
-    public NCLRegion(Element element) throws XMLException {
+    public NCLRegion() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -228,7 +227,12 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addRegion(createRegion(el));
+            if(!el.getParentNode().equals(element))
+                continue;
+            
+            T inst = createRegion();
+            addRegion(inst);
+            inst.load(el);
         }
     }
 
@@ -274,7 +278,7 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>region</i>.
      */
-    protected T createRegion(Element element) throws XMLException {
-        return (T) new NCLRegion(element);
+    protected T createRegion() throws XMLException {
+        return (T) new NCLRegion();
     }
 }

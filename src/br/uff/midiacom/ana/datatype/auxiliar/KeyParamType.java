@@ -37,20 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.auxiliar;
 
-import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.enums.NCLKey;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
 
-public class KeyParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<KeyParamType, NCLKey, P>{
+public class KeyParamType<P extends NCLConnectorParamPrototype, O extends NCLElement> extends ParameterizedValueType<KeyParamType, O, NCLKey, P>{
 
-    private NCLElement parent;
     
-
     public KeyParamType(NCLKey value) throws XMLException {
         super(value);
     }
@@ -59,30 +57,32 @@ public class KeyParamType<P extends NCLConnectorParamPrototype> extends Paramete
     public KeyParamType(P value) throws XMLException {
         super(value);
     }
-
-
+    
+    
     public KeyParamType(String value) throws XMLException {
         super(value);
     }
     
     
-    public KeyParamType(String value, NCLElement parent) throws XMLException {
-        super(value);
-        
-        this.parent = parent;
+    public KeyParamType(String value, O owner) throws XMLException {
+        super(value, owner);
     }
 
 
     @Override
-    protected P createParam(String param) throws XMLException {
-        NCLElement connector = (NCLElement) parent.getParent();
+    protected P createParam(String param, O owner) throws XMLException {
+        NCLElement connector = (NCLElement) owner.getParent();
         while(!(connector instanceof NCLCausalConnector)){
             connector = (NCLElement) connector.getParent();
             if(connector == null)
                 throw new NCLParsingException("Could not find a parent connector");
         }
         
-        return (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
+        P par = (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
+        if(par == null)
+            throw new NCLParsingException("Could not find a param in connector with name: " + param);
+        
+        return par;
     }
 
 
@@ -94,12 +94,18 @@ public class KeyParamType<P extends NCLConnectorParamPrototype> extends Paramete
 
     @Override
     protected String getStringValue() {
-        return getValue().toString();
+        if(getValue() == null)
+            return null;
+        else
+            return getValue().toString();
     }
 
 
     @Override
     protected String getStringParam() {
-        return getParam().getName();
+        if(getParam() == null)
+            return null;
+        else
+            return getParam().getName();
     }
 }

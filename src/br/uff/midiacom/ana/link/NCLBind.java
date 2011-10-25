@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.link;
 
+import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.connector.*;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
@@ -62,11 +63,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
 
     public NCLBind() throws XMLException {
         super();
-    }
-
-    public NCLBind(Element element) throws XMLException {
-        super();
-        load(element);
     }
 
 
@@ -144,6 +140,8 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
                 throw new NCLParsingException("Could not find element " + att_var);
             
             Er rol = (Er) conn.findRole(att_var);
+            if(rol == null)
+                throw new NCLParsingException("Could not find element " + att_var);
             setRole(rol);
         }
         else
@@ -153,10 +151,14 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
         att_name = NCLElementAttributes.COMPONENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             P aux;
-            if((aux = (P) getParent()) == null && (aux = (P) aux.getParent()) == null)
+            if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             
-            En refEl = (En) ((En) aux).findNode(att_var);
+            En refEl;
+            if(aux instanceof NCLBody)
+                refEl = (En) ((NCLBody) aux).findNode(att_var);
+            else
+                refEl = (En) ((En) aux).findNode(att_var);
             if(refEl == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             
@@ -187,7 +189,9 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addBindParam(createBindParam(el));
+            Ep inst = createBindParam();
+            addBindParam(inst);
+            inst.load(el);
         }
     }
 
@@ -209,7 +213,7 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>bindParam</i>.
      */
-    protected Ep createBindParam(Element element) throws XMLException {
-        return (Ep) new NCLParam(NCLParamInstance.BINDPARAM, element);
+    protected Ep createBindParam() throws XMLException {
+        return (Ep) new NCLParam(NCLParamInstance.BINDPARAM);
     }
 }

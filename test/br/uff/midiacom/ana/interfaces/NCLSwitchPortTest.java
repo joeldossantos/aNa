@@ -65,7 +65,8 @@ public class NCLSwitchPortTest {
         String expResult = "<switchPort id='pinit'>\n\t<mapping component='med1' interface='trac1'/>\n</switchPort>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLSwitchPort instance = new NCLSwitchPort(loader.getElement());
+        NCLSwitchPort instance = new NCLSwitchPort();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -77,7 +78,8 @@ public class NCLSwitchPortTest {
                 "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
                 "</switch>";
         XMLLoader loader = new XMLLoader(xml);
-        NCLSwitch instance = new NCLSwitch(loader.getElement());
+        NCLSwitch instance = new NCLSwitch();
+        instance.load(loader.getElement());
 
         NCLSwitchPort i2 = (NCLSwitchPort) instance.getPorts().get(0);
         NCLMapping i1 = (NCLMapping) i2.getMappings().get(0);
@@ -94,7 +96,8 @@ public class NCLSwitchPortTest {
                 "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
                 "</switch>";
         XMLLoader loader = new XMLLoader(xml);
-        NCLSwitch instance = new NCLSwitch(loader.getElement());
+        NCLSwitch instance = new NCLSwitch();
+        instance.load(loader.getElement());
 
         NCLSwitchPort i2 = (NCLSwitchPort) instance.getPorts().get(0);
         NCLMapping i1 = (NCLMapping) i2.getMappings().get(0);

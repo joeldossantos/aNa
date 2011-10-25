@@ -41,13 +41,7 @@ import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.NCLDoc;
-import java.io.IOException;
-import java.io.StringReader;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
 
@@ -55,24 +49,18 @@ public class NCLImportTest {
 
     @Test
     public void test1() throws XMLException {
-//        String expResult = "<compositeRule id='crule' operator='and'>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n\t<rule id='r2' var='idioma' comparator='eq' value='en'/>\n</compositeRule>\n";
-//
-//        XMLLoader loader = new XMLLoader(expResult);
-//        
-//
-//        String result = instance.parse(0);
-//        assertEquals(expResult, result);
-//
-//
-//            String xml = "<ncl><head><regionBase>"+
-//                    "<importBase alias='base' documentURI='base.ncl' region='rgTV'/>"+
-//                    "<region id='rgTV' title='teste'/>"+
-//                    "</regionBase></head></ncl>";
-//
-//            String expResult = "teste";
-//            String result = ((NCLImport) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion().getTitle();
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//
+        String xml = "<ncl><head><regionBase>"+
+                "<importBase alias='base' documentURI='base.ncl' region='rgTV'/>"+
+                "<region id='rgTV' title='teste'/>"+
+                "</regionBase></head></ncl>";
+        
+        XMLLoader loader = new XMLLoader(xml);
+        NCLDoc instance = new NCLDoc();
+        instance.load(loader.getElement());
+        
+        String expResult = "teste";
+        String result = ((NCLImport) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion().getTitle();
+        assertEquals(expResult, result);
+
     }
 }

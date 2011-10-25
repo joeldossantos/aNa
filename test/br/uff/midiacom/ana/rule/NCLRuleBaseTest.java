@@ -83,7 +83,8 @@ public class NCLRuleBaseTest {
         String expResult = "<ruleBase id='rb'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRuleBase instance = new NCLRuleBase(loader.getElement());
+        NCLRuleBase instance = new NCLRuleBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -94,7 +95,8 @@ public class NCLRuleBaseTest {
         String expResult = "<ruleBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n</ruleBase>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRuleBase instance = new NCLRuleBase(loader.getElement());
+        NCLRuleBase instance = new NCLRuleBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

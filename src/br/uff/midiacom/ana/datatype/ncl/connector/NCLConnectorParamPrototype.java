@@ -114,7 +114,10 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
      *      String contendo o tipo do parâmetro.
      */
     public String getType() {
-        return type.getValue();
+        if(type == null)
+            return null;
+        else
+            return type.getValue();
     }
     
     

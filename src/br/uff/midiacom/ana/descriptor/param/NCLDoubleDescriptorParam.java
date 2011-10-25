@@ -56,12 +56,6 @@ public class NCLDoubleDescriptorParam<T extends NCLDoubleDescriptorParam, P exte
     public NCLDoubleDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLDoubleDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

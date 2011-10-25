@@ -59,9 +59,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
     
     
-    public NCLDescriptorSwitch(Element element) throws XMLException {
+    public NCLDescriptorSwitch() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -144,7 +143,12 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addDescriptor(createDescriptor(el));
+            if(!el.getParentNode().equals(element))
+                continue;
+            
+            El inst = createDescriptor();
+            addDescriptor(inst);
+            inst.load(el);
         }
 
         // create the child nodes (ports, binds and defaultComponent)
@@ -155,8 +159,11 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
                 Element el = (Element) nl.item(i);
 
                 // create the bindRule
-                if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString()))
-                    addBind(createBindRule(el));
+                if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString())){
+                    Eb inst = createBindRule();
+                    addBind(inst);
+                    inst.load(el);
+                }
                 // create the defaultDescriptor
                 if(el.getTagName().equals(NCLElementAttributes.DEFAULTDESCRIPTOR.toString())){
                     att_name = NCLElementAttributes.DESCRIPTOR.toString();
@@ -214,8 +221,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
      * @return
      *          element representing the child <i>bindRule</i>.
      */
-    protected Eb createBindRule(Element element) throws XMLException {
-        return (Eb) new NCLDescriptorBindRule(element);
+    protected Eb createBindRule() throws XMLException {
+        return (Eb) new NCLDescriptorBindRule();
     }
 
 
@@ -226,7 +233,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
      * @return
      *          element representing the child <i>descriptor</i>.
      */
-    protected El createDescriptor(Element element) throws XMLException {
-        return (El) new NCLDescriptor(element);
+    protected El createDescriptor() throws XMLException {
+        return (El) new NCLDescriptor();
     }
 }

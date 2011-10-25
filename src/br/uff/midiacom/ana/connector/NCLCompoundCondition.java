@@ -60,12 +60,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     public NCLCompoundCondition() throws XMLException {
         super();
     }
-    
-    
-    public NCLCompoundCondition(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -123,7 +117,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
 
 
     @Override
-    public void setDelay(DoubleParamType delay) {
+    public void setDelay(DoubleParamType<Ep, Ec> delay) {
         DoubleParamType aux = this.delay;
         super.setDelay(delay);
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
@@ -154,17 +148,29 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
                 Element el = (Element) nl.item(i);
 
                 //create the simpleCondition
-                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString()))
-                    addCondition(createSimpleCondition(el));
+                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
+                    Ec inst = createSimpleCondition();
+                    addCondition(inst);
+                    inst.load(el);
+                }
                 // create the compoundCondition
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString()))
-                    addCondition(createCompoundCondition(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
+                    Ec inst = createCompoundCondition();
+                    addCondition(inst);
+                    inst.load(el);
+                }
                 //create the assessmentStatement
-                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString()))
-                    addStatement(createAssessmentStatement(el));
+                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
+                    Es inst = createAssessmentStatement();
+                    addStatement(inst);
+                    inst.load(el);
+                }
                 // create the compoundStatement
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString()))
-                    addStatement(createCompoundStatement(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
+                    Es inst = createCompoundStatement();
+                    addStatement(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -200,8 +206,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>simpleCondition</i>.
      */
-    protected Ec createSimpleCondition(Element element) throws XMLException {
-        return (Ec) new NCLSimpleCondition(element);
+    protected Ec createSimpleCondition() throws XMLException {
+        return (Ec) new NCLSimpleCondition();
     }
 
 
@@ -212,7 +218,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>compoundCondition</i>.
      */
-    protected Ec createCompoundCondition(Element element) throws XMLException {
+    protected Ec createCompoundCondition() throws XMLException {
         return (Ec) new NCLCompoundCondition();
     }
 
@@ -224,8 +230,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>assessmentStatement</i>.
      */
-    protected Es createAssessmentStatement(Element element) throws XMLException {
-        return (Es) new NCLAssessmentStatement(element);
+    protected Es createAssessmentStatement() throws XMLException {
+        return (Es) new NCLAssessmentStatement();
     }
 
 
@@ -236,7 +242,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
      * @return
      *          element representing the child <i>compoundStatement</i>.
      */
-    protected Es createCompoundStatement(Element element) throws XMLException {
-        return (Es) new NCLCompoundStatement(element);
+    protected Es createCompoundStatement() throws XMLException {
+        return (Es) new NCLCompoundStatement();
     }
 }

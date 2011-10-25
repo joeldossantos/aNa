@@ -57,12 +57,6 @@ public class NCLColorDescriptorParam<T extends NCLColorDescriptorParam, P extend
     public NCLColorDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLColorDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

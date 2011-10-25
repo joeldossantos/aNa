@@ -107,7 +107,8 @@ public class NCLAreaTest {
         String expResult = "<area id='anchor' begin='5.0s' end='20.0s'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLArea instance = new NCLArea(loader.getElement());
+        NCLArea instance = new NCLArea();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -118,7 +119,8 @@ public class NCLAreaTest {
         String expResult = "<area id='anchor' first='5f' last='20f'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLArea instance = new NCLArea(loader.getElement());
+        NCLArea instance = new NCLArea();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -129,7 +131,8 @@ public class NCLAreaTest {
         String expResult = "<area id='anchor' coords='1.0,2.0,6.0,56.0'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLArea instance = new NCLArea(loader.getElement());
+        NCLArea instance = new NCLArea();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -140,7 +143,8 @@ public class NCLAreaTest {
         String expResult = "<area id='anchor' label='bla'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLArea instance = new NCLArea(loader.getElement());
+        NCLArea instance = new NCLArea();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -151,7 +155,8 @@ public class NCLAreaTest {
         String expResult = "<area id='anchor' text='texto' position='2'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLArea instance = new NCLArea(loader.getElement());
+        NCLArea instance = new NCLArea();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

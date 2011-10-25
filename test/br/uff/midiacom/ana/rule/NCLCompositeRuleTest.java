@@ -76,7 +76,8 @@ public class NCLCompositeRuleTest {
         String expResult = "<compositeRule id='crule' operator='and'>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n\t<rule id='r2' var='idioma' comparator='eq' value='en'/>\n</compositeRule>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLCompositeRule instance = new NCLCompositeRule(loader.getElement());
+        NCLCompositeRule instance = new NCLCompositeRule();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

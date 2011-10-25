@@ -62,12 +62,6 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     }
 
 
-    public NCLImport(NCLImportType type, Element element) throws XMLException {
-        super(type);
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);

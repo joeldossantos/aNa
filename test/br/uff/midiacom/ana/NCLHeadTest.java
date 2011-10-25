@@ -84,7 +84,8 @@ public class NCLHeadTest {
                 "\n\t<meta name='autor' content='joel'/>\n\t<metadata>\narvore rdf\n\t</metadata>\n</head>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLHead instance = new NCLHead(loader.getElement());
+        NCLHead instance = new NCLHead();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

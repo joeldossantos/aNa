@@ -58,9 +58,8 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-    public NCLSwitchPort(Element element) throws XMLException {
+    public NCLSwitchPort() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -106,7 +105,9 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            addMapping(createMapping(el));
+            Em inst = createMapping();
+            addMapping(inst);
+            inst.load(el);
         }
     }
 
@@ -128,7 +129,7 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>mapping</i>.
      */
-    protected Em createMapping(Element element) throws XMLException {
-        return (Em) new NCLMapping(element);
+    protected Em createMapping() throws XMLException {
+        return (Em) new NCLMapping();
     }
 }

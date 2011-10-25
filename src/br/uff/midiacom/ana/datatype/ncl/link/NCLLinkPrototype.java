@@ -279,6 +279,8 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
         // Compara os binds
         it = other.getBinds().iterator();
         for(Eb bind : binds){
+            if(!it.hasNext())
+                continue;
             Eb other_bind = (Eb) it.next();
             comp = bind.compare(other_bind);
             if(comp)

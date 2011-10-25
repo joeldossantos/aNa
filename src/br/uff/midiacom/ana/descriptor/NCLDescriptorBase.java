@@ -59,12 +59,6 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
     public NCLDescriptorBase() throws XMLException {
         super();
     }
-    
-    
-    public NCLDescriptorBase(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -140,14 +134,23 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
                 Element el = (Element) nl.item(i);
 
                 //create the imports
-                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
-                    addImportBase(createImportBase(el));
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+                    Ei inst = createImportBase();
+                    addImportBase(inst);
+                    inst.load(el);
+                }
                 //create the descriptor
-                if(el.getTagName().equals(NCLElementAttributes.DESCRIPTOR.toString()))
-                    addDescriptor(createDescriptor(el));
+                if(el.getTagName().equals(NCLElementAttributes.DESCRIPTOR.toString())){
+                    El inst = createDescriptor();
+                    addDescriptor(inst);
+                    inst.load(el);
+                }
                 // create the descriptorSwitch
-                if(el.getTagName().equals(NCLElementAttributes.DESCRIPTORSWITCH.toString()))
-                    addDescriptor(createDescriptorSwitch(el));
+                if(el.getTagName().equals(NCLElementAttributes.DESCRIPTORSWITCH.toString())){
+                    El inst = createDescriptorSwitch();
+                    addDescriptor(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -213,8 +216,8 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected Ei createImportBase(Element element) throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE, element);
+    protected Ei createImportBase() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -225,8 +228,8 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>descriptor</i>.
      */
-    protected El createDescriptor(Element element) throws XMLException {
-        return (El) new NCLDescriptor(element);
+    protected El createDescriptor() throws XMLException {
+        return (El) new NCLDescriptor();
     }
 
 
@@ -237,7 +240,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
      * @return
      *          element representing the child <i>descriptorSwitch</i>.
      */
-    protected El createDescriptorSwitch(Element element) throws XMLException {
-        return (El) new NCLDescriptorSwitch(element);
+    protected El createDescriptorSwitch() throws XMLException {
+        return (El) new NCLDescriptorSwitch();
     }
 }

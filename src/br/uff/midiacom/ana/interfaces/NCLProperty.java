@@ -63,9 +63,8 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
     }
 
 
-    public NCLProperty(Element element) throws XMLException {
+    public NCLProperty() throws XMLException {
         super();
-        load(element);
     }
 
 

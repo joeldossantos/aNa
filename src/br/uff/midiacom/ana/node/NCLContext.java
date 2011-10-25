@@ -67,9 +67,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
     }
 
 
-    public NCLContext(Element element) throws XMLException {
+    public NCLContext() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -266,23 +265,41 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
                 Element el = (Element) nl.item(i);
 
                 // create the property
-                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString()))
-                    addProperty(createProperty(el));
+                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
+                    Epp inst = createProperty();
+                    addProperty(inst);
+                    inst.load(el);
+                }
                 // create the meta
-                if(el.getTagName().equals(NCLElementAttributes.META.toString()))
-                    addMeta(createMeta(el));
+                if(el.getTagName().equals(NCLElementAttributes.META.toString())){
+                    Em inst = createMeta();
+                    addMeta(inst);
+                    inst.load(el);
+                }
                 // create the metadata
-                if(el.getTagName().equals(NCLElementAttributes.METADATA.toString()))
-                    addMetadata(createMetadata(el));
+                if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
+                    Emt inst = createMetadata();
+                    addMetadata(inst);
+                    inst.load(el);
+                }
                 // create the media
-                if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString()))
-                    addNode(createMedia(el));
+                if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
+                    En inst = createMedia();
+                    addNode(inst);
+                    inst.load(el);
+                }
                 // create the context
-                if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString()))
-                    addNode(createContext(el));
+                if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
+                    En inst = createContext();
+                    addNode(inst);
+                    inst.load(el);
+                }
                 // create the switch
-                if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString()))
-                    addNode(createSwitch(el));
+                if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
+                    En inst = createSwitch();
+                    addNode(inst);
+                    inst.load(el);
+                }
             }
         }
 
@@ -294,11 +311,17 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
                 Element el = (Element) nl.item(i);
 
                 //create the port
-                if(el.getTagName().equals(NCLElementAttributes.PORT.toString()))
-                    addPort(createPort(el));
+                if(el.getTagName().equals(NCLElementAttributes.PORT.toString())){
+                    Ept inst = createPort();
+                    addPort(inst);
+                    inst.load(el);
+                }
                 // create the link
-                if(el.getTagName().equals(NCLElementAttributes.LINK.toString()))
-                    addLink(createLink(el));
+                if(el.getTagName().equals(NCLElementAttributes.LINK.toString())){
+                    El inst = createLink();
+                    addLink(inst);
+                    inst.load(el);
+                }
             }
         }
 
@@ -380,8 +403,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>meta</i>.
      */
-    protected Em createMeta(Element element) throws XMLException {
-        return (Em) new NCLMeta(element);
+    protected Em createMeta() throws XMLException {
+        return (Em) new NCLMeta();
     }
 
 
@@ -392,8 +415,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>metadata</i>.
      */
-    protected Emt createMetadata(Element element) throws XMLException {
-        return (Emt) new NCLMetadata(element);
+    protected Emt createMetadata() throws XMLException {
+        return (Emt) new NCLMetadata();
     }
 
 
@@ -404,8 +427,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>port</i>.
      */
-    protected Ept createPort(Element element) throws XMLException {
-        return (Ept) new NCLPort(element);
+    protected Ept createPort() throws XMLException {
+        return (Ept) new NCLPort();
     }
 
 
@@ -416,8 +439,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>property</i>.
      */
-    protected Epp createProperty(Element element) throws XMLException {
-        return (Epp) new NCLProperty(element);
+    protected Epp createProperty() throws XMLException {
+        return (Epp) new NCLProperty();
     }
 
 
@@ -428,8 +451,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>media</i>.
      */
-    protected En createMedia(Element element) throws XMLException {
-        return (En) new NCLMedia(element);
+    protected En createMedia() throws XMLException {
+        return (En) new NCLMedia();
     }
 
 
@@ -440,8 +463,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>context</i>.
      */
-    protected En createContext(Element element) throws XMLException {
-        return (En) new NCLContext(element);
+    protected En createContext() throws XMLException {
+        return (En) new NCLContext();
     }
 
 
@@ -452,8 +475,8 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>switch</i>.
      */
-    protected En createSwitch(Element element) throws XMLException {
-        return (En) new NCLSwitch(element);
+    protected En createSwitch() throws XMLException {
+        return (En) new NCLSwitch();
     }
 
 
@@ -464,7 +487,7 @@ public class NCLContext<T extends NCLContext, P extends NCLElement, I extends NC
      * @return
      *          element representing the child <i>link</i>.
      */
-    protected El createLink(Element element) throws XMLException {
-        return (El) new NCLLink(element);
+    protected El createLink() throws XMLException {
+        return (El) new NCLLink();
     }
 }

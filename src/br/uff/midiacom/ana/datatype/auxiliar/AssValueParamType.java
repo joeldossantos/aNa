@@ -1,18 +1,16 @@
 package br.uff.midiacom.ana.datatype.auxiliar;
 
-import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
 
-public class AssValueParamType<P extends NCLConnectorParamPrototype> extends ParameterizedValueType<AssValueParamType, AssValueType, P>{
+public class AssValueParamType<P extends NCLConnectorParamPrototype, O extends NCLElement> extends ParameterizedValueType<AssValueParamType, O, AssValueType, P>{
 
-    private NCLElement parent;
     
-
     public AssValueParamType(AssValueType value) throws XMLException {
         super(value);
     }
@@ -21,30 +19,32 @@ public class AssValueParamType<P extends NCLConnectorParamPrototype> extends Par
     public AssValueParamType(P value) throws XMLException {
         super(value);
     }
-
-
+    
+    
     public AssValueParamType(String value) throws XMLException {
         super(value);
     }
     
     
-    public AssValueParamType(String value, NCLElement parent) throws XMLException {
-        super(value);
-        
-        this.parent = parent;
+    public AssValueParamType(String value, O owner) throws XMLException {
+        super(value, owner);
     }
 
 
     @Override
-    protected P createParam(String param) throws XMLException {
-        NCLElement connector = (NCLElement) parent.getParent();
+    protected P createParam(String param, O owner) throws XMLException {
+        NCLElement connector = (NCLElement) owner.getParent();
         while(!(connector instanceof NCLCausalConnector)){
             connector = (NCLElement) connector.getParent();
             if(connector == null)
                 throw new NCLParsingException("Could not find a parent connector");
         }
         
-        return (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
+        P par = (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
+        if(par == null)
+            throw new NCLParsingException("Could not find a param in connector with name: " + param);
+        
+        return par;
     }
 
 
@@ -56,12 +56,18 @@ public class AssValueParamType<P extends NCLConnectorParamPrototype> extends Par
 
     @Override
     protected String getStringValue() {
-        return getValue().parse();
+        if(getValue() == null)
+            return null;
+        else
+            return getValue().parse();
     }
 
 
     @Override
     protected String getStringParam() {
-        return getParam().getName();
+        if(getParam() == null)
+            return null;
+        else
+            return getParam().getName();
     }
 }

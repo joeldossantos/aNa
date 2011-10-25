@@ -52,9 +52,9 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
 
     protected Er role;
     protected NCLEventType eventType;
-    protected KeyParamType<Ep> key;
+    protected KeyParamType<Ep, T> key;
     protected NCLAttributeType attributeType;
-    protected IntegerParamType<Ep> offset;
+    protected IntegerParamType<Ep, T> offset;
     
 
     /**
@@ -124,7 +124,7 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      * @param key
      *          elemento representando a tecla.
      */
-    public void setKey(KeyParamType<Ep> key) {
+    public void setKey(KeyParamType<Ep, T> key) {
         this.key = key;
     }
     
@@ -135,7 +135,7 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      * @return
      *          elemento representando a tecla.
      */
-    public KeyParamType<Ep> getKey() {
+    public KeyParamType<Ep, T> getKey() {
         return key;
     }
     
@@ -170,7 +170,7 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      * @throws java.lang.IllegalArgumentException
      *          se o offset for inválido.
      */
-    public void setOffset(IntegerParamType<Ep> offset) throws IllegalArgumentException {
+    public void setOffset(IntegerParamType<Ep, T> offset) throws IllegalArgumentException {
         this.offset = offset;
     }
     
@@ -181,7 +181,7 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      * @return
      *          inteiro representando o valor do offset a ser utilizado no teste.
      */
-    public IntegerParamType<Ep> getOffset() {
+    public IntegerParamType<Ep, T> getOffset() {
         return offset;
     }
     

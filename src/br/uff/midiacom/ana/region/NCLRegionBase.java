@@ -62,12 +62,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    public NCLRegionBase(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
@@ -139,7 +133,7 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
 
 
     public void load(Element element) throws XMLException {
-        String att_name, att_var;
+        String att_name, att_var, ch_name;
         NodeList nl;
 
         // set the id (optional)
@@ -151,21 +145,28 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
         att_name = NCLElementAttributes.DEVICE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setDevice(att_var);
-
-        // create the child nodes
-        nl = element.getChildNodes();
+        
+        // create the region child nodes
+        ch_name = NCLElementAttributes.REGION.toString();
+        nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
-
-                //create the imports
-                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
-                    addImportBase(createImportBase(el));
-                // create the regions
-                if(el.getTagName().equals(NCLElementAttributes.REGION.toString()))
-                    addRegion(createRegion(el));
-            }
+            Element el = (Element) nl.item(i);
+            if(!el.getParentNode().equals(element))
+                continue;
+            
+            Er inst = createRegion();
+            addRegion(inst);
+            inst.load(el);
+        }
+        
+        // create the import child nodes
+        ch_name = NCLElementAttributes.IMPORTBASE.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Ei inst = createImportBase();
+            addImportBase(inst);
+            inst.load(el);
         }
 
         // set the region (optional)
@@ -213,8 +214,8 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected Ei createImportBase(Element element) throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE, element);
+    protected Ei createImportBase() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -225,7 +226,7 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
      * @return
      *          element representing the child <i>region</i>.
      */
-    protected Er createRegion(Element element) throws XMLException {
-        return (Er) new NCLRegion(element);
+    protected Er createRegion() throws XMLException {
+        return (Er) new NCLRegion();
     }
 }

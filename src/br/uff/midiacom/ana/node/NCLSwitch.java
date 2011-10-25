@@ -63,9 +63,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
     }
 
 
-    public NCLSwitch(Element element) throws XMLException {
+    public NCLSwitch() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -189,14 +188,23 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
                 Element el = (Element) nl.item(i);
 
                 // create the media
-                if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString()))
-                    addNode(createMedia(el));
+                if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
+                    En inst = createMedia();
+                    addNode(inst);
+                    inst.load(el);
+                }
                 // create the context
-                if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString()))
-                    addNode(createContext(el));
+                if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
+                    En inst = createContext();
+                    addNode(inst);
+                    inst.load(el);
+                }
                 // create the switch
-                if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString()))
-                    addNode(createSwitch(el));
+                if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
+                    En inst = createSwitch();
+                    addNode(inst);
+                    inst.load(el);
+                }
             }
         }
 
@@ -208,11 +216,17 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
                 Element el = (Element) nl.item(i);
 
                 //create the switchPort
-                if(el.getTagName().equals(NCLElementAttributes.SWITCHPORT.toString()))
-                    addPort(createSwitchPort(el));
+                if(el.getTagName().equals(NCLElementAttributes.SWITCHPORT.toString())){
+                    Ep inst = createSwitchPort();
+                    addPort(inst);
+                    inst.load(el);
+                }
                 // create the bindRule
-                if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString()))
-                    addBind(createBindRule(el));
+                if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString())){
+                    Eb inst = createBindRule();
+                    addBind(inst);
+                    inst.load(el);
+                }
                 // create the defaultComponent
                 if(el.getTagName().equals(NCLElementAttributes.DEFAULTCOMPONENT.toString())){
                     att_name = NCLElementAttributes.COMPONENT.toString();
@@ -295,8 +309,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>bindRule</i>.
      */
-    protected Eb createBindRule(Element element) throws XMLException {
-        return (Eb) new NCLSwitchBindRule(element);
+    protected Eb createBindRule() throws XMLException {
+        return (Eb) new NCLSwitchBindRule();
     }
 
 
@@ -307,8 +321,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>switchPort</i>.
      */
-    protected Ep createSwitchPort(Element element) throws XMLException {
-        return (Ep) new NCLSwitchPort(element);
+    protected Ep createSwitchPort() throws XMLException {
+        return (Ep) new NCLSwitchPort();
     }
 
 
@@ -319,8 +333,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>media</i>.
      */
-    protected En createMedia(Element element) throws XMLException {
-        return (En) new NCLMedia(element);
+    protected En createMedia() throws XMLException {
+        return (En) new NCLMedia();
     }
 
 
@@ -331,8 +345,8 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>context</i>.
      */
-    protected En createContext(Element element) throws XMLException {
-        return (En) new NCLContext(element);
+    protected En createContext() throws XMLException {
+        return (En) new NCLContext();
     }
 
 
@@ -343,7 +357,7 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
      * @return
      *          element representing the child <i>switch</i>.
      */
-    protected En createSwitch(Element element) throws XMLException {
-        return (En) new NCLSwitch(element);
+    protected En createSwitch() throws XMLException {
+        return (En) new NCLSwitch();
     }
 }

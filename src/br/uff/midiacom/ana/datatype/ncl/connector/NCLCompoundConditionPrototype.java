@@ -51,7 +51,7 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
         extends XMLElementPrototype<Ec, P, I> implements NCLCondition<Ec, P, Ep> {
     
     protected NCLConditionOperator operator;
-    protected DoubleParamType<Ep> delay;
+    protected DoubleParamType<Ep, Ec> delay;
     protected ElementList<Ec, T> conditions;
     protected ElementList<Es, T> statements;
     
@@ -218,12 +218,12 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
     }
 
 
-    public void setDelay(DoubleParamType<Ep> delay) {
+    public void setDelay(DoubleParamType<Ep, Ec> delay) {
         this.delay = delay;
     }
 
 
-    public DoubleParamType<Ep> getDelay() {
+    public DoubleParamType<Ep, Ec> getDelay() {
         return delay;
     }
 

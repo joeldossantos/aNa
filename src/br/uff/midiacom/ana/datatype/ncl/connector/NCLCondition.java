@@ -52,7 +52,7 @@ public interface NCLCondition<T extends NCLCondition, P extends NCLElement, Ep e
      * @throws java.lang.IllegalArgumentException
      *          se o inteiro for negativo.
      */
-    public void setDelay(DoubleParamType<Ep> delay);
+    public void setDelay(DoubleParamType<Ep, T> delay);
 
 
     /**
@@ -61,5 +61,5 @@ public interface NCLCondition<T extends NCLCondition, P extends NCLElement, Ep e
      * @return
      *          inteiro contendo o atraso, em segundos.
      */
-    public DoubleParamType getDelay();
+    public DoubleParamType<Ep, T> getDelay();
 }

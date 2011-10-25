@@ -51,7 +51,7 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
         extends XMLElementPrototype<Ea, P, I> implements NCLAction<Ea, P, Ep> {
 
     protected NCLActionOperator operator;
-    protected DoubleParamType<Ep> delay;
+    protected DoubleParamType<Ep, Ea> delay;
     protected ElementList<Ea, T> actions;
 
 
@@ -151,12 +151,12 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
     }
 
 
-    public void setDelay(DoubleParamType<Ep> delay) {
+    public void setDelay(DoubleParamType<Ep, Ea> delay) {
         this.delay = delay;
     }
 
 
-    public DoubleParamType<Ep> getDelay() {
+    public DoubleParamType<Ep, Ea> getDelay() {
         return delay;
     }
     

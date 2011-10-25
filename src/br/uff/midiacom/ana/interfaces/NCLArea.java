@@ -60,9 +60,8 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLArea(Element element) throws XMLException {
+    public NCLArea() throws XMLException {
         super();
-        load(element);
     }
 
 

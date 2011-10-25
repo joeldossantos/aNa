@@ -117,7 +117,8 @@ public class NCLPropertyTest {
         String expResult = "<property name='interacao' value='nao'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLProperty instance = new NCLProperty(loader.getElement());
+        NCLProperty instance = new NCLProperty();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

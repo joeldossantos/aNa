@@ -61,12 +61,6 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     }
 
 
-    public NCLRuleBase(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
@@ -140,14 +134,23 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
                 Element el = (Element) nl.item(i);
 
                 //create the imports
-                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString()))
-                    addImportBase(createImportBase(el));
+                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+                    Ei inst = createImportBase();
+                    addImportBase(inst);
+                    inst.load(el);
+                }
                 //create the rules
-                if(el.getTagName().equals(NCLElementAttributes.RULE.toString()))
-                    addRule(createRule(el));
+                if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
+                    Et inst = createRule();
+                    addRule(inst);
+                    inst.load(el);
+                }
                 // create the compositeRules
-                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString()))
-                    addRule(createCompositeRule(el));
+                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
+                    Et inst = createCompositeRule();
+                    addRule(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -192,8 +195,8 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      * @return
      *          element representing the child <i>importBase</i>.
      */
-    protected Ei createImportBase(Element element) throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE, element);
+    protected Ei createImportBase() throws XMLException {
+        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
@@ -204,8 +207,8 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      * @return
      *          element representing the child <i>rule</i>.
      */
-    protected Et createRule(Element element) throws XMLException {
-        return (Et) new NCLRule(element);
+    protected Et createRule() throws XMLException {
+        return (Et) new NCLRule();
     }
 
 
@@ -216,7 +219,7 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
      * @return
      *          element representing the child <i>compositeRule</i>.
      */
-    protected Et createCompositeRule(Element element) throws XMLException {
-        return (Et) new NCLCompositeRule(element);
+    protected Et createCompositeRule() throws XMLException {
+        return (Et) new NCLCompositeRule();
     }
 }

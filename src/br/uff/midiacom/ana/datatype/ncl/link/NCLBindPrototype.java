@@ -288,6 +288,8 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
         // Compara os parâmetros
         Iterator it = other.getBindParams().iterator();
         for(Ep param : bindParams){
+            if(!it.hasNext())
+                continue;
             Ep other_param = (Ep) it.next();
             comp = param.compare(other_param);
             if(comp)

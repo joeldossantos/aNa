@@ -43,12 +43,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class NCLImportedDocumentBaseTest {
@@ -81,7 +75,8 @@ public class NCLImportedDocumentBaseTest {
         String expResult = "<importedDocumentBase id='IDb'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLImportedDocumentBase instance = new NCLImportedDocumentBase(loader.getElement());
+        NCLImportedDocumentBase instance = new NCLImportedDocumentBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -92,7 +87,8 @@ public class NCLImportedDocumentBaseTest {
         String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLImportedDocumentBase instance = new NCLImportedDocumentBase(loader.getElement());
+        NCLImportedDocumentBase instance = new NCLImportedDocumentBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

@@ -53,13 +53,13 @@ import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 
 public class NCLReferenceManager {
 
     private static NCLReferenceManager instance = new NCLReferenceManager();
-    private TreeSet<PostReferenceElement> references = new TreeSet<PostReferenceElement>();
+    private ArrayList<PostReferenceElement> references = new ArrayList<PostReferenceElement>();
     
     
     private NCLReferenceManager() {}
@@ -241,6 +241,13 @@ public class NCLReferenceManager {
     
     
     public void waitReference(PostReferenceElement element) {
+        for(PostReferenceElement ref : references){
+            if(ref.getId().equals(element.getId())){
+                references.remove(ref);
+                break;
+            }
+        }
+        
         references.add(element);
     }
     

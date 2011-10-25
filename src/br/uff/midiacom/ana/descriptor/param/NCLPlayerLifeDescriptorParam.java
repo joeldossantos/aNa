@@ -57,12 +57,6 @@ public class NCLPlayerLifeDescriptorParam<T extends NCLPlayerLifeDescriptorParam
     public NCLPlayerLifeDescriptorParam() throws XMLException {
         super();
     }
-    
-    
-    public NCLPlayerLifeDescriptorParam(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override

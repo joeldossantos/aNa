@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
@@ -55,12 +56,6 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
 
     public NCLMapping() throws XMLException {
         super();
-    }
-
-
-    public NCLMapping(Element element) throws XMLException {
-        super();
-        load(element);
     }
 
 
@@ -93,10 +88,14 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
         att_name = NCLElementAttributes.COMPONENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             P aux;
-            if((aux = (P) getParent()) == null && (aux = (P) aux.getParent()) == null)
+            if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             
-            En refEl = (En) ((En) aux).findNode(att_var);
+            En refEl;
+            if(aux instanceof NCLBody)
+                refEl = (En) ((NCLBody) aux).findNode(att_var);
+            else
+                refEl = (En) ((En) aux).findNode(att_var);
             if(refEl == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             

@@ -61,12 +61,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     public NCLSimpleCondition() throws XMLException {
         super();
     }
-    
-    
-    public NCLSimpleCondition(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -108,7 +102,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 
 
     @Override
-    public void setKey(KeyParamType key) {
+    public void setKey(KeyParamType<Ep, T> key) {
         KeyParamType aux = this.key;
         super.setKey(key);
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
@@ -132,7 +126,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
 
 
     @Override
-    public void setDelay(DoubleParamType delay) {
+    public void setDelay(DoubleParamType<Ep, Ec> delay) {
         DoubleParamType aux = this.delay;
         super.setDelay(delay);
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
@@ -145,7 +139,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
         // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRole(createRole(att_name));
+            setRole(createRole(att_var));
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
 

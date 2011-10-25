@@ -62,12 +62,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
         super();
     }
 
-
-    public NCLLink(Element element) throws XMLException {
-        super();
-        load(element);
-    }
-
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
@@ -148,11 +142,17 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
                 Element el = (Element) nl.item(i);
 
                 //create the areas
-                if(el.getTagName().equals(NCLElementAttributes.LINKPARAM.toString()))
-                    addLinkParam(createLinkParam(el));
+                if(el.getTagName().equals(NCLElementAttributes.LINKPARAM.toString())){
+                    Ep inst = createLinkParam();
+                    addLinkParam(inst);
+                    inst.load(el);
+                }
                 // create the properties
-                if(el.getTagName().equals(NCLElementAttributes.BIND.toString()))
-                    addBind(createBind(el));
+                if(el.getTagName().equals(NCLElementAttributes.BIND.toString())){
+                    Eb inst = createBind();
+                    addBind(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -175,8 +175,8 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>linkParam</i>.
      */
-    protected Ep createLinkParam(Element element) throws XMLException {
-        return (Ep) new NCLParam(NCLParamInstance.LINKPARAM, element);
+    protected Ep createLinkParam() throws XMLException {
+        return (Ep) new NCLParam(NCLParamInstance.LINKPARAM);
     }
 
 
@@ -187,7 +187,7 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
      * @return
      *          element representing the child <i>bind</i>.
      */
-    protected Eb createBind(Element element) throws XMLException {
-        return (Eb) new NCLBind(element);
+    protected Eb createBind() throws XMLException {
+        return (Eb) new NCLBind();
     }
 }

@@ -59,12 +59,6 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     public NCLAssessmentStatement() throws XMLException {
         super();
     }
-    
-    
-    public NCLAssessmentStatement(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -127,11 +121,17 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
                 Element el = (Element) nl.item(i);
 
                 //create the valueAssessment
-                if(el.getTagName().equals(NCLElementAttributes.VALUEASSESSMENT.toString()))
-                    setValueAssessment(createValueAssessment(el));
+                if(el.getTagName().equals(NCLElementAttributes.VALUEASSESSMENT.toString())){
+                    Ev inst = createValueAssessment();
+                    setValueAssessment(inst);
+                    inst.load(el);
+                }
                 // create the connectors
-                if(el.getTagName().equals(NCLElementAttributes.ATTRIBUTEASSESSMENT.toString()))
-                    addAttributeAssessment(createAttributeAssessment(el));
+                if(el.getTagName().equals(NCLElementAttributes.ATTRIBUTEASSESSMENT.toString())){
+                    Ea inst = createAttributeAssessment();
+                    addAttributeAssessment(inst);
+                    inst.load(el);
+                }
             }
         }
     }
@@ -167,8 +167,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
      * @return
      *          element representing the child <i>attributeAssessment</i>.
      */
-    protected Ea createAttributeAssessment(Element element) throws XMLException {
-        return (Ea) new NCLAttributeAssessment(element);
+    protected Ea createAttributeAssessment() throws XMLException {
+        return (Ea) new NCLAttributeAssessment();
     }
 
 
@@ -179,7 +179,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
      * @return
      *          element representing the child <i>valueAssessment</i>.
      */
-    protected Ev createValueAssessment(Element element) throws XMLException {
-        return (Ev) new NCLValueAssessment(element);
+    protected Ev createValueAssessment() throws XMLException {
+        return (Ev) new NCLValueAssessment();
     }
 }

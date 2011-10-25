@@ -56,11 +56,6 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     public NCLValueAssessment() throws XMLException {
         super();
     }
-    
-    public NCLValueAssessment(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -69,15 +64,15 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     }
 
 
-    public NCLValueAssessment(AssValueParamType<Ep> value) throws XMLException {
+    public NCLValueAssessment(AssValueParamType<Ep, T> value) throws XMLException {
         super(value);
         impl = (I) new NCLElementImpl(this);
     }
     
 
     @Override
-    public void setValue(AssValueParamType<Ep> value) {
-        AssValueParamType<Ep> aux = this.value;
+    public void setValue(AssValueParamType<Ep, T> value) {
+        AssValueParamType aux = this.value;
         super.setValue(value);
         impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, value);
     }
@@ -89,7 +84,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
         // set the value (required)
         att_name = NCLElementAttributes.VALUEASSESSMENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new AssValueParamType<Ep>(att_var, this));
+            setValue(new AssValueParamType(att_var, this));
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }

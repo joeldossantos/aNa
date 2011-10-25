@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -64,33 +65,28 @@ public class NCLRuleTest {
         String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRule instance = new NCLRule(loader.getElement());
+        NCLRule instance = new NCLRule();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test3() {
-//        String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
-//
-//        XMLLoader loader = new XMLLoader(expResult);
-//        NCLRule instance = new NCLRule(loader.getElement());
-//
-//        String result = instance.parse(0);
-//        assertEquals(expResult, result);
-//
-//
-//            String xml = "<ncl><head><ruleBase>"+
-//                "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>"+
-//                "</ruleBase></head>"+
-//                "<body><media id='m1'>"+
-//                "<property name='legenda' value='on'/>"+
-//                "</media></body></ncl>";
-//
-//            String expResult = "on";
-//            String result = ((NCLRule) doc.getHead().getRuleBase().getRules().iterator().next()).getVar().getValue();
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//    }
+    @Test
+    public void test3() throws XMLException {
+        String xml = "<ncl><head><ruleBase>"+
+                "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>"+
+                "</ruleBase></head>"+
+                "<body><media id='m1'>"+
+                "<property name='legenda' value='on'/>"+
+                "</media></body></ncl>";
+
+        XMLLoader loader = new XMLLoader(xml);
+        NCLDoc instance = new NCLDoc();
+        instance.load(loader.getElement());
+
+        String expResult = "on";
+        String result = ((NCLRule) instance.getHead().getRuleBase().getRules().get("r1")).getVar().getValue();
+        assertEquals(expResult, result);
+    }
 }

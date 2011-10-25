@@ -43,14 +43,7 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
 import br.uff.midiacom.ana.reuse.NCLImport;
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URISyntaxException;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
 
@@ -87,7 +80,8 @@ public class NCLTransitionBaseTest {
         String expResult = "<transitionBase id='tb'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLTransitionBase instance = new NCLTransitionBase(loader.getElement());
+        NCLTransitionBase instance = new NCLTransitionBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
@@ -98,7 +92,8 @@ public class NCLTransitionBaseTest {
         String expResult = "<transitionBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<transition id='tr1' type='fade'/>\n</transitionBase>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLTransitionBase instance = new NCLTransitionBase(loader.getElement());
+        NCLTransitionBase instance = new NCLTransitionBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);

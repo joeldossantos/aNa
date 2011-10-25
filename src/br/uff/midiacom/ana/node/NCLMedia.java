@@ -66,9 +66,8 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-    public NCLMedia(Element element) throws XMLException {
+    public NCLMedia() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -219,11 +218,17 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
                 Element el = (Element) nl.item(i);
 
                 //create the areas
-                if(el.getTagName().equals(NCLElementAttributes.AREA.toString()))
-                    addArea(createArea(el));
+                if(el.getTagName().equals(NCLElementAttributes.AREA.toString())){
+                    Ea inst = createArea();
+                    addArea(inst);
+                    inst.load(el);
+                }
                 // create the properties
-                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString()))
-                    addProperty(createProperty(el));
+                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
+                    Ep inst = createProperty();
+                    addProperty(inst);
+                    inst.load(el);
+                }
             }
         }
 
@@ -290,8 +295,8 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
      * @return
      *          element representing the child <i>area</i>.
      */
-    protected Ea createArea(Element element) throws XMLException {
-        return (Ea) new NCLArea(element);
+    protected Ea createArea() throws XMLException {
+        return (Ea) new NCLArea();
     }
 
 
@@ -302,7 +307,7 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
      * @return
      *          element representing the child <i>property</i>.
      */
-    protected Ep createProperty(Element element) throws XMLException {
-        return (Ep) new NCLProperty(element);
+    protected Ep createProperty() throws XMLException {
+        return (Ep) new NCLProperty();
     }
 }

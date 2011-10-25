@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -80,40 +81,26 @@ public class NCLRegionBaseTest {
         String expResult = "<regionBase id='rgb' device='systemScreen(0)'/>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLRegionBase instance = new NCLRegionBase(loader.getElement());
+        NCLRegionBase instance = new NCLRegionBase();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
     }
 
     @Test
-    public void test4() throws XMLException {
-        String expResult = "<regionBase>\n\t<importBase alias='base' documentURI='base.ncl' region='rgTV'/>\n\t<region id='rgTV'/>\n</regionBase>\n";
+    public void test5() throws XMLException {
+        String xml = "<ncl><head><regionBase region='rgTV'>"+
+                "<region id='rgTV' title='teste'/>"+
+                "</regionBase></head></ncl>";
+        
+        XMLLoader loader = new XMLLoader(xml);
+        NCLDoc instance = new NCLDoc();
+        instance.load(loader.getElement());
 
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLRegionBase instance = new NCLRegionBase(loader.getElement());
-
-        String result = instance.parse(0);
+        String expResult = "teste";
+        String result = ((NCLRegionBase) instance.getHead().getRegionBases().get(0)).getParentRegion().getTitle();
         assertEquals(expResult, result);
-    }
 
-//    @Test
-//    public void test5() throws XMLException {
-//        XMLLoader loader = new XMLLoader(expResult);
-//        NCLRegionBase instance = new NCLRegionBase(loader.getElement());
-//
-//        String result = instance.parse(0);
-//        assertEquals(expResult, result);
-//
-//
-//            String xml = "<ncl><head><regionBase region='rgTV'>"+
-//                "<region id='rgTV' title='teste'/>"+
-//                "</regionBase></head></ncl>";
-//
-//            String expResult = "teste";
-//            String result = ((NCLRegion) ((NCLRegionBase) doc.getHead().getRegionBases().iterator().next()).getRegions().iterator().next()).getTitle();
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//
-//    }
+    }
 }

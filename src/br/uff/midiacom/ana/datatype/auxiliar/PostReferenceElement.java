@@ -44,4 +44,7 @@ public interface PostReferenceElement {
 
     
     public void fixReference() throws XMLException;
+    
+    
+    public String getId();
 }

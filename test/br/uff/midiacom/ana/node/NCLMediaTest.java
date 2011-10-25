@@ -46,15 +46,8 @@ import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.xml.XMLException;
-import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.StringReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class NCLMediaTest {
@@ -86,80 +79,58 @@ public class NCLMediaTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test3() throws XMLException {
-        String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
-
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLMedia instance = new NCLMedia(loader.getElement());
-
-        String result = instance.parse(0);
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test3() throws XMLException {
+//        String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
+//
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLMedia instance = new NCLMedia();
+//        instance.load(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//    }
 
     @Test
     public void test4() throws XMLException {
         String expResult = "<media id='m1'>\n\t<area id='a1'/>\n\t<property name='top'/>\n</media>\n";
 
         XMLLoader loader = new XMLLoader(expResult);
-        NCLMedia instance = new NCLMedia(loader.getElement());
+        NCLMedia instance = new NCLMedia();
+        instance.load(loader.getElement());
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
     }
 
-//    @Test
-//    public void test5() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLDoc instance = new NCLDoc();
-//            instance.setReader(reader);
-//            String xml = "<ncl><body>"+
-//                    "<media id='da' refer='db'/>"+
-//                    "<media id='db' src='media.png'/>"+
-//                    "</body></ncl>";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(xml)));
-//
-//            String expResult = "media.png";
-//            String result = ((NCLMedia) instance.getBody().getNodes().iterator().next()).getRefer().getSrc();
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void test6() {
-//        try{
-//            XMLReader reader = XMLReaderFactory.createXMLReader();
-//
-//            NCLDoc instance = new NCLDoc();
-//            instance.setReader(reader);
-//            String xml = "<ncl><head><descriptorBase><descriptor id='dpa' player='teste'/></descriptorBase></head><body>"+
-//                    "<media id='da' descriptor='dpa'/>"+
-//                    "</body></ncl>";
-//
-//            reader.setContentHandler(instance);
-//            reader.parse(new InputSource(new StringReader(xml)));
-//
-//            String expResult = "teste";
-//            String result = ((NCLDescriptor) ((NCLMedia) instance.getBody().getNodes().iterator().next()).getDescriptor()).getPlayer();
-//            //System.out.println(result);
-//            assertEquals(expResult, result);
-//        }
-//        catch(SAXException ex){
-//            fail(ex.getMessage());
-//        }
-//        catch(IOException ex){
-//            fail(ex.getMessage());
-//        }
-//    }
+    @Test
+    public void test5() throws XMLException {
+        String xml = "<ncl><body>"+
+                    "<media id='da' refer='db'/>"+
+                    "<media id='db' src='media.png'/>"+
+                    "</body></ncl>";
+        
+        XMLLoader loader = new XMLLoader(xml);
+        NCLDoc instance = new NCLDoc();
+        instance.load(loader.getElement());
+
+        String expResult = "media.png";
+        String result = ((NCLMedia) instance.getBody().getNodes().get("da")).getRefer().getSrc().parse();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test6() throws XMLException {
+        String xml = "<ncl><head><descriptorBase><descriptor id='dpa' player='teste'/></descriptorBase></head><body>"+
+                    "<media id='da' descriptor='dpa'/>"+
+                    "</body></ncl>";
+        
+        XMLLoader loader = new XMLLoader(xml);
+        NCLDoc instance = new NCLDoc();
+        instance.load(loader.getElement());
+
+        String expResult = "teste";
+        String result = ((NCLDescriptor) ((NCLMedia) instance.getBody().getNodes().get("da")).getDescriptor()).getPlayer();
+        assertEquals(expResult, result);
+    }
 }

@@ -59,12 +59,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     public NCLAttributeAssessment() throws XMLException {
         super();
     }
-    
-    
-    public NCLAttributeAssessment(Element element) throws XMLException {
-        super();
-        load(element);
-    }
 
 
     @Override
@@ -90,8 +84,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     
         
     @Override
-    public void setKey(KeyParamType<Ep> key) {
-        KeyParamType<Ep> aux = this.key;
+    public void setKey(KeyParamType<Ep, T> key) {
+        KeyParamType aux = this.key;
         super.setKey(key);
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
@@ -106,8 +100,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     
         
     @Override
-    public void setOffset(IntegerParamType<Ep> offset) {
-        IntegerParamType<Ep> aux = this.offset;
+    public void setOffset(IntegerParamType<Ep, T> offset) {
+        IntegerParamType aux = this.offset;
         super.setOffset(offset);
         impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
     }
@@ -133,7 +127,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
         // set the key (optional)
         att_name = NCLElementAttributes.KEY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setKey(new KeyParamType<Ep>(att_var, this));
+            setKey(new KeyParamType(att_var, this));
 
         // set the attributeType (optional)
         att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
@@ -143,7 +137,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
         // set the offset (optional)
         att_name = NCLElementAttributes.OFFSET.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setOffset(new IntegerParamType<Ep>(att_var, this));
+            setOffset(new IntegerParamType(att_var, this));
     }
 
 

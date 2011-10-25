@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLModificationListener;
@@ -57,9 +58,8 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public NCLPort(Element element) throws XMLException {
+    public NCLPort() throws XMLException {
         super();
-        load(element);
     }
 
 
@@ -102,7 +102,11 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
             if((aux = (P) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             
-            En refEl = (En) ((En) aux).findNode(att_var);
+            En refEl;
+            if(aux instanceof NCLBody)
+                refEl = (En) ((NCLBody) aux).findNode(att_var);
+            else
+                refEl = (En) ((En) aux).findNode(att_var);
             if(refEl == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             
