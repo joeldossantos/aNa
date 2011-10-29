@@ -195,6 +195,12 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
                 return result;
         }
         
+        for(Es statement : statements){
+            result = (Er) statement.findRole(name);
+            if(result != null)
+                return result;
+        }
+        
         return null;
     }
 

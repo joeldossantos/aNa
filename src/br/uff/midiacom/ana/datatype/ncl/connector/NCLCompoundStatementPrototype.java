@@ -229,6 +229,8 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
         // Compara as statements
         Iterator it = other_comp.getStatements().iterator();
         for(NCLStatement st : statements){
+            if(!it.hasNext())
+                continue;
             NCLStatement other_st = (NCLStatement) it.next();
             comp &= st.compare(other_st);
             if(comp)

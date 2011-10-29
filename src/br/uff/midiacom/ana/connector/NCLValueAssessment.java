@@ -74,7 +74,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     public void setValue(AssValueParamType<Ep, T> value) {
         AssValueParamType aux = this.value;
         super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
 
 
@@ -82,7 +82,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
         String att_name, att_var;
 
         // set the value (required)
-        att_name = NCLElementAttributes.VALUEASSESSMENT.toString();
+        att_name = NCLElementAttributes.VALUE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setValue(new AssValueParamType(att_var, this));
         else

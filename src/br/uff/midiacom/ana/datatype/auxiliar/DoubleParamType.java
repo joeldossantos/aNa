@@ -50,6 +50,9 @@ public class DoubleParamType<P extends NCLConnectorParamPrototype, O extends NCL
 
     @Override
     protected Double createValue(String value) throws XMLException {
+        int index = value.indexOf("s");
+            if(index > 0)
+                value = value.substring(0, index);
         return new Double(value);
     }
 

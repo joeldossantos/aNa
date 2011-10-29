@@ -46,8 +46,8 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAttributeAssessmentPrototype, Ev extends NCLValueAssessmentPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLStatement<T, P> {
+public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAttributeAssessmentPrototype, Ev extends NCLValueAssessmentPrototype, Es extends NCLStatement>
+        extends XMLElementPrototype<Es, P, I> implements NCLStatement<Es, P> {
 
     protected NCLComparator comparator;
     protected Ev valueAssessment;
@@ -220,7 +220,7 @@ public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPro
     }
     
     
-    public boolean compare(T other) {
+    public boolean compare(Es other) {
         boolean comp = true;
 
         String this_stat, other_stat;
@@ -243,6 +243,8 @@ public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPro
         // Compara os attributeAssessment
         Iterator it = other_asses.getAttributeAssessments().iterator();
         for(NCLAttributeAssessmentPrototype att : attributeAssessments){
+            if(!it.hasNext())
+                continue;
             NCLAttributeAssessmentPrototype other_att = (NCLAttributeAssessmentPrototype) it.next();
             comp &= att.compare(other_att);
             if(comp)

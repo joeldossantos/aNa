@@ -294,6 +294,8 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
         // Compara as condicoes
         Iterator it = other_comp.getConditions().iterator();
         for(NCLCondition c : conditions){
+            if(!it.hasNext())
+                continue;
             NCLCondition other_c = (NCLCondition) it.next();
             comp &= c.compare(other_c);
             if(comp)
@@ -306,6 +308,8 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
         // Compara as statements
         it = other_comp.getStatements().iterator();
         for(NCLStatement st : statements){
+            if(!it.hasNext())
+                continue;
             NCLStatement other_st = (NCLStatement) it.next();
             comp &= st.compare(other_st);
             if(comp)

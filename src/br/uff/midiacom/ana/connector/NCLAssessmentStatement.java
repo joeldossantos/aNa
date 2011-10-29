@@ -52,8 +52,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment, Er extends NCLRole>
-        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev> implements NCLStatement<T, P, Er> {
+public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment, Es extends NCLStatement, Er extends NCLRole>
+        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev, Es> implements NCLStatement<Es, P, Er> {
 
 
     public NCLAssessmentStatement() throws XMLException {

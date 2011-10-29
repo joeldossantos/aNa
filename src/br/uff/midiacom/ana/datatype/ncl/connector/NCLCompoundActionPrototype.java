@@ -223,6 +223,8 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
         // Compara as acoes
         Iterator it = other_comp.getActions().iterator();
         for(NCLAction a : actions){
+            if(!it.hasNext())
+                continue;
             NCLAction other_a = (NCLAction) it.next();
             comp &= a.compare(other_a);
             if(comp)
