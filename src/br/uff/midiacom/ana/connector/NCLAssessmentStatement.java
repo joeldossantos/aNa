@@ -102,37 +102,47 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
 
-        // set the comparator (required)
-        att_name = NCLElementAttributes.COMPARATOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setComparator(NCLComparator.getEnumType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the comparator (required)
+            att_name = NCLElementAttributes.COMPARATOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setComparator(NCLComparator.getEnumType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("AssessmentStatement:\n" + ex.getMessage());
+        }
 
-        // create the child nodes
-        nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
 
-                //create the valueAssessment
-                if(el.getTagName().equals(NCLElementAttributes.VALUEASSESSMENT.toString())){
-                    Ev inst = createValueAssessment();
-                    setValueAssessment(inst);
-                    inst.load(el);
-                }
-                // create the connectors
-                if(el.getTagName().equals(NCLElementAttributes.ATTRIBUTEASSESSMENT.toString())){
-                    Ea inst = createAttributeAssessment();
-                    addAttributeAssessment(inst);
-                    inst.load(el);
+                    //create the valueAssessment
+                    if(el.getTagName().equals(NCLElementAttributes.VALUEASSESSMENT.toString())){
+                        Ev inst = createValueAssessment();
+                        setValueAssessment(inst);
+                        inst.load(el);
+                    }
+                    // create the connectors
+                    if(el.getTagName().equals(NCLElementAttributes.ATTRIBUTEASSESSMENT.toString())){
+                        Ea inst = createAttributeAssessment();
+                        addAttributeAssessment(inst);
+                        inst.load(el);
+                    }
                 }
             }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("AssessmentStatement > " + ex.getMessage());
         }
     }
 

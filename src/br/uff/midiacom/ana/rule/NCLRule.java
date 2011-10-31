@@ -96,39 +96,50 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the var (required)
-        att_name = NCLElementAttributes.VAR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ep prop = (Ep) new NCLProperty(att_var);
-            setVar(prop);
-            NCLReferenceManager.getInstance().waitReference(this);
+            // set the var (required)
+            att_name = NCLElementAttributes.VAR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Ep prop = (Ep) new NCLProperty(att_var);
+                setVar(prop);
+                NCLReferenceManager.getInstance().waitReference(this);
+            }
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+            // set the comparator (required)
+            att_name = NCLElementAttributes.COMPARATOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setComparator(NCLComparator.getEnumType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+            // set the value (required)
+            att_name = NCLElementAttributes.VALUE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setValue(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
         }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-        // set the comparator (required)
-        att_name = NCLElementAttributes.COMPARATOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setComparator(NCLComparator.getEnumType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-        // set the value (required)
-        att_name = NCLElementAttributes.VALUE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Rule" + aux + ":\n" + ex.getMessage());
+        }
     }
 
 
@@ -150,13 +161,24 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     }
     
     
-    public void fixReference() throws XMLException {
+    public void fixReference() throws NCLParsingException {
         String aux;
         
-        // set the var (required)
-        if((aux = getVar().getName()) != null){
-            Ep prop = (Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux);
-            setVar(prop);
+        try{
+            // set the var (required)
+            if((aux = getVar().getName()) != null){
+                Ep prop = (Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux);
+                setVar(prop);
+            }
+        }
+        catch(XMLException ex){
+            aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Rule" + aux + ". Fixing reference:\n" + ex.getMessage());
         }
     }
 }

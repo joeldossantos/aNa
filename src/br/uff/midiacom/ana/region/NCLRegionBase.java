@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -132,47 +133,80 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
-        // set the id (optional)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
+        try{
+            // set the id (optional)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
 
-        // set the device (optional)
-        att_name = NCLElementAttributes.DEVICE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDevice(att_var);
-        
-        // create the region child nodes
-        ch_name = NCLElementAttributes.REGION.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            if(!el.getParentNode().equals(element))
-                continue;
+            // set the device (optional)
+            att_name = NCLElementAttributes.DEVICE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setDevice(att_var);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
             
-            Er inst = createRegion();
-            addRegion(inst);
-            inst.load(el);
+            throw new NCLParsingException("RegionBase" + aux + ":\n" + ex.getMessage());
         }
         
-        // create the import child nodes
-        ch_name = NCLElementAttributes.IMPORTBASE.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            Ei inst = createImportBase();
-            addImportBase(inst);
-            inst.load(el);
+        try{
+            // create the region child nodes
+            ch_name = NCLElementAttributes.REGION.toString();
+            nl = element.getElementsByTagName(ch_name);
+            for(int i=0; i < nl.getLength(); i++){
+                Element el = (Element) nl.item(i);
+                if(!el.getParentNode().equals(element))
+                    continue;
+
+                Er inst = createRegion();
+                addRegion(inst);
+                inst.load(el);
+            }
+
+            // create the import child nodes
+            ch_name = NCLElementAttributes.IMPORTBASE.toString();
+            nl = element.getElementsByTagName(ch_name);
+            for(int i=0; i < nl.getLength(); i++){
+                Element el = (Element) nl.item(i);
+                Ei inst = createImportBase();
+                addImportBase(inst);
+                inst.load(el);
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("RegionBase" + aux + " > " + ex.getMessage());
         }
 
-        // set the region (optional)
-        att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setParentRegion(findRegion(att_var));
+        try{
+            // set the region (optional)
+            att_name = NCLElementAttributes.REGION.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setParentRegion(findRegion(att_var));
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("RegionBase" + aux + ":\n" + ex.getMessage());
+        }
     }
 
 

@@ -78,15 +78,20 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     }
 
 
-    public void load(Element element) throws NCLParsingException, XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the value (required)
-        att_name = NCLElementAttributes.VALUE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new AssValueParamType(att_var, this));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the value (required)
+            att_name = NCLElementAttributes.VALUE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setValue(new AssValueParamType(att_var, this));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ValueAssessment:\n" + ex.getMessage());
+        }
     }
 
 

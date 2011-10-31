@@ -85,44 +85,55 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-        // set the component (required)
-        att_name = NCLElementAttributes.COMPONENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            En refEl;
-            if(aux instanceof NCLBody)
-                refEl = (En) ((NCLBody) aux).findNode(att_var);
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
             else
-                refEl = (En) ((En) aux).findNode(att_var);
-            if(refEl == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            setComponent(refEl);
-        }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the interface (optional)
-        att_name = NCLElementAttributes.INTERFACE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ei refEl = (Ei) getComponent().findInterface(att_var);
-            if(refEl == null)
-                throw new NCLParsingException("Could not find element " + att_var);
+            // set the component (required)
+            att_name = NCLElementAttributes.COMPONENT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                P aux;
+                if((aux = (P) getParent()) == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                En refEl;
+                if(aux instanceof NCLBody)
+                    refEl = (En) ((NCLBody) aux).findNode(att_var);
+                else
+                    refEl = (En) ((En) aux).findNode(att_var);
+                if(refEl == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                setComponent(refEl);
+            }
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+            // set the interface (optional)
+            att_name = NCLElementAttributes.INTERFACE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Ei refEl = (Ei) getComponent().findInterface(att_var);
+                if(refEl == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                setInterface(refEl);
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
             
-            setInterface(refEl);
+            throw new NCLParsingException("Port" + aux + ":\n" + ex.getMessage());
         }
     }
 

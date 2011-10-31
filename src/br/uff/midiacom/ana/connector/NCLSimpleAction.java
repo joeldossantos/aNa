@@ -167,75 +167,80 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
     }
 
 
-    public void load(Element element) throws XMLException, NCLParsingException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the role (required)
-        att_name = NCLElementAttributes.ROLE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRole(createRole(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the role (required)
+            att_name = NCLElementAttributes.ROLE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setRole(createRole(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the value (optional)
-        att_name = NCLElementAttributes.VALUE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(new StringParamType(att_var, this));
+            // set the value (optional)
+            att_name = NCLElementAttributes.VALUE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setValue(new StringParamType(att_var, this));
 
-        // set the min (optional)
-        att_name = NCLElementAttributes.MIN.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            try{
-                setMin(new Integer(att_var));
-            }catch (Exception e){
-                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            // set the min (optional)
+            att_name = NCLElementAttributes.MIN.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                try{
+                    setMin(new Integer(att_var));
+                }catch (Exception e){
+                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+                }
             }
+
+            // set the max (optional)
+            att_name = NCLElementAttributes.MAX.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setMax(new MaxType(att_var));
+
+            // set the qualifier (optional)
+            att_name = NCLElementAttributes.QUALIFIER.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setQualifier(NCLActionOperator.getEnumType(att_var));
+
+            // set the eventType (optional)
+            att_name = NCLElementAttributes.EVENTTYPE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setEventType(NCLEventType.getEnumType(att_var));
+
+            // set the actionType (optional)
+            att_name = NCLElementAttributes.ACTIONTYPE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setActionType(NCLEventAction.getEnumType(att_var));
+
+            // set the repeatDelay (optional)
+            att_name = NCLElementAttributes.REPEATDELAY.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setRepeatDelay(new DoubleParamType(att_var, this));
+
+            // set the repeat (optional)
+            att_name = NCLElementAttributes.REPEAT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setRepeat(new IntegerParamType(att_var, this));
+
+            // set the duration (optional)
+            att_name = NCLElementAttributes.DURATION.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setDuration(new DoubleParamType(att_var, this));
+
+            // set the by (optional)
+            att_name = NCLElementAttributes.BY.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setBy(new ByParamType(att_var, this));
+
+            // set the delay (optional)
+            att_name = NCLElementAttributes.DELAY.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setDelay(new DoubleParamType(att_var, this));
         }
-
-        // set the max (optional)
-        att_name = NCLElementAttributes.MAX.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setMax(new MaxType(att_var));
-
-        // set the qualifier (optional)
-        att_name = NCLElementAttributes.QUALIFIER.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setQualifier(NCLActionOperator.getEnumType(att_var));
-
-        // set the eventType (optional)
-        att_name = NCLElementAttributes.EVENTTYPE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setEventType(NCLEventType.getEnumType(att_var));
-
-        // set the actionType (optional)
-        att_name = NCLElementAttributes.ACTIONTYPE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setActionType(NCLEventAction.getEnumType(att_var));
-
-        // set the repeatDelay (optional)
-        att_name = NCLElementAttributes.REPEATDELAY.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRepeatDelay(new DoubleParamType(att_var, this));
-
-        // set the repeat (optional)
-        att_name = NCLElementAttributes.REPEAT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRepeat(new IntegerParamType(att_var, this));
-
-        // set the duration (optional)
-        att_name = NCLElementAttributes.DURATION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDuration(new DoubleParamType(att_var, this));
-
-        // set the by (optional)
-        att_name = NCLElementAttributes.BY.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setBy(new ByParamType(att_var, this));
-
-        // set the delay (optional)
-        att_name = NCLElementAttributes.DELAY.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType(att_var, this));
+        catch(XMLException ex){
+            throw new NCLParsingException("SimpleAction:\n" + ex.getMessage());
+        }
     }
 
 

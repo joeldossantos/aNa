@@ -103,42 +103,52 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
     }
 
 
-    public void load(Element element) throws XMLException, NCLParsingException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
 
-        // set the operator (required)
-        att_name = NCLElementAttributes.OPERATOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setOperator(NCLOperator.getEnumType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the operator (required)
+            att_name = NCLElementAttributes.OPERATOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setOperator(NCLOperator.getEnumType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the isNegated (optional)
-        att_name = NCLElementAttributes.ISNEGATED.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setIsNegated(Boolean.valueOf(att_var));
+            // set the isNegated (optional)
+            att_name = NCLElementAttributes.ISNEGATED.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setIsNegated(Boolean.valueOf(att_var));
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundStatement:\n" + ex.getMessage());
+        }
 
-        // create the child nodes
-        nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
 
-                //create the assessmentStatement
-                if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
-                    Es inst = createAssessmentStatement();
-                    addStatement(inst);
-                    inst.load(el);
-                }
-                // create the compoundStatement
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
-                    Es inst = createCompoundStatement();
-                    addStatement(inst);
-                    inst.load(el);
+                    //create the assessmentStatement
+                    if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
+                        Es inst = createAssessmentStatement();
+                        addStatement(inst);
+                        inst.load(el);
+                    }
+                    // create the compoundStatement
+                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
+                        Es inst = createCompoundStatement();
+                        addStatement(inst);
+                        inst.load(el);
+                    }
                 }
             }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundStatement > " + ex.getMessage());
         }
     }
 

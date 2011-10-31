@@ -98,20 +98,31 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the name (required)
-        att_name = NCLElementAttributes.NAME.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setName(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the name (required)
+            att_name = NCLElementAttributes.NAME.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setName(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the value (optional)
-        att_name = NCLElementAttributes.VALUE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(att_var);
+            // set the value (optional)
+            att_name = NCLElementAttributes.VALUE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setValue(att_var);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Property" + aux + ":\n" + ex.getMessage());
+        }
     }
 
 

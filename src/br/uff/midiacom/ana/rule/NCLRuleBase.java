@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -117,41 +118,51 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
 
-        // set the id (optional)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
+        try{
+            // set the id (optional)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("RuleBase:\n" + ex.getMessage());
+        }
 
-        // create the child nodes
-        nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
 
-                //create the imports
-                if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
-                    Ei inst = createImportBase();
-                    addImportBase(inst);
-                    inst.load(el);
-                }
-                //create the rules
-                if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
-                    Et inst = createRule();
-                    addRule(inst);
-                    inst.load(el);
-                }
-                // create the compositeRules
-                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
-                    Et inst = createCompositeRule();
-                    addRule(inst);
-                    inst.load(el);
+                    //create the imports
+                    if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+                        Ei inst = createImportBase();
+                        addImportBase(inst);
+                        inst.load(el);
+                    }
+                    //create the rules
+                    if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
+                        Et inst = createRule();
+                        addRule(inst);
+                        inst.load(el);
+                    }
+                    // create the compositeRules
+                    if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
+                        Et inst = createCompositeRule();
+                        addRule(inst);
+                        inst.load(el);
+                    }
                 }
             }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("RuleBase > " + ex.getMessage());
         }
     }
 

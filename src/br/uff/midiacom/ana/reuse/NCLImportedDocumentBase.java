@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -85,23 +86,33 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
-        // set the id (optional)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
+        try{
+            // set the id (optional)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ImportedDocumentBase:\n" + ex.getMessage());
+        }
 
-        // create the child nodes
-        ch_name = NCLElementAttributes.IMPORTNCL.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            Ei inst = createImportNCL();
-            addImportNCL(inst);
-            inst.load(el);
+        try{
+            // create the child nodes
+            ch_name = NCLElementAttributes.IMPORTNCL.toString();
+            nl = element.getElementsByTagName(ch_name);
+            for(int i=0; i < nl.getLength(); i++){
+                Element el = (Element) nl.item(i);
+                Ei inst = createImportNCL();
+                addImportNCL(inst);
+                inst.load(el);
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ImportedDocumentBase > " + ex.getMessage());
         }
     }
 

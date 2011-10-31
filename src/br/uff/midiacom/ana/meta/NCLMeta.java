@@ -80,22 +80,33 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the name (required)
-        att_name = NCLElementAttributes.NAME.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setName(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the name (required)
+            att_name = NCLElementAttributes.NAME.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setName(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the content (required)
-        att_name = NCLElementAttributes.CONTENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setContent(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+            // set the content (required)
+            att_name = NCLElementAttributes.CONTENT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setContent(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        }
+        catch(XMLException ex){
+            String aux = getName();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Meta" + aux + ":\n" + ex.getMessage());
+        }
     }
 
 

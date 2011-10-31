@@ -115,59 +115,81 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-        // create the connectorParam nodes
-        ch_name = NCLElementAttributes.CONNECTORPARAM.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            Ep inst = createConnectorParam();
-            addConnectorParam(inst);
-            inst.load(el);
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
         }
-        
-        // create the child nodes
-        nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("CausalConnector" + aux + ":\n" + ex.getMessage());
+        }
 
-                //create the simpleCondition
-                if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
-                    Ec inst = createSimpleCondition();
-                    setCondition(inst);
-                    inst.load(el);
-                }
-                // create the compoundCondition
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
-                    Ec inst = createCompoundCondition();
-                    setCondition(inst);
-                    inst.load(el);
-                }
-                //create the simpleAction
-                if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
-                    Ea inst = createSimpleAction();
-                    setAction(inst);
-                    inst.load(el);
-                }
-                // create the compoundAction
-                if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
-                    Ea inst = createCompoundAction();
-                    setAction(inst);
-                    inst.load(el);
+        try{
+            // create the connectorParam nodes
+            ch_name = NCLElementAttributes.CONNECTORPARAM.toString();
+            nl = element.getElementsByTagName(ch_name);
+            for(int i=0; i < nl.getLength(); i++){
+                Element el = (Element) nl.item(i);
+                Ep inst = createConnectorParam();
+                addConnectorParam(inst);
+                inst.load(el);
+            }
+
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    //create the simpleCondition
+                    if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
+                        Ec inst = createSimpleCondition();
+                        setCondition(inst);
+                        inst.load(el);
+                    }
+                    // create the compoundCondition
+                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
+                        Ec inst = createCompoundCondition();
+                        setCondition(inst);
+                        inst.load(el);
+                    }
+                    //create the simpleAction
+                    if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
+                        Ea inst = createSimpleAction();
+                        setAction(inst);
+                        inst.load(el);
+                    }
+                    // create the compoundAction
+                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
+                        Ea inst = createCompoundAction();
+                        setAction(inst);
+                        inst.load(el);
+                    }
                 }
             }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("CausalConnector" + aux + " > " + ex.getMessage());
         }
     }
 

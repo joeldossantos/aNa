@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLModificationListener;
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -71,8 +72,13 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
     }
 
 
-    public void load(Element element) throws XMLException {
-        setRDFTree(element.getTextContent());
+    public void load(Element element) throws NCLParsingException {
+        try{
+            setRDFTree(element.getTextContent());
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Metadata:\n" + ex.getMessage());
+        }
     }
 
 

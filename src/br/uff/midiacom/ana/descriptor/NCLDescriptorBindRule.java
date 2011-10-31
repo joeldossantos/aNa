@@ -81,33 +81,38 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the constituint (required)
-        att_name = NCLElementAttributes.CONSTITUENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            El desc = (El) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
-            if(desc == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            setConstituent(desc);
-        }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the constituint (required)
+            att_name = NCLElementAttributes.CONSTITUENT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                P aux;
+                if((aux = (P) getParent()) == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
 
-        // set the rule (required)
-        att_name = NCLElementAttributes.RULE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Er rul = (Er) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
-            setRule(rul);
+                El desc = (El) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
+                if(desc == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                setConstituent(desc);
+            }
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+            // set the rule (required)
+            att_name = NCLElementAttributes.RULE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Er rul = (Er) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
+                setRule(rul);
+            }
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
         }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        catch(XMLException ex){
+            throw new NCLParsingException("BindRule:\n" + ex.getMessage());
+        }
     }
 
 

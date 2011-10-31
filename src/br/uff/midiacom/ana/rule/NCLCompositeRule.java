@@ -109,44 +109,66 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the operator (required)
-        att_name = NCLElementAttributes.OPERATOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setOperator(NCLOperator.getEnumType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+            // set the operator (required)
+            att_name = NCLElementAttributes.OPERATOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setOperator(NCLOperator.getEnumType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("CompositeRule" + aux + ":\n" + ex.getMessage());
+        }
 
-        // create the child nodes
-        nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
 
-                //create the rules
-                if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
-                    T inst = createRule(); 
-                    addRule(inst);
-                    inst.load(el);
-                }
-                // create the compositeRules
-                if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
-                    T inst = createCompositeRule();
-                    addRule(inst);
-                    inst.load(el);
+                    //create the rules
+                    if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
+                        T inst = createRule(); 
+                        addRule(inst);
+                        inst.load(el);
+                    }
+                    // create the compositeRules
+                    if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
+                        T inst = createCompositeRule();
+                        addRule(inst);
+                        inst.load(el);
+                    }
                 }
             }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("CompositeRule" + aux + " > " + ex.getMessage());
         }
     }
 

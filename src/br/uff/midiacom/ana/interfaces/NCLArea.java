@@ -135,60 +135,71 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the coords (optional)
-        att_name = NCLElementAttributes.COORDS.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setCoords(new ArrayType(att_var));
+            // set the coords (optional)
+            att_name = NCLElementAttributes.COORDS.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setCoords(new ArrayType(att_var));
 
-        // set the begin (optional)
-        att_name = NCLElementAttributes.BEGIN.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setBegin(new TimeType(att_var));
+            // set the begin (optional)
+            att_name = NCLElementAttributes.BEGIN.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setBegin(new TimeType(att_var));
 
-        // set the end (optional)
-        att_name = NCLElementAttributes.END.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setEnd(new TimeType(att_var));
+            // set the end (optional)
+            att_name = NCLElementAttributes.END.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setEnd(new TimeType(att_var));
 
-        // set the text (optional)
-        att_name = NCLElementAttributes.TEXT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setText(att_var);
+            // set the text (optional)
+            att_name = NCLElementAttributes.TEXT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setText(att_var);
 
-        // set the position (optional)
-        att_name = NCLElementAttributes.POSITION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            try{
-                setPosition(new Integer(att_var));
-            }catch(Exception e){
-                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            // set the position (optional)
+            att_name = NCLElementAttributes.POSITION.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                try{
+                    setPosition(new Integer(att_var));
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+                }
             }
+
+            // set the first (optional)
+            att_name = NCLElementAttributes.FIRST.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setFirst(new SampleType(att_var));
+
+            // set the last (optional)
+            att_name = NCLElementAttributes.LAST.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setLast(new SampleType(att_var));
+
+            // set the label (optional)
+            att_name = NCLElementAttributes.LABEL.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setLabel(att_var);
         }
-
-        // set the first (optional)
-        att_name = NCLElementAttributes.FIRST.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setFirst(new SampleType(att_var));
-
-        // set the last (optional)
-        att_name = NCLElementAttributes.LAST.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setLast(new SampleType(att_var));
-
-        // set the label (optional)
-        att_name = NCLElementAttributes.LABEL.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setLabel(att_var);
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Area" + aux + ":\n" + ex.getMessage());
+        }
     }
 
 

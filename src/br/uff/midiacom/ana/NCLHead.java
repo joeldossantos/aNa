@@ -174,81 +174,86 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String ch_name;
         Element el;
 
-        // create the importedDocumentBase
-        ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
-        el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null){
-            Eib inst = createImportedDocumentBase();
-            setImportedDocumentBase(inst);
-            inst.load(el);
-        }
+        try{
+            // create the importedDocumentBase
+            ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
+            el = (Element) element.getElementsByTagName(ch_name).item(0);
+            if(el != null){
+                Eib inst = createImportedDocumentBase();
+                setImportedDocumentBase(inst);
+                inst.load(el);
+            }
 
-        // create the ruleBase
-        ch_name = NCLElementAttributes.RULEBASE.toString();
-        el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null){
-            Erl inst = createRuleBase();
-            setRuleBase(inst);
-            inst.load(el);
-        }
+            // create the ruleBase
+            ch_name = NCLElementAttributes.RULEBASE.toString();
+            el = (Element) element.getElementsByTagName(ch_name).item(0);
+            if(el != null){
+                Erl inst = createRuleBase();
+                setRuleBase(inst);
+                inst.load(el);
+            }
 
-        // create the transitionBase
-        ch_name = NCLElementAttributes.TRANSITIONBASE.toString();
-        el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null){
-            Etb inst = createTransitionBase();
-            setTransitionBase(inst);
-            inst.load(el);
-        }
+            // create the transitionBase
+            ch_name = NCLElementAttributes.TRANSITIONBASE.toString();
+            el = (Element) element.getElementsByTagName(ch_name).item(0);
+            if(el != null){
+                Etb inst = createTransitionBase();
+                setTransitionBase(inst);
+                inst.load(el);
+            }
 
-        // create the child nodes (regionBases, metas and metadatas)
-        NodeList nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                el = (Element) nl.item(i);
+            // create the child nodes (regionBases, metas and metadatas)
+            NodeList nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    el = (Element) nl.item(i);
 
-                // create the regionBase
-                if(el.getTagName().equals(NCLElementAttributes.REGIONBASE.toString())){
-                    Erb inst = createRegionBase();
-                    addRegionBase(inst);
-                    inst.load(el);
-                }
-                // create the meta
-                if(el.getTagName().equals(NCLElementAttributes.META.toString())){
-                    Em inst = createMeta();
-                    addMeta(inst);
-                    inst.load(el);
-                }
-                // create the metadata
-                if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
-                    Emt inst = createMetadata();
-                    addMetadata(inst);
-                    inst.load(el);
+                    // create the regionBase
+                    if(el.getTagName().equals(NCLElementAttributes.REGIONBASE.toString())){
+                        Erb inst = createRegionBase();
+                        addRegionBase(inst);
+                        inst.load(el);
+                    }
+                    // create the meta
+                    if(el.getTagName().equals(NCLElementAttributes.META.toString())){
+                        Em inst = createMeta();
+                        addMeta(inst);
+                        inst.load(el);
+                    }
+                    // create the metadata
+                    if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
+                        Emt inst = createMetadata();
+                        addMetadata(inst);
+                        inst.load(el);
+                    }
                 }
             }
-        }
 
-        // create the descriptorBase
-        ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
-        el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null){
-            Edb inst = createDescriptorBase();
-            setDescriptorBase(inst);
-            inst.load(el);
-        }
+            // create the descriptorBase
+            ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
+            el = (Element) element.getElementsByTagName(ch_name).item(0);
+            if(el != null){
+                Edb inst = createDescriptorBase();
+                setDescriptorBase(inst);
+                inst.load(el);
+            }
 
-        // create the connectorBase
-        ch_name = NCLElementAttributes.CONNECTORBASE.toString();
-        el = (Element) element.getElementsByTagName(ch_name).item(0);
-        if(el != null){
-            Ecb inst = createConnectorBase();
-            setConnectorBase(inst);
-            inst.load(el);
+            // create the connectorBase
+            ch_name = NCLElementAttributes.CONNECTORBASE.toString();
+            el = (Element) element.getElementsByTagName(ch_name).item(0);
+            if(el != null){
+                Ecb inst = createConnectorBase();
+                setConnectorBase(inst);
+                inst.load(el);
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Head > " + ex.getMessage());
         }
     }
 

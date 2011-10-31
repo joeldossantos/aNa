@@ -177,67 +177,100 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the src (optional)
-        att_name = NCLElementAttributes.SRC.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setSrc(new SrcType(att_var));
+            // set the src (optional)
+            att_name = NCLElementAttributes.SRC.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setSrc(new SrcType(att_var));
 
-        // set the type (optional)
-        att_name = NCLElementAttributes.TYPE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setType(NCLMimeType.getEnumType(att_var));
+            // set the type (optional)
+            att_name = NCLElementAttributes.TYPE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setType(NCLMimeType.getEnumType(att_var));
 
-        // set the descriptor (optional)
-        att_name = NCLElementAttributes.DESCRIPTOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
-            setDescriptor(desc);
+            // set the descriptor (optional)
+            att_name = NCLElementAttributes.DESCRIPTOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
+                setDescriptor(desc);
+            }
+
+            // set the instance (optional)
+            att_name = NCLElementAttributes.INSTANCE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setInstance(NCLInstanceType.getEnumType(att_var));
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Media" + aux + ":\n" + ex.getMessage());
         }
 
-        // set the instance (optional)
-        att_name = NCLElementAttributes.INSTANCE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setInstance(NCLInstanceType.getEnumType(att_var));
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
 
-        // create the child nodes
-        nl = element.getChildNodes();
-        for(int i=0; i < nl.getLength(); i++){
-            Node nd = nl.item(i);
-            if(nd instanceof Element){
-                Element el = (Element) nl.item(i);
-
-                //create the areas
-                if(el.getTagName().equals(NCLElementAttributes.AREA.toString())){
-                    Ea inst = createArea();
-                    addArea(inst);
-                    inst.load(el);
-                }
-                // create the properties
-                if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
-                    Ep inst = createProperty();
-                    addProperty(inst);
-                    inst.load(el);
+                    //create the areas
+                    if(el.getTagName().equals(NCLElementAttributes.AREA.toString())){
+                        Ea inst = createArea();
+                        addArea(inst);
+                        inst.load(el);
+                    }
+                    // create the properties
+                    if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
+                        Ep inst = createProperty();
+                        addProperty(inst);
+                        inst.load(el);
+                    }
                 }
             }
         }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Media" + aux + " > " + ex.getMessage());
+        }
 
-        // set the refer (optional)
-        att_name = NCLElementAttributes.REFER.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            T ref = (T) new NCLMedia(att_var);
-            setRefer(ref);
-            NCLReferenceManager.getInstance().waitReference(this);
+        try{
+            // set the refer (optional)
+            att_name = NCLElementAttributes.REFER.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                T ref = (T) new NCLMedia(att_var);
+                setRefer(ref);
+                NCLReferenceManager.getInstance().waitReference(this);
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Media" + aux + ":\n" + ex.getMessage());
         }
     }
 
@@ -277,13 +310,24 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     }
     
     
-    public void fixReference() throws XMLException {
+    public void fixReference() throws NCLParsingException {
         String aux;
         
-        // set the refer (optional)
-        if((aux = getRefer().getId()) != null){
-            T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
-            setRefer(ref);
+        try{
+            // set the refer (optional)
+            if((aux = getRefer().getId()) != null){
+                T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
+                setRefer(ref);
+            }
+        }
+        catch(XMLException ex){
+            aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Media" + aux + ". Fixing reference:\n" + ex.getMessage());
         }
     }
 

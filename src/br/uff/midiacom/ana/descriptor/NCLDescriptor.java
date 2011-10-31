@@ -246,167 +246,189 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
-        // set the id (required)
-        att_name = NCLElementAttributes.ID.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setId(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the id (required)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the player (optional)
-        att_name = NCLElementAttributes.PLAYER.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setPlayer(att_var);
+            // set the player (optional)
+            att_name = NCLElementAttributes.PLAYER.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setPlayer(att_var);
 
-        // set the explicitDur (optional)
-        att_name = NCLElementAttributes.EXPLICITDUR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setExplicitDur(new TimeType(att_var));
+            // set the explicitDur (optional)
+            att_name = NCLElementAttributes.EXPLICITDUR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setExplicitDur(new TimeType(att_var));
 
-        // set the freeze (optional)
-        att_name = NCLElementAttributes.FREEZE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setFreeze(Boolean.parseBoolean(att_var));
+            // set the freeze (optional)
+            att_name = NCLElementAttributes.FREEZE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setFreeze(Boolean.parseBoolean(att_var));
 
-        // set the moveUp (optional)
-        att_name = NCLElementAttributes.MOVEUP.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Integer aux;
-            try{
-                aux = new Integer(att_var);
-            }catch(Exception e){
-                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            // set the moveUp (optional)
+            att_name = NCLElementAttributes.MOVEUP.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Integer aux;
+                try{
+                    aux = new Integer(att_var);
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+                }
+                T desc = (T) new NCLDescriptor(att_var);
+                desc.setFocusIndex(aux);
+                setMoveUp(desc);
+                NCLReferenceManager.getInstance().waitReference(this);
             }
-            T desc = (T) new NCLDescriptor(att_var);
-            desc.setFocusIndex(aux);
-            setMoveUp(desc);
-            NCLReferenceManager.getInstance().waitReference(this);
-        }
 
-        // set the moveRight (optional)
-        att_name = NCLElementAttributes.MOVERIGHT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Integer aux;
-            try{
-                aux = new Integer(att_var);
-            }catch(Exception e){
-                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            // set the moveRight (optional)
+            att_name = NCLElementAttributes.MOVERIGHT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Integer aux;
+                try{
+                    aux = new Integer(att_var);
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+                }
+                T desc = (T) new NCLDescriptor(att_var);
+                desc.setFocusIndex(aux);
+                setMoveRight(desc);
+                NCLReferenceManager.getInstance().waitReference(this);
             }
-            T desc = (T) new NCLDescriptor(att_var);
-            desc.setFocusIndex(aux);
-            setMoveRight(desc);
-            NCLReferenceManager.getInstance().waitReference(this);
-        }
 
-        // set the moveLeft (optional)
-        att_name = NCLElementAttributes.MOVELEFT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Integer aux;
-            try{
-                aux = new Integer(att_var);
-            }catch(Exception e){
-                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            // set the moveLeft (optional)
+            att_name = NCLElementAttributes.MOVELEFT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Integer aux;
+                try{
+                    aux = new Integer(att_var);
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+                }
+                T desc = (T) new NCLDescriptor(att_var);
+                desc.setFocusIndex(aux);
+                setMoveLeft(desc);
+                NCLReferenceManager.getInstance().waitReference(this);
             }
-            T desc = (T) new NCLDescriptor(att_var);
-            desc.setFocusIndex(aux);
-            setMoveLeft(desc);
-            NCLReferenceManager.getInstance().waitReference(this);
-        }
 
-        // set the moveDown (optional)
-        att_name = NCLElementAttributes.MOVEDOWN.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Integer aux;
-            try{
-                aux = new Integer(att_var);
-            }catch(Exception e){
-                throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+            // set the moveDown (optional)
+            att_name = NCLElementAttributes.MOVEDOWN.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Integer aux;
+                try{
+                    aux = new Integer(att_var);
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
+                }
+                T desc = (T) new NCLDescriptor(att_var);
+                desc.setFocusIndex(aux);
+                setMoveDown(desc);
+                NCLReferenceManager.getInstance().waitReference(this);
             }
-            T desc = (T) new NCLDescriptor(att_var);
-            desc.setFocusIndex(aux);
-            setMoveDown(desc);
-            NCLReferenceManager.getInstance().waitReference(this);
-        }
 
-        // set the focusIndex (optional)
-        att_name = NCLElementAttributes.FOCUSINDEX.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            try{
-                setFocusIndex(new Integer(att_var));
-            }catch(Exception e){
-                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            // set the focusIndex (optional)
+            att_name = NCLElementAttributes.FOCUSINDEX.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                try{
+                    setFocusIndex(new Integer(att_var));
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+                }
+            }
+
+            // set the focusBorderColor (optional)
+            att_name = NCLElementAttributes.FOCUSBORDERCOLOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setFocusBorderColor(NCLColor.getEnumType(att_var));
+
+            // set the focusBorderWidth (optional)
+            att_name = NCLElementAttributes.FOCUSBORDERWIDTH.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                try{
+                    setFocusBorderWidth(new Integer(att_var));
+                }catch(Exception e){
+                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+                }
+            }
+
+            // set the focusBorderTransparency (optional)
+            att_name = NCLElementAttributes.FOCUSBORDERTRANSPARENCY.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setFocusBorderTransparency(new PercentageType(att_var));
+
+            // set the focusSrc (optional)
+            att_name = NCLElementAttributes.FOCUSSRC.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setFocusSrc(new SrcType(att_var));
+
+            // set the focusSelSrc (optional)
+            att_name = NCLElementAttributes.FOCUSSELSRC.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setFocusSelSrc(new SrcType(att_var));
+
+            // set the selBorderColor (optional)
+            att_name = NCLElementAttributes.SELBORDERCOLOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setSelBorderColor(NCLColor.getEnumType(att_var));
+
+            // set the transIn (optional)
+            att_name = NCLElementAttributes.TRANSIN.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
+                setTransIn(tran);
+            }
+
+            // set the transOut (optional)
+            att_name = NCLElementAttributes.TRANSOUT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
+                setTransOut(tran);
+            }
+
+            // set the region (optional)
+            att_name = NCLElementAttributes.REGION.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
+                setRegion(reg);
             }
         }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Descriptor" + aux + ":\n" + ex.getMessage());
+        }
 
-        // set the focusBorderColor (optional)
-        att_name = NCLElementAttributes.FOCUSBORDERCOLOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setFocusBorderColor(NCLColor.getEnumType(att_var));
 
-        // set the focusBorderWidth (optional)
-        att_name = NCLElementAttributes.FOCUSBORDERWIDTH.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            try{
-                setFocusBorderWidth(new Integer(att_var));
-            }catch(Exception e){
-                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+        try{
+            // create the descriptor child nodes
+            ch_name = NCLElementAttributes.DESCRIPTORPARAM.toString();
+            nl = element.getElementsByTagName(ch_name);
+            for(int i=0; i < nl.getLength(); i++){
+                Element el = (Element) nl.item(i);
+                Ep inst = createParamByType(el);
+                addDescriptorParam(inst);
+                inst.load(el);
             }
         }
-
-        // set the focusBorderTransparency (optional)
-        att_name = NCLElementAttributes.FOCUSBORDERTRANSPARENCY.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setFocusBorderTransparency(new PercentageType(att_var));
-
-        // set the focusSrc (optional)
-        att_name = NCLElementAttributes.FOCUSSRC.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setFocusSrc(new SrcType(att_var));
-
-        // set the focusSelSrc (optional)
-        att_name = NCLElementAttributes.FOCUSSELSRC.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setFocusSelSrc(new SrcType(att_var));
-
-        // set the selBorderColor (optional)
-        att_name = NCLElementAttributes.SELBORDERCOLOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setSelBorderColor(NCLColor.getEnumType(att_var));
-
-        // set the transIn (optional)
-        att_name = NCLElementAttributes.TRANSIN.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
-            setTransIn(tran);
-        }
-
-        // set the transOut (optional)
-        att_name = NCLElementAttributes.TRANSOUT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
-            setTransOut(tran);
-        }
-
-        // set the region (optional)
-        att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
-            setRegion(reg);
-        }
-
-
-        // create the descriptor child nodes
-        ch_name = NCLElementAttributes.DESCRIPTORPARAM.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            Ep inst = createParamByType(el);
-            addDescriptorParam(inst);
-            inst.load(el);
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Descriptor" + aux + " > " + ex.getMessage());
         }
     }
 
@@ -568,31 +590,42 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     }
     
     
-    public void fixReference() throws XMLException {
+    public void fixReference() throws NCLParsingException {
         Integer aux;
         
-        // set the moveUp (optional)
-        if((aux = getMoveUp().getFocusIndex()) != null){
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-            setMoveUp(desc);
-        }
+        try{
+            // set the moveUp (optional)
+            if((aux = getMoveUp().getFocusIndex()) != null){
+                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                setMoveUp(desc);
+            }
 
-        // set the moveRight (optional)
-        if((aux = getMoveRight().getFocusIndex()) != null){
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-            setMoveRight(desc);
-        }
+            // set the moveRight (optional)
+            if((aux = getMoveRight().getFocusIndex()) != null){
+                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                setMoveRight(desc);
+            }
 
-        // set the moveLeft (optional)
-        if((aux = getMoveLeft().getFocusIndex()) != null){
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-            setMoveLeft(desc);
-        }
+            // set the moveLeft (optional)
+            if((aux = getMoveLeft().getFocusIndex()) != null){
+                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                setMoveLeft(desc);
+            }
 
-        // set the moveDown (optional)
-        if((aux = getMoveDown().getFocusIndex()) != null){
-            T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-            setMoveDown(desc);
+            // set the moveDown (optional)
+            if((aux = getMoveDown().getFocusIndex()) != null){
+                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                setMoveDown(desc);
+            }
+        }
+        catch(XMLException ex){
+            String ax = getId();
+            if(ax != null)
+                ax = "(" + ax + ")";
+            else
+                ax = "";
+            
+            throw new NCLParsingException("Descriptor" + ax + ". Fixing reference:\n" + ex.getMessage());
         }
     }
 }

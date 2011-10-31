@@ -82,22 +82,27 @@ public class NCLColorDescriptorParam<T extends NCLColorDescriptorParam, P extend
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the name (required)
-        att_name = NCLElementAttributes.NAME.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setName(NCLAttributes.getEnumType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the name (required)
+            att_name = NCLElementAttributes.NAME.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setName(NCLAttributes.getEnumType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the value (required)
-        att_name = NCLElementAttributes.VALUE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(NCLColor.getEnumType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+            // set the value (required)
+            att_name = NCLElementAttributes.VALUE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setValue(NCLColor.getEnumType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("DescriptorParam:\n" + ex.getMessage());
+        }
     }
 
 

@@ -92,28 +92,39 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
 
-        // set the alias (required)
-        att_name = NCLElementAttributes.ALIAS.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setAlias(att_var);
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the alias (required)
+            att_name = NCLElementAttributes.ALIAS.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setAlias(att_var);
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the documentURI (required)
-        att_name = NCLElementAttributes.DOCUMENTURI.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDocumentURI(new SrcType(att_var));
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+            // set the documentURI (required)
+            att_name = NCLElementAttributes.DOCUMENTURI.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setDocumentURI(new SrcType(att_var));
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the region (optional)
-        att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
-            setRegion(reg);
+            // set the region (optional)
+            att_name = NCLElementAttributes.REGION.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
+                setRegion(reg);
+            }
+        }
+        catch(XMLException ex){
+            String aux = getAlias();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException(type.toString() + aux + ":\n" + ex.getMessage());
         }
     }
 

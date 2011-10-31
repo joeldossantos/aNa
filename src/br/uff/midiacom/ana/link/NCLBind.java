@@ -124,74 +124,100 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     }
 
 
-    public void load(Element element) throws XMLException {
+    public void load(Element element) throws NCLParsingException {
         String att_name, att_var, ch_name;
         NodeList nl;
 
-        // set the role (required)
-        att_name = NCLElementAttributes.ROLE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            NCLCausalConnector conn = (NCLCausalConnector) ((NCLLink) aux).getXconnector();
-            if(conn == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            Er rol = (Er) conn.findRole(att_var);
-            if(rol == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            setRole(rol);
-        }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+        try{
+            // set the role (required)
+            att_name = NCLElementAttributes.ROLE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                P aux;
+                if((aux = (P) getParent()) == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
 
-        // set the component (required)
-        att_name = NCLElementAttributes.COMPONENT.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            
-            En refEl;
-            if(aux instanceof NCLBody)
-                refEl = (En) ((NCLBody) aux).findNode(att_var);
+                NCLCausalConnector conn = (NCLCausalConnector) ((NCLLink) aux).getXconnector();
+                if(conn == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                Er rol = (Er) conn.findRole(att_var);
+                if(rol == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+                setRole(rol);
+            }
             else
-                refEl = (En) ((En) aux).findNode(att_var);
-            if(refEl == null)
-                throw new NCLParsingException("Could not find element " + att_var);
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+            // set the component (required)
+            att_name = NCLElementAttributes.COMPONENT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                P aux;
+                if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                En refEl;
+                if(aux instanceof NCLBody)
+                    refEl = (En) ((NCLBody) aux).findNode(att_var);
+                else
+                    refEl = (En) ((En) aux).findNode(att_var);
+                if(refEl == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                setComponent(refEl);
+            }
+            else
+                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+
+            // set the interface (optional)
+            att_name = NCLElementAttributes.INTERFACE.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Ei refEl = (Ei) getComponent().findInterface(att_var);
+                if(refEl == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+
+                setInterface(refEl);
+            }
+
+            // set the descriptor (optional)
+            att_name = NCLElementAttributes.DESCRIPTOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+                Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
+                setDescriptor(desc);
+            }
+        }
+        catch(XMLException ex){
+            String aux = null;
+            if(role != null)
+                aux = role.getName();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
             
-            setComponent(refEl);
+            throw new NCLParsingException("Bind" + aux + ":\n" + ex.getMessage());
         }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
 
-        // set the interface (optional)
-        att_name = NCLElementAttributes.INTERFACE.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ei refEl = (Ei) getComponent().findInterface(att_var);
-            if(refEl == null)
-                throw new NCLParsingException("Could not find element " + att_var);
+        try{
+            // create the child nodes
+            ch_name = NCLElementAttributes.BINDPARAM.toString();
+            nl = element.getElementsByTagName(ch_name);
+            for(int i=0; i < nl.getLength(); i++){
+                Element el = (Element) nl.item(i);
+                Ep inst = createBindParam();
+                addBindParam(inst);
+                inst.load(el);
+            }
+        }
+        catch(XMLException ex){
+            String aux = null;
+            if(role != null)
+                aux = role.getName();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
             
-            setInterface(refEl);
-        }
-
-        // set the descriptor (optional)
-        att_name = NCLElementAttributes.DESCRIPTOR.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
-            setDescriptor(desc);
-        }
-
-        // create the child nodes
-        ch_name = NCLElementAttributes.BINDPARAM.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            Ep inst = createBindParam();
-            addBindParam(inst);
-            inst.load(el);
+            throw new NCLParsingException("Bind" + aux + " > " + ex.getMessage());
         }
     }
 
