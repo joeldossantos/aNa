@@ -130,7 +130,7 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
         comp = getComponent().compare(other.getComponent());
 
         // Compara pela interface
-        if(!comp)
+        if(getInterface() != null && other.getInterface() != null)
             comp = getInterface().compare(other.getInterface());
 
         return comp;
