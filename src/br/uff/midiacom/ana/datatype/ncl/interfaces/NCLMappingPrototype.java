@@ -130,10 +130,20 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
         boolean comp = true;
 
         // Compara pelo componente
-        comp &= getComponent().compare(other.getComponent());
+        En thisComp = getComponent();
+        En otherComp = (En) other.getComponent();
+        if(thisComp != null && otherComp != null)
+            comp &= thisComp.compare(otherComp);
+        else
+            comp &= !(thisComp != null || otherComp != null);
 
         // Compara pela interface
-        comp &= getInterface().compare(other.getInterface());
+        Ei thisInt = getInterface();
+        Ei otherInt = (Ei) other.getInterface();
+        if(thisInt != null && otherInt != null)
+            comp &= thisInt.compare(otherInt);
+        else
+            comp &= !(thisInt != null || otherInt != null);
 
         return comp;
     }
