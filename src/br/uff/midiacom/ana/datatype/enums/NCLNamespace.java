@@ -47,7 +47,7 @@ public enum NCLNamespace {
 
     EDTV("http://www.ncl.org.br/NCL3.0/EDTVProfile"),
     BDTV("http://www.ncl.org.br/NCL3.0/BDTVProfile"),
-    CAUSAL_CONNECTOR("http://www.ncl.org.br/NCL3.0/causalConnectorProfile");
+    CAUSAL_CONNECTOR("http://www.ncl.org.br/NCL3.0/CausalConnectorProfile");
 
 
     private String name;
