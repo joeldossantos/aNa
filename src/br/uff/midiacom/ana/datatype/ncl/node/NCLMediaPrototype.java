@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
@@ -399,88 +400,17 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
      */
     public NCLMediaType getMediaType() {
         if(getType() != null){
-            boolean status = false;
-
-            status |= (getType() == NCLMimeType.APPLICATION_X_GINGA_NCLET);
-            status |= (getType() == NCLMimeType.APPLICATION_X_GINGA_NCLUA);
-            if(status)
-                return NCLMediaType.PROCEDURAL;
-
-            status |= (getType() == NCLMimeType.AUDIO_BASIC);
-            status |= (getType() == NCLMimeType.AUDIO_MP2);
-            status |= (getType() == NCLMimeType.AUDIO_MP3);
-            status |= (getType() == NCLMimeType.AUDIO_MPEG);
-            status |= (getType() == NCLMimeType.AUDIO_MPEG4);
-            if(status)
-                return NCLMediaType.AUDIO;
-
-            status |= (getType() == NCLMimeType.IMAGE_BMP);
-            status |= (getType() == NCLMimeType.IMAGE_GIF);
-            status |= (getType() == NCLMimeType.IMAGE_JPEG);
-            status |= (getType() == NCLMimeType.IMAGE_PNG);
-            if(status)
-                return NCLMediaType.IMAGE;
-
-            status |= (getType() == NCLMimeType.VIDEO_MPEG);
-            if(status)
-                return NCLMediaType.VIDEO;
-
-            status |= (getType() == NCLMimeType.TEXT_CSS);
-            status |= (getType() == NCLMimeType.TEXT_HTML);
-            status |= (getType() == NCLMimeType.TEXT_PLAIN);
-            status |= (getType() == NCLMimeType.TEXT_XML);
-            if(status)
-                return NCLMediaType.TEXT;
+            try{
+                return NCLMediaType.getEnumType(getType());
+            }
+            catch(NCLParsingException e){}
         }
 
         if(getSrc() != null){
-            boolean status = false;
-            String ext = getSrc().getExtension();
-
-            status |= ext.contentEquals(".html");
-            status |= ext.contentEquals(".html");
-            status |= ext.contentEquals(".xhtml");
-            status |= ext.contentEquals(".css");
-            status |= ext.contentEquals(".xml");
-            status |= ext.contentEquals(".txt");
-            if(status)
-                return NCLMediaType.TEXT;
-
-            status |= ext.contentEquals(".bmp");
-            status |= ext.contentEquals(".png");
-            status |= ext.contentEquals(".gif");
-            status |= ext.contentEquals(".jpg");
-            status |= ext.contentEquals(".jpeg");
-            status |= ext.contentEquals(".jpe");
-            if(status)
-                return NCLMediaType.IMAGE;
-
-            status |= ext.contentEquals(".ua");
-            status |= ext.contentEquals(".wav");
-            status |= ext.contentEquals(".mp1");
-            status |= ext.contentEquals(".mp2");
-            status |= ext.contentEquals(".mp3");
-            status |= ext.contentEquals(".mp4");
-            status |= ext.contentEquals(".mpg4");
-            if(status)
-                return NCLMediaType.AUDIO;
-
-            status |= ext.contentEquals(".mpeg");
-            status |= ext.contentEquals(".mpg");
-            status |= ext.contentEquals(".mpe");
-            status |= ext.contentEquals(".mng");
-            status |= ext.contentEquals(".qt");
-            status |= ext.contentEquals(".mov");
-            status |= ext.contentEquals(".avi");
-            if(status)
-                return NCLMediaType.VIDEO;
-
-            status |= ext.contentEquals(".class");
-            status |= ext.contentEquals(".xlet");
-            status |= ext.contentEquals(".xlt");
-            status |= ext.contentEquals(".lua");
-            if(status)
-                return NCLMediaType.PROCEDURAL;
+            try{
+                return NCLMediaType.getEnumType(getSrc().getExtension());
+            }
+            catch(NCLParsingException e){}
         }
 
         return NCLMediaType.OTHER;

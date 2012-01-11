@@ -282,7 +282,7 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
             if(!it.hasNext())
                 continue;
             Eb other_bind = (Eb) it.next();
-            comp = bind.compare(other_bind);
+            comp &= bind.compare(other_bind);
             if(comp)
                 break;
         }

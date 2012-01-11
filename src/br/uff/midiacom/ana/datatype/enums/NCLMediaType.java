@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
+import br.uff.midiacom.ana.NCLParsingException;
+
 
 /**
  * Tipos de mídia da <i>Nested Context Language</i> (NCL).
@@ -49,4 +51,100 @@ public enum NCLMediaType {
     VIDEO,
     PROCEDURAL,
     OTHER;
+    
+    
+    public static NCLMediaType getEnumType(String ext) throws NCLParsingException {
+        if(ext == null)
+            throw new NCLParsingException("Null extension");
+        
+        boolean status = false;
+
+        status |= ext.contentEquals(".html");
+        status |= ext.contentEquals(".html");
+        status |= ext.contentEquals(".xhtml");
+        status |= ext.contentEquals(".css");
+        status |= ext.contentEquals(".xml");
+        status |= ext.contentEquals(".txt");
+        if(status)
+            return TEXT;
+
+        status |= ext.contentEquals(".bmp");
+        status |= ext.contentEquals(".png");
+        status |= ext.contentEquals(".gif");
+        status |= ext.contentEquals(".jpg");
+        status |= ext.contentEquals(".jpeg");
+        status |= ext.contentEquals(".jpe");
+        if(status)
+            return IMAGE;
+
+        status |= ext.contentEquals(".ua");
+        status |= ext.contentEquals(".wav");
+        status |= ext.contentEquals(".mp1");
+        status |= ext.contentEquals(".mp2");
+        status |= ext.contentEquals(".mp3");
+        status |= ext.contentEquals(".mp4");
+        status |= ext.contentEquals(".mpg4");
+        if(status)
+            return AUDIO;
+
+        status |= ext.contentEquals(".mpeg");
+        status |= ext.contentEquals(".mpg");
+        status |= ext.contentEquals(".mpe");
+        status |= ext.contentEquals(".mng");
+        status |= ext.contentEquals(".qt");
+        status |= ext.contentEquals(".mov");
+        status |= ext.contentEquals(".avi");
+        if(status)
+            return VIDEO;
+
+        status |= ext.contentEquals(".class");
+        status |= ext.contentEquals(".xlet");
+        status |= ext.contentEquals(".xlt");
+        status |= ext.contentEquals(".lua");
+        if(status)
+            return PROCEDURAL;
+
+        return OTHER;
+    }
+    
+    
+    public static NCLMediaType getEnumType(NCLMimeType type) throws NCLParsingException {
+        if(type == null)
+            throw new NCLParsingException("Null type");
+
+        boolean status = false;
+
+        status |= (type == NCLMimeType.APPLICATION_X_GINGA_NCLET);
+        status |= (type == NCLMimeType.APPLICATION_X_GINGA_NCLUA);
+        if(status)
+            return PROCEDURAL;
+
+        status |= (type == NCLMimeType.AUDIO_BASIC);
+        status |= (type == NCLMimeType.AUDIO_MP2);
+        status |= (type == NCLMimeType.AUDIO_MP3);
+        status |= (type == NCLMimeType.AUDIO_MPEG);
+        status |= (type == NCLMimeType.AUDIO_MPEG4);
+        if(status)
+            return AUDIO;
+
+        status |= (type == NCLMimeType.IMAGE_BMP);
+        status |= (type == NCLMimeType.IMAGE_GIF);
+        status |= (type == NCLMimeType.IMAGE_JPEG);
+        status |= (type == NCLMimeType.IMAGE_PNG);
+        if(status)
+            return IMAGE;
+
+        status |= (type == NCLMimeType.VIDEO_MPEG);
+        if(status)
+            return VIDEO;
+
+        status |= (type == NCLMimeType.TEXT_CSS);
+        status |= (type == NCLMimeType.TEXT_HTML);
+        status |= (type == NCLMimeType.TEXT_PLAIN);
+        status |= (type == NCLMimeType.TEXT_XML);
+        if(status)
+            return TEXT;
+
+        return OTHER;
+    }
 }
