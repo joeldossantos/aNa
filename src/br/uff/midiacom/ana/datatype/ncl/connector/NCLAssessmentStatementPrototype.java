@@ -202,21 +202,63 @@ public class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPro
             space += "\t";
 
         content = space + "<assessmentStatement";
-        if(getComparator() != null)
-            content += " comparator='" + getComparator().toString() + "'";
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasAttributeAssessment()){
-            for(Ea attribute : attributeAssessments)
-                content += attribute.parse(ident + 1);
-        }
-
-        if(getValueAssessment() != null)
-            content += getValueAssessment().parse(ident + 1);
+        content += parseElements(ident + 1);
         
         content += space + "</assessmentStatement>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseComparator();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseAttributeAssessments(ident);
+        content += parseValueAssessment(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseComparator() {
+        NCLComparator aux = getComparator();
+        if(aux != null)
+            return " comparator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseAttributeAssessments(int ident) {
+        if(!hasAttributeAssessment())
+            return "";
+        
+        String content = "";
+        for(Ea aux : attributeAssessments)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseValueAssessment(int ident) {
+        Ev aux = getValueAssessment();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
     
     

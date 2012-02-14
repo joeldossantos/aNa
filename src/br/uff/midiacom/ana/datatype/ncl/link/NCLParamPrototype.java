@@ -140,13 +140,38 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
         
         // param element and attributes declaration
         content = space + "<" + paramType.toString();
-        if(getName() != null)
-            content += " name='" + getName().getName() + "'";
-        if(getValue() != null)
-            content += " value='" + getValue() + "'";
+        content += parseAttributes();
         content += "/>\n";
         
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        Ec aux = getName();
+        if(aux != null)
+            return " name='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
     
     

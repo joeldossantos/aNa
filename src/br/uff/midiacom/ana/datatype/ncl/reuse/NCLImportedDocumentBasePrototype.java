@@ -131,20 +131,57 @@ public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBaseP
             space += "\t";
 
         content = space + "<importedDocumentBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
 
         if(hasImportNCL()){
             content += ">\n";
 
-            for(Ei imp : imports)
-                content += imp.parse(ident + 1);
+            content += parseElements(ident + 1);
 
             content += space + "</importedDocumentBase>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportNCL(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportNCL(int ident) {
+        if(!hasImportNCL())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

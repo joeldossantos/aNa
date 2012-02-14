@@ -115,14 +115,39 @@ public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P 
             space += "\t";
 
         content = space + "<bindRule";
-        if(getRule() != null)
-            content += " rule='" + getRule().getId() + "'";
-        if(getConstituent() != null)
-            content += " constituent='" + getConstituent().getId() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRule();
+        content += parseConstituent();
+        
+        return content;
+    }
+    
+    
+    protected String parseRule() {
+        Er aux = getRule();
+        if(aux != null)
+            return " rule='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseConstituent() {
+        En aux = getConstituent();
+        if(aux != null)
+            return " constituent='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 

@@ -173,28 +173,72 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
             space += "\t";
 
         content = space + "<compoundAction";
-        if(getOperator() != null)
-            content += " operator='" + getOperator() + "'";
-        if(getDelay() != null){
-            content += " delay='" + getDelay().parse();
-            if(getDelay().getValue() != null)
-                content += "s'";
-            else
-                content += "'";
-        }
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasAction()){
-            for(Ea action : actions)
-                content += action.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         content += space + "</compoundAction>\n";
 
         return content;
     }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseOperator();
+        content += parseDelay();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseActions(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseOperator() {
+        NCLActionOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse() + "'";
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
 
 
+    protected String parseActions(int ident) {
+        if(!hasAction())
+            return "";
+        
+        String content = "";
+        for(Ea aux : actions)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
     public boolean compare(Ea other) {
         boolean comp = true;
 

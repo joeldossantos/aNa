@@ -235,26 +235,87 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
         
         // <bind> element and attributes declaration
         content = space + "<bind";
-        if(getRole() != null)
-            content += " role='" + getRole().getName() + "'";
-        if(getComponent() != null)
-            content += " component='" + getComponent().getId() + "'";
-        if(getInterface() != null)
-            content += " interface='" + getInterface().getId() + "'";
-        if(getDescriptor() != null)
-            content += " descriptor='" + getDescriptor().getId() + "'";
+        content += parseAttributes();
         
         // <bind> element content
         if(hasBindParam()){
             content += ">\n";
 
-            for(Ep param : bindParams)
-                content += param.parse(ident + 1);
+            content += parseElements(ident + 1);
             
             content += space + "</bind>\n";
         }
         else
             content += "/>\n";
+        
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseComponent();
+        content += parseInterface();
+        content += parseDescriptor();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseBindParams(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseComponent() {
+        En aux = getComponent();
+        if(aux != null)
+            return " component='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInterface() {
+        Ei aux = getInterface();
+        if(aux != null)
+            return " interface='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDescriptor() {
+        Ed aux = getDescriptor();
+        if(aux != null)
+            return " descriptor='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBindParams(int ident) {
+        if(!hasBindParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : bindParams)
+            content += aux.parse(ident);
         
         return content;
     }

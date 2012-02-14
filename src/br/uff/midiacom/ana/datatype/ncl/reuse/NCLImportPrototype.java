@@ -158,15 +158,48 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
             space += "\t";
 
         content = space + "<" + type.toString();
-        if(getAlias() != null)
-            content += " alias='" + getAlias() + "'";
-        if(getDocumentURI() != null)
-            content += " documentURI='" + getDocumentURI().parse() + "'";
-        if(getRegion() != null)
-            content += " region='" + getRegion().getId() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseAlias();
+        content += parseDocumentURI();
+        content += parseRegion();
+        
+        return content;
+    }
+    
+    
+    protected String parseAlias() {
+        String aux = getAlias();
+        if(aux != null)
+            return " alias='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDocumentURI() {
+        SrcType aux = getDocumentURI();
+        if(aux != null)
+            return " documentURI='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegion() {
+        Er aux = getRegion();
+        if(aux != null)
+            return " region='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 

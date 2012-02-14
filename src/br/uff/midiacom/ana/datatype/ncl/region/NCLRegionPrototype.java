@@ -444,35 +444,137 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
             space += "\t";
 
         content = space + "<region";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getLeft() != null)
-            content += " left='" + getLeft().parse() + "'";
-        if(getRight() != null)
-            content += " right='" + getRight().parse() + "'";
-        if(getTop() != null)
-            content += " top='" + getTop().parse() + "'";
-        if(getBottom() != null)
-            content += " bottom='" + getBottom().parse() + "'";
-        if(getHeight() != null)
-            content += " height='" + getHeight().parse() + "'";
-        if(getWidth() != null)
-            content += " width='" + getWidth().parse() + "'";
-        if(getzIndex() != null)
-            content += " zIndex='" + getzIndex() + "'";
-        if(getTitle() != null)
-            content += " title='" + getTitle() + "'";
+        content += parseAttributes();
+        
         if(hasRegion()) {
             content += ">\n";
 
-            for(T region : getRegions())
-                content += region.parse(ident + 1);
+            content += parseElements(ident + 1);
             
             content += space + "</region>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseLeft();
+        content += parseRight();
+        content += parseTop();
+        content += parseBottom();
+        content += parseHeight();
+        content += parseWidth();
+        content += parsezIndex();
+        content += parseTitle();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseRegions(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLeft() {
+        RelativeType aux = getLeft();
+        if(aux != null)
+            return " left='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRight() {
+        RelativeType aux = getRight();
+        if(aux != null)
+            return " right='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTop() {
+        RelativeType aux = getTop();
+        if(aux != null)
+            return " top='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBottom() {
+        RelativeType aux = getBottom();
+        if(aux != null)
+            return " bottom='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseHeight() {
+        RelativeType aux = getHeight();
+        if(aux != null)
+            return " height='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseWidth() {
+        RelativeType aux = getWidth();
+        if(aux != null)
+            return " width='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parsezIndex() {
+        Integer aux = getzIndex();
+        if(aux != null)
+            return " zIndex='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTitle() {
+        String aux = getTitle();
+        if(aux != null)
+            return " title='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegions(int ident) {
+        if(!hasRegion())
+            return "";
+        
+        String content = "";
+        for(T aux : regions)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

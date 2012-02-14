@@ -451,32 +451,108 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
         for(int i = 0; i < ident; i++)
             space += "\t";
                 
-        content = space + "<head>\n";    
-
-        if(getImportedDocumentBase() != null)
-            content += getImportedDocumentBase().parse(ident + 1);
-        if(getRuleBase() != null)
-            content += getRuleBase().parse(ident + 1);
-        if(getTransitionBase() != null)
-            content += getTransitionBase().parse(ident + 1);
-        if(hasRegionBase()){
-            for(Erb base : regionBases)
-                content += base.parse(ident + 1);
-        }
-        if(getDescriptorBase() != null)
-            content += getDescriptorBase().parse(ident + 1);
-        if(getConnectorBase() != null)
-            content += getConnectorBase().parse(ident + 1);
-        if(hasMeta()){
-            for(Em meta : metas)
-                content += meta.parse(ident + 1);
-        }
-        if(hasMetadata()){
-            for(Emt metadata : metadatas)
-                content += metadata.parse(ident + 1);
-        }
+        content = space + "<head>\n";
+        
+        content += parseElements(ident + 1);
         
         content += space + "</head>\n";
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportedDocumentBase(ident);
+        content += parseRuleBase(ident);
+        content += parseTransitionBase(ident);
+        content += parseRegionBases(ident);
+        content += parseDescriptorBase(ident);
+        content += parseConnectorBase(ident);
+        content += parseMetas(ident);
+        content += parseMetadatas(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseImportedDocumentBase(int ident) {
+        Eib aux = getImportedDocumentBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseRuleBase(int ident) {
+        Erl aux = getRuleBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseTransitionBase(int ident) {
+        Etb aux = getTransitionBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegionBases(int ident) {
+        if(!hasRegionBase())
+            return "";
+        
+        String content = "";
+        for(Erb aux : regionBases)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseDescriptorBase(int ident) {
+        Edb aux = getDescriptorBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseConnectorBase(int ident) {
+        Ecb aux = getConnectorBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseMetas(int ident) {
+        if(!hasMeta())
+            return "";
+        
+        String content = "";
+        for(Em aux : metas)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseMetadatas(int ident) {
+        if(!hasMetadata())
+            return "";
+        
+        String content = "";
+        for(Emt aux : metadatas)
+            content += aux.parse(ident);
         
         return content;
     }

@@ -188,23 +188,81 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
 
         // <ncl> element and attributes declaration
         content += space + "<ncl";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getTitle() != null)
-            content += " title='" + getTitle() + "'";
-        if(getXmlns() != null)
-            content += " xmlns='" + getXmlns() + "'";
+        content += parseAttributes();
         content += ">\n";
 
         // <ncl> element content
-        if(getHead() != null)
-            content += getHead().parse(ident + 1);
-        if(getBody() != null)
-            content += getBody().parse(ident + 1);
+        content += parseElements(ident + 1);
 
         // <ncl> element end declaration
         content += space + "</ncl>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseTitle();
+        content += parseXmlns();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseHead(ident);
+        content += parseBody(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTitle() {
+        String aux = getTitle();
+        if(aux != null)
+            return " title='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseXmlns() {
+        NCLNamespace aux = getXmlns();
+        if(aux != null)
+            return " xmlns='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseHead(int ident) {
+        Eh aux = getHead();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseBody(int ident) {
+        Eb aux = getBody();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
 }

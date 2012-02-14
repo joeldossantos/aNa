@@ -99,11 +99,19 @@ public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLE
 
         // param element and attributes declaration
         content = space + "<metadata>\n";
-        if(getRDFTree() != null)
-            content += getRDFTree() + "\n";
+        content += parseContent();
         content += space + "</metadata>\n";
 
         return content;
+    }
+    
+    
+    protected String parseContent() {
+        String aux = getRDFTree();
+        if(aux != null)
+            return aux + "\n";
+        else
+            return "";
     }
 
 

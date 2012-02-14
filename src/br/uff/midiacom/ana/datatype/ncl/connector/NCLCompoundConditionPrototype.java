@@ -240,28 +240,81 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
             space += "\t";
 
         content = space + "<compoundCondition";
-        if(getOperator() != null)
-            content += " operator='" + getOperator().toString() + "'";
-        if(getDelay() != null){
-            content += " delay='" + getDelay().parse();
-            if(getDelay().getValue() != null)
-                content += "s'";
-            else
-                content += "'";
-        }
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasCondition()){
-            for(Ec condition : conditions)
-                content += condition.parse(ident + 1);
-        }
-        if(hasStatement()){
-            for(Es statement : statements)
-                content += statement.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         content += space + "</compoundCondition>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseOperator();
+        content += parseDelay();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseConditions(ident);
+        content += parseStatements(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseOperator() {
+        NCLConditionOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse() + "'";
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+
+
+    protected String parseConditions(int ident) {
+        if(!hasCondition())
+            return "";
+        
+        String content = "";
+        for(Ec aux : conditions)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseStatements(int ident) {
+        if(!hasStatement())
+            return "";
+        
+        String content = "";
+        for(Es aux : statements)
+            content += aux.parse(ident);
+        
         return content;
     }
     

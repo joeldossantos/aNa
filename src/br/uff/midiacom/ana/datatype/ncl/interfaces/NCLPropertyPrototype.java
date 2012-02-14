@@ -165,13 +165,38 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
         
         // <property> element and attributes declaration
         content = space + "<property";
-        if(getName() != null)
-            content += " name='" + getName() + "'";
-        if(getValue() != null)
-            content += " value='" + getValue() + "'";
+        content += parseAttributes();
         content += "/>\n";
         
         
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        String aux = getName();
+        if(aux != null)
+            return " name='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 }

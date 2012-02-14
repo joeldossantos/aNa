@@ -341,32 +341,137 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
 
         // param element and attributes declaration
         content = space + "<transition";
-        if((aux = getId()) != null)
-            content += " id='" + (String) aux + "'";
-        if((aux = getType()) != null)
-            content += " type='" + ((NCLTransitionType) aux).toString() + "'";
-        if((aux = getSubtype()) != null)
-            content += " subtype='" + ((NCLTransitionSubtype) aux).toString() + "'";
-        if((aux = getDur()) != null)
-            content += " dur='" + ((TimeType) aux).parse() + "'";
-        if((aux = getStartProgress()) != null)
-            content += " startProgress='" + (Double) aux + "'";
-        if((aux = getEndProgress()) != null)
-            content += " endProgress='" + (Double) aux + "'";
-        if((aux = getDirection()) != null)
-            content += " direction='" + ((NCLTransitionDirection) aux).toString() + "'";
-        if((aux = getFadeColor()) != null)
-            content += " fadeColor='" + ((NCLColor) aux).toString() + "'";
-        if((aux = getHorRepeat()) != null)
-            content += " horRepeat='" + (Integer) aux + "'";
-        if((aux = getVertRepeat()) != null)
-            content += " vertRepeat='" + (Integer) aux + "'";
-        if((aux = getBorderWidth()) != null)
-            content += " borderWidth='" + (Integer) aux + "'";
-        if((aux = getBorderColor()) != null)
-            content += " borderColor='" + ((NCLColor) aux).toString() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseType();
+        content += parseSubtype();
+        content += parseDur();
+        content += parseStartProgress();
+        content += parseEndProgress();
+        content += parseDirection();
+        content += parseFadeColor();
+        content += parseHorRepeat();
+        content += parseVertRepeat();
+        content += parseBorderWidth();
+        content += parseBorderColor();
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseType() {
+        NCLTransitionType aux = getType();
+        if(aux != null)
+            return " type='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseSubtype() {
+        NCLTransitionSubtype aux = getSubtype();
+        if(aux != null)
+            return " subtype='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDur() {
+        TimeType aux = getDur();
+        if(aux != null)
+            return " dur='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseStartProgress() {
+        Double aux = getStartProgress();
+        if(aux != null)
+            return " startProgress='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEndProgress() {
+        Double aux = getEndProgress();
+        if(aux != null)
+            return " endProgress='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDirection() {
+        NCLTransitionDirection aux = getDirection();
+        if(aux != null)
+            return " direction='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFadeColor() {
+        NCLColor aux = getFadeColor();
+        if(aux != null)
+            return " fadeColor='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseHorRepeat() {
+        Integer aux = getHorRepeat();
+        if(aux != null)
+            return " horRepeat='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseVertRepeat() {
+        Integer aux = getVertRepeat();
+        if(aux != null)
+            return " vertRepeat='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBorderWidth() {
+        Integer aux = getBorderWidth();
+        if(aux != null)
+            return " borderWidth='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBorderColor() {
+        NCLColor aux = getBorderColor();
+        if(aux != null)
+            return " borderColor='" + aux.toString() + "'";
+        else
+            return "";
     }
 }

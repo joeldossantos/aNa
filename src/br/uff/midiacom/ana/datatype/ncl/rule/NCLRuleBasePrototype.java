@@ -210,27 +210,70 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
             space += "\t";
 
         content = space + "<ruleBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
 
         if(hasImportBase() || hasRule()){
             content += ">\n";
 
-            if(hasImportBase()){
-                for(Ei imp : imports)
-                    content += imp.parse(ident + 1);
-            }
-
-            if(hasRule()){
-                for(Et rule : rules)
-                    content += rule.parse(ident + 1);
-            }
+            content += parseElements(ident + 1);
 
             content += space + "</ruleBase>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseRules(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseRules(int ident) {
+        if(!hasRule())
+            return "";
+        
+        String content = "";
+        for(Et aux : rules)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

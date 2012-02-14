@@ -566,55 +566,228 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
             space += "\t";
 
         content = space + "<descriptor";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getRegion() != null)
-            content += " region='" + getRegion().getId() + "'";
-        if(getExplicitDur() != null)
-            content += " explicitDur='" + getExplicitDur().parse() + "'";
-        if(getFreeze() != null)
-            content += " freeze='" + getFreeze().toString() + "'";
-        if(getPlayer() != null)
-            content += " player='" + getPlayer() + "'";
-        if(getMoveLeft() != null)
-            content += " moveLeft='" + getMoveLeft().getFocusIndex() + "'";
-        if(getMoveRight() != null)
-            content += " moveRight='" + getMoveRight().getFocusIndex() + "'";
-        if(getMoveDown() != null)
-            content += " moveDown='" + getMoveDown().getFocusIndex() + "'";
-        if(getMoveUp() != null)
-            content += " moveUp='" + getMoveUp().getFocusIndex() + "'";
-        if(getFocusIndex() != null)
-            content += " focusIndex='" + getFocusIndex() + "'";
-        if(getFocusBorderColor() != null)
-            content += " focusBorderColor='" + getFocusBorderColor().toString() + "'";
-        if(getFocusBorderWidth() != null)
-            content += " focusBorderWidth='" + getFocusBorderWidth() + "'";
-        if(getFocusBorderTransparency() != null)
-            content += " focusBorderTransparency='" + getFocusBorderTransparency().parse() + "'";
-        if(getFocusSrc() != null)
-            content += " focusSrc='" + getFocusSrc().parse() + "'";
-        if(getFocusSelSrc() != null)
-            content += " focusSelSrc='" + getFocusSelSrc().parse() + "'";
-        if(getSelBorderColor() != null)
-            content += " SelBorderColor='" + getSelBorderColor().toString() + "'";
-        if(getTransIn() != null)
-            content += " transIn='" + getTransIn().getId() + "'";
-        if(getTransOut() != null)
-            content += " transOut='" + getTransOut().getId() + "'";
+        content += parseAttributes();
 
         // Test if the descriptor has content
         if(hasDescriptorParam()){
             content += ">\n";
 
-            for(Ep param : params)
-                content += param.parse(ident + 1);
+            content += parseElements(ident + 1);
 
             content += space + "</descriptor>\n";
         }
         else
             content += "/>\n";
 
+        
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseRegion();
+        content += parseExplicitDur();
+        content += parseFreeze();
+        content += parsePlayer();
+        content += parseMoveLeft();
+        content += parseMoveRight();
+        content += parseMoveDown();
+        content += parseMoveUp();
+        content += parseFocusIndex();
+        content += parseFocusBorderColor();
+        content += parseFocusBorderWidth();
+        content += parseFocusBorderTransparency();
+        content += parseFocusSrc();
+        content += parseFocusSelSrc();
+        content += parseSelBorderColor();
+        content += parseTransIn();
+        content += parseTransOut();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseDescriptorParams(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegion() {
+        Er aux = getRegion();
+        if(aux != null)
+            return " region='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseExplicitDur() {
+        TimeType aux = getExplicitDur();
+        if(aux != null)
+            return " explicitDur='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFreeze() {
+        Boolean aux = getFreeze();
+        if(aux != null)
+            return " freeze='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parsePlayer() {
+        String aux = getPlayer();
+        if(aux != null)
+            return " player='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMoveLeft() {
+        T aux = getMoveLeft();
+        if(aux != null)
+            return " moveLeft='" + aux.getFocusIndex() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMoveRight() {
+        T aux = getMoveRight();
+        if(aux != null)
+            return " moveRight='" + aux.getFocusIndex() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMoveDown() {
+        T aux = getMoveDown();
+        if(aux != null)
+            return " moveDown='" + aux.getFocusIndex() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMoveUp() {
+        T aux = getMoveUp();
+        if(aux != null)
+            return " moveUp='" + aux.getFocusIndex() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFocusIndex() {
+        Integer aux = getFocusIndex();
+        if(aux != null)
+            return " focusIndex='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFocusBorderColor() {
+        NCLColor aux = getFocusBorderColor();
+        if(aux != null)
+            return " focusBorderColor='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFocusBorderWidth() {
+        Integer aux = getFocusBorderWidth();
+        if(aux != null)
+            return " focusBorderWidth='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFocusBorderTransparency() {
+        PercentageType aux = getFocusBorderTransparency();
+        if(aux != null)
+            return " focusBorderTransparency='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFocusSrc() {
+        SrcType aux = getFocusSrc();
+        if(aux != null)
+            return " focusSrc='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFocusSelSrc() {
+        SrcType aux = getFocusSelSrc();
+        if(aux != null)
+            return " focusSelSrc='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseSelBorderColor() {
+        NCLColor aux = getSelBorderColor();
+        if(aux != null)
+            return " SelBorderColor='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTransIn() {
+        Et aux = getTransIn();
+        if(aux != null)
+            return " transIn='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTransOut() {
+        Et aux = getTransOut();
+        if(aux != null)
+            return " transOut='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDescriptorParams(int ident) {
+        if(!hasDescriptorParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : params)
+            content += aux.parse(ident);
         
         return content;
     }

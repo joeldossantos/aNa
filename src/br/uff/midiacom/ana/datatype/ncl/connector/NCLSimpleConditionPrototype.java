@@ -258,31 +258,104 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
             space += "\t";
 
         content = space + "<simpleCondition";
-        if(getRole() != null)
-            content += " role='" + getRole().getName() + "'";
-        if(getKey() != null)
-            content += " key='" + getKey().parse() + "'";
-        if(getDelay() != null){
-            content += " delay='" + getDelay().parse();
-            if(getDelay().getValue() != null)
-                content += "s'";
-            else
-                content += "'";
-        }
-        if(getMin() != null)
-            content += " min='" + getMin() + "'";        
-        if(getMax() != null){
-            content += " max='" + getMax().parse() + "'";
-        }
-        if(getQualifier() != null)
-            content += " qualifier='" + getQualifier().toString() + "'";
-        if(getEventType() != null)
-            content += " eventType='" + getEventType().toString() + "'";
-        if(getTransition() != null)
-            content += " transition='" + getTransition().toString() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseKey();
+        content += parseDelay();
+        content += parseMin();
+        content += parseMax();
+        content += parseQualifier();
+        content += parseEventType();
+        content += parseTransition();
+        
+        return content;
+    }
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseKey() {
+        KeyParamType aux = getKey();
+        if(aux != null)
+            return " key='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse() + "'";
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+    
+    
+    protected String parseMin() {
+        Integer aux = getMin();
+        if(aux != null)
+            return " min='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMax() {
+        MaxType aux = getMax();
+        if(aux != null)
+            return " max='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseQualifier() {
+        NCLConditionOperator aux = getQualifier();
+        if(aux != null)
+            return " qualifier='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEventType() {
+        NCLEventType aux = getEventType();
+        if(aux != null)
+            return " eventType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTransition() {
+        NCLEventTransition aux = getTransition();
+        if(aux != null)
+            return " transition='" + aux.toString() + "'";
+        else
+            return "";
     }
 
     

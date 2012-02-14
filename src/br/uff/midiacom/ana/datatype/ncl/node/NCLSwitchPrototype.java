@@ -382,37 +382,110 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
             space += "\t";
 
         content = space + "<switch";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getRefer() != null)
-            content += " refer='" + getRefer() + "'";
+        content += parseAttributes();
 
         if(hasPort() || hasBind() || hasNode()){
             content += ">\n";
 
-            if(hasPort()){
-                for(Ep port : ports)
-                    content += port.parse(ident + 1);
-            }
-
-            if(hasBind()){
-                for(Eb bind : binds)
-                    content += bind.parse(ident + 1);
-            }
-
-            if(getDefaultComponent() != null)
-                content += space + "\t" + "<defaultComponent component='" + getDefaultComponent().getId() + "'/>\n";
-
-            if(hasNode()){
-                for(En node : nodes)
-                    content += node.parse(ident + 1);
-            }
+            content += parseElements(ident + 1);
 
             content += space + "</switch>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseRefer();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parsePorts(ident);
+        content += parseBinds(ident);
+        content += parseDefaultComponent(ident);
+        content += parseNodes(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRefer() {
+        T aux = getRefer();
+        if(aux != null)
+            return " refer='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parsePorts(int ident) {
+        if(!hasPort())
+            return "";
+        
+        String content = "";
+        for(Ep aux : ports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseBinds(int ident) {
+        if(!hasBind())
+            return "";
+        
+        String content = "";
+        for(Eb aux : binds)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseDefaultComponent(int ident) {
+        En aux = getDefaultComponent();
+        if(aux != null)
+            return "";
+        
+        String space = "";
+        if(ident < 0)
+            ident = 0;
+        
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        return space + "<defaultComponent component='" + aux.getId() + "'/>\n";
+    }
+    
+    
+    protected String parseNodes(int ident) {
+        if(!hasNode())
+            return "";
+        
+        String content = "";
+        for(En aux : nodes)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

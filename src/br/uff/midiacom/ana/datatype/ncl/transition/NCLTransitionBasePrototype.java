@@ -210,27 +210,70 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
             space += "\t";
 
         content = space + "<transitionBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
 
         if(hasImportBase() || hasTransition()){
             content += ">\n";
 
-            if(hasImportBase()){
-                for(Ei imp : imports)
-                    content += imp.parse(ident + 1);
-            }
-
-            if(hasTransition()){
-                for(Et transition : transitions)
-                    content += transition.parse(ident + 1);
-            }
+            content += parseElements(ident + 1);
 
             content += space + "</transitionBase>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseTransitions(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseTransitions(int ident) {
+        if(!hasTransition())
+            return "";
+        
+        String content = "";
+        for(Et aux : transitions)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

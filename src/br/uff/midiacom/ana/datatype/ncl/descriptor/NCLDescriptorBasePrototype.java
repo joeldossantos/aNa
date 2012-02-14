@@ -214,27 +214,70 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
             space += "\t";
 
         content = space + "<descriptorBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
 
         if(hasDescriptor() || hasImportBase()){
             content += ">\n";
 
-            if(hasImportBase()){
-                for(Ei imp : imports)
-                    content += imp.parse(ident + 1);
-            }
-
-            if(hasDescriptor()){
-                for(El descriptor : descriptors)
-                    content += descriptor.parse(ident + 1);
-            }
+            content += parseElements(ident + 1);
             
             content += space + "</descriptorBase>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseDescriptors(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseDescriptors(int ident) {
+        if(!hasDescriptor())
+            return "";
+        
+        String content = "";
+        for(El aux : descriptors)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

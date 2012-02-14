@@ -117,15 +117,41 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
 
         // param element and attributes declaration
         content = space + "<mapping";
-        if(getComponent() != null)
-            content += " component='" + getComponent().getId() + "'";
-        if(getInterface() != null)
-            content += " interface='" + getInterface().getId() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
     }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseComponent();
+        content += parseInterface();
+        
+        return content;
+    }
+    
+    
+    protected String parseComponent() {
+        En aux = getComponent();
+        if(aux != null)
+            return " component='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInterface() {
+        Ei aux = getInterface();
+        if(aux != null)
+            return " interface='" + aux.getId() + "'";
+        else
+            return "";
+    }
 
+    
     public boolean compare(T other) {
         boolean comp = true;
 

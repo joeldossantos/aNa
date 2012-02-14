@@ -295,26 +295,107 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
                 
         // <area> element and attributes declaration
         content = space + "<area";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getCoords() != null)
-            content += " coords='" + coords.parse() + "'";
-        if(getBegin() != null)
-            content += " begin='" + getBegin().parse() + "'";
-        if(getEnd() != null)
-            content += " end='" + getEnd().parse() + "'";
-        if(getText() != null)
-            content += " text='" + getText() + "'";
-        if(getPosition() != null)
-            content += " position='" + getPosition() + "'";
-        if(getFirst() != null)
-            content += " first='" + getFirst().parse() + "'";
-        if(getLast() != null)
-            content += " last='" + getLast().parse() + "'";
-        if(getLabel() != null)
-            content += " label='" + getLabel() + "'";
+        content += parseAttributes();
         content += "/>\n";
         
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseCoords();
+        content += parseBegin();
+        content += parseEnd();
+        content += parseText();
+        content += parsePosition();
+        content += parseFirst();
+        content += parseLast();
+        content += parseLabel();
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseCoords() {
+        ArrayType aux = getCoords();
+        if(aux != null)
+            return " coords='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBegin() {
+        TimeType aux = getBegin();
+        if(aux != null)
+            return " begin='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEnd() {
+        TimeType aux = getEnd();
+        if(aux != null)
+            return " end='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseText() {
+        String aux = getText();
+        if(aux != null)
+            return " text='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parsePosition() {
+        Integer aux = getPosition();
+        if(aux != null)
+            return " position='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFirst() {
+        SampleType aux = getFirst();
+        if(aux != null)
+            return " first='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLast() {
+        SampleType aux = getLast();
+        if(aux != null)
+            return " last='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLabel() {
+        String aux = getLabel();
+        if(aux != null)
+            return " label='" + aux + "'";
+        else
+            return "";
     }
 }

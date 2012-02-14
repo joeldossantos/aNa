@@ -299,29 +299,90 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
             space += "\t";
 
         content = space + "<regionBase";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getDevice() != null)                         
-            content += " device='" + getDevice() + "'";
-        if(getParentRegion() != null)                         
-            content += " region='" + getParentRegion().getId() + "'";
+        content += parseAttributes();
         
         if(hasRegion() || hasImportBase()) {
             content += ">\n";
 
-            if(hasImportBase()){
-                for(Ei imp : imports)
-                    content += imp.parse(ident + 1);
-            }
-            if(hasRegion()){
-                for(Er region : regions)
-                    content += region.parse(ident + 1);
-            }
+            content += parseElements(ident + 1);
+            
             content += space + "</regionBase>\n";
         }
         else
             content += "/>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseDevice();
+        content += parseParentRegion();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseRegions(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDevice() {
+        String aux = getDevice();
+        if(aux != null)
+            return " device='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseParentRegion() {
+        Er aux = getParentRegion();
+        if(aux != null)
+            return " region='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseRegions(int ident) {
+        if(!hasRegion())
+            return "";
+        
+        String content = "";
+        for(Er aux : regions)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

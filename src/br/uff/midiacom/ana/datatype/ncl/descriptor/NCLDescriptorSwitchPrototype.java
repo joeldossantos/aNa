@@ -249,26 +249,83 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
             space += "\t";
 
         content = space + "<descriptorSwitch";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasBind()){
-            for(Eb bind : binds)
-                content += bind.parse(ident + 1);
-        }
-
-        if(getDefaultDescriptor() != null)
-            content += space + "\t" + "<defaultDescriptor descriptor='" + getDefaultDescriptor().getId() + "'/>\n";
-
-        if(hasDescriptor()){
-            for(El descriptor : descriptors)
-                content += descriptor.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         content += space + "</descriptorSwitch>\n";
 
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseBinds(ident);
+        content += parseDefaultDescriptor(ident);
+        content += parseDescriptors(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBinds(int ident) {
+        if(!hasBind())
+            return "";
+        
+        String content = "";
+        for(Eb aux : binds)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseDefaultDescriptor(int ident) {
+        El aux = getDefaultDescriptor();
+        if(aux != null)
+            return "";
+        
+        String space = "";
+        if(ident < 0)
+            ident = 0;
+        
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        return space + "<defaultDescriptor descriptor='" + aux.getId() + "'/>\n";
+    }
+    
+    
+    protected String parseDescriptors(int ident) {
+        if(!hasDescriptor())
+            return "";
+        
+        String content = "";
+        for(El aux : descriptors)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

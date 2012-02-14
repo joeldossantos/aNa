@@ -109,11 +109,28 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
             space += "\t";
 
         content = space + "<valueAssessment";
-        if(getValue() != null)
-            content += " value='" + getValue().parse() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseValue() {
+        AssValueParamType aux = getValue();
+        if(aux != null)
+            return " value='" + aux.parse() + "'";
+        else
+            return "";
     }
 
 

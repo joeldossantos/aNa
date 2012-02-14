@@ -157,16 +157,57 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
 
         // param element and attributes declaration
         content = space + "<rule";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getVar() != null)
-            content += " var='" + getVar().getName() + "'";
-        if(getComparator() != null)
-            content += " comparator='" + getComparator().toString() + "'";
-        if(getValue() != null)
-            content += " value='" + getValue() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseVar();
+        content += parseComparator();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseVar() {
+        Ep aux = getVar();
+        if(aux != null)
+            return " var='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseComparator() {
+        NCLComparator aux = getComparator();
+        if(aux != null)
+            return " comparator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 }

@@ -198,19 +198,68 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
             space += "\t";
 
         content = space + "<attributeAssessment";
-        if(getRole() != null)
-            content += " role='" + getRole().getName() + "'";
-        if(getEventType() != null)
-            content += " eventType='" + getEventType().toString() + "'";
-        if(getKey() != null)
-            content += " key='" + getKey().parse() + "'";
-        if(getAttributeType() != null)
-            content += " attributeType='" + getAttributeType().toString() + "'";        
-        if(getOffset() != null)
-            content += " offset='" + getOffset().parse() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseEventType();
+        content += parseKey();
+        content += parseAttributeType();
+        content += parseOffset();
+        
+        return content;
+    }
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEventType() {
+        NCLEventType aux = getEventType();
+        if(aux != null)
+            return " eventType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseKey() {
+        KeyParamType aux = getKey();
+        if(aux != null)
+            return " key='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseAttributeType() {
+        NCLAttributeType aux = getAttributeType();
+        if(aux != null)
+            return " attributeType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseOffset() {
+        IntegerParamType aux = getOffset();
+        if(aux != null)
+            return " offset='" + aux.parse() + "'";
+        else
+            return "";
     }
 
     

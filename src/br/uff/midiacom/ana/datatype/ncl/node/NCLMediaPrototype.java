@@ -431,36 +431,120 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
         
         // <media> element and attributes declaration
         content = space + "<media";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getSrc() != null)
-            content += " src='" + getSrc().parse() + "'";
-        if(getType() != null)
-            content += " type='" + getType().toString() + "'";
-        if(getDescriptor() != null)
-            content += " descriptor='" + getDescriptor().getId() + "'";
-        if(getRefer() != null)
-            content += " refer='" + getRefer().getId() + "'";
-        if(getInstance() != null)
-            content += " instance='" + getInstance().toString() + "'";
+        content += parseAttributes();
         
         // Test if the media has content
         if(hasArea() || hasProperty()){
             content += ">\n";
             
-            if(hasArea()){
-                for(Ea area : areas)
-                    content += area.parse(ident + 1);
-            }
-            if(hasProperty()){
-                for(Ep prop : properties)
-                    content += prop.parse(ident + 1);
-            }
+            content += parseElements(ident + 1);
             
             content += space + "</media>\n";
         }
         else
             content += "/>\n";
+        
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseSrc();
+        content += parseType();
+        content += parseDescriptor();
+        content += parseRefer();
+        content += parseInstance();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseAreas(ident);
+        content += parseProperties(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseSrc() {
+        SrcType aux = getSrc();
+        if(aux != null)
+            return " src='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseType() {
+        NCLMimeType aux = getType();
+        if(aux != null)
+            return " type='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDescriptor() {
+        Ed aux = getDescriptor();
+        if(aux != null)
+            return " descriptor='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRefer() {
+        T aux = getRefer();
+        if(aux != null)
+            return " refer='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInstance() {
+        NCLInstanceType aux = getInstance();
+        if(aux != null)
+            return " instance='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseAreas(int ident) {
+        if(!hasArea())
+            return "";
+        
+        String content = "";
+        for(Ea aux : areas)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseProperties(int ident) {
+        if(!hasProperty())
+            return "";
+        
+        String content = "";
+        for(Ep aux : properties)
+            content += aux.parse(ident);
         
         return content;
     }

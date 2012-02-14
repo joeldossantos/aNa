@@ -576,40 +576,118 @@ public class NCLBodyPrototype<T extends NCLBodyPrototype, P extends NCLElement, 
         
         // <body> element and attributes declaration
         content = space + "<body";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
         content += ">\n";
         
-        
         // <body> element content
-        if(hasMeta()){
-            for(Em meta : metas)
-                content += meta.parse(ident + 1);
-        }
-        if(hasMetadata()){
-            for(Emt metadata : metadatas)
-                content += metadata.parse(ident + 1);
-        }
-        if(hasPort()){
-            for(Ept port : ports)
-                content += port.parse(ident + 1);
-        }
-        if(hasProperty()){
-            for(Epp property : properties)
-                content += property.parse(ident + 1);
-        }
-        if(hasNode()){
-            for(En node : nodes)
-                content += node.parse(ident + 1);
-        }
-        if(hasLink()){
-            for(El link : links)
-                content += link.parse(ident + 1);
-        }
-        
+        content += parseElements(ident + 1);
         
         // <body> element end declaration
         content += space + "</body>\n";
+        
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseMetas(ident);
+        content += parseMetadatas(ident);
+        content += parsePorts(ident);
+        content += parseProperties(ident);
+        content += parseNodes(ident);
+        content += parseLinks(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMetas(int ident) {
+        if(!hasMeta())
+            return "";
+        
+        String content = "";
+        for(Em aux : metas)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseMetadatas(int ident) {
+        if(!hasMetadata())
+            return "";
+        
+        String content = "";
+        for(Emt aux : metadatas)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parsePorts(int ident) {
+        if(!hasPort())
+            return "";
+        
+        String content = "";
+        for(Ept aux : ports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseProperties(int ident) {
+        if(!hasProperty())
+            return "";
+        
+        String content = "";
+        for(Epp aux : properties)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseNodes(int ident) {
+        if(!hasNode())
+            return "";
+        
+        String content = "";
+        for(En aux : nodes)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseLinks(int ident) {
+        if(!hasLink())
+            return "";
+        
+        String content = "";
+        for(El aux : links)
+            content += aux.parse(ident);
         
         return content;
     }

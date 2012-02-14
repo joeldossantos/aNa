@@ -128,14 +128,47 @@ public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, 
         
         // <port> element and attributes declaration
         content = space + "<port";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getComponent() != null)
-            content += " component='" + getComponent().getId() + "'";
-        if(getInterface() != null)
-            content += " interface='" + getInterface().getId() + "'";
+        content += parseAttributes();
         content += "/>\n";
         
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseComponent();
+        content += parseInterface();
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseComponent() {
+        En aux = getComponent();
+        if(aux != null)
+            return " component='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInterface() {
+        Ei aux = getInterface();
+        if(aux != null)
+            return " interface='" + aux.getId() + "'";
+        else
+            return "";
     }
 }

@@ -133,12 +133,37 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
             space += "\t";
 
         content = space + "<connectorParam";
-        if(getName() != null)
-            content += " name='" + getName() + "'";
-        if(getType() != null)
-            content += " type='" + getType() + "'";        
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseType();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        String aux = getName();
+        if(aux != null)
+            return " name='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseType() {
+        String aux = getType();
+        if(aux != null)
+            return " type='" + aux + "'";
+        else
+            return "";
     }
 }

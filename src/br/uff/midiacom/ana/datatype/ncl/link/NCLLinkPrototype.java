@@ -231,24 +231,76 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
         
         // <link> element and attributes declaration
         content = space + "<link";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getXconnector() != null)
-            content += " xconnector='" + getXconnector().getId() + "'";
+        content += parseAttributes();
         content += ">\n";
         
         // <link> element content
-        if(hasLinkParam()){
-            for(Ep param : linkParams)
-                content += param.parse(ident + 1);
-        }
-        if(hasBind()){
-            for(Eb bind : binds)
-                content += bind.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         // <link> element end declaration
         content += space + "</link>\n";
+        
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseXconnector();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseLinkParams(ident);
+        content += parseBinds(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseXconnector() {
+        Ec aux = getXconnector();
+        if(aux != null)
+            return " xconnector='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLinkParams(int ident) {
+        if(!hasLinkParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : linkParams)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseBinds(int ident) {
+        if(!hasBind())
+            return "";
+        
+        String content = "";
+        for(Eb aux : binds)
+            content += aux.parse(ident);
         
         return content;
     }

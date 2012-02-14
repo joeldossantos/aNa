@@ -127,13 +127,38 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
 
         // param element and attributes declaration
         content = space + "<meta";
-        if(getName() != null)
-            content += " name='" + getName() + "'";
-        if(getContent() != null)
-            content += " content='" + getContent() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseContent();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        String aux = getName();
+        if(aux != null)
+            return " name='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseContent() {
+        String aux = getContent();
+        if(aux != null)
+            return " content='" + aux + "'";
+        else
+            return "";
     }
 
 

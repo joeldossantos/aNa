@@ -184,19 +184,62 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
             space += "\t";
 
         content = space + "<compoundStatement";
-        if(getOperator() != null)
-            content += " operator='" + getOperator().toString() + "'";
-        if(getIsNegated() != null)
-            content += " isNegated='" + getIsNegated().toString() + "'";
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasStatement()){
-            for(Es statement : statements)
-                content += statement.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         content += space + "</compoundStatement>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseOperator();
+        content += parseIsNegated();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseStatements(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseOperator() {
+        NCLOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseIsNegated() {
+        Boolean aux = getIsNegated();
+        if(aux != null)
+            return " isNegated='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseStatements(int ident) {
+        if(!hasStatement())
+            return "";
+        
+        String content = "";
+        for(Es aux : statements)
+            content += aux.parse(ident);
+        
         return content;
     }
     

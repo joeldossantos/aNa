@@ -185,19 +185,62 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
 
         // param element and attributes declaration
         content = space + "<compositeRule";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
-        if(getOperator() != null)
-            content += " operator='" + getOperator() + "'";
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasRule()){
-            for(T rule : rules)
-                content += rule.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         content += "</compositeRule>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseOperator();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseRules(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseOperator() {
+        NCLOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRules(int ident) {
+        if(!hasRule())
+            return "";
+        
+        String content = "";
+        for(T aux : rules)
+            content += aux.parse(ident);
+        
         return content;
     }
 }

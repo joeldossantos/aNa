@@ -223,21 +223,72 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
             space += "\t";
 
         content = space + "<causalConnector";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasConnectorParam()){
-            for(Ep connp : conn_params)
-                content += connp.parse(ident + 1);
-        }
-        if(getCondition() != null)
-            content += getCondition().parse(ident + 1);
-        if(getAction() != null)
-            content += getAction().parse(ident + 1);
+        content += parseElements(ident + 1);
 
         content += space + "</causalConnector>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseConnectorParams(ident);
+        content += parseCondition(ident);
+        content += parseAction(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseConnectorParams(int ident) {
+        if(!hasConnectorParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : conn_params)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseCondition(int ident) {
+        Ec aux = getCondition();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseAction(int ident) {
+        Ea aux = getAction();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
 }

@@ -119,13 +119,41 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, 
 
         // param element and attributes declaration
         content = space + "<descriptorParam";
-        if(getName() != null)
-            content += " name='" + getName().toString() + "'";
+        content += parseAttributes();
+        
         if((getValue() != null) || (this instanceof NCLColorDescriptorParamPrototype && ((NCLColorDescriptorParamPrototype) this).getIsTransparent() != null))
             content += " value='" + getParamValue() + "'";
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        NCLAttributes aux = getName();
+        if(aux != null)
+            return " name='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getParamValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 
 

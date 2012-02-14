@@ -356,48 +356,156 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
             space += "\t";
 
         content = space + "<simpleAction";
-        if(getRole() != null)
-            content += " role='" + getRole().getName() + "'";
-        if(getValue() != null)
-            content += " value='" + getValue().parse() + "'";
-        if(getDelay() != null){
-            content += " delay='" + getDelay().parse();
-            if(getDelay().getValue() != null)
-                content += "s'";
-            else
-                content += "'";
-        }
-        if(getMin() != null)
-            content += " min='" + getMin() + "'";
-        if(getMax() != null)
-            content += " max='" + getMax().parse() + "'";
-        if(getQualifier() != null)
-            content += " qualifier='" + getQualifier().toString() + "'";
-        if(getEventType() != null)
-            content += " eventType='" + getEventType().toString() + "'";
-        if(getActionType() != null)
-            content += " actionType='" + getActionType().toString() + "'";
-        if(getRepeat() != null)
-            content += " repeat='" + getRepeat().parse() + "'";
-        if(getRepeatDelay() != null){
-            content += " repeatDelay='" + getRepeatDelay().parse();
-            if(getRepeatDelay().getValue() != null)
-                content += "s'";
-            else
-                content += "'";
-        }
-        if(getDuration() != null){
-            content += " duration='" + getDuration().parse();
-            if(getDuration().getValue() != null)
-                content += "s'";
-            else
-                content += "'";
-        }
-        if(getBy() != null)
-            content += " by='" + getBy().parse() + "'";
+        content += parseAttributes();
         content += "/>\n";
 
         return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseValue();
+        content += parseDelay();
+        content += parseMin();
+        content += parseMax();
+        content += parseQualifier();
+        content += parseEventType();
+        content += parseActionType();
+        content += parseRepeat();
+        content += parseRepeatDelay();
+        content += parseDuration();
+        content += parseBy();
+        
+        return content;
+    }
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        StringParamType aux = getValue();
+        if(aux != null)
+            return " value='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse() + "'";
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+    
+    
+    protected String parseMin() {
+        Integer aux = getMin();
+        if(aux != null)
+            return " min='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMax() {
+        MaxType aux = getMax();
+        if(aux != null)
+            return " max='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseQualifier() {
+        NCLActionOperator aux = getQualifier();
+        if(aux != null)
+            return " qualifier='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEventType() {
+        NCLEventType aux = getEventType();
+        if(aux != null)
+            return " eventType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseActionType() {
+        NCLEventAction aux = getActionType();
+        if(aux != null)
+            return " actionType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRepeat() {
+        IntegerParamType aux = getRepeat();
+        if(aux != null)
+            return " actionType='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRepeatDelay() {
+        DoubleParamType aux = getRepeatDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " repeatDelay='" + aux.parse() + "'";
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+    
+    
+    protected String parseDuration() {
+        DoubleParamType aux = getDuration();
+        if(aux == null)
+            return "";
+        
+        String content = " duration='" + aux.parse() + "'";
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+    
+    
+    protected String parseBy() {
+        ByParamType aux = getBy();
+        if(aux != null)
+            return " by='" + aux.parse() + "'";
+        else
+            return "";
     }
 
 

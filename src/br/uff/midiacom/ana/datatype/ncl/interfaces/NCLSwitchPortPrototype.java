@@ -150,17 +150,52 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
 
         // <port> element and attributes declaration
         content = space + "<switchPort";
-        if(getId() != null)
-            content += " id='" + getId() + "'";
+        content += parseAttributes();
         content += ">\n";
 
-        if(hasMapping()){
-            for(Em mapping : mappings)
-                content += mapping.parse(ident + 1);
-        }
+        content += parseElements(ident + 1);
 
         content += "</switchPort>\n";
 
+        return content;
+    }
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseMappings(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMappings(int ident) {
+        if(!hasMapping())
+            return "";
+        
+        String content = "";
+        for(Em aux : mappings)
+            content += aux.parse(ident);
+        
         return content;
     }
 }
