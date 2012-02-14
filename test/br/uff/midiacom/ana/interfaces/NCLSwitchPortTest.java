@@ -60,51 +60,51 @@ public class NCLSwitchPortTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test2() throws XMLException {
-        String expResult = "<switchPort id='pinit'>\n\t<mapping component='med1' interface='trac1'/>\n</switchPort>\n";
-
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLSwitchPort instance = new NCLSwitchPort();
-        instance.load(loader.getElement());
-
-        String result = instance.parse(0);
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void test3() throws XMLException {
-        String xml = "<switch id='sw'><switchPort><mapping component='m1' interface='a1'/></switchPort>"+
-                "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
-                "</switch>";
-        XMLLoader loader = new XMLLoader(xml);
-        NCLSwitch instance = new NCLSwitch();
-        instance.load(loader.getElement());
-
-        NCLSwitchPort i2 = (NCLSwitchPort) instance.getPorts().get(0);
-        NCLMapping i1 = (NCLMapping) i2.getMappings().get(0);
-        NCLMedia i = (NCLMedia) i1.getComponent();
-
-        String expResult = "media.png";
-        String result = i.getSrc().parse();
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void test4() throws XMLException {
-        String xml = "<switch id='sw'><switchPort><mapping component='m1' interface='a1'/></switchPort>"+
-                "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
-                "</switch>";
-        XMLLoader loader = new XMLLoader(xml);
-        NCLSwitch instance = new NCLSwitch();
-        instance.load(loader.getElement());
-
-        NCLSwitchPort i2 = (NCLSwitchPort) instance.getPorts().get(0);
-        NCLMapping i1 = (NCLMapping) i2.getMappings().get(0);
-        NCLArea i = (NCLArea) i1.getInterface();
-
-        String expResult = "teste";
-        String result = i.getLabel();
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test2() throws XMLException {
+//        String expResult = "<switchPort id='pinit'>\n\t<mapping component='med1' interface='trac1'/>\n</switchPort>\n";
+//
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLSwitchPort instance = new NCLSwitchPort();
+//        instance.load(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//    }
+//
+//    @Test
+//    public void test3() throws XMLException {
+//        String xml = "<switch id='sw'><switchPort><mapping component='m1' interface='a1'/></switchPort>"+
+//                "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
+//                "</switch>";
+//        XMLLoader loader = new XMLLoader(xml);
+//        NCLSwitch instance = new NCLSwitch();
+//        instance.load(loader.getElement());
+//
+//        NCLSwitchPort i2 = (NCLSwitchPort) instance.getPorts().get(0);
+//        NCLMapping i1 = (NCLMapping) i2.getMappings().get(0);
+//        NCLMedia i = (NCLMedia) i1.getComponent();
+//
+//        String expResult = "media.png";
+//        String result = i.getSrc().parse();
+//        assertEquals(expResult, result);
+//    }
+//
+//    @Test
+//    public void test4() throws XMLException {
+//        String xml = "<switch id='sw'><switchPort><mapping component='m1' interface='a1'/></switchPort>"+
+//                "<media id='m1' src='media.png'><area id='a1' label='teste'/></media>"+
+//                "</switch>";
+//        XMLLoader loader = new XMLLoader(xml);
+//        NCLSwitch instance = new NCLSwitch();
+//        instance.load(loader.getElement());
+//
+//        NCLSwitchPort i2 = (NCLSwitchPort) instance.getPorts().get(0);
+//        NCLMapping i1 = (NCLMapping) i2.getMappings().get(0);
+//        NCLArea i = (NCLArea) i1.getInterface();
+//
+//        String expResult = "teste";
+//        String result = i.getLabel();
+//        assertEquals(expResult, result);
+//    }
 }

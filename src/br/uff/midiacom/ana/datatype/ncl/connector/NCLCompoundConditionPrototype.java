@@ -285,7 +285,7 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
         if(aux == null)
             return "";
         
-        String content = " delay='" + aux.parse() + "'";
+        String content = " delay='" + aux.parse();
         if(aux.getValue() != null)
             content += "s'";
         else

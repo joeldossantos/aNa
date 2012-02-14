@@ -72,21 +72,21 @@ public class NCLRuleTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test3() throws XMLException {
-        String xml = "<ncl><head><ruleBase>"+
-                "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>"+
-                "</ruleBase></head>"+
-                "<body><media id='m1'>"+
-                "<property name='legenda' value='on'/>"+
-                "</media></body></ncl>";
-
-        XMLLoader loader = new XMLLoader(xml);
-        NCLDoc instance = new NCLDoc();
-        instance.load(loader.getElement());
-
-        String expResult = "on";
-        String result = ((NCLRule) instance.getHead().getRuleBase().getRules().get("r1")).getVar().getValue();
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test3() throws XMLException {
+//        String xml = "<ncl><head><ruleBase>"+
+//                "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>"+
+//                "</ruleBase></head>"+
+//                "<body><media id='m1'>"+
+//                "<property name='legenda' value='on'/>"+
+//                "</media></body></ncl>";
+//
+//        XMLLoader loader = new XMLLoader(xml);
+//        NCLDoc instance = new NCLDoc();
+//        instance.load(loader.getElement());
+//
+//        String expResult = "on";
+//        String result = ((NCLRule) instance.getHead().getRuleBase().getRules().get("r1")).getVar().getValue();
+//        assertEquals(expResult, result);
+//    }
 }

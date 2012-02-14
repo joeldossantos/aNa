@@ -304,7 +304,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
     
     protected String parseDefaultDescriptor(int ident) {
         El aux = getDefaultDescriptor();
-        if(aux != null)
+        if(aux == null)
             return "";
         
         String space = "";

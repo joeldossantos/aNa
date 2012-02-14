@@ -406,7 +406,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
         if(aux == null)
             return "";
         
-        String content = " delay='" + aux.parse() + "'";
+        String content = " delay='" + aux.parse();
         if(aux.getValue() != null)
             content += "s'";
         else
@@ -464,7 +464,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
     protected String parseRepeat() {
         IntegerParamType aux = getRepeat();
         if(aux != null)
-            return " actionType='" + aux.parse() + "'";
+            return " repeat='" + aux.parse() + "'";
         else
             return "";
     }
@@ -475,7 +475,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
         if(aux == null)
             return "";
         
-        String content = " repeatDelay='" + aux.parse() + "'";
+        String content = " repeatDelay='" + aux.parse();
         if(aux.getValue() != null)
             content += "s'";
         else
@@ -490,7 +490,7 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
         if(aux == null)
             return "";
         
-        String content = " duration='" + aux.parse() + "'";
+        String content = " duration='" + aux.parse();
         if(aux.getValue() != null)
             content += "s'";
         else

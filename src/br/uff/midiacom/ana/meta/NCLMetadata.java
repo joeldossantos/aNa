@@ -74,7 +74,9 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
 
     public void load(Element element) throws NCLParsingException {
         try{
-            setRDFTree(element.getTextContent());
+            String aux = element.getTextContent();
+            aux = aux.substring(1, aux.length() -2);
+            setRDFTree(aux);
         }
         catch(XMLException ex){
             throw new NCLParsingException("Metadata:\n" + ex.getMessage());

@@ -75,12 +75,4 @@ public class NCLDocTest {
         String result = instance.parse(0);
         assertEquals(expResult, result);
     }
-    
-    @Test
-    public void test3() throws XMLException {
-        File file = new File("/Users/joel/Downloads/erros/erro1.ncl");
-        NCLDoc document = new NCLDoc();
-        document.loadXML(file);
-        document.parse(0);
-    }
 }

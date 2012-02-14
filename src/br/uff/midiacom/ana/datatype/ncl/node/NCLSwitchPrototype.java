@@ -464,7 +464,7 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
     
     protected String parseDefaultComponent(int ident) {
         En aux = getDefaultComponent();
-        if(aux != null)
+        if(aux == null)
             return "";
         
         String space = "";
