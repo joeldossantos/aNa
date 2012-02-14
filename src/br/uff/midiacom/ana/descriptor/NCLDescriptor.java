@@ -282,7 +282,7 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
                 }catch(Exception e){
                     throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
                 }
-                T desc = (T) new NCLDescriptor(att_var);
+                T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
                 setMoveUp(desc);
                 NCLReferenceManager.getInstance().waitReference(this);
@@ -297,7 +297,7 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
                 }catch(Exception e){
                     throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
                 }
-                T desc = (T) new NCLDescriptor(att_var);
+                T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
                 setMoveRight(desc);
                 NCLReferenceManager.getInstance().waitReference(this);
@@ -312,7 +312,7 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
                 }catch(Exception e){
                     throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
                 }
-                T desc = (T) new NCLDescriptor(att_var);
+                T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
                 setMoveLeft(desc);
                 NCLReferenceManager.getInstance().waitReference(this);
@@ -327,7 +327,7 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
                 }catch(Exception e){
                     throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
                 }
-                T desc = (T) new NCLDescriptor(att_var);
+                T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
                 setMoveDown(desc);
                 NCLReferenceManager.getInstance().waitReference(this);
@@ -452,7 +452,7 @@ public class NCLDescriptor<T extends NCLDescriptor, P extends NCLElement, I exte
     
     
     public El findDescriptor(Integer focusIndex) throws XMLException {
-        if(this.focusIndex == focusIndex)
+        if(this.focusIndex != null && this.focusIndex.intValue() == focusIndex.intValue())
             return (El) this;
         else
             return null;

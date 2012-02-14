@@ -241,13 +241,6 @@ public class NCLReferenceManager {
     
     
     public void waitReference(PostReferenceElement element) {
-        for(PostReferenceElement ref : references){
-            if(ref.getId().equals(element.getId())){
-                references.remove(ref);
-                break;
-            }
-        }
-        
         references.add(element);
     }
     
