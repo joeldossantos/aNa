@@ -37,17 +37,21 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import java.util.TreeSet;
 
 
 public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends NCLElement, I extends NCLElementImpl, Em extends NCLMappingPrototype, Ei extends NCLInterface>
         extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected ElementList<Em, T> mappings;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -62,12 +66,14 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
         super();
         setId(id);
         mappings = new ElementList<Em, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLSwitchPortPrototype() throws XMLException {
         super();
         mappings = new ElementList<Em, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -133,6 +139,21 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
      */
     public ElementList<Em, T> getMappings() {
         return mappings;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
 

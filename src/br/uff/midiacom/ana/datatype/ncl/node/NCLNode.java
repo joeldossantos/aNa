@@ -37,10 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 
 
-public interface NCLNode<T extends NCLNode, P extends NCLElement> extends NCLIdentifiableElement<T, P> {
+public interface NCLNode<T extends NCLNode, P extends NCLElement>
+        extends NCLIdentifiableElement<T, P>, ReferredElement {
 
 }

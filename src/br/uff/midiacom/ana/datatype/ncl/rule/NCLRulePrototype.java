@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -45,6 +46,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLPropertyPrototype>
@@ -53,6 +55,8 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
     protected Ep var;
     protected NCLComparator comparator;
     protected StringType value;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -66,11 +70,13 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
     public NCLRulePrototype(String id) throws XMLException {
         super();
         setId(id);
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLRulePrototype() throws XMLException {
         super();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -139,7 +145,25 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
      *          String representando o valor de comparação.
      */
     public String getValue() {
-        return value.getValue();
+        if(value != null)
+            return value.getValue();
+        else
+            return null;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
 

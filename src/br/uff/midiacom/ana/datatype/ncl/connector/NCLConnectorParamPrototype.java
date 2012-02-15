@@ -37,18 +37,23 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>, ReferredElement {
     
     protected StringType type;
+    
+    protected TreeSet<ReferenceType> references;
     
     
     /**
@@ -64,10 +69,13 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
     public NCLConnectorParamPrototype(String name) throws XMLException {
         super();
         setName(name);
+        references = new TreeSet<ReferenceType>();
     }
 
+    
     public NCLConnectorParamPrototype() throws XMLException {
         super();
+        references = new TreeSet<ReferenceType>();
     }
 
     /**
@@ -118,6 +126,21 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
             return null;
         else
             return type.getValue();
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
     

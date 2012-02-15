@@ -37,18 +37,22 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
         extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
 
     protected StringType value;
+    
+    protected TreeSet<ReferenceType> references;
     
     
     /**
@@ -62,6 +66,7 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
     public NCLPropertyPrototype(String name) throws XMLException {
         super();
         setName(name);
+        references = new TreeSet<ReferenceType>();
     }    
 
 
@@ -77,11 +82,13 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
     public NCLPropertyPrototype(NCLSystemVariable name) throws XMLException {
         super();
         setName(name);
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLPropertyPrototype() throws XMLException {
         super();
+        references = new TreeSet<ReferenceType>();
     }
     
     
@@ -149,6 +156,21 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
             return value.getValue();
         else
             return null;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
     

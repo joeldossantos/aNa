@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.region;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
@@ -45,6 +47,7 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 
@@ -72,7 +75,7 @@ import br.uff.midiacom.xml.datatype.string.StringType;
  *          ABNT NBR 15606-2:2007</a>
  */
 public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>, ReferredElement {
 
     protected StringType title;
     protected RelativeType left;
@@ -83,6 +86,8 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
     protected RelativeType width;
     protected Integer zIndex;
     protected IdentifiableElementList<T, T> regions;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -97,12 +102,14 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
         super();
         setId(id);
         regions = new IdentifiableElementList<T, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLRegionPrototype() throws XMLException {
         super();
         regions = new IdentifiableElementList<T, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -429,6 +436,21 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      */
     public IdentifiableElementList<T, T> getRegions() {
         return regions;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
 

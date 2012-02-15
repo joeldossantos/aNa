@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.transition;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
@@ -47,10 +49,11 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import java.util.TreeSet;
 
 
 public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>, ReferredElement {
 
     protected NCLTransitionType type;
     protected NCLTransitionSubtype subtype;
@@ -63,6 +66,8 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
     protected Integer vertRepeat;
     protected Integer borderWidth;
     protected NCLColor borderColor;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -76,11 +81,13 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
     public NCLTransitionPrototype(String id) throws XMLException {
         super();
         setId(id);
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLTransitionPrototype() throws XMLException {
         super();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -323,6 +330,21 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      */
     public NCLColor getBorderColor() {
         return borderColor;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
     

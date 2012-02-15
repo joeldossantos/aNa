@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.reuse;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -45,16 +47,18 @@ import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P>, ReferredElement {
 
     protected StringType alias;
     protected SrcType documentURI;
     protected Er region;
 
     protected NCLImportType type;
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -72,6 +76,7 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
             throw new XMLException("Null type");
 
         this.type = type;
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -93,7 +98,10 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
      *          String representando o alias.
      */
     public String getAlias() {
-        return alias.getValue();
+        if(alias != null)
+            return alias.getValue();
+        else
+            return null;
     }
 
 
@@ -143,6 +151,21 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
      */
     public Er getRegion() {
         return region;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
     

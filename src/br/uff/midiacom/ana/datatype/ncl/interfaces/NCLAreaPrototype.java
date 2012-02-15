@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -45,6 +46,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
@@ -59,6 +61,8 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
     protected SampleType last;
     protected StringType label;
     
+    protected TreeSet<ReferenceType> references;
+    
     
     /**
      * Construtor do elemento <i>area</i> da <i>Nested Context Language</i> (NCL).
@@ -71,11 +75,13 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
     public NCLAreaPrototype(String id) throws XMLException {
         super();
         setId(id);
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLAreaPrototype() throws XMLException {
         super();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -279,6 +285,21 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
             return label.getValue();
         else
             return null;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
     

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
@@ -50,6 +51,7 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
+import java.util.TreeSet;
 
 
 public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParam>
@@ -73,6 +75,8 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
     protected Et transOut;
     protected Er region;
     protected ElementList<Ep, T> params;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -87,12 +91,14 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
         super();
         setId(id);
         params = new ElementList<Ep, T>();
+        references = new TreeSet<ReferenceType>();
     }
     
     
     public NCLDescriptorPrototype() throws XMLException {
         super();
         params = new ElementList<Ep, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -551,6 +557,21 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      */
     public ElementList<Ep, T> getDescriptorParams() {
         return params;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
 

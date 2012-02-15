@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -48,6 +49,7 @@ import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
 public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
@@ -60,6 +62,8 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
     protected IdentifiableElementList<El, T> links;
     protected ElementList<Em, T> metas;
     protected ElementList<Emt, T> metadatas;
+    
+    protected TreeSet<ReferenceType> references;
     
     
     /**
@@ -79,6 +83,7 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
         links = new IdentifiableElementList<El, T>();
         metas = new ElementList<Em, T>();
         metadatas = new ElementList<Emt, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -90,6 +95,7 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
         links = new IdentifiableElementList<El, T>();
         metas = new ElementList<Em, T>();
         metadatas = new ElementList<Emt, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -596,6 +602,21 @@ public class NCLContextPrototype<T extends NCLContextPrototype, P extends NCLEle
      */
     public ElementList<Emt, T> getMetadatas() {
         return metadatas;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
     

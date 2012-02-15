@@ -37,19 +37,23 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLException;
+import java.util.TreeSet;
 
 
-public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> {
+public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> implements ReferredElement {
 
     protected String name;
     protected NCLDefaultConditionRole cname;
     protected NCLDefaultActionRole aname;
 
     protected P parent;
+    protected TreeSet<ReferenceType> references;
     
     
     /**
@@ -62,6 +66,7 @@ public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> 
      */
     public NCLRolePrototype(String name) throws XMLException {
         setName(name);
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -73,6 +78,7 @@ public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> 
      */
     public NCLRolePrototype(NCLDefaultConditionRole name) {
         setName(name);
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -84,6 +90,7 @@ public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> 
      */
     public NCLRolePrototype(NCLDefaultActionRole name) {
         setName(name);
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -211,6 +218,21 @@ public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> 
      */
     public P getParent() {
         return parent;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
 

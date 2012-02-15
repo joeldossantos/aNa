@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMediaType;
@@ -50,6 +51,7 @@ import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
 public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAreaPrototype, Ep extends NCLPropertyPrototype, Ed extends NCLLayoutDescriptor, En extends NCLNode>
@@ -62,6 +64,8 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
     protected NCLInstanceType instance;
     protected IdentifiableElementList<Ea, T> areas;
     protected IdentifiableElementList<Ep, T> properties;
+    
+    protected TreeSet<ReferenceType> references;
     
     
     /**
@@ -77,6 +81,7 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
         setId(id);
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -84,6 +89,7 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
         super();
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
+        references = new TreeSet<ReferenceType>();
     }
     
     
@@ -414,6 +420,21 @@ public class NCLMediaPrototype<T extends NCLMediaPrototype, P extends NCLElement
         }
 
         return NCLMediaType.OTHER;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
     
     

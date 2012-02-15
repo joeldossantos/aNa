@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -44,6 +45,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
 public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl>
@@ -51,6 +53,8 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
 
     protected NCLOperator operator;
     protected IdentifiableElementList<T, T> rules;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -65,12 +69,14 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
         super();
         setId(id);
         rules = new IdentifiableElementList<T, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
     public NCLCompositeRulePrototype() throws XMLException {
         super();
         rules = new IdentifiableElementList<T, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -168,6 +174,21 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
      */
     public IdentifiableElementList<T, T> getRules() {
         return rules;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
 

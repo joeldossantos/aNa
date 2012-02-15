@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -44,6 +45,7 @@ import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
 public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ep extends NCLSwitchPortPrototype, Eb extends NCLSwitchBindRulePrototype>
@@ -54,6 +56,8 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
     protected IdentifiableElementList<Ep, T> ports;
     protected ElementList<Eb, T> binds;
     protected IdentifiableElementList<En, T> nodes;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -70,6 +74,7 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
         nodes = new IdentifiableElementList<En, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -78,6 +83,7 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
         nodes = new IdentifiableElementList<En, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -367,6 +373,21 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      */
     public IdentifiableElementList<En, T> getNodes() {
         return nodes;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
     

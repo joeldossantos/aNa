@@ -37,21 +37,24 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
 public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRulePrototype>
-        extends NCLIdentifiableElementPrototype<El, P, I> implements NCLIdentifiableElement<El, P> {
+        extends NCLIdentifiableElementPrototype<El, P, I> implements NCLLayoutDescriptor<El, P> {
 
     protected IdentifiableElementList<El, T> descriptors;
     protected ElementList<Eb, T> binds;
     protected El defaultDescriptor;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -67,6 +70,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
         setId(id);
         descriptors = new IdentifiableElementList<El, T>();
         binds = new ElementList<Eb, T>();
+        references = new TreeSet<ReferenceType>();
     }
     
     
@@ -74,6 +78,7 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
         super();
         descriptors = new IdentifiableElementList<El, T>();
         binds = new ElementList<Eb, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -234,6 +239,21 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      */
     public El getDefaultDescriptor() {
         return defaultDescriptor;
+    }
+    
+    
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 
 

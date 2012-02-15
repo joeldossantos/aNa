@@ -37,10 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 
 
-public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor, P extends NCLElement> extends NCLIdentifiableElement<T, P> {
+public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor, P extends NCLElement> extends NCLIdentifiableElement<T, P>, ReferredElement {
 
 }
