@@ -39,8 +39,8 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLModificationListener;
-import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;

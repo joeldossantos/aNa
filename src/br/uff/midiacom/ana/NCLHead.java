@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;

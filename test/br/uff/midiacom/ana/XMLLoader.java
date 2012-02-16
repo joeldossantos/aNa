@@ -1,7 +1,7 @@
 package br.uff.midiacom.ana;
 
 
-import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import java.io.ByteArrayInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

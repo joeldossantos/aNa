@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;

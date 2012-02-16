@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana;
+package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.xml.XMLException;
 

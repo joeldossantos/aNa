@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
-import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;

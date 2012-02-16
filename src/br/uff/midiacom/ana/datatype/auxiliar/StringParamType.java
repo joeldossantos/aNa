@@ -1,6 +1,6 @@
 package br.uff.midiacom.ana.datatype.auxiliar;
 
-import br.uff.midiacom.ana.NCLParsingException;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;

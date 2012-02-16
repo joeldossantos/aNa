@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 

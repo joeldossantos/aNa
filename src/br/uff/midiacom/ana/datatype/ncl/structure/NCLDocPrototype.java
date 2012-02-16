@@ -38,6 +38,10 @@
 package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
