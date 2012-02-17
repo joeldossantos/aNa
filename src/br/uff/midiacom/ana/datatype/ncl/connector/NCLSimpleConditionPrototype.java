@@ -40,17 +40,24 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
-public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<Ec, P, I> implements NCLCondition<Ec, P, Ep> {
+public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype,
+                                                  P extends NCLElement,
+                                                  I extends NCLElementImpl,
+                                                  Ec extends NCLCondition,
+                                                  Er extends NCLRolePrototype,
+                                                  Ep extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<Ec, P, I>
+        implements NCLCondition<Ec, P, Ep> {
 
     protected KeyParamType<Ep, T> key;
     protected Integer min;
@@ -80,7 +87,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
         if(min != null && min < 0)
             throw new IllegalArgumentException("Invalid min");
 
+        Integer aux = this.min;
         this.min = min;
+        impl.notifyAltered(NCLElementAttributes.MIN, aux, min);
     }
 
 
@@ -103,7 +112,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(MaxType max) {
+        MaxType aux = this.max;
         this.max = max;
+        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
     }
 
 
@@ -126,7 +137,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      *          operador lógico que representa como os binds serão avaliados.
      */
     public void setQualifier(NCLConditionOperator qualifier) {
+        NCLConditionOperator aux = this.qualifier;
         this.qualifier = qualifier;
+        impl.notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
     }
 
 
@@ -152,7 +165,10 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
         if(this.role != null)
             this.role.setParent(null);
 
+        Er aux = this.role;
         this.role = role;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        
         //Se role existe, atribui este como seu parente
         if(this.role != null)
             this.role.setParent(this);
@@ -177,7 +193,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      *          elemento representando a tecla da condição.
      */
     public void setKey(KeyParamType<Ep, T> key) {
+        KeyParamType aux = this.key;
         this.key = key;
+        impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
 
 
@@ -199,7 +217,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      *          elemento representando o tipo do evento da condição.
      */
     public void setEventType(NCLEventType eventType) {
+        NCLEventType aux = this.eventType;
         this.eventType = eventType;
+        impl.notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
     }
 
 
@@ -221,7 +241,9 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
      *          elemento representando a transição do evento da condição.
      */
     public void setTransition(NCLEventTransition transition) {
+        NCLEventTransition aux = this.transition;
         this.transition = transition;
+        impl.notifyAltered(NCLElementAttributes.TRANSITION, aux, transition);
     }
 
 
@@ -236,129 +258,21 @@ public class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype, 
     }
 
 
+    @Override
     public void setDelay(DoubleParamType<Ep, Ec> delay) {
+        DoubleParamType aux = this.delay;
         this.delay = delay;
+        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
+    @Override
     public DoubleParamType<Ep, Ec> getDelay() {
         return delay;
     }
 
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for (int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<simpleCondition";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
     
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseRole();
-        content += parseKey();
-        content += parseDelay();
-        content += parseMin();
-        content += parseMax();
-        content += parseQualifier();
-        content += parseEventType();
-        content += parseTransition();
-        
-        return content;
-    }
-    
-    
-    protected String parseRole() {
-        Er aux = getRole();
-        if(aux != null)
-            return " role='" + aux.getName() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseKey() {
-        KeyParamType aux = getKey();
-        if(aux != null)
-            return " key='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDelay() {
-        DoubleParamType aux = getDelay();
-        if(aux == null)
-            return "";
-        
-        String content = " delay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
-        else
-            content += "'";
-        
-        return content;
-    }
-    
-    
-    protected String parseMin() {
-        Integer aux = getMin();
-        if(aux != null)
-            return " min='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMax() {
-        MaxType aux = getMax();
-        if(aux != null)
-            return " max='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseQualifier() {
-        NCLConditionOperator aux = getQualifier();
-        if(aux != null)
-            return " qualifier='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseEventType() {
-        NCLEventType aux = getEventType();
-        if(aux != null)
-            return " eventType='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseTransition() {
-        NCLEventTransition aux = getTransition();
-        if(aux != null)
-            return " transition='" + aux.toString() + "'";
-        else
-            return "";
-    }
-
-    
+    @Override
     public boolean compare(Ec other) {
         boolean comp = true;
 

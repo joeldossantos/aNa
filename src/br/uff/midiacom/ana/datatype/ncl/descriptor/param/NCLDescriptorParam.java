@@ -41,7 +41,9 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-public interface NCLDescriptorParam<T extends NCLDescriptorParam, P extends NCLElement, V>
+public interface NCLDescriptorParam<T extends NCLDescriptorParam,
+                                    P extends NCLElement,
+                                    V>
         extends NCLElement<T, P> {
 
 

@@ -38,6 +38,8 @@
 package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -48,8 +50,14 @@ import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import java.util.TreeSet;
 
 
-public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ep extends NCLSwitchPortPrototype, Eb extends NCLSwitchBindRulePrototype>
-        extends NCLIdentifiableElementPrototype<En, P, I> implements NCLNode<En, P> {
+public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
+                                         P extends NCLElement,
+                                         I extends NCLElementImpl,
+                                         En extends NCLNode,
+                                         Ep extends NCLSwitchPortPrototype,
+                                         Eb extends NCLSwitchBindRulePrototype>
+        extends NCLIdentifiableElementPrototype<En, P, I>
+        implements NCLNode<En, P> {
 
     protected T refer;
     protected En defaultComponent;
@@ -94,7 +102,9 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      *          elemento representando o switch a ser reutilizado.
      */
     public void setRefer(T refer) {
+        T aux = this.refer;
         this.refer = refer;
+        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
     }
 
 
@@ -120,7 +130,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see TreeSet#add
      */
     public boolean addPort(Ep port) throws XMLException {
-        return ports.add(port, (T) this);
+        if(ports.add(port, (T) this)){
+            impl.notifyInserted(NCLElementSets.PORTS, port);
+            return true;
+        }
+        return false;
     }
 
 
@@ -135,7 +149,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removePort(Ep port) throws XMLException {
-        return ports.remove(port);
+        if(ports.remove(port)){
+            impl.notifyRemoved(NCLElementSets.PORTS, port);
+            return true;
+        }
+        return false;
     }
 
 
@@ -150,7 +168,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removePort(String id) throws XMLException {
-        return ports.remove(id);
+        if(ports.remove(id)){
+            impl.notifyRemoved(NCLElementSets.PORTS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -209,7 +231,13 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      *          elemento representando o componente padrão.
      */
     public void setDefaultComponent(En defaultComponent) {
+        if(this.defaultComponent != null)
+            impl.notifyRemoved(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
+        
         this.defaultComponent = defaultComponent;
+        
+        if(this.defaultComponent != null)
+            impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
     }
 
 
@@ -233,7 +261,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see ArrayList#add
      */
     public boolean addBind(Eb bind) throws XMLException {
-        return binds.add(bind, (T) this);
+        if(binds.add(bind, (T) this)){
+            impl.notifyInserted(NCLElementSets.BINDS, bind);
+            return true;
+        }
+        return false;
     }
 
 
@@ -246,7 +278,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see ArrayList#remove
      */
     public boolean removeBind(Eb bind) throws XMLException {
-        return binds.remove(bind);
+        if(binds.remove(bind)){
+            impl.notifyRemoved(NCLElementSets.BINDS, bind);
+            return true;
+        }
+        return false;
     }
 
 
@@ -294,7 +330,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see TreeSet#add
      */
     public boolean addNode(En node) throws XMLException {
-        return nodes.add(node, (T) this);
+        if(nodes.add(node, (T) this)){
+            impl.notifyInserted(NCLElementSets.NODES, node);
+            return true;
+        }
+        return false;
     }
 
 
@@ -309,7 +349,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removeNode(En node) throws XMLException {
-        return nodes.remove(node);
+        if(nodes.remove(node)){
+            impl.notifyRemoved(NCLElementSets.NODES, node);
+            return true;
+        }
+        return false;
     }
 
 
@@ -324,7 +368,11 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removeNode(String id) throws XMLException {
-        return nodes.remove(id);
+        if(nodes.remove(id)){
+            impl.notifyRemoved(NCLElementSets.NODES, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -376,137 +424,20 @@ public class NCLSwitchPrototype<T extends NCLSwitchPrototype, P extends NCLEleme
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<switch";
-        content += parseAttributes();
-
-        if(hasPort() || hasBind() || hasNode()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-
-            content += space + "</switch>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseRefer();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parsePorts(ident);
-        content += parseBinds(ident);
-        content += parseDefaultComponent(ident);
-        content += parseNodes(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRefer() {
-        T aux = getRefer();
-        if(aux != null)
-            return " refer='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parsePorts(int ident) {
-        if(!hasPort())
-            return "";
-        
-        String content = "";
-        for(Ep aux : ports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseBinds(int ident) {
-        if(!hasBind())
-            return "";
-        
-        String content = "";
-        for(Eb aux : binds)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseDefaultComponent(int ident) {
-        En aux = getDefaultComponent();
-        if(aux == null)
-            return "";
-        
-        String space = "";
-        if(ident < 0)
-            ident = 0;
-        
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        return space + "<defaultComponent component='" + aux.getId() + "'/>\n";
-    }
-    
-    
-    protected String parseNodes(int ident) {
-        if(!hasNode())
-            return "";
-        
-        String content = "";
-        for(En aux : nodes)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

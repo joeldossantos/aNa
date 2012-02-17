@@ -38,14 +38,19 @@
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype,
+                                                  P extends NCLElement,
+                                                  I extends NCLElementImpl,
+                                                  Ep extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected AssValueParamType<Ep, T> value;
     
@@ -81,7 +86,9 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
      *          Se o valor a ser atribuído for uma String vazia.
      */
     public void setValue(AssValueParamType<Ep, T> value) {
+        AssValueParamType aux = this.value;
         this.value = value;
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
 
@@ -95,45 +102,9 @@ public class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype, 
     public AssValueParamType<Ep, T> getValue() {
         return value;
     }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-        
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<valueAssessment";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseValue();
-        
-        return content;
-    }
-    
-    
-    protected String parseValue() {
-        AssValueParamType aux = getValue();
-        if(aux != null)
-            return " value='" + aux.parse() + "'";
-        else
-            return "";
-    }
 
 
+    @Override
     public boolean compare(T other) {
         boolean comp = true;
 

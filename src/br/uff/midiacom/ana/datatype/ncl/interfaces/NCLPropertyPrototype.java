@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -47,8 +48,12 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
 
-public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
+public abstract class NCLPropertyPrototype<T extends NCLPropertyPrototype,
+                                           P extends NCLElement,
+                                           I extends NCLElementImpl,
+                                           Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<Ei, P, I>
+        implements NCLInterface<Ei, P> {
 
     protected StringType value;
     
@@ -92,6 +97,20 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
     }
     
     
+    @Override
+    @Deprecated
+    public void setId(String id) throws XMLException {
+        super.setId(id);
+    }
+    
+    
+    @Override
+    @Deprecated
+    public String getId() {
+        return super.getId();
+    }
+    
+    
     /**
      * Determina o nome da propriedade sem seguir os valores padrão especificados na norma.
      * O nome, entretando pode estar na forma shared.xxx
@@ -102,7 +121,9 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          se o nome da propriedade não for válido.
      */
     public void setName(String name) throws XMLException {
-        setId(name);
+        String aux = this.getName();
+        super.setId(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }    
 
 
@@ -117,7 +138,10 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
     public void setName(NCLSystemVariable name) throws XMLException {
         if(name == null)
             throw new XMLException("Invalid name");
-        setId(name.toString());
+        
+        String aux = this.getName();
+        super.setId(name.toString());
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
     
     
@@ -128,7 +152,7 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          String contendo o nome da propriedade.
      */
     public String getName() {
-        return getId();
+        return super.getId();
     }
     
     
@@ -141,7 +165,9 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
      *          se a String for vazia.
      */
     public void setValue(String value) throws XMLException {
+        StringType aux = this.value;
         this.value = new StringType(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
     
@@ -159,66 +185,20 @@ public class NCLPropertyPrototype<T extends NCLPropertyPrototype, P extends NCLE
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        // <property> element and attributes declaration
-        content = space + "<property";
-        content += parseAttributes();
-        content += "/>\n";
-        
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseName();
-        content += parseValue();
-        
-        return content;
-    }
-    
-    
-    protected String parseName() {
-        String aux = getName();
-        if(aux != null)
-            return " name='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseValue() {
-        String aux = getValue();
-        if(aux != null)
-            return " value='" + aux + "'";
-        else
-            return "";
     }
 }

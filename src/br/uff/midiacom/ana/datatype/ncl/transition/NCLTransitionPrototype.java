@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
@@ -52,8 +53,11 @@ import br.uff.midiacom.xml.XMLException;
 import java.util.TreeSet;
 
 
-public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>, ReferredElement {
+public abstract class NCLTransitionPrototype<T extends NCLTransitionPrototype,
+                                             P extends NCLElement,
+                                             I extends NCLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P>, ReferredElement {
 
     protected NCLTransitionType type;
     protected NCLTransitionSubtype subtype;
@@ -98,7 +102,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          elemento representando o tipo da transição.
      */
     public void setType(NCLTransitionType type) {
+        NCLTransitionType aux = this.type;
         this.type = type;
+        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
     }
 
 
@@ -120,7 +126,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          elemento representando o subtipo da transição.
      */
     public void setSubtype(NCLTransitionSubtype subtype) {
+        NCLTransitionSubtype aux = this.subtype;
         this.subtype = subtype;
+        impl.notifyAltered(NCLElementAttributes.SUBTYPE, aux, subtype);
     }
 
 
@@ -142,7 +150,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          elemento representando a duração da transição.
      */
     public void setDur(TimeType dur) {
+        TimeType aux = this.dur;
         this.dur = dur;
+        impl.notifyAltered(NCLElementAttributes.DUR, aux, dur);
     }
 
 
@@ -164,7 +174,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          fracionário representando o delay inicial.
      */
     public void setStartProgress(Double startProgress) {
+        Double aux = this.startProgress;
         this.startProgress = startProgress;
+        impl.notifyAltered(NCLElementAttributes.STARTPROGRESS, aux, startProgress);
     }
 
 
@@ -186,7 +198,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          fracionário representando o delay final.
      */
     public void setEndProgress(Double endProgress) {
+        Double aux = this.endProgress;
         this.endProgress = endProgress;
+        impl.notifyAltered(NCLElementAttributes.ENDPROGRESS, aux, endProgress);
     }
 
 
@@ -208,7 +222,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          elemento representando a direção.
      */
     public void setDirection(NCLTransitionDirection direction) {
+        NCLTransitionDirection aux = this.direction;
         this.direction = direction;
+        impl.notifyAltered(NCLElementAttributes.DIRECTION, aux, direction);
     }
 
 
@@ -230,7 +246,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          cor associada a transição de fade.
      */
     public void setFadeColor(NCLColor fadeColor) {
+        NCLColor aux = this.fadeColor;
         this.fadeColor = fadeColor;
+        impl.notifyAltered(NCLElementAttributes.FADECOLOR, aux, fadeColor);
     }
 
 
@@ -252,7 +270,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          inteiro representando o número de repetições.
      */
     public void setHorRepeat(Integer horRepeat) {
+        Integer aux = this.horRepeat;
         this.horRepeat = horRepeat;
+        impl.notifyAltered(NCLElementAttributes.HORREPEAT, aux, horRepeat);
     }
 
 
@@ -274,7 +294,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          inteiro representando o número de repetições.
      */
     public void setVertRepeat(Integer vertRepeat) {
+        Integer aux = this.vertRepeat;
         this.vertRepeat = vertRepeat;
+        impl.notifyAltered(NCLElementAttributes.VERTREPEAT, aux, vertRepeat);
     }
 
 
@@ -296,7 +318,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          inteiro representando a largura da borda.
      */
     public void setBorderWidth(Integer borderWidth) {
+        Integer aux = this.borderWidth;
         this.borderWidth = borderWidth;
+        impl.notifyAltered(NCLElementAttributes.BORDERWIDTH, aux, borderWidth);
     }
 
 
@@ -318,7 +342,9 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
      *          cor da borda.
      */
     public void setBorderColor(NCLColor borderColor) {
+        NCLColor aux = this.borderColor;
         this.borderColor = borderColor;
+        impl.notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
     }
 
 
@@ -333,167 +359,20 @@ public class NCLTransitionPrototype<T extends NCLTransitionPrototype, P extends 
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-
-    
-    public String parse(int ident) {
-        String space, content;
-        Object aux;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<transition";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseType();
-        content += parseSubtype();
-        content += parseDur();
-        content += parseStartProgress();
-        content += parseEndProgress();
-        content += parseDirection();
-        content += parseFadeColor();
-        content += parseHorRepeat();
-        content += parseVertRepeat();
-        content += parseBorderWidth();
-        content += parseBorderColor();
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseType() {
-        NCLTransitionType aux = getType();
-        if(aux != null)
-            return " type='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseSubtype() {
-        NCLTransitionSubtype aux = getSubtype();
-        if(aux != null)
-            return " subtype='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDur() {
-        TimeType aux = getDur();
-        if(aux != null)
-            return " dur='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseStartProgress() {
-        Double aux = getStartProgress();
-        if(aux != null)
-            return " startProgress='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseEndProgress() {
-        Double aux = getEndProgress();
-        if(aux != null)
-            return " endProgress='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDirection() {
-        NCLTransitionDirection aux = getDirection();
-        if(aux != null)
-            return " direction='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFadeColor() {
-        NCLColor aux = getFadeColor();
-        if(aux != null)
-            return " fadeColor='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseHorRepeat() {
-        Integer aux = getHorRepeat();
-        if(aux != null)
-            return " horRepeat='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseVertRepeat() {
-        Integer aux = getVertRepeat();
-        if(aux != null)
-            return " vertRepeat='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseBorderWidth() {
-        Integer aux = getBorderWidth();
-        if(aux != null)
-            return " borderWidth='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseBorderColor() {
-        NCLColor aux = getBorderColor();
-        if(aux != null)
-            return " borderColor='" + aux.toString() + "'";
-        else
-            return "";
     }
 }

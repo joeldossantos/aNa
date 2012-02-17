@@ -37,9 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.transition;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -47,8 +48,13 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTransitionPrototype, Ei extends NCLImportPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype,
+                                                 P extends NCLElement,
+                                                 I extends NCLElementImpl,
+                                                 Et extends NCLTransitionPrototype,
+                                                 Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
 
     protected IdentifiableElementList<Et, T> transitions;
     protected ElementList<Ei, T> imports;
@@ -75,7 +81,11 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
      * @see TreeSet#add
      */
     public boolean addTransition(Et transition) throws XMLException {
-        return transitions.add(transition, (T) this);
+        if(transitions.add(transition, (T) this)){
+            impl.notifyInserted(NCLElementSets.TRANSITIONS, transition);
+            return true;
+        }
+        return false;
     }
 
 
@@ -90,12 +100,20 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
      * @see TreeSet#remove
      */
     public boolean removeTransition(Et transition) throws XMLException {
-        return transitions.remove(transition);
+        if(transitions.remove(transition)){
+            impl.notifyRemoved(NCLElementSets.TRANSITIONS, transition);
+            return true;
+        }
+        return false;
     }
 
 
     public boolean removeTransition(String id) throws XMLException {
-        return transitions.remove(id);
+        if(transitions.remove(id)){
+            impl.notifyRemoved(NCLElementSets.TRANSITIONS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -148,7 +166,11 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
      * @see TreeSet#add
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
-        return imports.add(importBase, (T) this);
+        if(imports.add(importBase, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -161,7 +183,11 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
      * @see TreeSet#remove
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -195,85 +221,5 @@ public class NCLTransitionBasePrototype<T extends NCLTransitionBasePrototype, P 
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<transitionBase";
-        content += parseAttributes();
-
-        if(hasImportBase() || hasTransition()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-
-            content += space + "</transitionBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportBases(ident);
-        content += parseTransitions(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseTransitions(int ident) {
-        if(!hasTransition())
-            return "";
-        
-        String content = "";
-        for(Et aux : transitions)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

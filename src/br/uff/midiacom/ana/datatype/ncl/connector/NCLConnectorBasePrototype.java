@@ -37,9 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -47,8 +48,13 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCausalConnectorPrototype, Ei extends NCLImportPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype,
+                                                P extends NCLElement,
+                                                I extends NCLElementImpl,
+                                                Ec extends NCLCausalConnectorPrototype,
+                                                Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
 
     protected IdentifiableElementList<Ec, T> connectors;
     protected ElementList<Ei, T> imports;
@@ -75,7 +81,11 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
      * @see TreeSet#add(java.lang.Object)
      */
     public boolean addCausalConnector(Ec connector) throws XMLException {
-        return connectors.add(connector, (T) this);
+        if(connectors.add(connector, (T) this)){
+            impl.notifyInserted(NCLElementSets.CONNECTORS, connector);
+            return true;
+        }
+        return false;
     }
     
     
@@ -90,12 +100,20 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
      * @see TreeSet#remove(java.lang.Object)
      */    
     public boolean removeCausalConnector(Ec connector) throws XMLException {
-        return connectors.remove(connector);
+        if(connectors.remove(connector)){
+            impl.notifyRemoved(NCLElementSets.CONNECTORS, connector);
+            return true;
+        }
+        return false;
     }
     
     
     public boolean removeCausalConnector(String id) throws XMLException {
-        return connectors.remove(id);
+        if(connectors.remove(id)){
+            impl.notifyRemoved(NCLElementSets.CONNECTORS, id);
+            return true;
+        }
+        return false;
     }
     
     
@@ -109,6 +127,7 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
      */
     public boolean hasCausalConnector(Ec connector) throws XMLException {
         return connectors.contains(connector);        
+        
     }
     
     
@@ -148,7 +167,11 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
      * @see TreeSet#add
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
-        return imports.add(importBase, (T) this);
+        if(imports.add(importBase, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -161,7 +184,11 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
      * @see TreeSet#remove
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -195,85 +222,5 @@ public class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype, P ex
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<connectorBase";
-        content += parseAttributes();
-
-        if(hasImportBase() || hasCausalConnector()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-
-            content += space + "</connectorBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportBases(ident);
-        content += parseCausalConnectors(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseCausalConnectors(int ident) {
-        if(!hasCausalConnector())
-            return "";
-        
-        String content = "";
-        for(Ec aux : connectors)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

@@ -37,15 +37,21 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Ei extends NCLInterface>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
+                                          P extends NCLElement,
+                                          I extends NCLElementImpl,
+                                          En extends NCLNode,
+                                          Ei extends NCLInterface>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected En component;
     protected Ei interfac;
@@ -66,7 +72,9 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
      *          elemento representando o componente mapeado.
      */
     public void setComponent(En component) {
+        En aux = this.component;
         this.component = component;
+        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
     }
 
 
@@ -88,7 +96,9 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
      *          elemento representando a interface mapeada.
      */
     public void setInterface(Ei interfac) {
+        Ei aux = this.interfac;
         this.interfac = interfac;
+        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
     }
 
 
@@ -102,56 +112,8 @@ public class NCLMappingPrototype<T extends NCLMappingPrototype, P extends NCLEle
         return interfac;
     }
 
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<mapping";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
     
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseComponent();
-        content += parseInterface();
-        
-        return content;
-    }
-    
-    
-    protected String parseComponent() {
-        En aux = getComponent();
-        if(aux != null)
-            return " component='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseInterface() {
-        Ei aux = getInterface();
-        if(aux != null)
-            return " interface='" + aux.getId() + "'";
-        else
-            return "";
-    }
-
-    
+    @Override
     public boolean compare(T other) {
         boolean comp = true;
 

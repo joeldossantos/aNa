@@ -40,6 +40,27 @@ package br.uff.midiacom.ana.datatype.ncl;
 import br.uff.midiacom.xml.XMLElement;
 
 
-public interface NCLElement<T extends NCLElement, P extends NCLElement> extends XMLElement<T, P> {
+public interface NCLElement<T extends NCLElement,
+                            P extends NCLElement>
+        extends XMLElement<T, P> {
 
+    
+    /**
+     * Atribui um ouvinte para notificações de mudança do elemento. Caso o
+     * argumento seja nulo, não utilizará nenhum ouvinte.
+     *
+     * @param listener
+     *          objeto que receberá as notificações.
+     */
+    public void setModificationListener(NCLModificationListener listener);
+
+
+    /**
+     * Retorna o ouvinte para notificações de mudança do elemento.
+     *
+     * @return
+     *          objeto que recebe as notificações ou null se nenhum ouvinte
+     *          estiver assiciado.
+     */
+    public NCLModificationListener getModificationListener();
 }

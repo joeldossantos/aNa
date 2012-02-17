@@ -38,18 +38,22 @@
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import java.util.TreeSet;
 
 
-public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
+public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
+                                                P extends NCLElement,
+                                                I extends NCLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLTestRule<T, P> {
 
     protected NCLOperator operator;
     protected IdentifiableElementList<T, T> rules;
@@ -87,7 +91,9 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
      *          elemento representando o operador da regra composta.
      */
     public void setOperator(NCLOperator operator) {
+        NCLOperator aux = this.operator;
         this.operator = operator;
+        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
 
 
@@ -113,7 +119,11 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
      * @see TreeSet#add
      */
     public boolean addRule(T rule) throws XMLException {
-        return rules.add(rule, (T) this);
+        if(rules.add(rule, (T) this)){
+            impl.notifyInserted(NCLElementSets.RULES, rule);
+            return true;
+        }
+        return false;
     }
 
 
@@ -128,12 +138,20 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removeRule(T rule) throws XMLException {
-        return rules.remove(rule);
+        if(rules.remove(rule)){
+            impl.notifyRemoved(NCLElementSets.RULES, rule);
+            return true;
+        }
+        return false;
     }
 
 
     public boolean removeRule(String id) throws XMLException {
-        return rules.remove(id);
+        if(rules.remove(id)){
+            impl.notifyRemoved(NCLElementSets.RULES, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -177,91 +195,20 @@ public class NCLCompositeRulePrototype<T extends NCLTestRule, P extends NCLEleme
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<compositeRule";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += "</compositeRule>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseOperator();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseRules(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseOperator() {
-        NCLOperator aux = getOperator();
-        if(aux != null)
-            return " operator='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRules(int ident) {
-        if(!hasRule())
-            return "";
-        
-        String content = "";
-        for(T aux : rules)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

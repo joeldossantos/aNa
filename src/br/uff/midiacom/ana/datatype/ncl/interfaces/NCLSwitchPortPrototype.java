@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -46,8 +47,13 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.TreeSet;
 
 
-public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends NCLElement, I extends NCLElementImpl, Em extends NCLMappingPrototype, Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
+public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
+                                             P extends NCLElement,
+                                             I extends NCLElementImpl,
+                                             Em extends NCLMappingPrototype,
+                                             Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<Ei, P, I>
+        implements NCLInterface<Ei, P> {
 
     protected ElementList<Em, T> mappings;
     
@@ -88,7 +94,11 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
      * @see TreeSet#add
      */
     public boolean addMapping(Em mapping) throws XMLException {
-        return mappings.add(mapping, (T) this);
+        if(mappings.add(mapping, (T) this)){
+            impl.notifyInserted(NCLElementSets.MAPPINGS, mapping);
+            return true;
+        }
+        return false;
     }
 
 
@@ -103,7 +113,11 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
      * @see TreeSet#remove
      */
     public boolean removeMapping(Em mapping) throws XMLException {
-        return mappings.remove(mapping);
+        if(mappings.remove(mapping)){
+            impl.notifyRemoved(NCLElementSets.MAPPINGS, mapping);
+            return true;
+        }
+        return false;
     }
 
 
@@ -142,81 +156,20 @@ public class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype, P extends 
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // <port> element and attributes declaration
-        content = space + "<switchPort";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += "</switchPort>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseMappings(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMappings(int ident) {
-        if(!hasMapping())
-            return "";
-        
-        String content = "";
-        for(Em aux : mappings)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

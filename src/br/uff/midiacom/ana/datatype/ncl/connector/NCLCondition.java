@@ -41,7 +41,10 @@ import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 
 
-public interface NCLCondition<T extends NCLCondition, P extends NCLElement, Ep extends NCLConnectorParamPrototype> extends NCLElement<T, P> {
+public interface NCLCondition<T extends NCLCondition,
+                              P extends NCLElement,
+                              Ep extends NCLConnectorParamPrototype>
+        extends NCLElement<T, P> {
 
 
     /**

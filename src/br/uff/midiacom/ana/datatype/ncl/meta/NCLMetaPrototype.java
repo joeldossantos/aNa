@@ -37,15 +37,19 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.meta;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, I extends XMLElementImpl>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected StringType name;
     protected StringType mcontent;
@@ -68,7 +72,9 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
      *          se a String for vazia.
      */
     public void setName(String name) throws XMLException {
+        StringType aux = this.name;
         this.name = new StringType(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
@@ -95,7 +101,9 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
      *          se a String for vazia.
      */
     public void setContent(String content) throws XMLException {
+        StringType aux = this.mcontent;
         this.mcontent = new StringType(content);
+        impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
     }
 
 
@@ -112,56 +120,8 @@ public class NCLMetaPrototype<T extends NCLMetaPrototype, P extends NCLElement, 
             return null;
     }
 
-    
-    public String parse(int ident) {
-        String space, content;
 
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<meta";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseName();
-        content += parseContent();
-        
-        return content;
-    }
-    
-    
-    protected String parseName() {
-        String aux = getName();
-        if(aux != null)
-            return " name='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseContent() {
-        String aux = getContent();
-        if(aux != null)
-            return " content='" + aux + "'";
-        else
-            return "";
-    }
-
-
+    @Override
     public boolean compare(T other) {
         return getName().equals(other.getName());
     }

@@ -39,6 +39,8 @@ package br.uff.midiacom.ana.datatype.ncl.region;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
@@ -74,8 +76,11 @@ import java.util.TreeSet;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>, ReferredElement {
+public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
+                                         P extends NCLElement,
+                                         I extends NCLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P>, ReferredElement {
 
     protected StringType title;
     protected RelativeType left;
@@ -122,7 +127,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se o título for uma String vazia.
      */
     public void setTitle(String title) throws XMLException {
+        StringType aux = this.title;
         this.title = new StringType(title);
+        impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
     }
 
 
@@ -151,7 +158,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
     public void setLeft(RelativeType left) {
+        RelativeType aux = this.left;
         this.left = left;
+        impl.notifyAltered(NCLElementAttributes.LEFT, aux, left);
     }
 
 
@@ -182,7 +191,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
     public void setRight(RelativeType right) {
+        RelativeType aux = this.right;
         this.right = right;
+        impl.notifyAltered(NCLElementAttributes.RIGHT, aux, right);
     }
 
 
@@ -213,7 +224,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
     public void setTop(RelativeType top) {
+        RelativeType aux = this.top;
         this.top = top;
+        impl.notifyAltered(NCLElementAttributes.TOP, aux, top);
     }
 
 
@@ -244,7 +257,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
     public void setBottom(RelativeType bottom) {
+        RelativeType aux = this.bottom;
         this.bottom = bottom;
+        impl.notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
     }
 
 
@@ -275,7 +290,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
     public void setHeight(RelativeType height) {
+        RelativeType aux = this.height;
         this.height = height;
+        impl.notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
     }
 
 
@@ -306,7 +323,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
      */
     public void setWidth(RelativeType width) {
+        RelativeType aux = this.width;
         this.width = width;
+        impl.notifyAltered(NCLElementAttributes.WIDTH, aux, width);
     }
 
 
@@ -338,7 +357,9 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
         if(zIndex != null && zIndex < 0 && zIndex > 250)
             throw new IllegalArgumentException("Illegal index value");
 
+        Integer aux = this.zIndex;
         this.zIndex = zIndex;
+        impl.notifyAltered(NCLElementAttributes.ZINDEX, aux, zIndex);
     }
 
 
@@ -365,7 +386,11 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      * @see TreeSet#add
      */
     public boolean addRegion(T region) throws XMLException {
-        return regions.add(region, (T) this);
+        if(regions.add(region, (T) this)){
+            impl.notifyInserted(NCLElementSets.REGIONS, region);
+            return true;
+        }
+        return false;
     }
 
 
@@ -380,7 +405,11 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removeRegion(T region) throws XMLException {
-        return regions.remove(region);
+        if(regions.remove(region)){
+            impl.notifyRemoved(NCLElementSets.REGIONS, region);
+            return true;
+        }
+        return false;
     }
 
 
@@ -395,7 +424,11 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
      * @see TreeSet#remove
      */
     public boolean removeRegion(String id) throws XMLException {
-        return regions.remove(id);
+        if(regions.remove(id)){
+            impl.notifyRemoved(NCLElementSets.REGIONS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -439,164 +472,20 @@ public class NCLRegionPrototype<T extends NCLRegionPrototype, P extends NCLEleme
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-    
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<region";
-        content += parseAttributes();
-        
-        if(hasRegion()) {
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-            
-            content += space + "</region>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseLeft();
-        content += parseRight();
-        content += parseTop();
-        content += parseBottom();
-        content += parseHeight();
-        content += parseWidth();
-        content += parsezIndex();
-        content += parseTitle();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseRegions(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseLeft() {
-        RelativeType aux = getLeft();
-        if(aux != null)
-            return " left='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRight() {
-        RelativeType aux = getRight();
-        if(aux != null)
-            return " right='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseTop() {
-        RelativeType aux = getTop();
-        if(aux != null)
-            return " top='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseBottom() {
-        RelativeType aux = getBottom();
-        if(aux != null)
-            return " bottom='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseHeight() {
-        RelativeType aux = getHeight();
-        if(aux != null)
-            return " height='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseWidth() {
-        RelativeType aux = getWidth();
-        if(aux != null)
-            return " width='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parsezIndex() {
-        Integer aux = getzIndex();
-        if(aux != null)
-            return " zIndex='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseTitle() {
-        String aux = getTitle();
-        if(aux != null)
-            return " title='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRegions(int ident) {
-        if(!hasRegion())
-            return "";
-        
-        String content = "";
-        for(T aux : regions)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

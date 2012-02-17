@@ -42,17 +42,24 @@ import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.StringParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
-public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAction, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<Ea, P, I> implements NCLAction<Ea, P, Ep> {
+public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype,
+                                               P extends NCLElement,
+                                               I extends NCLElementImpl,
+                                               Ea extends NCLAction,
+                                               Er extends NCLRolePrototype,
+                                               Ep extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<Ea, P, I>
+        implements NCLAction<Ea, P, Ep> {
 
     protected StringParamType<Ep, T> value;
     protected Integer min;
@@ -85,7 +92,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          Se o valor a ser atribuído for uma String vazia.
      */
     public void setValue(StringParamType<Ep, T> value) {
+        StringParamType aux = this.value;
         this.value = value;
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
         
@@ -110,7 +119,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
         if(min != null && min < 0)
             throw new IllegalArgumentException("Invalid min");
 
+        Integer aux = this.min;
         this.min = min;
+        impl.notifyAltered(NCLElementAttributes.MIN, aux, min);
     }
 
 
@@ -133,7 +144,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          caso o número máximo seja a String "umbouded".
      */
     public void setMax(MaxType max) {
+        MaxType aux = this.max;
         this.max = max;
+        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
     }
 
 
@@ -156,7 +169,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          operador que representa como os binds serão disparados.
      */
     public void setQualifier(NCLActionOperator qualifier) {
+        NCLActionOperator aux = this.qualifier;
         this.qualifier = qualifier;
+        impl.notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
     }
 
 
@@ -182,7 +197,10 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
         if(this.role != null)
             this.role.setParent(null);
 
+        Er aux = this.role;
         this.role = role;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        
         //Se role existe, atribui este como seu parente
         if(this.role != null)
             this.role.setParent(this);
@@ -207,7 +225,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          elemento representando o tipo do evento da ação.
      */
     public void setEventType(NCLEventType eventType) {
+        NCLEventType aux = this.eventType;
         this.eventType = eventType;
+        impl.notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
     }
 
 
@@ -229,7 +249,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          elemento representando a ação do evento.
      */
     public void setActionType(NCLEventAction actionType) {
+        NCLEventAction aux = this.actionType;
         this.actionType = actionType;
+        impl.notifyAltered(NCLElementAttributes.ACTIONTYPE, aux, actionType);
     }
 
 
@@ -251,7 +273,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          inteiro representando o número de repetições.
      */
     public void setRepeat(IntegerParamType<Ep, T> repeat) {
+        IntegerParamType aux = this.repeat;
         this.repeat = repeat;
+        impl.notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
     }
 
 
@@ -273,7 +297,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          inteiro representando o delay entre repetições.
      */
     public void setRepeatDelay(DoubleParamType<Ep, T> repeatDelay) {
+        DoubleParamType aux = this.repeatDelay;
         this.repeatDelay = repeatDelay;
+        impl.notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
     }
 
 
@@ -295,7 +321,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          inteiro representando a duração da atribuição.
      */
     public void setDuration(DoubleParamType<Ep, T> duration) {
+        DoubleParamType aux = this.duration;
         this.duration = duration;
+        impl.notifyAltered(NCLElementAttributes.DURATION, aux, duration);
     }
 
 
@@ -318,7 +346,9 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
      *          caso o passo seja definido como a String "indefinite".
      */
     public void setBy(ByParamType<Ep, T> by) {
+        ByParamType aux = this.by;
         this.by = by;
+        impl.notifyAltered(NCLElementAttributes.BY, aux, by);
     }
 
 
@@ -334,181 +364,21 @@ public class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype, P exte
     }
 
 
+    @Override
     public void setDelay(DoubleParamType<Ep, Ea> delay) {
+        DoubleParamType aux = this.delay;
         this.delay = delay;
+        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
+    @Override
     public DoubleParamType<Ep, Ea> getDelay() {
         return delay;
     }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<simpleAction";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseRole();
-        content += parseValue();
-        content += parseDelay();
-        content += parseMin();
-        content += parseMax();
-        content += parseQualifier();
-        content += parseEventType();
-        content += parseActionType();
-        content += parseRepeat();
-        content += parseRepeatDelay();
-        content += parseDuration();
-        content += parseBy();
-        
-        return content;
-    }
-    
-    
-    protected String parseRole() {
-        Er aux = getRole();
-        if(aux != null)
-            return " role='" + aux.getName() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseValue() {
-        StringParamType aux = getValue();
-        if(aux != null)
-            return " value='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDelay() {
-        DoubleParamType aux = getDelay();
-        if(aux == null)
-            return "";
-        
-        String content = " delay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
-        else
-            content += "'";
-        
-        return content;
-    }
-    
-    
-    protected String parseMin() {
-        Integer aux = getMin();
-        if(aux != null)
-            return " min='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMax() {
-        MaxType aux = getMax();
-        if(aux != null)
-            return " max='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseQualifier() {
-        NCLActionOperator aux = getQualifier();
-        if(aux != null)
-            return " qualifier='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseEventType() {
-        NCLEventType aux = getEventType();
-        if(aux != null)
-            return " eventType='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseActionType() {
-        NCLEventAction aux = getActionType();
-        if(aux != null)
-            return " actionType='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRepeat() {
-        IntegerParamType aux = getRepeat();
-        if(aux != null)
-            return " repeat='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRepeatDelay() {
-        DoubleParamType aux = getRepeatDelay();
-        if(aux == null)
-            return "";
-        
-        String content = " repeatDelay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
-        else
-            content += "'";
-        
-        return content;
-    }
-    
-    
-    protected String parseDuration() {
-        DoubleParamType aux = getDuration();
-        if(aux == null)
-            return "";
-        
-        String content = " duration='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
-        else
-            content += "'";
-        
-        return content;
-    }
-    
-    
-    protected String parseBy() {
-        ByParamType aux = getBy();
-        if(aux != null)
-            return " by='" + aux.parse() + "'";
-        else
-            return "";
-    }
 
 
+    @Override
     public boolean compare(Ea other) {
         boolean comp = true;
 

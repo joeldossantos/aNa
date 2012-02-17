@@ -37,15 +37,21 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, En extends NCLNode, Er extends NCLTestRule>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype,
+                                                 P extends NCLElement,
+                                                 I extends NCLElementImpl,
+                                                 En extends NCLNode,
+                                                 Er extends NCLTestRule>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected En constituent;
     protected Er rule;
@@ -66,7 +72,9 @@ public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P 
      *          elemento representando o nó mapeado pelo bind.
      */
     public void setConstituent(En constituent) {
+        En aux = this.constituent;
         this.constituent = constituent;
+        impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
     }
 
 
@@ -88,7 +96,9 @@ public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P 
      *          elemento representando a regra de avaliação do bind.
      */
     public void setRule(Er rule) {
+        Er aux = this.rule;
         this.rule = rule;
+        impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
     }
 
 
@@ -103,54 +113,7 @@ public class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype, P 
     }
 
 
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<bindRule";
-        content += parseAttributes();
-        content += "/>\n";
-
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseRule();
-        content += parseConstituent();
-        
-        return content;
-    }
-    
-    
-    protected String parseRule() {
-        Er aux = getRule();
-        if(aux != null)
-            return " rule='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseConstituent() {
-        En aux = getConstituent();
-        if(aux != null)
-            return " constituent='" + aux.getId() + "'";
-        else
-            return "";
-    }
-
-
+    @Override
     public boolean compare(T other) {
         boolean comp = true;
         

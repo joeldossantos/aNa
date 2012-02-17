@@ -37,9 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.region;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -64,8 +66,13 @@ import br.uff.midiacom.xml.datatype.string.StringType;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegionPrototype, Ei extends NCLImportPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
+                                             P extends NCLElement,
+                                             I extends NCLElementImpl,
+                                             Er extends NCLRegionPrototype,
+                                             Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
 
     protected StringType device;
     protected Er parent_region;
@@ -92,7 +99,9 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      *          O metodo dispara uma excecao caso o usuario passe uma string vazia como parametro.
      */
     public void setDevice(String device) throws XMLException {
+        StringType aux = this.device;
         this.device = new StringType(device);
+        impl.notifyAltered(NCLElementAttributes.DEVICE, aux, device);
     }
 
 
@@ -118,7 +127,9 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      *          Elemento representando a regiao a ser utilizada como pai.
      */
     public void setParentRegion(Er region) {
+        Er aux = this.parent_region;
         this.parent_region = region;
+        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
     }
 
 
@@ -149,7 +160,11 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      * @see TreeSet#add
      */
     public boolean addRegion(Er region) throws XMLException {
-        return regions.add(region, (T) this);
+        if(regions.add(region, (T) this)){
+            impl.notifyInserted(NCLElementSets.REGIONS, region);
+            return true;
+        }
+        return false;
     }
 
 
@@ -164,7 +179,11 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      * @see TreeSet#remove
      */
     public boolean removeRegion(Er region) throws XMLException {
-        return regions.remove(region);
+        if(regions.remove(region)){
+            impl.notifyRemoved(NCLElementSets.REGIONS, region);
+            return true;
+        }
+        return false;
     }
 
 
@@ -179,7 +198,11 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      * @see TreeSet#remove
      */
     public boolean removeRegion(String id) throws XMLException {
-        return regions.remove(id);
+        if(regions.remove(id)){
+            impl.notifyRemoved(NCLElementSets.REGIONS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -236,7 +259,11 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      * @see TreeSet#add
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
-        return imports.add(importBase, (T) this);
+        if(imports.add(importBase, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -249,7 +276,11 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      * @see TreeSet#remove
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -284,105 +315,5 @@ public class NCLRegionBasePrototype<T extends NCLRegionBasePrototype, P extends 
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<regionBase";
-        content += parseAttributes();
-        
-        if(hasRegion() || hasImportBase()) {
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-            
-            content += space + "</regionBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseDevice();
-        content += parseParentRegion();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportBases(ident);
-        content += parseRegions(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDevice() {
-        String aux = getDevice();
-        if(aux != null)
-            return " device='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseParentRegion() {
-        Er aux = getParentRegion();
-        if(aux != null)
-            return " region='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseRegions(int ident) {
-        if(!hasRegion())
-            return "";
-        
-        String content = "";
-        for(Er aux : regions)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

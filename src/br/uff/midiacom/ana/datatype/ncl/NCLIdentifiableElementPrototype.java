@@ -41,8 +41,11 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.XMLIdentifiableElementPrototype;
 
 
-public abstract class NCLIdentifiableElementPrototype<T extends NCLIdentifiableElement, P extends NCLElement, I extends NCLElementImpl>
-        extends XMLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLIdentifiableElementPrototype<T extends NCLIdentifiableElement,
+                                                      P extends NCLElement,
+                                                      I extends NCLElementImpl>
+        extends XMLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLIdentifiableElementPrototype() throws XMLException {
@@ -52,6 +55,18 @@ public abstract class NCLIdentifiableElementPrototype<T extends NCLIdentifiableE
 
     @Override
     protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>();
+        impl = (I) new NCLElementImpl<T, P>(this);
+    }
+
+
+    @Override
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
+    }
+
+
+    @Override
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

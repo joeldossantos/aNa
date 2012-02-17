@@ -40,18 +40,23 @@ package br.uff.midiacom.ana.datatype.ncl.reuse;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
 
-public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRegionPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P>, ReferredElement {
+public abstract class NCLImportPrototype<T extends NCLImportPrototype,
+                                         P extends NCLElement,
+                                         I extends NCLElementImpl,
+                                         Er extends NCLRegionPrototype>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P>, ReferredElement {
 
     protected StringType alias;
     protected SrcType documentURI;
@@ -87,7 +92,9 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
      *          String representando o alias.
      */
     public void setAlias(String alias) throws XMLException {
+        StringType aux = this.alias;
         this.alias = new StringType(alias);
+        impl.notifyAltered(NCLElementAttributes.ALIAS, aux, alias);
     }
 
 
@@ -117,7 +124,9 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
      * @see java.net.URI
      */
     public void setDocumentURI(SrcType documentURI) throws XMLException {
+        SrcType aux = this.documentURI;
         this.documentURI = documentURI;
+        impl.notifyAltered(NCLElementAttributes.DOCUMENTURI, aux, documentURI);
     }
 
 
@@ -139,7 +148,9 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
      *          elemento representando a região associada.
      */
     public void setRegion(Er region) {
+        Er aux = this.region;
         this.region = region;
+        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
     }
 
 
@@ -154,78 +165,25 @@ public class NCLImportPrototype<T extends NCLImportPrototype, P extends NCLEleme
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
     }
 
-    
-    public String parse(int ident) {
-        String space, content;
 
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<" + type.toString();
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseAlias();
-        content += parseDocumentURI();
-        content += parseRegion();
-        
-        return content;
-    }
-    
-    
-    protected String parseAlias() {
-        String aux = getAlias();
-        if(aux != null)
-            return " alias='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDocumentURI() {
-        SrcType aux = getDocumentURI();
-        if(aux != null)
-            return " documentURI='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRegion() {
-        Er aux = getRegion();
-        if(aux != null)
-            return " region='" + aux.getId() + "'";
-        else
-            return "";
-    }
-
-
+    @Override
     public boolean compare(T other) {
         return getAlias().equals(other.getAlias());
     }

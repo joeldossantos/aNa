@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -47,8 +48,13 @@ import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import java.util.TreeSet;
 
 
-public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRulePrototype>
-        extends NCLIdentifiableElementPrototype<El, P, I> implements NCLLayoutDescriptor<El, P> {
+public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype,
+                                                   P extends NCLElement,
+                                                   I extends NCLElementImpl,
+                                                   El extends NCLLayoutDescriptor,
+                                                   Eb extends NCLDescriptorBindRulePrototype>
+        extends NCLIdentifiableElementPrototype<El, P, I>
+        implements NCLLayoutDescriptor<El, P> {
 
     protected IdentifiableElementList<El, T> descriptors;
     protected ElementList<Eb, T> binds;
@@ -91,7 +97,11 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      * @see TreeSet#add
      */
     public boolean addDescriptor(El descriptor) throws XMLException {
-        return descriptors.add(descriptor, (T) this);
+        if(descriptors.add(descriptor, (T) this)){
+            impl.notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
+            return true;
+        }
+        return false;
     }
 
 
@@ -104,7 +114,11 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(El descriptor) throws XMLException {
-        return descriptors.remove(descriptor);
+        if(descriptors.remove(descriptor)){
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
+            return true;
+        }
+        return false;
     }
 
 
@@ -119,7 +133,11 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(String id) throws XMLException {
-        return descriptors.remove(id);
+        if(descriptors.remove(id)){
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -170,7 +188,11 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      * @see ArrayList#add
      */
     public boolean addBind(Eb bind) throws XMLException {
-        return binds.add(bind, (T) this);
+        if(binds.add(bind, (T) this)){
+            impl.notifyInserted(NCLElementSets.BINDS, bind);
+            return true;
+        }
+        return false;
     }
 
 
@@ -183,7 +205,11 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      * @see ArrayList#remove
      */
     public boolean removeBind(Eb bind) throws XMLException {
-        return binds.remove(bind);
+        if(binds.remove(bind)){
+            impl.notifyRemoved(NCLElementSets.BINDS, bind);
+            return true;
+        }
+        return false;
     }
 
 
@@ -227,7 +253,13 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
      *          elemento representando o descritor padrão.
      */
     public void setDefaultDescriptor(El defaultDescriptor) {
+        if(this.defaultDescriptor != null)
+            impl.notifyRemoved(NCLElementSets.DEFAULTDESCRIPTOR, this.defaultDescriptor);
+        
         this.defaultDescriptor = defaultDescriptor;
+        
+        if(this.defaultDescriptor != null)
+            impl.notifyInserted(NCLElementSets.DEFAULTDESCRIPTOR, this.defaultDescriptor);
     }
 
 
@@ -242,110 +274,20 @@ public class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<descriptorSwitch";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += space + "</descriptorSwitch>\n";
-
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseBinds(ident);
-        content += parseDefaultDescriptor(ident);
-        content += parseDescriptors(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseBinds(int ident) {
-        if(!hasBind())
-            return "";
-        
-        String content = "";
-        for(Eb aux : binds)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseDefaultDescriptor(int ident) {
-        El aux = getDefaultDescriptor();
-        if(aux == null)
-            return "";
-        
-        String space = "";
-        if(ident < 0)
-            ident = 0;
-        
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        return space + "<defaultDescriptor descriptor='" + aux.getId() + "'/>\n";
-    }
-    
-    
-    protected String parseDescriptors(int ident) {
-        if(!hasDescriptor())
-            return "";
-        
-        String content = "";
-        for(El aux : descriptors)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

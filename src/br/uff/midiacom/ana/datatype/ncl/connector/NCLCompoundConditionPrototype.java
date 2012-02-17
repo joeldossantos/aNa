@@ -39,16 +39,24 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<Ec, P, I> implements NCLCondition<Ec, P, Ep> {
+public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototype,
+                                                    P extends NCLElement,
+                                                    I extends NCLElementImpl,
+                                                    Ec extends NCLCondition,
+                                                    Es extends NCLStatement,
+                                                    Ep extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<Ec, P, I>
+        implements NCLCondition<Ec, P, Ep> {
     
     protected NCLConditionOperator operator;
     protected DoubleParamType<Ep, Ec> delay;
@@ -73,7 +81,9 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
      *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLConditionOperator operator) {
+        NCLConditionOperator aux = this.operator;
         this.operator = operator;
+        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
     
@@ -99,7 +109,11 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
      * @see ArrayList#add
      */
     public boolean addCondition(Ec condition) throws XMLException {
-        return conditions.add(condition, (T) this);
+        if(conditions.add(condition, (T) this)){
+            impl.notifyInserted(NCLElementSets.CONDITIONS, condition);
+            return true;
+        }
+        return false;
     }
 
 
@@ -114,7 +128,11 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
      * @see ArrayList#remove
      */
     public boolean removeCondition(Ec condition) throws XMLException {
-        return conditions.remove(condition);
+        if(conditions.remove(condition)){
+            impl.notifyRemoved(NCLElementSets.CONDITIONS, condition);
+            return true;
+        }
+        return false;
     }
 
     
@@ -164,7 +182,11 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
      * @see ArrayList#add
      */
     public boolean addStatement(Es statement) throws XMLException {
-        return statements.add(statement, (T) this);
+        if(statements.add(statement, (T) this)){
+            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
+            return true;
+        }
+        return false;
     }
 
 
@@ -179,7 +201,11 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
      * @see ArrayList#remove
      */
     public boolean removeStatement(Es statement) throws XMLException {
-        return statements.remove(statement);
+        if(statements.remove(statement)){
+            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
+            return true;
+        }
+        return false;
     }
 
 
@@ -218,107 +244,21 @@ public class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototy
     }
 
 
+    @Override
     public void setDelay(DoubleParamType<Ep, Ec> delay) {
+        DoubleParamType aux = this.delay;
         this.delay = delay;
+        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
+    @Override
     public DoubleParamType<Ep, Ec> getDelay() {
         return delay;
     }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<compoundCondition";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += space + "</compoundCondition>\n";
-
-        return content;
-    }
     
     
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseOperator();
-        content += parseDelay();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseConditions(ident);
-        content += parseStatements(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseOperator() {
-        NCLConditionOperator aux = getOperator();
-        if(aux != null)
-            return " operator='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDelay() {
-        DoubleParamType aux = getDelay();
-        if(aux == null)
-            return "";
-        
-        String content = " delay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
-        else
-            content += "'";
-        
-        return content;
-    }
-
-
-    protected String parseConditions(int ident) {
-        if(!hasCondition())
-            return "";
-        
-        String content = "";
-        for(Ec aux : conditions)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseStatements(int ident) {
-        if(!hasStatement())
-            return "";
-        
-        String content = "";
-        for(Es aux : statements)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
+    @Override
     public boolean compare(Ec other) {
         boolean comp = true;
 

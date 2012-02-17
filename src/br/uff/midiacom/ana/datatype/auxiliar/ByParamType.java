@@ -1,8 +1,8 @@
 package br.uff.midiacom.ana.datatype.auxiliar;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
@@ -34,13 +34,13 @@ public class ByParamType<P extends NCLConnectorParamPrototype, O extends NCLElem
     @Override
     protected P createParam(String param, O owner) throws XMLException {
         NCLElement connector = (NCLElement) owner.getParent();
-        while(!(connector instanceof NCLCausalConnector)){
+        while(!(connector instanceof NCLCausalConnectorPrototype)){
             connector = (NCLElement) connector.getParent();
             if(connector == null)
                 throw new NCLParsingException("Could not find a parent connector");
         }
         
-        P par = (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
+        P par = (P) ((NCLCausalConnectorPrototype) connector).getConnectorParams().get(param);
         if(par == null)
             throw new NCLParsingException("Could not find a param in connector with name: " + param);
         

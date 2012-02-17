@@ -38,14 +38,19 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
 
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, P extends NCLElement, I extends XMLElementImpl, V>
-        extends XMLElementPrototype<T, P, I> implements NCLDescriptorParam<T, P, V> {
+public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam,
+                                                  P extends NCLElement,
+                                                  I extends NCLElementImpl,
+                                                  V>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLDescriptorParam<T, P, V> {
 
     protected NCLAttributes name;
     protected V value;
@@ -65,8 +70,11 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, 
      * @param name
      *          Elemento representando o nome do parâmetro.
      */
+    @Override
     public void setName(NCLAttributes name) {
+        NCLAttributes aux = this.name;
         this.name = name;
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
@@ -76,6 +84,7 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, 
      * @return
      *          elemento representando o nome do parâmetro.
      */
+    @Override
     public NCLAttributes getName() {
         return name;
     }
@@ -89,8 +98,11 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, 
      * @throws IllegalArgumentException
      *          se o valor não estiver de acordo com o esperado.
      */
+    @Override
     public void setValue(V value) {
+        V aux = this.value;
         this.value = value;
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
 
 
@@ -100,60 +112,13 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam, 
      * @return
      *          valor do parâmetro.
      */
+    @Override
     public V getValue() {
         return value;
     }
 
 
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<descriptorParam";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseName();
-        content += parseValue();
-        
-        return content;
-    }
-    
-    
-    protected String parseName() {
-        NCLAttributes aux = getName();
-        if(aux != null)
-            return " name='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseValue() {
-        String aux = getParamValue();
-        if(aux != null)
-            return " value='" + aux + "'";
-        else
-            return "";
-    }
-
-
+    @Override
     public boolean compare(T other) {
         return getName().equals(other.getName());
     }

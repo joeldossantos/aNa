@@ -37,15 +37,21 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype, P extends NCLElement, I extends XMLElementImpl, El extends NCLLayoutDescriptor, Er extends NCLTestRule>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype,
+                                                     P extends NCLElement,
+                                                     I extends NCLElementImpl,
+                                                     El extends NCLLayoutDescriptor,
+                                                     Er extends NCLTestRule>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected El constituent;
     protected Er rule;
@@ -66,7 +72,9 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
      *          elemento representando o descritor mapeado pelo bind.
      */
     public void setConstituent(El constituent) {
+        El aux = this.constituent;
         this.constituent = constituent;
+        impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
     }
 
 
@@ -88,7 +96,9 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
      *          elemento representando a regra de avaliação do bind.
      */
     public void setRule(Er rule) {
+        Er aux = this.rule;
         this.rule = rule;
+        impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
     }
 
 
@@ -100,54 +110,6 @@ public class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRuleProto
      */
     public Er getRule() {
         return rule;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<bindRule";
-        content += parseAttributes();
-        content += "/>\n";
-
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseRule();
-        content += parseConstituent();
-        
-        return content;
-    }
-    
-    
-    protected String parseRule() {
-        Er aux = getRule();
-        if(aux != null)
-            return " rule='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseConstituent() {
-        El aux = getConstituent();
-        if(aux != null)
-            return " constituent='" + aux.getId() + "'";
-        else
-            return "";
     }
 
 

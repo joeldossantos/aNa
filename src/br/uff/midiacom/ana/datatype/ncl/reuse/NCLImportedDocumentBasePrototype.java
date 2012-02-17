@@ -37,16 +37,21 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.reuse;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
-public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBasePrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLImportPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBasePrototype,
+                                                       P extends NCLElement,
+                                                       I extends NCLElementImpl,
+                                                       Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
 
     protected ElementList<Ei, T> imports;
 
@@ -69,7 +74,11 @@ public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBaseP
      * @see TreeSet#add
      */
     public boolean addImportNCL(Ei importNCL) throws XMLException {
-        return imports.add(importNCL, (T) this);
+        if(imports.add(importNCL, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importNCL);
+            return true;
+        }
+        return false;
     }
 
 
@@ -82,7 +91,11 @@ public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBaseP
      * @see TreeSet#remove
      */
     public boolean removeImportNCL(Ei importNCL) throws XMLException {
-        return imports.remove(importNCL);
+        if(imports.remove(importNCL)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importNCL);
+            return true;
+        }
+        return false;
     }
 
 
@@ -116,72 +129,5 @@ public class NCLImportedDocumentBasePrototype<T extends NCLImportedDocumentBaseP
      */
     public ElementList<Ei, T> getImportNCLs() {
         return imports;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<importedDocumentBase";
-        content += parseAttributes();
-
-        if(hasImportNCL()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-
-            content += space + "</importedDocumentBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportNCL(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseImportNCL(int ident) {
-        if(!hasImportNCL())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

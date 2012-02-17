@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -46,8 +47,13 @@ import br.uff.midiacom.xml.XMLException;
 import java.util.TreeSet;
 
 
-public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
+public abstract class NCLPortPrototype<T extends NCLPortPrototype,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl,
+                                       En extends NCLNode,
+                                       Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<Ei, P, I>
+        implements NCLInterface<Ei, P> {
 
     protected En component;
     protected Ei interfac;
@@ -83,7 +89,9 @@ public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, 
      *          elemento representando o nó.
      */
     public void setComponent(En component) {
+        En aux = this.component;
         this.component = component;
+        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
     }
     
     
@@ -105,7 +113,9 @@ public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, 
      *          elemento representando a interface do nó.
      */
     public void setInterface(Ei interfac) {
+        Ei aux = this.interfac;
         this.interfac = interfac;
+        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
     }
     
     
@@ -120,76 +130,20 @@ public class NCLPortPrototype<T extends NCLPortPrototype, P extends NCLElement, 
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        
-        // <port> element and attributes declaration
-        content = space + "<port";
-        content += parseAttributes();
-        content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseComponent();
-        content += parseInterface();
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseComponent() {
-        En aux = getComponent();
-        if(aux != null)
-            return " component='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseInterface() {
-        Ei aux = getInterface();
-        if(aux != null)
-            return " interface='" + aux.getId() + "'";
-        else
-            return "";
     }
 }

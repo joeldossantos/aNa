@@ -39,16 +39,23 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P extends NCLElement, I extends XMLElementImpl, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<Ea, P, I> implements NCLAction<Ea, P, Ep> {
+public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype,
+                                                 P extends NCLElement,
+                                                 I extends NCLElementImpl,
+                                                 Ea extends NCLAction,
+                                                 Ep extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<Ea, P, I>
+        implements NCLAction<Ea, P, Ep> {
 
     protected NCLActionOperator operator;
     protected DoubleParamType<Ep, Ea> delay;
@@ -71,7 +78,9 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
      *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLActionOperator operator) {
+        NCLActionOperator aux = this.operator;
         this.operator = operator;
+        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
     
@@ -97,7 +106,11 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
      * @see ArrayList#add(java.lang.Object)
      */
     public boolean addAction(Ea action) throws XMLException {
-        return actions.add(action, (T) this);
+        if(actions.add(action, (T) this)){
+            impl.notifyInserted(NCLElementSets.ACTIONS, action);
+            return true;
+        }
+        return false;
     }
 
 
@@ -112,7 +125,11 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
      * @see ArrayList#remove(java.lang.Object)
      */
     public boolean removeAction(Ea action) throws XMLException {
-        return actions.remove(action);
+        if(actions.remove(action)){
+            impl.notifyRemoved(NCLElementSets.ACTIONS, action);
+            return true;
+        }
+        return false;
     }
 
 
@@ -151,94 +168,21 @@ public class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype, P 
     }
 
 
+    @Override
     public void setDelay(DoubleParamType<Ep, Ea> delay) {
+        DoubleParamType aux = this.delay;
         this.delay = delay;
+        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
+    @Override
     public DoubleParamType<Ep, Ea> getDelay() {
         return delay;
     }
     
     
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<compoundAction";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += space + "</compoundAction>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseOperator();
-        content += parseDelay();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseActions(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseOperator() {
-        NCLActionOperator aux = getOperator();
-        if(aux != null)
-            return " operator='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDelay() {
-        DoubleParamType aux = getDelay();
-        if(aux == null)
-            return "";
-        
-        String content = " delay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
-        else
-            content += "'";
-        
-        return content;
-    }
-
-
-    protected String parseActions(int ident) {
-        if(!hasAction())
-            return "";
-        
-        String content = "";
-        for(Ea aux : actions)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
+    @Override
     public boolean compare(Ea other) {
         boolean comp = true;
 

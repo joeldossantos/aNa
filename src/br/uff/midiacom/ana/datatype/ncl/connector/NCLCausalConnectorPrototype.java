@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
@@ -45,8 +46,14 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParamPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype,
+                                                  P extends NCLElement,
+                                                  I extends NCLElementImpl,
+                                                  Ec extends NCLCondition,
+                                                  Ea extends NCLAction,
+                                                  Ep extends NCLConnectorParamPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P> {
 
     protected Ec condition;
     protected Ea action;
@@ -63,10 +70,11 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
      */    
     public NCLCausalConnectorPrototype(String id) throws XMLException {
         super();
-        this.setId(id);
+        setId(id);
         conn_params = new IdentifiableElementList<Ep, T>();
     }
-
+    
+    
     public NCLCausalConnectorPrototype() throws XMLException {
         super();
         conn_params = new IdentifiableElementList<Ep, T>();
@@ -83,12 +91,14 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
         //Retira o parentesco do condition atual
         if(this.condition != null){
             this.condition.setParent(null);
+            impl.notifyRemoved(NCLElementSets.CONDITIONS, this.condition);
         }
 
         this.condition = condition;
         //Se condition existe, atribui este como seu parente
         if(this.condition != null){
             this.condition.setParent(this);
+            impl.notifyInserted(NCLElementSets.CONDITIONS, this.condition);
         }
     }
     
@@ -114,12 +124,14 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
         //Retira o parentesco do action atual
         if(this.action != null){
             this.action.setParent(null);
+            impl.notifyRemoved(NCLElementSets.ACTIONS, this.action);
         }
 
         this.action = action;
         //Se action existe, atribui este como seu parente
         if(this.action != null){
             this.action.setParent(this);
+            impl.notifyInserted(NCLElementSets.ACTIONS, this.action);
         }
     }
     
@@ -146,7 +158,11 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
      * @see TreeSet#add
      */    
     public boolean addConnectorParam(Ep param) throws XMLException {
-        return conn_params.add(param, (T) this);
+        if(conn_params.add(param, (T) this)){
+            impl.notifyInserted(NCLElementSets.CONNECTOR_PARAMS, param);
+            return true;
+        }
+        return false;
     }
 
 
@@ -159,7 +175,11 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
      *          verdadeiro se o parâmetro for removido.
      */
     public boolean removeConnectorParam(Ep param) throws XMLException {
-        return conn_params.remove(param);
+        if(conn_params.remove(param)){
+            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, param);
+            return true;
+        }
+        return false;
     }
 
     
@@ -172,7 +192,11 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
      *          verdadeiro se o parâmetro for removido.
      */    
     public boolean removeConnectorParam(String name) throws XMLException {
-        return conn_params.remove(name);
+        if(conn_params.remove(name)){
+            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, name);
+            return true;
+        }
+        return false;
     }
 
 
@@ -208,87 +232,5 @@ public class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype, 
      */
     public IdentifiableElementList<Ep, T> getConnectorParams() {
         return conn_params;
-    }
-
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<causalConnector";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += space + "</causalConnector>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseConnectorParams(ident);
-        content += parseCondition(ident);
-        content += parseAction(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseConnectorParams(int ident) {
-        if(!hasConnectorParam())
-            return "";
-        
-        String content = "";
-        for(Ep aux : conn_params)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseCondition(int ident) {
-        Ec aux = getCondition();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseAction(int ident) {
-        Ea aux = getAction();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
     }
 }

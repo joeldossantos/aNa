@@ -35,9 +35,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
+package br.uff.midiacom.ana.datatype.ncl.structure;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
@@ -46,16 +49,24 @@ import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, I extends XMLElementImpl, Eib extends NCLImportedDocumentBasePrototype, Erl extends NCLRuleBasePrototype, Etb extends NCLTransitionBasePrototype, Erb extends NCLRegionBasePrototype,
-        Edb extends NCLDescriptorBasePrototype, Ecb extends NCLConnectorBasePrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLHeadPrototype<T extends NCLHeadPrototype,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl,
+                                       Eib extends NCLImportedDocumentBasePrototype,
+                                       Erl extends NCLRuleBasePrototype,
+                                       Etb extends NCLTransitionBasePrototype,
+                                       Erb extends NCLRegionBasePrototype,
+                                       Edb extends NCLDescriptorBasePrototype,
+                                       Ecb extends NCLConnectorBasePrototype,
+                                       Em extends NCLMetaPrototype,
+                                       Emt extends NCLMetadataPrototype>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected Eib importedDocumentBase;
     protected Erl ruleBase;
@@ -88,12 +99,14 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
         //Retira o parentesco do importedDocumentBase atual
         if(this.importedDocumentBase != null){
             this.importedDocumentBase.setParent(null);
+            impl.notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, this.importedDocumentBase);
         }
 
         this.importedDocumentBase = importedDocumentBase;
         //Se importedDocumentBase existe, atribui este como seu parente
         if(this.importedDocumentBase != null){
             this.importedDocumentBase.setParent(this);
+            impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, this.importedDocumentBase);
         }
     }
 
@@ -120,12 +133,14 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
         //Retira o parentesco do ruleBase atual
         if(this.ruleBase != null){
             this.ruleBase.setParent(null);
+            impl.notifyRemoved(NCLElementSets.RULEBASE, this.ruleBase);
         }
 
         this.ruleBase = ruleBase;
         //Se ruleBase existe, atribui este como seu parente
         if(this.ruleBase != null){
             this.ruleBase.setParent(this);
+            impl.notifyInserted(NCLElementSets.RULEBASE, this.ruleBase);
         }
     }
 
@@ -152,12 +167,14 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
         //Retira o parentesco do transitionBase atual
         if(this.transitionBase != null){
             this.transitionBase.setParent(null);
+            impl.notifyRemoved(NCLElementSets.TRANSITIONBASE, this.transitionBase);
         }
 
         this.transitionBase = transitionBase;
         //Se transitionBase existe, atribui este como seu parente
         if(this.transitionBase != null){
             this.transitionBase.setParent(this);
+            impl.notifyInserted(NCLElementSets.TRANSITIONBASE, this.transitionBase);
         }
     }
 
@@ -185,7 +202,11 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
      * @see TreeSet#add
      */
     public boolean addRegionBase(Erb regionBase) throws XMLException {
-        return regionBases.add(regionBase, (T) this);
+        if(regionBases.add(regionBase, (T) this)){
+            impl.notifyInserted(NCLElementSets.REGIONBASE, regionBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -200,12 +221,20 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
      * @see TreeSet#remove
      */
     public boolean removeRegionBase(Erb regionBase) throws XMLException {
-        return regionBases.remove(regionBase);
+        if(regionBases.remove(regionBase)){
+            impl.notifyRemoved(NCLElementSets.REGIONBASE, regionBase);
+            return true;
+        }
+        return false;
     }
     
     
     public boolean removeRegionBase(String id) throws XMLException {
-        return regionBases.remove(id);
+        if(regionBases.remove(id)){
+            impl.notifyRemoved(NCLElementSets.REGIONBASE, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -259,12 +288,14 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
         //Retira o parentesco do descriptorBase atual
         if(this.descriptorBase != null){
             this.descriptorBase.setParent(null);
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORBASE, this.descriptorBase);
         }
 
         this.descriptorBase = descriptorBase;
         //Se descriptorBase existe, atribui este como seu parente
         if(this.descriptorBase != null){
             this.descriptorBase.setParent(this);
+            impl.notifyInserted(NCLElementSets.DESCRIPTORBASE, this.descriptorBase);
         }
     }
 
@@ -290,12 +321,14 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
         //Retira o parentesco do connectorBase atual
         if(this.connectorBase != null){
             this.connectorBase.setParent(null);
+            impl.notifyRemoved(NCLElementSets.CONNECTORBASE, this.connectorBase);
         }
 
         this.connectorBase = connectorBase;
         //Se connectorBase existe, atribui este como seu parente
         if(this.connectorBase != null){
             this.connectorBase.setParent(this);
+            impl.notifyInserted(NCLElementSets.CONNECTORBASE, this.connectorBase);
         }
     }
 
@@ -322,7 +355,11 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
      * @see TreeSet#add
      */
     public boolean addMeta(Em meta) throws XMLException {
-        return metas.add(meta, (T) this);
+        if(metas.add(meta, (T) this)){
+            impl.notifyInserted(NCLElementSets.METAS, meta);
+            return true;
+        }
+        return false;
     }
 
 
@@ -337,7 +374,11 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
      * @see TreeSet#remove
      */
     public boolean removeMeta(Em meta) throws XMLException {
-        return metas.remove(meta);
+        if(metas.remove(meta)){
+            impl.notifyRemoved(NCLElementSets.METAS, meta);
+            return true;
+        }
+        return false;
     }
 
 
@@ -387,7 +428,11 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
      * @see TreeSet#add
      */
     public boolean addMetadata(Emt metadata) throws XMLException {
-        return metadatas.add(metadata, (T) this);
+        if(metadatas.add(metadata, (T) this)){
+            impl.notifyInserted(NCLElementSets.METADATAS, metadata);
+            return true;
+        }
+        return false;
     }
 
 
@@ -402,7 +447,11 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
      * @see TreeSet#remove
      */
     public boolean removeMetadata(Emt metadata) throws XMLException {
-        return metadatas.remove(metadata);
+        if(metadatas.remove(metadata)){
+            impl.notifyRemoved(NCLElementSets.METADATAS, metadata);
+            return true;
+        }
+        return false;
     }
 
 
@@ -439,126 +488,9 @@ public class NCLHeadPrototype<T extends NCLHeadPrototype, P extends NCLElement, 
     public ElementList<Emt, T> getMetadatas() {
         return metadatas;
     }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-        
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-                
-        content = space + "<head>\n";
-        
-        content += parseElements(ident + 1);
-        
-        content += space + "</head>\n";
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportedDocumentBase(ident);
-        content += parseRuleBase(ident);
-        content += parseTransitionBase(ident);
-        content += parseRegionBases(ident);
-        content += parseDescriptorBase(ident);
-        content += parseConnectorBase(ident);
-        content += parseMetas(ident);
-        content += parseMetadatas(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseImportedDocumentBase(int ident) {
-        Eib aux = getImportedDocumentBase();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseRuleBase(int ident) {
-        Erl aux = getRuleBase();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseTransitionBase(int ident) {
-        Etb aux = getTransitionBase();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseRegionBases(int ident) {
-        if(!hasRegionBase())
-            return "";
-        
-        String content = "";
-        for(Erb aux : regionBases)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseDescriptorBase(int ident) {
-        Edb aux = getDescriptorBase();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseConnectorBase(int ident) {
-        Ecb aux = getConnectorBase();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseMetas(int ident) {
-        if(!hasMeta())
-            return "";
-        
-        String content = "";
-        for(Em aux : metas)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseMetadatas(int ident) {
-        if(!hasMetadata())
-            return "";
-        
-        String content = "";
-        for(Emt aux : metadatas)
-            content += aux.parse(ident);
-        
-        return content;
-    }
 
 
+    @Override
     public boolean compare(T other) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

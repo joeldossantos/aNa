@@ -37,9 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -47,8 +48,13 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTestRule, Ei extends NCLImportPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
+                                           P extends NCLElement,
+                                           I extends NCLElementImpl,
+                                           Et extends NCLTestRule,
+                                           Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
 
     protected IdentifiableElementList<Et, T> rules;
     protected ElementList<Ei, T> imports;
@@ -75,7 +81,11 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
      * @see TreeSet#add
      */
     public boolean addRule(Et rule) throws XMLException {
-        return rules.add(rule, (T) this);
+        if(rules.add(rule, (T) this)){
+            impl.notifyInserted(NCLElementSets.RULES, rule);
+            return true;
+        }
+        return false;
     }
 
 
@@ -90,12 +100,20 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
      * @see TreeSet#remove
      */
     public boolean removeRule(Et rule) throws XMLException {
-        return rules.remove(rule);
+        if(rules.remove(rule)){
+            impl.notifyRemoved(NCLElementSets.RULES, rule);
+            return true;
+        }
+        return false;
     }
 
 
     public boolean removeRule(String id) throws XMLException {
-        return rules.remove(id);
+        if(rules.remove(id)){
+            impl.notifyRemoved(NCLElementSets.RULES, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -148,7 +166,11 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
      * @see TreeSet#add
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
-        return imports.add(importBase, (T) this);
+        if(imports.add(importBase, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -161,7 +183,11 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
      * @see TreeSet#remove
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -195,85 +221,5 @@ public class NCLRuleBasePrototype<T extends NCLRuleBasePrototype, P extends NCLE
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<ruleBase";
-        content += parseAttributes();
-
-        if(hasImportBase() || hasRule()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-
-            content += space + "</ruleBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportBases(ident);
-        content += parseRules(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseRules(int ident) {
-        if(!hasRule())
-            return "";
-        
-        String content = "";
-        for(Et aux : rules)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

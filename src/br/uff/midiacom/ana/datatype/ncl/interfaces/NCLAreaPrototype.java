@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -49,8 +50,12 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
 
-public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I> implements NCLInterface<Ei, P> {
+public abstract class NCLAreaPrototype<T extends NCLAreaPrototype,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl,
+                                       Ei extends NCLInterface>
+        extends NCLIdentifiableElementPrototype<Ei, P, I>
+        implements NCLInterface<Ei, P> {
 
     protected ArrayType coords;
     protected TimeType begin;
@@ -93,7 +98,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          coordenadas da âncora espacial.
      */
     public void setCoords(ArrayType coords){
+        ArrayType aux = this.coords;
         this.coords = coords;
+        impl.notifyAltered(NCLElementAttributes.COORDS, aux, coords);
     }
     
     
@@ -118,7 +125,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @see TimeType
      */
     public void setBegin(TimeType begin) {
+        TimeType aux = this.begin;
         this.begin = begin;
+        impl.notifyAltered(NCLElementAttributes.BEGIN, aux, begin);
     }
     
     
@@ -143,7 +152,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @see TimeType
      */
     public void setEnd(TimeType end) {
+        TimeType aux = this.end;
         this.end = end;
+        impl.notifyAltered(NCLElementAttributes.END, aux, end);
     }
     
     
@@ -167,7 +178,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          se a String for vazia.
      */
     public void setText(String text) throws XMLException {
+        StringType aux = this.text;
         this.text = new StringType(text);
+        impl.notifyAltered(NCLElementAttributes.TEXT, aux, text);
     }
     
     
@@ -196,7 +209,10 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
     public void setPosition(Integer position) throws XMLException {
         if(position != null && position < 0)
             throw new XMLException("Invalid position");
+        
+        Integer aux = this.position;
         this.position = position;
+        impl.notifyAltered(NCLElementAttributes.POSITION, aux, position);
     }
     
     
@@ -220,7 +236,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @see SampleType
      */
     public void setFirst(SampleType first) {
+        SampleType aux = this.first;
         this.first = first;
+        impl.notifyAltered(NCLElementAttributes.FIRST, aux, first);
     }
     
     
@@ -244,7 +262,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      * @see SampleType
      */
     public void setLast(SampleType last) {
+        SampleType aux = this.last;
         this.last = last;
+        impl.notifyAltered(NCLElementAttributes.LAST, aux, last);
     }
     
     
@@ -270,7 +290,9 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
      *          se a String for vazia.
      */
     public void setLabel(String label) throws XMLException {
+        StringType aux = this.label;
         this.label = new StringType(label);
+        impl.notifyAltered(NCLElementAttributes.LABEL, aux, label);
     }
     
     
@@ -288,135 +310,20 @@ public class NCLAreaPrototype<T extends NCLAreaPrototype, P extends NCLElement, 
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-                
-        // <area> element and attributes declaration
-        content = space + "<area";
-        content += parseAttributes();
-        content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseCoords();
-        content += parseBegin();
-        content += parseEnd();
-        content += parseText();
-        content += parsePosition();
-        content += parseFirst();
-        content += parseLast();
-        content += parseLabel();
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseCoords() {
-        ArrayType aux = getCoords();
-        if(aux != null)
-            return " coords='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseBegin() {
-        TimeType aux = getBegin();
-        if(aux != null)
-            return " begin='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseEnd() {
-        TimeType aux = getEnd();
-        if(aux != null)
-            return " end='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseText() {
-        String aux = getText();
-        if(aux != null)
-            return " text='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parsePosition() {
-        Integer aux = getPosition();
-        if(aux != null)
-            return " position='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFirst() {
-        SampleType aux = getFirst();
-        if(aux != null)
-            return " first='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseLast() {
-        SampleType aux = getLast();
-        if(aux != null)
-            return " last='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseLabel() {
-        String aux = getLabel();
-        if(aux != null)
-            return " label='" + aux + "'";
-        else
-            return "";
     }
 }

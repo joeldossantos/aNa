@@ -37,9 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -47,8 +48,13 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
-public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImportPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype,
+                                                 P extends NCLElement,
+                                                 I extends NCLElementImpl,
+                                                 El extends NCLLayoutDescriptor,
+                                                 Ei extends NCLImportPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
 
     protected IdentifiableElementList<El, T> descriptors;
     protected ElementList<Ei, T> imports;
@@ -73,7 +79,11 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @see TreeSet#add
      */
     public boolean addDescriptor(El descriptor) throws XMLException {
-        return descriptors.add(descriptor, (T) this);
+        if(descriptors.add(descriptor, (T) this)){
+            impl.notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
+            return true;
+        }
+        return false;
     }
 
 
@@ -86,7 +96,11 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(El descriptor) throws XMLException {
-        return descriptors.remove(descriptor);
+        if(descriptors.remove(descriptor)){
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
+            return true;
+        }
+        return false;
     }
 
 
@@ -101,7 +115,11 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @see TreeSet#remove
      */
     public boolean removeDescriptor(String id) throws XMLException {
-        return descriptors.remove(id);
+        if(descriptors.remove(id)){
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -152,7 +170,11 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @see TreeSet#add
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
-        return imports.add(importBase, (T) this);
+        if(imports.add(importBase, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -165,7 +187,11 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      * @see TreeSet#remove
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
-        return imports.remove(importBase);
+        if(imports.remove(importBase)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
+            return true;
+        }
+        return false;
     }
 
 
@@ -199,85 +225,5 @@ public class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype, P 
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<descriptorBase";
-        content += parseAttributes();
-
-        if(hasDescriptor() || hasImportBase()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-            
-            content += space + "</descriptorBase>\n";
-        }
-        else
-            content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseImportBases(ident);
-        content += parseDescriptors(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseDescriptors(int ident) {
-        if(!hasDescriptor())
-            return "";
-        
-        String content = "";
-        for(El aux : descriptors)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

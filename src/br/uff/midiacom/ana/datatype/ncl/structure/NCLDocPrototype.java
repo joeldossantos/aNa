@@ -35,8 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
+package br.uff.midiacom.ana.datatype.ncl.structure;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -45,8 +47,13 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I extends NCLElementImpl, Eh extends NCLHeadPrototype, Eb extends NCLBodyPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLDocPrototype<T extends NCLDocPrototype,
+                                      P extends NCLElement,
+                                      I extends NCLElementImpl,
+                                      Eh extends NCLHeadPrototype,
+                                      Eb extends NCLBodyPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P> {
 
     protected String title;
     protected NCLNamespace xmlns;
@@ -72,7 +79,9 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
         if(title != null && "".equals(title.trim()))
             throw new XMLException("Empty title String");
         
+        String aux = this.title;
         this.title = title;
+        impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
     }
 
 
@@ -97,7 +106,9 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
         if(xmlns == null)
             throw new XMLException("Null xmlns.");
 
+        NCLNamespace aux = this.xmlns;
         this.xmlns = xmlns;
+        impl.notifyAltered(NCLElementAttributes.XMLNS, aux, xmlns);
     }
 
 
@@ -122,12 +133,14 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
         //Retira o parentesco do head atual
         if(this.head != null){
             this.head.setParent(null);
+            impl.notifyRemoved(NCLElementSets.HEAD, this.head);
         }
 
         this.head = head;
         //Se head existe, atribui este como seu parente
         if(this.head != null){
             this.head.setParent(this);
+            impl.notifyInserted(NCLElementSets.HEAD, this.head);
         }
     }
 
@@ -153,12 +166,14 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
         //Retira o parentesco do body atual
         if(this.body != null){
             this.body.setParent(null);
+            impl.notifyRemoved(NCLElementSets.BODY, this.body);
         }
 
         this.body = body;
         //Se body existe, atribui este como seu parente
         if(this.body != null){
             this.body.setParent(this);
+            impl.notifyInserted(NCLElementSets.BODY, this.body);
         }
     }
 
@@ -171,102 +186,5 @@ public class NCLDocPrototype<T extends NCLDocPrototype, P extends NCLElement, I 
      */
     public Eb getBody() {
         return body;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        // XML document start declaration
-        content = space + "<?xml version='1.0' encoding='ISO-8859-1'?>\n";
-
-        content += space + "<!-- Generated with NCL API -->\n\n";
-
-        // <ncl> element and attributes declaration
-        content += space + "<ncl";
-        content += parseAttributes();
-        content += ">\n";
-
-        // <ncl> element content
-        content += parseElements(ident + 1);
-
-        // <ncl> element end declaration
-        content += space + "</ncl>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseTitle();
-        content += parseXmlns();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseHead(ident);
-        content += parseBody(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseTitle() {
-        String aux = getTitle();
-        if(aux != null)
-            return " title='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseXmlns() {
-        NCLNamespace aux = getXmlns();
-        if(aux != null)
-            return " xmlns='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseHead(int ident) {
-        Eh aux = getHead();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
-    }
-    
-    
-    protected String parseBody(int ident) {
-        Eb aux = getBody();
-        if(aux != null)
-            return aux.parse(ident);
-        else
-            return "";
     }
 }

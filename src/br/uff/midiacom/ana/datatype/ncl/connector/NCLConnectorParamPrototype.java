@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
@@ -48,8 +49,11 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
 
-public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>, ReferredElement {
+public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype,
+                                                 P extends NCLElement,
+                                                 I extends NCLElementImpl>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P>, ReferredElement {
     
     protected StringType type;
     
@@ -77,7 +81,22 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
         super();
         references = new TreeSet<ReferenceType>();
     }
-
+    
+    
+    @Deprecated
+    @Override
+    public void setId(String id) throws XMLException {
+        super.setId(id);
+    }
+    
+    
+    @Deprecated
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+    
+    
     /**
      * Atribui um nome ao parâmetro
      *
@@ -87,7 +106,9 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
      *          se o nome do parâmetro for inválido.
      */
     public void setName(String name) throws XMLException {
-        setId(name);
+        String aux = this.getName();
+        super.setId(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
     
     
@@ -98,7 +119,7 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
      *          String contendo o nome atribuido ao parâmetro.
      */
     public String getName() {
-        return getId();
+        return super.getId();
     }
     
     
@@ -111,7 +132,9 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
      *          se a String for vazia.
      */
     public void setType(String type) throws XMLException {
+        StringType aux = this.type;
         this.type = new StringType(type);
+        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
     }
 
 
@@ -129,64 +152,20 @@ public class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype, P 
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<connectorParam";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseName();
-        content += parseType();
-        
-        return content;
-    }
-    
-    
-    protected String parseName() {
-        String aux = getName();
-        if(aux != null)
-            return " name='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseType() {
-        String aux = getType();
-        if(aux != null)
-            return " type='" + aux + "'";
-        else
-            return "";
     }
 }

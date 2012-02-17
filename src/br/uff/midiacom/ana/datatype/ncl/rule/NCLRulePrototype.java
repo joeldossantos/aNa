@@ -39,9 +39,9 @@ package br.uff.midiacom.ana.datatype.ncl.rule;
 
 import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -49,8 +49,12 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
 
-public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLPropertyPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
+public abstract class NCLRulePrototype<T extends NCLTestRule,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl,
+                                       Ep extends NCLPropertyPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLTestRule<T, P> {
 
     protected Ep var;
     protected NCLComparator comparator;
@@ -87,7 +91,9 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
      *          elemento representando a propriedade associada ao atributo.
      */
     public void setVar(Ep var) {
+        Ep aux = this.var;
         this.var = var;
+        impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
     }
 
 
@@ -109,7 +115,9 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
      *          elemento representando o comparador da regra.
      */
     public void setComparator(NCLComparator comparator) {
+        NCLComparator aux = this.comparator;
         this.comparator = comparator;
+        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
     }
 
 
@@ -134,7 +142,9 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
      *          se a String for vazia.
      */
     public void setValue(String value) throws XMLException {
+        StringType aux = this.value;
         this.value = new StringType(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
 
 
@@ -152,86 +162,20 @@ public class NCLRulePrototype<T extends NCLTestRule, P extends NCLElement, I ext
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-    
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<rule";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseVar();
-        content += parseComparator();
-        content += parseValue();
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseVar() {
-        Ep aux = getVar();
-        if(aux != null)
-            return " var='" + aux.getName() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseComparator() {
-        NCLComparator aux = getComparator();
-        if(aux != null)
-            return " comparator='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseValue() {
-        String aux = getValue();
-        if(aux != null)
-            return " value='" + aux + "'";
-        else
-            return "";
     }
 }

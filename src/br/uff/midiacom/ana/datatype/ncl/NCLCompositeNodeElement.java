@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
+import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
@@ -44,13 +47,22 @@ import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import java.util.TreeSet;
 
 
-public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPortPrototype, Epp extends NCLPropertyPrototype, En extends NCLNode, El extends NCLLinkPrototype, Em extends NCLMetaPrototype, Emt extends NCLMetadataPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
+                                              P extends NCLElement,
+                                              I extends NCLElementImpl,
+                                              Ept extends NCLPortPrototype,
+                                              Epp extends NCLPropertyPrototype,
+                                              En extends NCLNode,
+                                              El extends NCLLinkPrototype,
+                                              Em extends NCLMetaPrototype,
+                                              Emt extends NCLMetadataPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P>, ReferredElement {
 
     protected IdentifiableElementList<Ept, T> ports;
     protected IdentifiableElementList<Epp, T> properties;
@@ -58,6 +70,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
     protected IdentifiableElementList<El, T> links;
     protected ElementList<Em, T> metas;
     protected ElementList<Emt, T> metadatas;
+    
+    protected TreeSet<ReferenceType> references;
 
 
     /**
@@ -68,14 +82,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @throws br.pensario.NCLInvalidIdentifierException
      *          se o identificador do contexto for inválido.
      */
-    public NCLCompositeNodeElement(String id) throws XMLException {
-        setId(id);
+    public NCLCompositeNodeElement() throws XMLException {
+        super();
         ports = new IdentifiableElementList<Ept, T>();
         properties = new IdentifiableElementList<Epp, T>();
         nodes = new IdentifiableElementList<En, T>();
         links = new IdentifiableElementList<El, T>();
         metas = new ElementList<Em, T>();
         metadatas = new ElementList<Emt, T>();
+        references = new TreeSet<ReferenceType>();
     }
 
 
@@ -90,7 +105,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#add
      */
     public boolean addPort(Ept port) throws XMLException {
-        return ports.add(port, (T) this);
+        if(ports.add(port, (T) this)){
+            impl.notifyInserted(NCLElementSets.PORTS, port);
+            return true;
+        }
+        return false;
     }
 
 
@@ -105,7 +124,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removePort(Ept port) throws XMLException {
-        return ports.remove(port);
+        if(ports.remove(port)){
+            impl.notifyRemoved(NCLElementSets.PORTS, port);
+            return true;
+        }
+        return false;
     }
 
 
@@ -120,7 +143,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removePort(String id) throws XMLException {
-        return ports.remove(id);
+        if(ports.remove(id)){
+            impl.notifyRemoved(NCLElementSets.PORTS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -183,7 +210,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#add
      */
     public boolean addProperty(Epp property) throws XMLException {
-        return properties.add(property, (T) this);
+        if(properties.add(property, (T) this)){
+            impl.notifyInserted(NCLElementSets.PROPERTIES, property);
+            return true;
+        }
+        return false;
     }
 
 
@@ -198,7 +229,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeProperty(Epp property) throws XMLException {
-        return properties.remove(property);
+        if(properties.remove(property)){
+            impl.notifyRemoved(NCLElementSets.PROPERTIES, property);
+            return true;
+        }
+        return false;
     }
 
 
@@ -213,7 +248,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeProperty(String name) throws XMLException {
-        return properties.remove(name);
+        if(properties.remove(name)){
+            impl.notifyRemoved(NCLElementSets.PROPERTIES, name);
+            return true;
+        }
+        return false;
     }
 
 
@@ -276,7 +315,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#add
      */
     public boolean addNode(En node) throws XMLException {
-        return nodes.add(node, (T) this);
+        if(nodes.add(node, (T) this)){
+            impl.notifyInserted(NCLElementSets.NODES, node);
+            return true;
+        }
+        return false;
     }
 
 
@@ -291,7 +334,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeNode(En node) throws XMLException {
-        return nodes.remove(node);
+        if(nodes.remove(node)){
+            impl.notifyRemoved(NCLElementSets.NODES, node);
+            return true;
+        }
+        return false;
     }
 
 
@@ -306,7 +353,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeNode(String id) throws XMLException {
-        return nodes.remove(id);
+        if(nodes.remove(id)){
+            impl.notifyRemoved(NCLElementSets.NODES, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -369,7 +420,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#add
      */
     public boolean addLink(El link) throws XMLException {
-        return links.add(link, (T) this);
+        if(links.add(link, (T) this)){
+            impl.notifyInserted(NCLElementSets.LINKS, link);
+            return true;
+        }
+        return false;
     }
 
 
@@ -384,12 +439,20 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeLink(El link) throws XMLException {
-        return links.remove(link);
+        if(links.remove(link)){
+            impl.notifyRemoved(NCLElementSets.LINKS, link);
+            return true;
+        }
+        return false;
     }
 
 
     public boolean removeLink(String id) throws XMLException {
-        return links.remove(id);
+        if(links.remove(id)){
+            impl.notifyRemoved(NCLElementSets.LINKS, id);
+            return true;
+        }
+        return false;
     }
 
 
@@ -444,7 +507,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#add
      */
     public boolean addMeta(Em meta) throws XMLException {
-        return metas.add(meta, (T) this);
+        if(metas.add(meta, (T) this)){
+            impl.notifyInserted(NCLElementSets.METAS, meta);
+            return true;
+        }
+        return false;
     }
 
 
@@ -459,7 +526,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeMeta(Em meta) throws XMLException {
-        return metas.remove(meta);
+        if(metas.remove(meta)){
+            impl.notifyRemoved(NCLElementSets.METAS, meta);
+            return true;
+        }
+        return false;
     }
 
 
@@ -509,7 +580,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#add
      */
     public boolean addMetadata(Emt metadata) throws XMLException {
-        return metadatas.add(metadata, (T) this);
+        if(metadatas.add(metadata, (T) this)){
+            impl.notifyInserted(NCLElementSets.METADATAS, metadata);
+            return true;
+        }
+        return false;
     }
 
 
@@ -524,7 +599,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      * @see TreeSet#remove
      */
     public boolean removeMetadata(Emt metadata) throws XMLException {
-        return metadatas.remove(metadata);
+        if(metadatas.remove(metadata)){
+            impl.notifyRemoved(NCLElementSets.METADATAS, metadata);
+            return true;
+        }
+        return false;
     }
 
 
@@ -560,5 +639,23 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement, 
      */
     public ElementList<Emt, T> getMetadatas() {
         return metadatas;
+    }
+    
+    
+    @Override
+    public boolean addReference(ReferenceType reference) {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(ReferenceType reference) {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public TreeSet<ReferenceType> getReferences() {
+        return references;
     }
 }

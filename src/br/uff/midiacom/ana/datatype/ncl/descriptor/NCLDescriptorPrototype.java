@@ -41,6 +41,8 @@ import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -54,8 +56,15 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
 
-public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegionPrototype, El extends NCLLayoutDescriptor, Et extends NCLTransitionPrototype, Ep extends NCLDescriptorParam>
-        extends NCLIdentifiableElementPrototype<El, P, I> implements NCLLayoutDescriptor<El, P> {
+public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
+                                             P extends NCLElement,
+                                             I extends NCLElementImpl,
+                                             Er extends NCLRegionPrototype,
+                                             El extends NCLLayoutDescriptor,
+                                             Et extends NCLTransitionPrototype,
+                                             Ep extends NCLDescriptorParam>
+        extends NCLIdentifiableElementPrototype<El, P, I>
+        implements NCLLayoutDescriptor<El, P> {
 
     protected StringType player;
     protected TimeType explicitDur;
@@ -111,7 +120,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          se a String passada como parâmetro for vazia.
      */
     public void setPlayer(String player) throws XMLException {
+        StringType aux = this.player;
         this.player = new StringType(player);
+        impl.notifyAltered(NCLElementAttributes.PLAYER, aux, player);
     }
 
 
@@ -136,7 +147,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          inteiro representando a duração a ser usada pelo descritor em segundos.
      */
     public void setExplicitDur(TimeType explicitDur) {
+        TimeType aux = this.explicitDur;
         this.explicitDur = explicitDur;
+        impl.notifyAltered(NCLElementAttributes.EXPLICITDUR, aux, explicitDur);
     }
 
 
@@ -159,7 +172,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          booleano definindo se o último quadro deverá ser exibido continuamente.
      */
     public void setFreeze(Boolean freeze) {
+        Boolean aux = this.freeze;
         this.freeze = freeze;
+        impl.notifyAltered(NCLElementAttributes.FREEZE, aux, freeze);
     }
 
 
@@ -183,7 +198,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveLeft(T descriptor) {
+        T aux = this.moveLeft;
         this.moveLeft = descriptor;
+        impl.notifyAltered(NCLElementAttributes.MOVELEFT, aux, descriptor);
     }
 
 
@@ -207,7 +224,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveRight(T descriptor) {
+        T aux = this.moveRight;
         this.moveRight = descriptor;
+        impl.notifyAltered(NCLElementAttributes.MOVERIGHT, aux, descriptor);
     }
 
 
@@ -231,7 +250,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveUp(T descriptor) {
+        T aux = this.moveUp;
         this.moveUp = descriptor;
+        impl.notifyAltered(NCLElementAttributes.MOVEUP, aux, descriptor);
     }
 
 
@@ -255,7 +276,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando o descritor que receberá foco.
      */
     public void setMoveDown(T descriptor) {
+        T aux = this.moveDown;
         this.moveDown = descriptor;
+        impl.notifyAltered(NCLElementAttributes.MOVEDOWN, aux, descriptor);
     }
 
     
@@ -278,7 +301,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          inteiro representando o índice de foco do descritor.
      */
     public void setFocusIndex(Integer focusIndex) {
+        Integer aux = this.focusIndex;
         this.focusIndex = focusIndex;
+        impl.notifyAltered(NCLElementAttributes.FOCUSINDEX, aux, focusIndex);
     }
 
 
@@ -300,7 +325,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          cor da borda do descritor.
      */
     public void setFocusBorderColor(NCLColor focusBorderColor) {
+        NCLColor aux = this.focusBorderColor;
         this.focusBorderColor = focusBorderColor;
+        impl.notifyAltered(NCLElementAttributes.FOCUSBORDERCOLOR, aux, focusBorderColor);
     }
 
 
@@ -322,7 +349,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          inteiro representando a largura da borda em pixels.
      */
     public void setFocusBorderWidth(Integer focusBorderWidth) {
+        Integer aux = this.focusBorderWidth;
         this.focusBorderWidth = focusBorderWidth;
+        impl.notifyAltered(NCLElementAttributes.FOCUSBORDERWIDTH, aux, focusBorderWidth);
     }
 
 
@@ -347,7 +376,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          se o valor estiver fora do intervalo.
      */
     public void setFocusBorderTransparency(PercentageType focusBorderTransparency) {
+        PercentageType aux = this.focusBorderTransparency;
         this.focusBorderTransparency = focusBorderTransparency;
+        impl.notifyAltered(NCLElementAttributes.FOCUSBORDERTRANSPARENCY, aux, focusBorderTransparency);
     }
 
 
@@ -374,7 +405,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @see java.net.URI
      */
     public void setFocusSrc(SrcType focusSrc) {
+        SrcType aux = this.focusSrc;
         this.focusSrc = focusSrc;
+        impl.notifyAltered(NCLElementAttributes.FOCUSSRC, aux, focusSrc);
     }
 
 
@@ -398,7 +431,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          se a URI não for válida (@see java.net.URI).
      */
     public void setFocusSelSrc(SrcType focusSelSrc) {
+        SrcType aux = this.focusSelSrc;
         this.focusSelSrc = focusSelSrc;
+        impl.notifyAltered(NCLElementAttributes.FOCUSSELSRC, aux, focusSelSrc);
     }
 
 
@@ -420,7 +455,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          cor da borda do descritor.
      */
     public void setSelBorderColor(NCLColor selBorderColor) {
+        NCLColor aux = this.selBorderColor;
         this.selBorderColor = selBorderColor;
+        impl.notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, selBorderColor);
     }
 
 
@@ -442,7 +479,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando uma transição.
      */
     public void setTransIn(Et transIn) {
+        Et aux = this.transIn;
         this.transIn = transIn;
+        impl.notifyAltered(NCLElementAttributes.TRANSIN, aux, transIn);
     }
 
 
@@ -464,7 +503,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando uma transição.
      */
     public void setTransOut(Et transOut) {
+        Et aux = this.transOut;
         this.transOut = transOut;
+        impl.notifyAltered(NCLElementAttributes.TRANSOUT, aux, transOut);
     }
 
 
@@ -486,7 +527,9 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      *          elemento representando uma região.
      */
     public void setRegion(Er region) {
+        Er aux = this.region;
         this.region = region;
+        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
     }
 
 
@@ -510,7 +553,11 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @see TreeSet#add
      */
     public boolean addDescriptorParam(Ep descriptorParam) throws XMLException {
-        return params.add(descriptorParam, (T) this);
+        if(params.add(descriptorParam, (T) this)){
+            impl.notifyInserted(NCLElementSets.DESCRIPTORPARAM, descriptorParam);
+            return true;
+        }
+        return false;
     }
 
 
@@ -523,7 +570,11 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
      * @see TreeSet#remove
      */
     public boolean removeDescriptorParam(Ep descriptorParam) throws XMLException {
-        return params.remove(descriptorParam);
+        if(params.remove(descriptorParam)){
+            impl.notifyRemoved(NCLElementSets.DESCRIPTORPARAM, descriptorParam);
+            return true;
+        }
+        return false;
     }
 
 
@@ -560,256 +611,20 @@ public class NCLDescriptorPrototype<T extends NCLDescriptorPrototype, P extends 
     }
     
     
+    @Override
     public boolean addReference(ReferenceType reference) {
         return references.add(reference);
     }
     
     
+    @Override
     public boolean removeReference(ReferenceType reference) {
         return references.remove(reference);
     }
     
     
+    @Override
     public TreeSet<ReferenceType> getReferences() {
         return references;
-    }
-
-
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<descriptor";
-        content += parseAttributes();
-
-        // Test if the descriptor has content
-        if(hasDescriptorParam()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-
-            content += space + "</descriptor>\n";
-        }
-        else
-            content += "/>\n";
-
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseRegion();
-        content += parseExplicitDur();
-        content += parseFreeze();
-        content += parsePlayer();
-        content += parseMoveLeft();
-        content += parseMoveRight();
-        content += parseMoveDown();
-        content += parseMoveUp();
-        content += parseFocusIndex();
-        content += parseFocusBorderColor();
-        content += parseFocusBorderWidth();
-        content += parseFocusBorderTransparency();
-        content += parseFocusSrc();
-        content += parseFocusSelSrc();
-        content += parseSelBorderColor();
-        content += parseTransIn();
-        content += parseTransOut();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseDescriptorParams(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseRegion() {
-        Er aux = getRegion();
-        if(aux != null)
-            return " region='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseExplicitDur() {
-        TimeType aux = getExplicitDur();
-        if(aux != null)
-            return " explicitDur='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFreeze() {
-        Boolean aux = getFreeze();
-        if(aux != null)
-            return " freeze='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parsePlayer() {
-        String aux = getPlayer();
-        if(aux != null)
-            return " player='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMoveLeft() {
-        T aux = getMoveLeft();
-        if(aux != null)
-            return " moveLeft='" + aux.getFocusIndex() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMoveRight() {
-        T aux = getMoveRight();
-        if(aux != null)
-            return " moveRight='" + aux.getFocusIndex() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMoveDown() {
-        T aux = getMoveDown();
-        if(aux != null)
-            return " moveDown='" + aux.getFocusIndex() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseMoveUp() {
-        T aux = getMoveUp();
-        if(aux != null)
-            return " moveUp='" + aux.getFocusIndex() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFocusIndex() {
-        Integer aux = getFocusIndex();
-        if(aux != null)
-            return " focusIndex='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFocusBorderColor() {
-        NCLColor aux = getFocusBorderColor();
-        if(aux != null)
-            return " focusBorderColor='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFocusBorderWidth() {
-        Integer aux = getFocusBorderWidth();
-        if(aux != null)
-            return " focusBorderWidth='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFocusBorderTransparency() {
-        PercentageType aux = getFocusBorderTransparency();
-        if(aux != null)
-            return " focusBorderTransparency='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFocusSrc() {
-        SrcType aux = getFocusSrc();
-        if(aux != null)
-            return " focusSrc='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseFocusSelSrc() {
-        SrcType aux = getFocusSelSrc();
-        if(aux != null)
-            return " focusSelSrc='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseSelBorderColor() {
-        NCLColor aux = getSelBorderColor();
-        if(aux != null)
-            return " SelBorderColor='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseTransIn() {
-        Et aux = getTransIn();
-        if(aux != null)
-            return " transIn='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseTransOut() {
-        Et aux = getTransOut();
-        if(aux != null)
-            return " transOut='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDescriptorParams(int ident) {
-        if(!hasDescriptorParam())
-            return "";
-        
-        String content = "";
-        for(Ep aux : params)
-            content += aux.parse(ident);
-        
-        return content;
     }
 }

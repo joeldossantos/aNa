@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
@@ -47,8 +49,14 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLParamPrototype, Eb extends NCLBindPrototype, Ec extends NCLCausalConnectorPrototype>
-        extends NCLIdentifiableElementPrototype<T, P, I> implements NCLIdentifiableElement<T, P>{
+public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl,
+                                       Ep extends NCLParamPrototype,
+                                       Eb extends NCLBindPrototype,
+                                       Ec extends NCLCausalConnectorPrototype>
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P>{
 
     protected Ec xconnector;
     protected ElementList<Ep, T> linkParams;
@@ -72,7 +80,9 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
      *          conector a ser atribuido ao link.
      */
     public void setXconnector(Ec xconnector) {
+        Ec aux = this.xconnector;
         this.xconnector = xconnector;
+        impl.notifyAltered(NCLElementAttributes.XCONNECTOR, aux, xconnector);
     }
     
     
@@ -98,7 +108,11 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
      * @see TreeSet#add
      */
     public boolean addLinkParam(Ep param) throws XMLException {
-        return linkParams.add(param, (T) this);
+        if(linkParams.add(param, (T) this)){
+            impl.notifyInserted(NCLElementSets.LINKPARAMS, param);
+            return true;
+        }
+        return false;
     }
     
     
@@ -113,7 +127,11 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
      * @see TreeSet#remove
      */
     public boolean removeLinkParam(Ep param) throws XMLException {
-        return linkParams.remove(param);
+        if(linkParams.remove(param)){
+            impl.notifyRemoved(NCLElementSets.LINKPARAMS, param);
+            return true;
+        }
+        return false;
     }
     
     
@@ -163,7 +181,11 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
      * @see ArrayList#add
      */
     public boolean addBind(Eb bind) throws XMLException {
-        return binds.add(bind, (T) this);
+        if(binds.add(bind, (T) this)){
+            impl.notifyInserted(NCLElementSets.BINDS, bind);
+            return true;
+        }
+        return false;
     }
     
     
@@ -178,7 +200,11 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
      * @see ArrayList#remove
      */
     public boolean removeBind(Eb bind) throws XMLException {
-        return binds.remove(bind);
+        if(binds.remove(bind)){
+            impl.notifyRemoved(NCLElementSets.BINDS, bind);
+            return true;
+        }
+        return false;
     }
     
     
@@ -215,97 +241,9 @@ public class NCLLinkPrototype<T extends NCLLinkPrototype, P extends NCLElement, 
     public ElementList<Eb, T> getBinds() {
         return binds;
     }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        
-        // <link> element and attributes declaration
-        content = space + "<link";
-        content += parseAttributes();
-        content += ">\n";
-        
-        // <link> element content
-        content += parseElements(ident + 1);
-
-        // <link> element end declaration
-        content += space + "</link>\n";
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseId();
-        content += parseXconnector();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseLinkParams(ident);
-        content += parseBinds(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseId() {
-        String aux = getId();
-        if(aux != null)
-            return " id='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseXconnector() {
-        Ec aux = getXconnector();
-        if(aux != null)
-            return " xconnector='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseLinkParams(int ident) {
-        if(!hasLinkParam())
-            return "";
-        
-        String content = "";
-        for(Ep aux : linkParams)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseBinds(int ident) {
-        if(!hasBind())
-            return "";
-        
-        String content = "";
-        for(Eb aux : binds)
-            content += aux.parse(ident);
-        
-        return content;
-    }
 
 
+    @Override
     public boolean compare(T other) {
         boolean comp = true;
 

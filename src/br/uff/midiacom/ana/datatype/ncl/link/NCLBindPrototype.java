@@ -37,20 +37,30 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P>{
+public abstract class NCLBindPrototype<T extends NCLBindPrototype,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl,
+                                       Er extends NCLRolePrototype,
+                                       En extends NCLNode,
+                                       Ei extends NCLInterface,
+                                       Ed extends NCLLayoutDescriptor,
+                                       Ep extends NCLParamPrototype>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P>{
 
     protected Er role;
     protected En component;
@@ -75,7 +85,9 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      *          elemento representando o papel ao qual o bind será associado.
      */
     public void setRole(Er role) {
+        Er aux = this.role;
         this.role = role;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
     }
     
     
@@ -97,7 +109,9 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      *          elemento representando o nó mapeado pelo bind.
      */
     public void setComponent(En component) {
+        En aux = this.component;
         this.component = component;
+        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
     }
     
     
@@ -119,7 +133,9 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      *          elemento representando a interface do nó.
      */
     public void setInterface(Ei interfac) {
+        Ei aux = this.interfac;
         this.interfac = interfac;
+        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
     }
     
     
@@ -141,7 +157,9 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      *          elemento representando o descritor a ser atribuido.
      */
     public void setDescriptor(Ed descriptor) {
+        Ed aux = this.descriptor;
         this.descriptor = descriptor;
+        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
     }
     
     
@@ -167,7 +185,11 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      * @see TreeSet#add
      */
     public boolean addBindParam(Ep param) throws XMLException {
-        return bindParams.add(param, (T) this);
+        if(bindParams.add(param, (T) this)){
+            impl.notifyInserted(NCLElementSets.BINDPARAMS, param);
+            return true;
+        }
+        return false;
     }
 
 
@@ -182,7 +204,11 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
      * @see TreeSet#remove
      */
     public boolean removeBindParam(Ep param) throws XMLException {
-        return bindParams.remove(param);
+        if(bindParams.remove(param)){
+            impl.notifyRemoved(NCLElementSets.BINDPARAMS, param);
+            return true;
+        }
+        return false;
     }
 
 
@@ -221,106 +247,7 @@ public class NCLBindPrototype<T extends NCLBindPrototype, P extends NCLElement, 
     }
     
     
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        
-        // <bind> element and attributes declaration
-        content = space + "<bind";
-        content += parseAttributes();
-        
-        // <bind> element content
-        if(hasBindParam()){
-            content += ">\n";
-
-            content += parseElements(ident + 1);
-            
-            content += space + "</bind>\n";
-        }
-        else
-            content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseRole();
-        content += parseComponent();
-        content += parseInterface();
-        content += parseDescriptor();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseBindParams(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseRole() {
-        Er aux = getRole();
-        if(aux != null)
-            return " role='" + aux.getName() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseComponent() {
-        En aux = getComponent();
-        if(aux != null)
-            return " component='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseInterface() {
-        Ei aux = getInterface();
-        if(aux != null)
-            return " interface='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseDescriptor() {
-        Ed aux = getDescriptor();
-        if(aux != null)
-            return " descriptor='" + aux.getId() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseBindParams(int ident) {
-        if(!hasBindParam())
-            return "";
-        
-        String content = "";
-        for(Ep aux : bindParams)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
+    @Override
     public boolean compare(T other) {
         boolean comp = true;
 

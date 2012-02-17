@@ -40,7 +40,8 @@ package br.uff.midiacom.ana.datatype.ncl;
 import br.uff.midiacom.xml.XMLIdentifiableElement;
 
 
-public interface NCLIdentifiableElement<T extends NCLIdentifiableElement, P extends NCLElement>
-        extends XMLIdentifiableElement<T, P> {
+public interface NCLIdentifiableElement<T extends NCLIdentifiableElement,
+                                        P extends NCLElement>
+        extends XMLIdentifiableElement<T, P>, NCLElement<T, P> {
 
 }

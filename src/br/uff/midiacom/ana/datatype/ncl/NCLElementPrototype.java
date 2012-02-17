@@ -35,45 +35,38 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
+package br.uff.midiacom.ana.datatype.ncl;
 
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLScroll;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public abstract class NCLScrollDescriptorParamPrototype<T extends NCLScrollDescriptorParamPrototype,
-                                                        P extends NCLElement,
-                                                        I extends NCLElementImpl>
-        extends NCLDescriptorParamPrototype<T, P, I, NCLScroll> {
+public abstract class NCLElementPrototype<T extends NCLElement,
+                                          P extends NCLElement,
+                                          I extends NCLElementImpl>
+        extends XMLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
 
-    public NCLScrollDescriptorParamPrototype() throws XMLException {
+    public NCLElementPrototype() throws XMLException {
         super();
     }
 
 
     @Override
-    public void setName(NCLAttributes name) {
-        super.setName(NCLAttributes.SCROLL);
+    protected void createImpl() throws XMLException {
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
 
     @Override
-    protected void setParamValue(String value) throws IllegalArgumentException {
-        for(NCLScroll scroll : NCLScroll.values()){
-            if(value.equals(scroll.toString()))
-                setValue(scroll);
-        }
-
-        setValue(null);
+    public void setModificationListener(NCLModificationListener listener) {
+        impl.setModificationListener(listener);
     }
 
 
     @Override
-    protected String getParamValue() {
-        return getValue().toString();
+    public NCLModificationListener getModificationListener() {
+        return impl.getModificationListener();
     }
 }

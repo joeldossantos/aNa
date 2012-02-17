@@ -37,17 +37,22 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement, I extends XMLElementImpl, Ec extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P>{
+public abstract class NCLParamPrototype<T extends NCLParamPrototype,
+                                        P extends NCLElement,
+                                        I extends NCLElementImpl,
+                                        Ec extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P>{
 
     protected Ec name;
     protected StringType value;
@@ -79,7 +84,9 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
      *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
      */
     public void setName(Ec connectorParam) {
+        Ec aux = this.name;
         this.name = connectorParam;
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
     }
     
     
@@ -103,7 +110,9 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
      *          Se o valor a ser atribuído for uma String vazia.
      */
     public void setValue(String value)  throws XMLException {
+        StringType aux = this.value;
         this.value = new StringType(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
     
@@ -126,55 +135,7 @@ public class NCLParamPrototype<T extends NCLParamPrototype, P extends NCLElement
     }
     
     
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-        
-        
-        // param element and attributes declaration
-        content = space + "<" + paramType.toString();
-        content += parseAttributes();
-        content += "/>\n";
-        
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseName();
-        content += parseValue();
-        
-        return content;
-    }
-    
-    
-    protected String parseName() {
-        Ec aux = getName();
-        if(aux != null)
-            return " name='" + aux.getName() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseValue() {
-        String aux = getValue();
-        if(aux != null)
-            return " value='" + aux + "'";
-        else
-            return "";
-    }
-    
-    
+    @Override
     public boolean compare(T other) {
         return getName().equals(other.getName());
     }

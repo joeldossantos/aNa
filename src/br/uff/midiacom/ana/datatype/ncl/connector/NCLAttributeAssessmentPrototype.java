@@ -40,15 +40,23 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLElementImpl;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPrototype, P extends NCLElement, I extends XMLElementImpl, Er extends NCLRolePrototype, Ep extends NCLConnectorParamPrototype>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPrototype,
+                                                      P extends NCLElement,
+                                                      I extends NCLElementImpl,
+                                                      Er extends NCLRolePrototype,
+                                                      Ep extends NCLConnectorParamPrototype>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected Er role;
     protected NCLEventType eventType;
@@ -78,7 +86,10 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
         if(this.role != null)
             this.role.setParent(null);
 
+        Er aux = this.role;
         this.role = role;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        
         //Se role existe, atribui este como seu parente
         if(this.role != null)
             this.role.setParent(this);
@@ -103,7 +114,9 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      *          tipo do evento.
      */
     public void setEventType(NCLEventType eventType) {
+        NCLEventType aux = this.eventType;
         this.eventType = eventType;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, eventType);
     }
     
     
@@ -125,7 +138,9 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      *          elemento representando a tecla.
      */
     public void setKey(KeyParamType<Ep, T> key) {
+        KeyParamType aux = this.key;
         this.key = key;
+        impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
     
     
@@ -147,7 +162,9 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      *          elemento representando o tipo do atributo.
      */
     public void setAttributeType(NCLAttributeType attributeType) {
+        NCLAttributeType aux = this.attributeType;
         this.attributeType = attributeType;
+        impl.notifyAltered(NCLElementAttributes.ATTRIBUTETYPE, aux, attributeType);
     }
     
     
@@ -171,7 +188,9 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      *          se o offset for inválido.
      */
     public void setOffset(IntegerParamType<Ep, T> offset) throws IllegalArgumentException {
+        IntegerParamType aux = this.offset;
         this.offset = offset;
+        impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
     }
     
     
@@ -183,83 +202,6 @@ public class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPro
      */
     public IntegerParamType<Ep, T> getOffset() {
         return offset;
-    }
-    
-    
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident< 0)
-            ident = 0;
-        
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<attributeAssessment";
-        content += parseAttributes();
-        content += "/>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseRole();
-        content += parseEventType();
-        content += parseKey();
-        content += parseAttributeType();
-        content += parseOffset();
-        
-        return content;
-    }
-    
-    
-    protected String parseRole() {
-        Er aux = getRole();
-        if(aux != null)
-            return " role='" + aux.getName() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseEventType() {
-        NCLEventType aux = getEventType();
-        if(aux != null)
-            return " eventType='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseKey() {
-        KeyParamType aux = getKey();
-        if(aux != null)
-            return " key='" + aux.parse() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseAttributeType() {
-        NCLAttributeType aux = getAttributeType();
-        if(aux != null)
-            return " attributeType='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseOffset() {
-        IntegerParamType aux = getOffset();
-        if(aux != null)
-            return " offset='" + aux.parse() + "'";
-        else
-            return "";
     }
 
     

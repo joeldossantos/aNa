@@ -37,17 +37,23 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
-public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototype, P extends NCLElement, I extends XMLElementImpl, Es extends NCLStatement>
-        extends XMLElementPrototype<Es, P, I> implements NCLStatement<Es, P> {
+public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototype,
+                                                    P extends NCLElement,
+                                                    I extends NCLElementImpl,
+                                                    Es extends NCLStatement>
+        extends NCLElementPrototype<Es, P, I>
+        implements NCLStatement<Es, P> {
 
     protected NCLOperator operator;
     protected Boolean isNegated;
@@ -70,7 +76,9 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
      *          elemento representando o operador a ser atribuido.
      */
     public void setOperator(NCLOperator operator) {
+        NCLOperator aux = this.operator;
         this.operator = operator;
+        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
     
@@ -92,7 +100,9 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
      *          booleano que define se a assertiva está negada.
      */
     public void setIsNegated(Boolean isNegated) {
+        Boolean aux = this.isNegated;
         this.isNegated = isNegated;
+        impl.notifyAltered(NCLElementAttributes.ISNEGATED, aux, isNegated);
     }
     
     
@@ -118,7 +128,11 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
      * @see ArrayList#add
      */
     public boolean addStatement(Es statement) throws XMLException {
-        return statements.add(statement, (T) this);
+        if(statements.add(statement, (T) this)){
+            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
+            return true;
+        }
+        return false;
     }
     
     
@@ -133,7 +147,11 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
      * @see ArrayList#remove
      */
     public boolean removeStatement(Es statement) throws XMLException {
-        return statements.remove(statement);
+        if(statements.remove(statement)){
+            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
+            return true;
+        }
+        return false;
     }
     
     
@@ -172,78 +190,7 @@ public class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototy
     }
     
     
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-        content = space + "<compoundStatement";
-        content += parseAttributes();
-        content += ">\n";
-
-        content += parseElements(ident + 1);
-
-        content += space + "</compoundStatement>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseAttributes() {
-        String content = "";
-        
-        content += parseOperator();
-        content += parseIsNegated();
-        
-        return content;
-    }
-    
-    
-    protected String parseElements(int ident) {
-        String content = "";
-        
-        content += parseStatements(ident);
-        
-        return content;
-    }
-    
-    
-    protected String parseOperator() {
-        NCLOperator aux = getOperator();
-        if(aux != null)
-            return " operator='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseIsNegated() {
-        Boolean aux = getIsNegated();
-        if(aux != null)
-            return " isNegated='" + aux.toString() + "'";
-        else
-            return "";
-    }
-    
-    
-    protected String parseStatements(int ident) {
-        if(!hasStatement())
-            return "";
-        
-        String content = "";
-        for(Es aux : statements)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
+    @Override
     public boolean compare(Es other) {
         boolean comp = true;
 

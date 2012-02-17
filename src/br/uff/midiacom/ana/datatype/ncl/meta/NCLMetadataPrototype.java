@@ -37,15 +37,19 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.meta;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLElement, I extends XMLElementImpl>
-        extends XMLElementPrototype<T, P, I> implements NCLElement<T, P> {
+public abstract class NCLMetadataPrototype<T extends NCLMetadataPrototype,
+                                           P extends NCLElement,
+                                           I extends NCLElementImpl>
+        extends NCLElementPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
     protected StringType rdfTree;
 
@@ -67,7 +71,9 @@ public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLE
      *          se a String for vazia.
      */
     public void setRDFTree(String rdfTree) throws XMLException {
+        StringType aux = this.rdfTree;
         this.rdfTree = new StringType(rdfTree);
+        impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
     }
 
 
@@ -85,36 +91,7 @@ public class NCLMetadataPrototype<T extends NCLMetadataPrototype, P extends NCLE
     }
 
 
-    public String parse(int ident) {
-        String space, content;
-
-        if(ident < 0)
-            ident = 0;
-
-        // Element indentation
-        space = "";
-        for(int i = 0; i < ident; i++)
-            space += "\t";
-
-
-        // param element and attributes declaration
-        content = space + "<metadata>\n";
-        content += parseContent();
-        content += space + "</metadata>\n";
-
-        return content;
-    }
-    
-    
-    protected String parseContent() {
-        String aux = getRDFTree();
-        if(aux != null)
-            return aux + "\n";
-        else
-            return "";
-    }
-
-
+    @Override
     public boolean compare(T other) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
