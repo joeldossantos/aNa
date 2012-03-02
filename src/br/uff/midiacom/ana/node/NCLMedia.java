@@ -41,12 +41,10 @@ import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLMediaPrototype;
@@ -57,8 +55,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLArea, Ep extends NCLProperty, Ed extends NCLLayoutDescriptor, En extends NCLNode, Ei extends NCLInterface>
-        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En> implements NCLNode<En, P, Ei>, PostReferenceElement {
+public class NCLMedia<T extends NCLMedia,
+                      P extends NCLElement,
+                      I extends NCLElementImpl,
+                      Ea extends NCLArea,
+                      Ep extends NCLProperty,
+                      Ed extends NCLLayoutDescriptor,
+                      En extends NCLNode,
+                      Ei extends NCLInterface>
+        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En>
+        implements NCLNode<En, P, Ei>, PostReferenceElement {
     
     
     public NCLMedia(String id) throws XMLException {
@@ -75,105 +81,138 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
-    
-    @Override
-    public void setSrc(SrcType src) {
-        SrcType aux = this.src;
-        super.setSrc(src);
-        impl.notifyAltered(NCLElementAttributes.SRC, aux, src);
-    }
-    
-    
-    @Override
-    public void setType(NCLMimeType type) {
-        NCLMimeType aux = this.type;
-        super.setType(type);
-        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
-    }
-    
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
         
-    @Override
-    public void setDescriptor(Ed descriptor) {
-        Ed aux = this.descriptor;
-        super.setDescriptor(descriptor);
-        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
-    }
-    
-
-    @Override
-    public void setRefer(T refer) {
-        T aux = this.refer;
-        super.setRefer(refer);
-        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
-    }
-
-
-    @Override
-    public void setInstance(NCLInstanceType instance) {
-        NCLInstanceType aux = this.instance;
-        super.setInstance(instance);
-        impl.notifyAltered(NCLElementAttributes.INSTANCE, aux, instance);
-    }
-
-    
-    @Override
-    public boolean addArea(Ea area) throws XMLException {
-        if(super.addArea(area)){
-            impl.notifyInserted(NCLElementSets.AREAS, area);
-            return true;
-        }
-        return false;
-    }
-    
-    
-    @Override
-    public boolean removeArea(String id) throws XMLException {
-        if(super.removeArea(id)){
-            impl.notifyRemoved(NCLElementSets.AREAS, id);
-            return true;
-        }
-        return false;
-    }
-    
-    
-    @Override
-    public boolean removeArea(Ea area) throws XMLException {
-        if(super.removeArea(area)){
-            impl.notifyRemoved(NCLElementSets.AREAS, area);
-            return true;
-        }
-        return false;
-    }
-    
         
-    @Override
-    public boolean addProperty(Ep property) throws XMLException {
-        if(super.addProperty(property)){
-            impl.notifyInserted(NCLElementSets.PROPERTIES, property);
-            return true;
+        // <media> element and attributes declaration
+        content = space + "<media";
+        content += parseAttributes();
+        
+        // Test if the media has content
+        if(hasArea() || hasProperty()){
+            content += ">\n";
+            
+            content += parseElements(ident + 1);
+            
+            content += space + "</media>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeProperty(String name) throws XMLException {
-        if(super.removeProperty(name)){
-            impl.notifyRemoved(NCLElementSets.PROPERTIES, name);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseSrc();
+        content += parseType();
+        content += parseDescriptor();
+        content += parseRefer();
+        content += parseInstance();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeProperty(Ep property) throws XMLException {
-        if(super.removeProperty(property)){
-            impl.notifyRemoved(NCLElementSets.PROPERTIES, property);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseAreas(ident);
+        content += parseProperties(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseSrc() {
+        SrcType aux = getSrc();
+        if(aux != null)
+            return " src='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseType() {
+        NCLMimeType aux = getType();
+        if(aux != null)
+            return " type='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDescriptor() {
+        Ed aux = getDescriptor();
+        if(aux != null)
+            return " descriptor='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRefer() {
+        T aux = getRefer();
+        if(aux != null)
+            return " refer='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInstance() {
+        NCLInstanceType aux = getInstance();
+        if(aux != null)
+            return " instance='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseAreas(int ident) {
+        if(!hasArea())
+            return "";
+        
+        String content = "";
+        for(Ea aux : areas)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseProperties(int ident) {
+        if(!hasProperty())
+            return "";
+        
+        String content = "";
+        for(Ep aux : properties)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -272,16 +311,6 @@ public class NCLMedia<T extends NCLMedia, P extends NCLElement, I extends NCLEle
             
             throw new NCLParsingException("Media" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

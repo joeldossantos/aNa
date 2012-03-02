@@ -40,17 +40,18 @@ package br.uff.midiacom.ana.meta;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLMetaPrototype<T, P, I> implements NCLElement<T, P> {
+public class NCLMeta<T extends NCLMeta,
+                     P extends NCLElement,
+                     I extends NCLElementImpl>
+        extends NCLMetaPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
 
     public NCLMeta() throws XMLException {
@@ -63,20 +64,53 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
+    
+    public String parse(int ident) {
+        String space, content;
 
-    @Override
-    public void setName(String name) throws XMLException {
-        StringType aux = this.name;
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<meta";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setContent(String content) throws XMLException {
-        StringType aux = this.mcontent;
-        super.setContent(content);
-        impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseContent();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        String aux = getName();
+        if(aux != null)
+            return " name='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseContent() {
+        String aux = getContent();
+        if(aux != null)
+            return " content='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -107,15 +141,5 @@ public class NCLMeta<T extends NCLMeta, P extends NCLElement, I extends NCLEleme
             
             throw new NCLParsingException("Meta" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

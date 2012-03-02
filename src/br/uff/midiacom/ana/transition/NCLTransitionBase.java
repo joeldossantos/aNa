@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
@@ -53,8 +51,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTransition, Ei extends NCLImport>
-        extends NCLTransitionBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
+public class NCLTransitionBase<T extends NCLTransitionBase,
+                               P extends NCLElement,
+                               I extends NCLElementImpl,
+                               Et extends NCLTransition,
+                               Ei extends NCLImport>
+        extends NCLTransitionBasePrototype<T, P, I, Et, Ei>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLTransitionBase() throws XMLException {
@@ -68,53 +71,83 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
     }
 
 
-    @Override
-    public boolean addTransition(Et transition) throws XMLException {
-        if(super.addTransition(transition)){
-            impl.notifyInserted(NCLElementSets.TRANSITIONS, transition);
-            return true;
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<transitionBase";
+        content += parseAttributes();
+
+        if(hasImportBase() || hasTransition()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+
+            content += space + "</transitionBase>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeTransition(Et transition) throws XMLException {
-        if(super.removeTransition(transition)){
-            impl.notifyRemoved(NCLElementSets.TRANSITIONS, transition);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeTransition(String id) throws XMLException {
-        if(super.removeTransition(id)){
-            impl.notifyRemoved(NCLElementSets.TRANSITIONS, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseTransitions(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(super.addImportBase(importBase)){
-            impl.notifyInserted(NCLElementSets.TRANSITIONBASE, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(super.removeImportBase(importBase)){
-            impl.notifyRemoved(NCLElementSets.TRANSITIONBASE, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseTransitions(int ident) {
+        if(!hasTransition())
+            return "";
+        
+        String content = "";
+        for(Et aux : transitions)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -158,16 +191,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase, P extends NCLElement
         catch(XMLException ex){
             throw new NCLParsingException("TransitionBase > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

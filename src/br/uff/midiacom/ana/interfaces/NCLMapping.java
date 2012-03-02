@@ -41,7 +41,6 @@ import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLMappingPrototype;
@@ -50,8 +49,13 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
-        extends NCLMappingPrototype<T, P, I, En, Ei> implements NCLElement<T, P> {
+public class NCLMapping<T extends NCLMapping,
+                        P extends NCLElement,
+                        I extends NCLElementImpl,
+                        En extends NCLNode,
+                        Ei extends NCLInterface>
+        extends NCLMappingPrototype<T, P, I, En, Ei>
+        implements NCLElement<T, P> {
 
 
     public NCLMapping() throws XMLException {
@@ -65,19 +69,52 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
     }
 
 
-    @Override
-    public void setComponent(En component) {
-        En aux = this.component;
-        super.setComponent(component);
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<mapping";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setInterface(Ei interfac) {
-        Ei aux = this.interfac;
-        super.setInterface(interfac);
-        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseComponent();
+        content += parseInterface();
+        
+        return content;
+    }
+    
+    
+    protected String parseComponent() {
+        En aux = getComponent();
+        if(aux != null)
+            return " component='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInterface() {
+        Ei aux = getInterface();
+        if(aux != null)
+            return " interface='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 
@@ -118,15 +155,5 @@ public class NCLMapping<T extends NCLMapping, P extends NCLElement, I extends NC
         catch(XMLException ex){
             throw new NCLParsingException("Mapping:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

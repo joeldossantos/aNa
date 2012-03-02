@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
@@ -53,8 +51,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCausalConnector, Ei extends NCLImport>
-        extends NCLConnectorBasePrototype<T, P, I, Ec, Ei> implements NCLIdentifiableElement<T, P> {
+public class NCLConnectorBase<T extends NCLConnectorBase,
+                              P extends NCLElement,
+                              I extends NCLElementImpl,
+                              Ec extends NCLCausalConnector,
+                              Ei extends NCLImport>
+        extends NCLConnectorBasePrototype<T, P, I, Ec, Ei>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLConnectorBase() throws XMLException {
@@ -66,55 +69,85 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public boolean addCausalConnector(Ec connector) throws XMLException {
-        if(super.addCausalConnector(connector)){
-            impl.notifyInserted(NCLElementSets.CONNECTORS, connector);
-            return true;
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<connectorBase";
+        content += parseAttributes();
+
+        if(hasImportBase() || hasCausalConnector()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+
+            content += space + "</connectorBase>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
     
     
-    @Override
-    public boolean removeCausalConnector(Ec connector) throws XMLException {
-        if(super.removeCausalConnector(connector)){
-            impl.notifyRemoved(NCLElementSets.CONNECTORS, connector);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeCausalConnector(String id) throws XMLException {
-        if(super.removeCausalConnector(id)){
-            impl.notifyRemoved(NCLElementSets.CONNECTORS, id);
-            return true;
-        }
-        return false;
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
     }
     
     
-    @Override
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(super.addImportBase(importBase)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseCausalConnectors(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(super.removeImportBase(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseCausalConnectors(int ident) {
+        if(!hasCausalConnector())
+            return "";
+        
+        String content = "";
+        for(Ec aux : connectors)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -158,16 +191,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase, P extends NCLElement, 
         catch(XMLException ex){
             throw new NCLParsingException("ConnectorBase > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

@@ -39,10 +39,8 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLCompositeRulePrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -51,8 +49,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLCompositeRulePrototype<T, P, I> implements NCLTestRule<T, P> {
+public class NCLCompositeRule<T extends NCLTestRule,
+                              P extends NCLElement,
+                              I extends NCLElementImpl>
+        extends NCLCompositeRulePrototype<T, P, I>
+        implements NCLTestRule<T, P> {
 
 
     public NCLCompositeRule(String id) throws XMLException {
@@ -71,41 +72,77 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
     }
 
 
-    @Override
-    public void setOperator(NCLOperator operator) {
-        NCLOperator aux = this.operator;
-        super.setOperator(operator);
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<compositeRule";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+
+        content += "</compositeRule>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean addRule(T rule) throws XMLException {
-        if(super.addRule(rule)){
-            impl.notifyInserted(NCLElementSets.RULES, rule);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseOperator();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeRule(T rule) throws XMLException {
-        if(super.removeRule(rule)){
-            impl.notifyRemoved(NCLElementSets.RULES, rule);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseRules(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeRule(String id) throws XMLException {
-        if(super.removeRule(id)){
-            impl.notifyRemoved(NCLElementSets.RULES, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseOperator() {
+        NCLOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRules(int ident) {
+        if(!hasRule())
+            return "";
+        
+        String content = "";
+        for(T aux : rules)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -170,16 +207,6 @@ public class NCLCompositeRule<T extends NCLTestRule, P extends NCLElement, I ext
             
             throw new NCLParsingException("CompositeRule" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

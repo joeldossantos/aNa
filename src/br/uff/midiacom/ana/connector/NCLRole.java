@@ -44,7 +44,9 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
-public class NCLRole<T extends NCLRole, P extends NCLElement> extends NCLRolePrototype<T, P> {
+public class NCLRole<T extends NCLRole,
+                     P extends NCLElement>
+        extends NCLRolePrototype<T, P> {
 
     
     public NCLRole(String name) throws XMLException {

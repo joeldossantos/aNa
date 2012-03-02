@@ -39,18 +39,21 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
-public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I extends NCLElementImpl, Em extends NCLMapping, Ei extends NCLInterface>
-        extends NCLSwitchPortPrototype<T, P, I, Em, Ei> implements NCLInterface<Ei, P> {
+public class NCLSwitchPort<T extends NCLSwitchPort,
+                           P extends NCLElement,
+                           I extends NCLElementImpl,
+                           Em extends NCLMapping,
+                           Ei extends NCLInterface>
+        extends NCLSwitchPortPrototype<T, P, I, Em, Ei>
+        implements NCLInterface<Ei, P> {
 
 
     public NCLSwitchPort(String id) throws XMLException {
@@ -69,23 +72,67 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
     }
 
 
-    @Override
-    public boolean addMapping(Em mapping) throws XMLException {
-        if(super.addMapping(mapping)){
-            impl.notifyInserted(NCLElementSets.MAPPINGS, mapping);
-            return true;
-        }
-        return false;
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // <port> element and attributes declaration
+        content = space + "<switchPort";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+
+        content += "</switchPort>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeMapping(Em mapping) throws XMLException {
-        if(super.removeMapping(mapping)){
-            impl.notifyRemoved(NCLElementSets.MAPPINGS, mapping);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseMappings(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseMappings(int ident) {
+        if(!hasMapping())
+            return "";
+        
+        String content = "";
+        for(Em aux : mappings)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -131,16 +178,6 @@ public class NCLSwitchPort<T extends NCLSwitchPort, P extends NCLElement, I exte
             
             throw new NCLParsingException("SwitchPort" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
@@ -52,8 +51,13 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRole, Ep extends NCLConnectorParam>
-        extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep> implements NCLElement<T, P>{
+public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
+                                    P extends NCLElement,
+                                    I extends NCLElementImpl,
+                                    Er extends NCLRole,
+                                    Ep extends NCLConnectorParam>
+        extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep>
+        implements NCLElement<T, P>{
 
 
     public NCLAttributeAssessment() throws XMLException {
@@ -65,45 +69,82 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident< 0)
+            ident = 0;
+        
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
 
-    @Override
-    public void setRole(Er role) {
-        Er aux = this.role;
-        super.setRole(role);
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        content = space + "<attributeAssessment";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
     
+    
+    protected String parseAttributes() {
+        String content = "";
         
-    @Override
-    public void setEventType(NCLEventType eventType) {
-        NCLEventType aux = this.eventType;
-        super.setEventType(eventType);
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, eventType);
+        content += parseRole();
+        content += parseEventType();
+        content += parseKey();
+        content += parseAttributeType();
+        content += parseOffset();
+        
+        return content;
     }
     
-        
-    @Override
-    public void setKey(KeyParamType<Ep, T> key) {
-        KeyParamType aux = this.key;
-        super.setKey(key);
-        impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
-    }
-
-
-    @Override
-    public void setAttributeType(NCLAttributeType attributeType) {
-        NCLAttributeType aux = this.attributeType;
-        super.setAttributeType(attributeType);
-        impl.notifyAltered(NCLElementAttributes.ATTRIBUTETYPE, aux, attributeType);
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
     }
     
-        
-    @Override
-    public void setOffset(IntegerParamType<Ep, T> offset) {
-        IntegerParamType aux = this.offset;
-        super.setOffset(offset);
-        impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
+    
+    protected String parseEventType() {
+        NCLEventType aux = getEventType();
+        if(aux != null)
+            return " eventType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseKey() {
+        KeyParamType aux = getKey();
+        if(aux != null)
+            return " key='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseAttributeType() {
+        NCLAttributeType aux = getAttributeType();
+        if(aux != null)
+            return " attributeType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseOffset() {
+        IntegerParamType aux = getOffset();
+        if(aux != null)
+            return " offset='" + aux.parse() + "'";
+        else
+            return "";
     }
 
 
@@ -143,16 +184,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment, P extends 
         catch(XMLException ex){
             throw new NCLParsingException("AttributeAssessment:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

@@ -41,19 +41,20 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLParamPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLConnectorParam>
-        extends NCLParamPrototype<T, P, I, Ec> implements NCLElement<T, P>{
+public class NCLParam<T extends NCLParam,
+                      P extends NCLElement,
+                      I extends NCLElementImpl,
+                      Ec extends NCLConnectorParam>
+        extends NCLParamPrototype<T, P, I, Ec>
+        implements NCLElement<T, P>{
     
     
     public NCLParam(NCLParamInstance paramType) throws XMLException {
@@ -65,21 +66,54 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
-
     
-    @Override
-    public void setName(Ec connectorParam) {
-        Ec aux = this.name;
-        super.setName(connectorParam);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
+    
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        
+        // param element and attributes declaration
+        content = space + "<" + paramType.toString();
+        content += parseAttributes();
+        content += "/>\n";
+        
+        return content;
     }
     
+    
+    protected String parseAttributes() {
+        String content = "";
         
-    @Override
-    public void setValue(String value) throws XMLException {
-        StringType aux = this.value;
-        super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+        content += parseName();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        Ec aux = getName();
+        if(aux != null)
+            return " name='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -123,15 +157,5 @@ public class NCLParam<T extends NCLParam, P extends NCLElement, I extends NCLEle
             
             throw new NCLParsingException(paramType.toString() + aux +":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

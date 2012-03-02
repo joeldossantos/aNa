@@ -42,7 +42,8 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.xml.XMLException;
 
 
-public interface NCLTestRule<T extends NCLTestRule, P extends NCLElement>
+public interface NCLTestRule<T extends NCLTestRule,
+                             P extends NCLElement>
         extends br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
 
     

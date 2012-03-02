@@ -42,7 +42,8 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.xml.XMLException;
 
 
-public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor, P extends NCLElement>
+public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor,
+                                     P extends NCLElement>
         extends br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor<T, P>, NCLIdentifiableElement<T, P> {
 
     

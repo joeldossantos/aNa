@@ -40,7 +40,10 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 
 
-public interface NCLAction<T extends NCLAction, P extends NCLElement, Ep extends NCLConnectorParam, Er extends NCLRole>
+public interface NCLAction<T extends NCLAction,
+                           P extends NCLElement,
+                           Ep extends NCLConnectorParam,
+                           Er extends NCLRole>
         extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep>, NCLElement<T, P> {
 
     

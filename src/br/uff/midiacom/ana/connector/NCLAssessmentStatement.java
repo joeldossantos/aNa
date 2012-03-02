@@ -40,11 +40,9 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLAssessmentStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -52,8 +50,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAttributeAssessment, Ev extends NCLValueAssessment, Es extends NCLStatement, Er extends NCLRole>
-        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev, Es> implements NCLStatement<Es, P, Er> {
+public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
+                                    P extends NCLElement,
+                                    I extends NCLElementImpl,
+                                    Ea extends NCLAttributeAssessment,
+                                    Ev extends NCLValueAssessment,
+                                    Es extends NCLStatement,
+                                    Er extends NCLRole>
+        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev, Es>
+        implements NCLStatement<Es, P, Er> {
 
 
     public NCLAssessmentStatement() throws XMLException {
@@ -65,40 +70,77 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
-
-    @Override
-    public void setComparator(NCLComparator comparator) {
-        NCLComparator aux = this.comparator;
-        super.setComparator(comparator);
-        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
-    }
-    
-    
-    @Override
-    public void setValueAssessment(Ev value) {
-        super.setValueAssessment(value);
-        impl.notifyInserted(NCLElementSets.VALUEASSESSMENT, value);
-    }
-    
+        if(ident < 0)
+            ident = 0;
         
-    @Override
-    public boolean addAttributeAssessment(Ea attribute) throws XMLException {
-        if(super.addAttributeAssessment(attribute)){
-            impl.notifyInserted(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
-            return true;
-        }
-        return false;
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<assessmentStatement";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+        
+        content += space + "</assessmentStatement>\n";
+
+        return content;
     }
     
     
-    @Override
-    public boolean removeAttributeAssessment(Ea attribute) throws XMLException {
-        if(super.removeAttributeAssessment(attribute)){
-            impl.notifyRemoved(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
-            return true;
-        }
-        return false;
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseComparator();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseAttributeAssessments(ident);
+        content += parseValueAssessment(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseComparator() {
+        NCLComparator aux = getComparator();
+        if(aux != null)
+            return " comparator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseAttributeAssessments(int ident) {
+        if(!hasAttributeAssessment())
+            return "";
+        
+        String content = "";
+        for(Ea aux : attributeAssessments)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseValueAssessment(int ident) {
+        Ev aux = getValueAssessment();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
 
 
@@ -144,16 +186,6 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement, P extends 
         catch(XMLException ex){
             throw new NCLParsingException("AssessmentStatement > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

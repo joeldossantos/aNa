@@ -40,17 +40,18 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLConnectorParamPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public class NCLConnectorParam<T extends NCLConnectorParam,
+                               P extends NCLElement,
+                               I extends NCLElementImpl>
+        extends NCLConnectorParamPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P> {
         
     
     public NCLConnectorParam(String name) throws XMLException {
@@ -67,21 +68,52 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setName(String name) throws XMLException {
-        String aux = this.getName();
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<connectorParam";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
     
     
-    @Override
-    public void setType(String type) throws XMLException {
-        StringType aux = this.type;
-        super.setType(type);
-        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseType();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        String aux = getName();
+        if(aux != null)
+            return " name='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseType() {
+        String aux = getType();
+        if(aux != null)
+            return " type='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -110,15 +142,5 @@ public class NCLConnectorParam<T extends NCLConnectorParam, P extends NCLElement
             
             throw new NCLParsingException("ConnectorParam" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

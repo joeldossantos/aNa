@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.reuse;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
@@ -49,12 +48,15 @@ import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion>
-        extends NCLImportPrototype<T, P, I, Er> implements NCLElement<T, P> {
+public class NCLImport<T extends NCLImport,
+                       P extends NCLElement,
+                       I extends NCLElementImpl,
+                       Er extends NCLRegion>
+        extends NCLImportPrototype<T, P, I, Er>
+        implements NCLElement<T, P> {
 
 
     public NCLImport(NCLImportType type) throws XMLException {
@@ -67,28 +69,61 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
+    
+    public String parse(int ident) {
+        String space, content;
 
-    @Override
-    public void setAlias(String alias) throws XMLException {
-        StringType aux = this.alias;
-        super.setAlias(alias);
-        impl.notifyAltered(NCLElementAttributes.ALIAS, aux, alias);
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<" + type.toString();
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setDocumentURI(SrcType documentURI) throws XMLException{
-        SrcType aux = this.documentURI;
-        super.setDocumentURI(documentURI);
-        impl.notifyAltered(NCLElementAttributes.DOCUMENTURI, aux, documentURI);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseAlias();
+        content += parseDocumentURI();
+        content += parseRegion();
+        
+        return content;
     }
-
-
-    @Override
-    public void setRegion(Er region) {
-        Er aux = this.region;
-        super.setRegion(region);
-        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
+    
+    
+    protected String parseAlias() {
+        String aux = getAlias();
+        if(aux != null)
+            return " alias='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDocumentURI() {
+        SrcType aux = getDocumentURI();
+        if(aux != null)
+            return " documentURI='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegion() {
+        Er aux = getRegion();
+        if(aux != null)
+            return " region='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 
@@ -126,15 +161,5 @@ public class NCLImport<T extends NCLImport, P extends NCLElement, I extends NCLE
             
             throw new NCLParsingException(type.toString() + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

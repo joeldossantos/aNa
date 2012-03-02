@@ -37,12 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
-import br.uff.midiacom.ana.datatype.ncl.NCLDocPrototype;
+import br.uff.midiacom.ana.datatype.ncl.structure.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +52,13 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 
-public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElementImpl, Eh extends NCLHead, Eb extends NCLBody>
-        extends NCLDocPrototype<T, P, I, Eh, Eb> implements NCLIdentifiableElement<T, P> {
+public class NCLDoc<T extends NCLDoc,
+                    P extends NCLElement,
+                    I extends NCLElementImpl,
+                    Eh extends NCLHead,
+                    Eb extends NCLBody>
+        extends NCLDocPrototype<T, P, I, Eh, Eb>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLDoc() throws XMLException {
@@ -69,33 +72,100 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
     }
 
 
-    @Override
-    public void setTitle(String title) throws XMLException {
-        String aux = this.title;
-        super.setTitle(title);
-        impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        // XML document start declaration
+        content = space + "<?xml version='1.0' encoding='ISO-8859-1'?>\n";
+
+        content += space + "<!-- Generated with NCL API -->\n\n";
+
+        // <ncl> element and attributes declaration
+        content += space + "<ncl";
+        content += parseAttributes();
+        content += ">\n";
+
+        // <ncl> element content
+        content += parseElements(ident + 1);
+
+        // <ncl> element end declaration
+        content += space + "</ncl>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setXmlns(NCLNamespace xmlns) throws XMLException {
-        NCLNamespace aux = this.xmlns;
-        super.setXmlns(xmlns);
-        impl.notifyAltered(NCLElementAttributes.XMLNS, aux, xmlns);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseTitle();
+        content += parseXmlns();
+        
+        return content;
     }
-
-
-    @Override
-    public void setHead(Eh head) {
-        super.setHead(head);
-        impl.notifyInserted(NCLElementSets.HEAD, head);
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseHead(ident);
+        content += parseBody(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public void setBody(Eb body) {
-        super.setBody(body);
-        impl.notifyInserted(NCLElementSets.BODY, body);
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTitle() {
+        String aux = getTitle();
+        if(aux != null)
+            return " title='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseXmlns() {
+        NCLNamespace aux = getXmlns();
+        if(aux != null)
+            return " xmlns='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseHead(int ident) {
+        Eh aux = getHead();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseBody(int ident) {
+        Eb aux = getBody();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
 
 
@@ -172,16 +242,6 @@ public class NCLDoc<T extends NCLDoc, P extends NCLElement, I extends NCLElement
         catch(XMLException ex){
             throw new NCLParsingException("Error pasring " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

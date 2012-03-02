@@ -37,38 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
-import br.uff.midiacom.xml.XMLException;
-import org.w3c.dom.Element;
 
 
-
-public interface NCLElement<T extends NCLElement, P extends NCLElement>
+public interface NCLElement<T extends NCLElement,
+                            P extends NCLElement>
         extends br.uff.midiacom.ana.datatype.ncl.NCLElement<T, P> {
 
-    /**
-     * Implementa o método startElement do parser SAX para a recuperação dos objetos
-     * representativos dos elementos NCL a partir de um arquivo XML.
-     */
-    public void load(Element element) throws XMLException;
-
-
-    /**
-     * Atribui um ouvinte para notificações de mudança do elemento. Caso o
-     * argumento seja nulo, não utilizará nenhum ouvinte.
-     *
-     * @param listener
-     *          objeto que receberá as notificações.
-     */
-    public void setModificationListener(NCLModificationListener listener);
-
-
-    /**
-     * Retorna o ouvinte para notificações de mudança do elemento.
-     *
-     * @return
-     *          objeto que recebe as notificações ou null se nenhum ouvinte
-     *          estiver assiciado.
-     */
-    public NCLModificationListener getModificationListener();
 }

@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundStatementPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -52,8 +50,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLElement, I extends NCLElementImpl, Es extends NCLStatement, Er extends NCLRole>
-        extends NCLCompoundStatementPrototype<T, P, I, Es> implements NCLStatement<Es, P, Er> {
+public class NCLCompoundStatement<T extends NCLCompoundStatement,
+                                  P extends NCLElement,
+                                  I extends NCLElementImpl,
+                                  Es extends NCLStatement,
+                                  Er extends NCLRole>
+        extends NCLCompoundStatementPrototype<T, P, I, Es>
+        implements NCLStatement<Es, P, Er> {
 
 
     public NCLCompoundStatement() throws XMLException {
@@ -65,41 +68,77 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
-
     
-    @Override
-    public void setOperator(NCLOperator operator) {
-        NCLOperator aux = this.operator;
-        super.setOperator(operator);
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+    
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<compoundStatement";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+
+        content += space + "</compoundStatement>\n";
+
+        return content;
     }
     
+    
+    protected String parseAttributes() {
+        String content = "";
         
-    @Override
-    public void setIsNegated(Boolean isNegated) {
-        Boolean aux = this.isNegated;
-        super.setIsNegated(isNegated);
-        impl.notifyAltered(NCLElementAttributes.ISNEGATED, aux, isNegated);
+        content += parseOperator();
+        content += parseIsNegated();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addStatement(Es statement) throws XMLException {
-        if(super.addStatement(statement)){
-            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseStatements(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeStatement(Es statement) throws XMLException {
-        if(super.removeStatement(statement)){
-            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseOperator() {
+        NCLOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseIsNegated() {
+        Boolean aux = getIsNegated();
+        if(aux != null)
+            return " isNegated='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseStatements(int ident) {
+        if(!hasStatement())
+            return "";
+        
+        String content = "";
+        for(Es aux : statements)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -150,16 +189,6 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement, P extends NCLE
         catch(XMLException ex){
             throw new NCLParsingException("CompoundStatement > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

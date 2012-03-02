@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.descriptor.param;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -49,8 +48,11 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLPercentDescriptorParamPrototype<T, P, I> implements NCLDescriptorParam<T, P, Double> {
+public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl>
+        extends NCLPercentDescriptorParamPrototype<T, P, I>
+        implements NCLDescriptorParam<T, P, Double> {
 
 
     public NCLPercentDescriptorParam() throws XMLException {
@@ -64,20 +66,52 @@ public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam, P ex
     }
 
 
-    @Override
-    public void setName(NCLAttributes name) throws IllegalArgumentException {
-        NCLAttributes aux = this.name;
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<descriptorParam";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setValue(Double value) {
-        Double aux = this.value;
-        super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
-
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        NCLAttributes aux = getName();
+        if(aux != null)
+            return " name='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getParamValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -106,15 +140,5 @@ public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam, P ex
         catch(XMLException ex){
             throw new NCLParsingException("DescriptorParam:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

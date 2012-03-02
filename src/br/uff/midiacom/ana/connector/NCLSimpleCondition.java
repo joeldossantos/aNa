@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
@@ -54,8 +53,14 @@ import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
 
 
-public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Er extends NCLRole, Ep extends NCLConnectorParam>
-        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep> implements NCLCondition<Ec, P, Ep, Er> {
+public class NCLSimpleCondition<T extends NCLSimpleCondition,
+                                P extends NCLElement,
+                                I extends NCLElementImpl,
+                                Ec extends NCLCondition,
+                                Er extends NCLRole,
+                                Ep extends NCLConnectorParam>
+        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep>
+        implements NCLCondition<Ec, P, Ep, Er> {
 
 
     public NCLSimpleCondition() throws XMLException {
@@ -69,67 +74,116 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
     }
 
 
-    @Override
-    public void setMin(Integer min) {
-        Integer aux = this.min;
-        super.setMin(min);
-        impl.notifyAltered(NCLElementAttributes.MIN, aux, min);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for (int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<simpleCondition";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setMax(MaxType max) {
-        MaxType aux = this.max;
-        super.setMax(max);
-        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseKey();
+        content += parseDelay();
+        content += parseMin();
+        content += parseMax();
+        content += parseQualifier();
+        content += parseEventType();
+        content += parseTransition();
+        
+        return content;
     }
-
-
-    @Override
-    public void setQualifier(NCLConditionOperator qualifier) {
-        NCLConditionOperator aux = this.qualifier;
-        super.setQualifier(qualifier);
-        impl.notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setRole(Er role) {
-        Er aux = this.role;
-        super.setRole(role);
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+    
+    
+    protected String parseKey() {
+        KeyParamType aux = getKey();
+        if(aux != null)
+            return " key='" + aux.parse() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setKey(KeyParamType<Ep, T> key) {
-        KeyParamType aux = this.key;
-        super.setKey(key);
-        impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse();
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
     }
-
-
-    @Override
-    public void setEventType(NCLEventType eventType) {
-        NCLEventType aux = this.eventType;
-        super.setEventType(eventType);
-        impl.notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
+    
+    
+    protected String parseMin() {
+        Integer aux = getMin();
+        if(aux != null)
+            return " min='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setTransition(NCLEventTransition transition) {
-        NCLEventTransition aux = this.transition;
-        super.setTransition(transition);
-        impl.notifyAltered(NCLElementAttributes.TRANSITION, aux, transition);
+    
+    
+    protected String parseMax() {
+        MaxType aux = getMax();
+        if(aux != null)
+            return " max='" + aux.parse() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setDelay(DoubleParamType<Ep, Ec> delay) {
-        DoubleParamType aux = this.delay;
-        super.setDelay(delay);
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+    
+    
+    protected String parseQualifier() {
+        NCLConditionOperator aux = getQualifier();
+        if(aux != null)
+            return " qualifier='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEventType() {
+        NCLEventType aux = getEventType();
+        if(aux != null)
+            return " eventType='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTransition() {
+        NCLEventTransition aux = getTransition();
+        if(aux != null)
+            return " transition='" + aux.toString() + "'";
+        else
+            return "";
     }
 
 
@@ -187,16 +241,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition, P extends NCLEleme
         catch(XMLException ex){
             throw new NCLParsingException("SimpleCondition:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

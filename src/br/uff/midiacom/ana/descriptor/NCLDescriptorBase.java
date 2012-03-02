@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
@@ -53,8 +51,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Ei extends NCLImport>
-        extends NCLDescriptorBasePrototype<T, P, I, El, Ei> implements NCLIdentifiableElement<T, P> {
+public class NCLDescriptorBase<T extends NCLDescriptorBase,
+                               P extends NCLElement,
+                               I extends NCLElementImpl,
+                               El extends NCLLayoutDescriptor,
+                               Ei extends NCLImport>
+        extends NCLDescriptorBasePrototype<T, P, I, El, Ei>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLDescriptorBase() throws XMLException {
@@ -68,53 +71,83 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
     }
 
 
-    @Override
-    public boolean addDescriptor(El descriptor) throws XMLException {
-        if(super.addDescriptor(descriptor)){
-            impl.notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
-    }
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public boolean removeDescriptor(String id) throws XMLException {
-        if(super.removeDescriptor(id)){
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, id);
-            return true;
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<descriptorBase";
+        content += parseAttributes();
+
+        if(hasDescriptor() || hasImportBase()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+            
+            content += space + "</descriptorBase>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
     
-
-    @Override
-    public boolean removeDescriptor(El descriptor) throws XMLException {
-        if(super.removeDescriptor(descriptor)){
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(super.addImportBase(importBase)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseDescriptors(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(super.removeImportBase(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseDescriptors(int ident) {
+        if(!hasDescriptor())
+            return "";
+        
+        String content = "";
+        for(El aux : descriptors)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -164,16 +197,6 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase, P extends NCLElement
         catch(XMLException ex){
             throw new NCLParsingException("DescriptorBase > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

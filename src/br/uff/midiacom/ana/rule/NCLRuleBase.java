@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
@@ -53,8 +51,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends NCLElementImpl, Et extends NCLTestRule, Ei extends NCLImport>
-        extends NCLRuleBasePrototype<T, P, I, Et, Ei> implements NCLIdentifiableElement<T, P> {
+public class NCLRuleBase<T extends NCLRuleBase,
+                         P extends NCLElement,
+                         I extends NCLElementImpl,
+                         Et extends NCLTestRule,
+                         Ei extends NCLImport>
+        extends NCLRuleBasePrototype<T, P, I, Et, Ei>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLRuleBase() throws XMLException {
@@ -68,53 +71,83 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
     }
 
 
-    @Override
-    public boolean addRule(Et rule) throws XMLException {
-        if(super.addRule(rule)){
-            impl.notifyInserted(NCLElementSets.RULES, rule);
-            return true;
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<ruleBase";
+        content += parseAttributes();
+
+        if(hasImportBase() || hasRule()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+
+            content += space + "</ruleBase>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeRule(Et rule) throws XMLException {
-        if(super.removeRule(rule)){
-            impl.notifyRemoved(NCLElementSets.RULES, rule);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeRule(String id) throws XMLException {
-        if(super.removeRule(id)){
-            impl.notifyRemoved(NCLElementSets.RULES, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseRules(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(super.addImportBase(importBase)){
-            impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(super.removeImportBase(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseRules(int ident) {
+        if(!hasRule())
+            return "";
+        
+        String content = "";
+        for(Et aux : rules)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -164,16 +197,6 @@ public class NCLRuleBase<T extends NCLRuleBase, P extends NCLElement, I extends 
         catch(XMLException ex){
             throw new NCLParsingException("RuleBase > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

@@ -40,22 +40,23 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRegion, Ei extends NCLImport>
-        extends NCLRegionBasePrototype<T, P, I, Er, Ei> implements NCLIdentifiableElement<T, P> {
+public class NCLRegionBase<T extends NCLRegionBase,
+                           P extends NCLElement,
+                           I extends NCLElementImpl,
+                           Er extends NCLRegion,
+                           Ei extends NCLImport>
+        extends NCLRegionBasePrototype<T, P, I, Er, Ei>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLRegionBase() throws XMLException {
@@ -69,67 +70,103 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
     }
 
 
-    @Override
-    public void setDevice(String device) throws XMLException {
-        StringType aux = this.device;
-        super.setDevice(device);
-        impl.notifyAltered(NCLElementAttributes.DEVICE, aux, device);
-    }
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setParentRegion(Er region) {
-        super.setParentRegion(region);
-    }
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
 
+        content = space + "<regionBase";
+        content += parseAttributes();
+        
+        if(hasRegion() || hasImportBase()) {
+            content += ">\n";
 
-    @Override
-    public boolean addRegion(Er region) throws XMLException {
-        if(super.addRegion(region)){
-            impl.notifyInserted(NCLElementSets.REGIONS, region);
-            return true;
+            content += parseElements(ident + 1);
+            
+            content += space + "</regionBase>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeRegion(String id) throws XMLException {
-        if(super.removeRegion(id)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseDevice();
+        content += parseParentRegion();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeRegion(Er region) throws XMLException {
-        if(super.removeRegion(region)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, region);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportBases(ident);
+        content += parseRegions(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(super.addImportBase(importBase)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(super.removeImportBase(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseDevice() {
+        String aux = getDevice();
+        if(aux != null)
+            return " device='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseParentRegion() {
+        Er aux = getParentRegion();
+        if(aux != null)
+            return " region='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportBases(int ident) {
+        if(!hasImportBase())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseRegions(int ident) {
+        if(!hasRegion())
+            return "";
+        
+        String content = "";
+        for(Er aux : regions)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -207,16 +244,6 @@ public class NCLRegionBase<T extends NCLRegionBase, P extends NCLElement, I exte
             
             throw new NCLParsingException("RegionBase" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

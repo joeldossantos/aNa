@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.node;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -50,8 +49,13 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Er extends NCLTestRule>
-        extends NCLSwitchBindRulePrototype<T, P, I, En, Er> implements NCLElement<T, P> {
+public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
+                               P extends NCLElement,
+                               I extends NCLElementImpl,
+                               En extends NCLNode,
+                               Er extends NCLTestRule>
+        extends NCLSwitchBindRulePrototype<T, P, I, En, Er>
+        implements NCLElement<T, P> {
 
 
     public NCLSwitchBindRule() throws XMLException {
@@ -64,20 +68,52 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
 
-    
-    @Override
-    public void setConstituent(En constituent) {
-        En aux = this.constituent;
-        super.setConstituent(constituent);
-        impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
+
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<bindRule";
+        content += parseAttributes();
+        content += "/>\n";
+
+
+        return content;
     }
-
-
-    @Override
-    public void setRule(Er rule) {
-        Er aux = this.rule;
-        super.setRule(rule);
-        impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRule();
+        content += parseConstituent();
+        
+        return content;
+    }
+    
+    
+    protected String parseRule() {
+        Er aux = getRule();
+        if(aux != null)
+            return " rule='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseConstituent() {
+        En aux = getConstituent();
+        if(aux != null)
+            return " constituent='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 
@@ -113,15 +149,5 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule, P extends NCLElement
         catch(XMLException ex){
             throw new NCLParsingException("BindRule:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

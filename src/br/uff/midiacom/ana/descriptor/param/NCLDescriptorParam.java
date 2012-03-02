@@ -40,7 +40,9 @@ package br.uff.midiacom.ana.descriptor.param;
 import br.uff.midiacom.ana.NCLElement;
 
 
-public interface NCLDescriptorParam<T extends NCLDescriptorParam, P extends NCLElement, V>
+public interface NCLDescriptorParam<T extends NCLDescriptorParam,
+                                    P extends NCLElement,
+                                    V>
         extends br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam<T, P, V>, NCLElement<T, P> {
 
 }

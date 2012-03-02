@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
@@ -48,12 +47,15 @@ import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLProperty>
-        extends NCLRulePrototype<T, P, I, Ep> implements NCLTestRule<T, P>, PostReferenceElement {
+public class NCLRule<T extends NCLTestRule,
+                     P extends NCLElement,
+                     I extends NCLElementImpl,
+                     Ep extends NCLProperty>
+        extends NCLRulePrototype<T, P, I, Ep>
+        implements NCLTestRule<T, P>, PostReferenceElement {
 
 
     public NCLRule(String id) throws XMLException {
@@ -70,29 +72,74 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
 
 
-    @Override
-    public void setVar(Ep var) {
-        NCLElement aux = (NCLElement) this.var;
-        super.setVar(var);
-        impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
+        // param element and attributes declaration
+        content = space + "<rule";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setComparator(NCLComparator comparator) {
-        NCLComparator aux = this.comparator;
-        super.setComparator(comparator);
-        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseVar();
+        content += parseComparator();
+        content += parseValue();
+        
+        return content;
     }
-
-
-    @Override
-    public void setValue(String value) throws XMLException {
-        StringType aux = this.value;
-        super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseVar() {
+        Ep aux = getVar();
+        if(aux != null)
+            return " var='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseComparator() {
+        NCLComparator aux = getComparator();
+        if(aux != null)
+            return " comparator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -140,16 +187,6 @@ public class NCLRule<T extends NCLTestRule, P extends NCLElement, I extends NCLE
             
             throw new NCLParsingException("Rule" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

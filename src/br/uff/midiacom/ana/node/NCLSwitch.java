@@ -40,12 +40,10 @@ package br.uff.midiacom.ana.node;
 import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
@@ -54,8 +52,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface, Ep extends NCLSwitchPort, Eb extends NCLSwitchBindRule>
-        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb> implements NCLNode<En, P, Ei>, PostReferenceElement {
+public class NCLSwitch<T extends NCLSwitch,
+                       P extends NCLElement,
+                       I extends NCLElementImpl,
+                       En extends NCLNode,
+                       Ei extends NCLInterface,
+                       Ep extends NCLSwitchPort,
+                       Eb extends NCLSwitchBindRule>
+        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb>
+        implements NCLNode<En, P, Ei>, PostReferenceElement {
 
 
     public NCLSwitch(String id) throws XMLException {
@@ -73,99 +78,124 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
         impl = (I) new NCLElementImpl<T, P>(this);
     }
 
+    
+    public String parse(int ident) {
+        String space, content;
 
-    @Override
-    public void setRefer(T refer) {
-        T aux = this.refer;
-        super.setRefer(refer);
-        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
-    }
+        if(ident < 0)
+            ident = 0;
 
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
 
-    @Override
-    public boolean addPort(Ep port) throws XMLException {
-        if(super.addPort(port)){
-            impl.notifyInserted(NCLElementSets.PORTS, port);
-            return true;
+        content = space + "<switch";
+        content += parseAttributes();
+
+        if(hasPort() || hasBind() || hasNode()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+
+            content += space + "</switch>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removePort(String id) throws XMLException {
-        if(super.removePort(id)){
-            impl.notifyRemoved(NCLElementSets.PORTS, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseRefer();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removePort(Ep port) throws XMLException {
-        if(super.removePort(port)){
-            impl.notifyRemoved(NCLElementSets.PORTS, port);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parsePorts(ident);
+        content += parseBinds(ident);
+        content += parseDefaultComponent(ident);
+        content += parseNodes(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public void setDefaultComponent(En defaultComponent) {
-        super.setDefaultComponent(defaultComponent);
-        impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, defaultComponent);
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean addBind(Eb bind) throws XMLException {
-        if(super.addBind(bind)){
-            impl.notifyInserted(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseRefer() {
+        T aux = getRefer();
+        if(aux != null)
+            return " refer='" + aux.getId() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeBind(Eb bind) throws XMLException {
-        if(super.removeBind(bind)){
-            impl.notifyRemoved(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parsePorts(int ident) {
+        if(!hasPort())
+            return "";
+        
+        String content = "";
+        for(Ep aux : ports)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addNode(En node) throws XMLException {
-        if(super.addNode(node)){
-            impl.notifyInserted(NCLElementSets.NODES, node);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseBinds(int ident) {
+        if(!hasBind())
+            return "";
+        
+        String content = "";
+        for(Eb aux : binds)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeNode(String id) throws XMLException {
-        if(super.removeNode(id)){
-            impl.notifyRemoved(NCLElementSets.NODES, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseDefaultComponent(int ident) {
+        En aux = getDefaultComponent();
+        if(aux == null)
+            return "";
+        
+        String space = "";
+        if(ident < 0)
+            ident = 0;
+        
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        return space + "<defaultComponent component='" + aux.getId() + "'/>\n";
     }
-
-
-    @Override
-    public boolean removeNode(En node) throws XMLException {
-        if(super.removeNode(node)){
-            impl.notifyRemoved(NCLElementSets.NODES, node);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseNodes(int ident) {
+        if(!hasNode())
+            return "";
+        
+        String content = "";
+        for(En aux : nodes)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -276,16 +306,6 @@ public class NCLSwitch<T extends NCLSwitch, P extends NCLElement, I extends NCLE
             
             throw new NCLParsingException("Switch" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

@@ -38,7 +38,8 @@
 package br.uff.midiacom.ana;
 
 
-public interface NCLIdentifiableElement<T extends NCLIdentifiableElement, P extends NCLElement>
+public interface NCLIdentifiableElement<T extends NCLIdentifiableElement,
+                                        P extends NCLElement>
         extends NCLElement<T, P>, br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement<T, P> {
 
 }

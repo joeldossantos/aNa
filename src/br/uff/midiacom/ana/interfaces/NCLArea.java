@@ -39,7 +39,6 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
 import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
@@ -47,12 +46,15 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
-        extends NCLAreaPrototype<T, P, I, Ei> implements NCLInterface<Ei, P> {
+public class NCLArea<T extends NCLArea,
+                     P extends NCLElement,
+                     I extends NCLElementImpl,
+                     Ei extends NCLInterface>
+        extends NCLAreaPrototype<T, P, I, Ei>
+        implements NCLInterface<Ei, P> {
     
     
     public NCLArea(String id) throws XMLException {
@@ -69,69 +71,123 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setCoords(ArrayType coords) {
-        ArrayType aux = this.coords;
-        super.setCoords(coords);
-        impl.notifyAltered(NCLElementAttributes.COORDS, aux, coords);
-    }
-    
-    
-    @Override
-    public void setBegin(TimeType begin) {
-        TimeType aux = this.begin;
-        super.setBegin(begin);
-        impl.notifyAltered(NCLElementAttributes.BEGIN, aux, begin);
-    }
-    
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+                
+        // <area> element and attributes declaration
+        content = space + "<area";
+        content += parseAttributes();
+        content += "/>\n";
         
-    @Override
-    public void setEnd(TimeType end) {
-        TimeType aux = this.end;
-        super.setEnd(end);
-        impl.notifyAltered(NCLElementAttributes.END, aux, end);
+        return content;
     }
     
+    
+    protected String parseAttributes() {
+        String content = "";
         
-    @Override
-    public void setText(String text) throws XMLException {
-        StringType aux = this.text;
-        super.setText(text);
-        impl.notifyAltered(NCLElementAttributes.TEXT, aux, text);
-    }
-
-
-    @Override
-    public void setPosition(Integer position) throws XMLException {
-        Integer aux = this.position;
-        super.setPosition(position);
-        impl.notifyAltered(NCLElementAttributes.POSITION, aux, position);
+        content += parseId();
+        content += parseCoords();
+        content += parseBegin();
+        content += parseEnd();
+        content += parseText();
+        content += parsePosition();
+        content += parseFirst();
+        content += parseLast();
+        content += parseLabel();
+        
+        return content;
     }
     
-        
-    @Override
-    public void setFirst(SampleType first) {
-        SampleType aux = this.first;
-        super.setFirst(first);
-        impl.notifyAltered(NCLElementAttributes.FIRST, aux, first);
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
     
-        
-    @Override
-    public void setLast(SampleType last) {
-        SampleType aux = this.last;
-        super.setLast(last);
-        impl.notifyAltered(NCLElementAttributes.LAST, aux, last);
+    
+    protected String parseCoords() {
+        ArrayType aux = getCoords();
+        if(aux != null)
+            return " coords='" + aux.parse() + "'";
+        else
+            return "";
     }
     
-        
-    @Override
-    public void setLabel(String label) throws XMLException {
-        StringType aux = this.label;
-        super.setLabel(label);
-        impl.notifyAltered(NCLElementAttributes.LABEL, aux, label);
+    
+    protected String parseBegin() {
+        TimeType aux = getBegin();
+        if(aux != null)
+            return " begin='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseEnd() {
+        TimeType aux = getEnd();
+        if(aux != null)
+            return " end='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseText() {
+        String aux = getText();
+        if(aux != null)
+            return " text='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parsePosition() {
+        Integer aux = getPosition();
+        if(aux != null)
+            return " position='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseFirst() {
+        SampleType aux = getFirst();
+        if(aux != null)
+            return " first='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLast() {
+        SampleType aux = getLast();
+        if(aux != null)
+            return " last='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLabel() {
+        String aux = getLabel();
+        if(aux != null)
+            return " label='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -200,15 +256,5 @@ public class NCLArea<T extends NCLArea, P extends NCLElement, I extends NCLEleme
             
             throw new NCLParsingException("Area" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

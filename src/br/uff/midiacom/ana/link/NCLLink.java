@@ -41,11 +41,9 @@ import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -62,57 +60,99 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
         super();
     }
 
+
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setXconnector(Ec xconnector) {
-        Ec aux = this.xconnector;
-        super.setXconnector(xconnector);
-        impl.notifyAltered(NCLElementAttributes.XCONNECTOR, aux, xconnector);
-    }
-    
-    
-    @Override
-    public boolean addLinkParam(Ep param) throws XMLException {
-        if(super.addLinkParam(param)){
-            impl.notifyInserted(NCLElementSets.LINKPARAMS, param);
-            return true;
-        }
-        return false;
-    }
-    
-    
-    @Override
-    public boolean removeLinkParam(Ep param) throws XMLException {
-        if(super.removeLinkParam(param)){
-            impl.notifyRemoved(NCLElementSets.LINKPARAMS, param);
-            return true;
-        }
-        return false;
-    }
-    
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
         
-    @Override
-    public boolean addBind(Eb bind) throws XMLException {
-        if(super.addBind(bind)){
-            impl.notifyInserted(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+        
+        // <link> element and attributes declaration
+        content = space + "<link";
+        content += parseAttributes();
+        content += ">\n";
+        
+        // <link> element content
+        content += parseElements(ident + 1);
+
+        // <link> element end declaration
+        content += space + "</link>\n";
+        
+        return content;
     }
     
     
-    @Override
-    public boolean removeBind(Eb bind) throws XMLException {
-        if(super.removeBind(bind)){
-            impl.notifyRemoved(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseXconnector();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseLinkParams(ident);
+        content += parseBinds(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseXconnector() {
+        Ec aux = getXconnector();
+        if(aux != null)
+            return " xconnector='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLinkParams(int ident) {
+        if(!hasLinkParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : linkParams)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseBinds(int ident) {
+        if(!hasBind())
+            return "";
+        
+        String content = "";
+        for(Eb aux : binds)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -177,16 +217,6 @@ public class NCLLink<T extends NCLLink, P extends NCLElement, I extends NCLEleme
             
             throw new NCLParsingException("Link" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

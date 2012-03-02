@@ -40,20 +40,20 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
-public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLRegionPrototype<T, P, I> implements NCLIdentifiableElement<T, P> {
+public class NCLRegion<T extends NCLRegion,
+                       P extends NCLElement,
+                       I extends NCLElementImpl>
+        extends NCLRegionPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLRegion(String id) throws XMLException {
@@ -70,99 +70,152 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
-
-
-    @Override
-    public void setTitle(String title) throws XMLException {
-        StringType aux = this.title;
-        super.setTitle(title);
-        impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
-    }
-
-
-    @Override
-    public void setLeft(RelativeType left) {
-        RelativeType aux = this.left;
-        super.setLeft(left);
-        impl.notifyAltered(NCLElementAttributes.LEFT, aux, left);
-    }
-
-
-    @Override
-    public void setRight(RelativeType right) {
-        RelativeType aux = this.right;
-        super.setRight(right);
-        impl.notifyAltered(NCLElementAttributes.RIGHT, aux, right);
-    }
-
-
-    @Override
-    public void setTop(RelativeType top) {
-        RelativeType aux = this.top;
-        super.setTop(top);
-        impl.notifyAltered(NCLElementAttributes.TOP, aux, top);
-    }
-
-
-    @Override
-    public void setBottom(RelativeType bottom) {
-        RelativeType aux = this.bottom;
-        super.setBottom(bottom);
-        impl.notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
-    }
-
-
-    @Override
-    public void setHeight(RelativeType height) {
-        RelativeType aux = this.height;
-        super.setHeight(height);
-        impl.notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
-    }
-
-
-    @Override
-    public void setWidth(RelativeType width) {
-        RelativeType aux = this.width;
-        super.setWidth(width);
-        impl.notifyAltered(NCLElementAttributes.WIDTH, aux, width);
-    }
-
-
-    @Override
-    public void setzIndex(Integer zIndex) {
-        Integer aux = this.zIndex;
-        super.setzIndex(zIndex);
-        impl.notifyAltered(NCLElementAttributes.ZINDEX, aux, zIndex);
-    }
-
     
-    @Override
-    public boolean addRegion(T region) throws XMLException {
-        if(super.addRegion(region)){
-            impl.notifyInserted(NCLElementSets.REGIONS, region);
-            return true;
+
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<region";
+        content += parseAttributes();
+        
+        if(hasRegion()) {
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+            
+            content += space + "</region>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeRegion(String id) throws XMLException {
-        if(super.removeRegion(id)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        content += parseLeft();
+        content += parseRight();
+        content += parseTop();
+        content += parseBottom();
+        content += parseHeight();
+        content += parseWidth();
+        content += parsezIndex();
+        content += parseTitle();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeRegion(T region) throws XMLException {
-        if(super.removeRegion(region)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, region);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseRegions(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseLeft() {
+        RelativeType aux = getLeft();
+        if(aux != null)
+            return " left='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRight() {
+        RelativeType aux = getRight();
+        if(aux != null)
+            return " right='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTop() {
+        RelativeType aux = getTop();
+        if(aux != null)
+            return " top='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBottom() {
+        RelativeType aux = getBottom();
+        if(aux != null)
+            return " bottom='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseHeight() {
+        RelativeType aux = getHeight();
+        if(aux != null)
+            return " height='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseWidth() {
+        RelativeType aux = getWidth();
+        if(aux != null)
+            return " width='" + aux.parse() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parsezIndex() {
+        Integer aux = getzIndex();
+        if(aux != null)
+            return " zIndex='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseTitle() {
+        String aux = getTitle();
+        if(aux != null)
+            return " title='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegions(int ident) {
+        if(!hasRegion())
+            return "";
+        
+        String content = "";
+        for(T aux : regions)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -256,16 +309,6 @@ public class NCLRegion<T extends NCLRegion, P extends NCLElement, I extends NCLE
             
             throw new NCLParsingException("Region" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

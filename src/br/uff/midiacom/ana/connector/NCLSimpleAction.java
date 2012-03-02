@@ -56,114 +56,189 @@ import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
 
 
-public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I extends NCLElementImpl, Ea extends NCLAction, Er extends NCLRole, Ep extends NCLConnectorParam>
-        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep> implements NCLAction<Ea, P, Ep, Er> {
+public class NCLSimpleAction<T extends NCLSimpleAction,
+                             P extends NCLElement,
+                             I extends NCLElementImpl,
+                             Ea extends NCLAction,
+                             Er extends NCLRole,
+                             Ep extends NCLConnectorParam>
+        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep>
+        implements NCLAction<Ea, P, Ep, Er> {
 
 
     public NCLSimpleAction() throws XMLException {
         super();
     }
-    
-    
+
+
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setValue(StringParamType<Ep, T> value) {
-        StringParamType aux = this.value;
-        super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<simpleAction";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public void setMin(Integer min) {
-        Integer aux = this.min;
-        super.setMin(min);
-        impl.notifyAltered(NCLElementAttributes.MIN, aux, min);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseValue();
+        content += parseDelay();
+        content += parseMin();
+        content += parseMax();
+        content += parseQualifier();
+        content += parseEventType();
+        content += parseActionType();
+        content += parseRepeat();
+        content += parseRepeatDelay();
+        content += parseDuration();
+        content += parseBy();
+        
+        return content;
     }
-
-
-    @Override
-    public void setMax(MaxType max) {
-        MaxType aux = this.max;
-        super.setMax(max);
-        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setQualifier(NCLActionOperator qualifier) {
-        NCLActionOperator aux = this.qualifier;
-        super.setQualifier(qualifier);
-        impl.notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
+    
+    
+    protected String parseValue() {
+        StringParamType aux = getValue();
+        if(aux != null)
+            return " value='" + aux.parse() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setRole(Er role) {
-        Er aux = this.role;
-        super.setRole(role);
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse();
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
     }
-
-
-    @Override
-    public void setEventType(NCLEventType eventType) {
-        NCLEventType aux = this.eventType;
-        super.setEventType(eventType);
-        impl.notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
+    
+    
+    protected String parseMin() {
+        Integer aux = getMin();
+        if(aux != null)
+            return " min='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setActionType(NCLEventAction actionType) {
-        NCLEventAction aux = this.actionType;
-        super.setActionType(actionType);
-        impl.notifyAltered(NCLElementAttributes.ACTIONTYPE, aux, actionType);
+    
+    
+    protected String parseMax() {
+        MaxType aux = getMax();
+        if(aux != null)
+            return " max='" + aux.parse() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setRepeat(IntegerParamType<Ep, T> repeat) {
-        IntegerParamType aux = this.repeat;
-        super.setRepeat(repeat);
-        impl.notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
+    
+    
+    protected String parseQualifier() {
+        NCLActionOperator aux = getQualifier();
+        if(aux != null)
+            return " qualifier='" + aux.toString() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setRepeatDelay(DoubleParamType<Ep, T> repeatDelay) {
-        DoubleParamType aux = this.repeatDelay;
-        super.setRepeatDelay(repeatDelay);
-        impl.notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
+    
+    
+    protected String parseEventType() {
+        NCLEventType aux = getEventType();
+        if(aux != null)
+            return " eventType='" + aux.toString() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setDuration(DoubleParamType<Ep, T> duration) {
-        DoubleParamType aux = this.duration;
-        super.setDuration(duration);
-        impl.notifyAltered(NCLElementAttributes.DURATION, aux, duration);
+    
+    
+    protected String parseActionType() {
+        NCLEventAction aux = getActionType();
+        if(aux != null)
+            return " actionType='" + aux.toString() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setBy(ByParamType<Ep, T> by) {
-        ByParamType aux = this.by;
-        super.setBy(by);
-        impl.notifyAltered(NCLElementAttributes.BY, aux, by);
+    
+    
+    protected String parseRepeat() {
+        IntegerParamType aux = getRepeat();
+        if(aux != null)
+            return " repeat='" + aux.parse() + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public void setDelay(DoubleParamType<Ep, Ea> delay) {
-        DoubleParamType aux = this.delay;
-        super.setDelay(delay);
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+    
+    
+    protected String parseRepeatDelay() {
+        DoubleParamType aux = getRepeatDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " repeatDelay='" + aux.parse();
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+    
+    
+    protected String parseDuration() {
+        DoubleParamType aux = getDuration();
+        if(aux == null)
+            return "";
+        
+        String content = " duration='" + aux.parse();
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
+    }
+    
+    
+    protected String parseBy() {
+        ByParamType aux = getBy();
+        if(aux != null)
+            return " by='" + aux.parse() + "'";
+        else
+            return "";
     }
 
 
@@ -241,16 +316,6 @@ public class NCLSimpleAction<T extends NCLSimpleAction, P extends NCLElement, I 
         catch(XMLException ex){
             throw new NCLParsingException("SimpleAction:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

@@ -37,12 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLHeadPrototype;
+import br.uff.midiacom.ana.datatype.ncl.structure.NCLHeadPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
@@ -56,8 +54,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLElementImpl, Eib extends NCLImportedDocumentBase, Erl extends NCLRuleBase, Etb extends NCLTransitionBase, Erb extends NCLRegionBase, Edb extends NCLDescriptorBase, Ecb extends NCLConnectorBase, Em extends NCLMeta, Emt extends NCLMetadata>
-    extends NCLHeadPrototype<T, P, I, Eib, Erl, Etb, Erb, Edb, Ecb, Em, Emt> implements NCLElement<T, P> {
+public class NCLHead<T extends NCLHead,
+                     P extends NCLElement,
+                     I extends NCLElementImpl,
+                     Eib extends NCLImportedDocumentBase,
+                     Erl extends NCLRuleBase,
+                     Etb extends NCLTransitionBase,
+                     Erb extends NCLRegionBase,
+                     Edb extends NCLDescriptorBase,
+                     Ecb extends NCLConnectorBase,
+                     Em extends NCLMeta,
+                     Emt extends NCLMetadata>
+        extends NCLHeadPrototype<T, P, I, Eib, Erl, Etb, Erb, Edb, Ecb, Em, Emt>
+        implements NCLElement<T, P> {
 
     
     public NCLHead() throws XMLException {
@@ -69,110 +78,123 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
-
     
-    @Override
-    public void setImportedDocumentBase(Eib importedDocumentBase) {
-        super.setImportedDocumentBase(importedDocumentBase);
-        impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, importedDocumentBase);
-    }
-
-
-    @Override
-    public void setRuleBase(Erl ruleBase) {
-        super.setRuleBase(ruleBase);
-        impl.notifyInserted(NCLElementSets.RULEBASE, ruleBase);
-    }
-
-
-    @Override
-    public void setTransitionBase(Etb transitionBase) {
-        super.setTransitionBase(transitionBase);
-        impl.notifyInserted(NCLElementSets.TRANSITIONBASE, transitionBase);
-    }
-
-
-    @Override
-    public boolean addRegionBase(Erb regionBase) throws XMLException {
-        if(super.addRegionBase(regionBase)){
-            impl.notifyInserted(NCLElementSets.REGIONBASE, regionBase);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeRegionBase(Erb regionBase) throws XMLException {
-        if(super.removeRegionBase(regionBase)){
-            impl.notifyRemoved(NCLElementSets.REGIONBASE, regionBase);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeRegionBase(String id) throws XMLException {
-        if(super.removeRegionBase(id)){
-            impl.notifyRemoved(NCLElementSets.REGIONBASE, id);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public void setDescriptorBase(Edb descriptorBase) {
-        super.setDescriptorBase(descriptorBase);
-        impl.notifyInserted(NCLElementSets.DESCRIPTORBASE, descriptorBase);
-    }
-
     
-    @Override
-    public void setConnectorBase(Ecb connectorBase) {
-        super.setConnectorBase(connectorBase);
-        impl.notifyInserted(NCLElementSets.CONNECTORBASE, connectorBase);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+        
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+                
+        content = space + "<head>\n";
+        
+        content += parseElements(ident + 1);
+        
+        content += space + "</head>\n";
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addMeta(Em meta) throws XMLException {
-        if(super.addMeta(meta)){
-            impl.notifyInserted(NCLElementSets.METAS, meta);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportedDocumentBase(ident);
+        content += parseRuleBase(ident);
+        content += parseTransitionBase(ident);
+        content += parseRegionBases(ident);
+        content += parseDescriptorBase(ident);
+        content += parseConnectorBase(ident);
+        content += parseMetas(ident);
+        content += parseMetadatas(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeMeta(Em meta) throws XMLException {
-        if(super.removeMeta(meta)){
-            impl.notifyRemoved(NCLElementSets.METAS, meta);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseImportedDocumentBase(int ident) {
+        Eib aux = getImportedDocumentBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean addMetadata(Emt metadata) throws XMLException {
-        if(super.addMetadata(metadata)){
-            impl.notifyInserted(NCLElementSets.METADATAS, metadata);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseRuleBase(int ident) {
+        Erl aux = getRuleBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeMetadata(Emt metadata) throws XMLException {
-        if(super.removeMetadata(metadata)){
-            impl.notifyRemoved(NCLElementSets.METADATAS, metadata);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseTransitionBase(int ident) {
+        Etb aux = getTransitionBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseRegionBases(int ident) {
+        if(!hasRegionBase())
+            return "";
+        
+        String content = "";
+        for(Erb aux : regionBases)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseDescriptorBase(int ident) {
+        Edb aux = getDescriptorBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseConnectorBase(int ident) {
+        Ecb aux = getConnectorBase();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseMetas(int ident) {
+        if(!hasMeta())
+            return "";
+        
+        String content = "";
+        for(Em aux : metas)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseMetadatas(int ident) {
+        if(!hasMetadata())
+            return "";
+        
+        String content = "";
+        for(Emt aux : metadatas)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -257,16 +279,6 @@ public class NCLHead<T extends NCLHead, P extends NCLElement, I extends NCLEleme
         catch(XMLException ex){
             throw new NCLParsingException("Head > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

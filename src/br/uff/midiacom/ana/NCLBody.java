@@ -37,11 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLBodyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.structure.NCLBodyPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -58,8 +56,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLElementImpl, Ept extends NCLPort, Epp extends NCLProperty, En extends NCLNode, Ei extends NCLInterface, El extends NCLLink, Em extends NCLMeta, Emt extends NCLMetadata>
-        extends NCLBodyPrototype<T, P, I, Ept, Epp, En, El, Em, Emt> implements NCLIdentifiableElement<T, P> {
+public class NCLBody<T extends NCLBody,
+                     P extends NCLElement,
+                     I extends NCLElementImpl,
+                     Ept extends NCLPort,
+                     Epp extends NCLProperty,
+                     En extends NCLNode,
+                     Ei extends NCLInterface,
+                     El extends NCLLink,
+                     Em extends NCLMeta,
+                     Emt extends NCLMetadata>
+        extends NCLBodyPrototype<T, P, I, Ept, Epp, En, El, Em, Emt>
+        implements NCLIdentifiableElement<T, P> {
 
     
     public NCLBody() throws XMLException {
@@ -71,165 +79,135 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public boolean addPort(Ept port) throws XMLException {
-        if(super.addPort(port)){
-            impl.notifyInserted(NCLElementSets.PORTS, port);
-            return true;
-        }
-        return false;
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";        
+        
+        // <body> element and attributes declaration
+        content = space + "<body";
+        content += parseAttributes();
+        content += ">\n";
+        
+        // <body> element content
+        content += parseElements(ident + 1);
+        
+        // <body> element end declaration
+        content += space + "</body>\n";
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removePort(String id) throws XMLException {
-        if(super.removePort(id)){
-            impl.notifyRemoved(NCLElementSets.PORTS, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removePort(Ept port) throws XMLException {
-        if(super.removePort(port)){
-            impl.notifyRemoved(NCLElementSets.PORTS, port);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseMetas(ident);
+        content += parseMetadatas(ident);
+        content += parsePorts(ident);
+        content += parseProperties(ident);
+        content += parseNodes(ident);
+        content += parseLinks(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addProperty(Epp property) throws XMLException {
-        if(super.addProperty(property)){
-            impl.notifyInserted(NCLElementSets.PROPERTIES, property);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeProperty(String name) throws XMLException {
-        if(super.removeProperty(name)){
-            impl.notifyRemoved(NCLElementSets.PROPERTIES, name);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseMetas(int ident) {
+        if(!hasMeta())
+            return "";
+        
+        String content = "";
+        for(Em aux : metas)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeProperty(Epp property) throws XMLException {
-        if(super.removeProperty(property)){
-            impl.notifyRemoved(NCLElementSets.PROPERTIES, property);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseMetadatas(int ident) {
+        if(!hasMetadata())
+            return "";
+        
+        String content = "";
+        for(Emt aux : metadatas)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addNode(En node) throws XMLException {
-        if(super.addNode(node)){
-            impl.notifyInserted(NCLElementSets.NODES, node);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parsePorts(int ident) {
+        if(!hasPort())
+            return "";
+        
+        String content = "";
+        for(Ept aux : ports)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeNode(String id) throws XMLException {
-        if(super.removeNode(id)){
-            impl.notifyRemoved(NCLElementSets.NODES, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseProperties(int ident) {
+        if(!hasProperty())
+            return "";
+        
+        String content = "";
+        for(Epp aux : properties)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeNode(En node) throws XMLException {
-        if(super.removeNode(node)){
-            impl.notifyRemoved(NCLElementSets.NODES, node);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseNodes(int ident) {
+        if(!hasNode())
+            return "";
+        
+        String content = "";
+        for(En aux : nodes)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addLink(El link) throws XMLException {
-        if(super.addLink(link)){
-            impl.notifyInserted(NCLElementSets.LINKS, link);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeLink(El link) throws XMLException {
-        if(super.removeLink(link)){
-            impl.notifyRemoved(NCLElementSets.LINKS, link);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeLink(String id) throws XMLException {
-        if(super.removeLink(id)){
-            impl.notifyRemoved(NCLElementSets.LINKS, id);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean addMeta(Em meta) throws XMLException {
-        if(super.addMeta(meta)){
-            impl.notifyInserted(NCLElementSets.METAS, meta);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeMeta(Em meta) throws XMLException {
-        if(super.removeMeta(meta)){
-            impl.notifyRemoved(NCLElementSets.METAS, meta);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean addMetadata(Emt metadata) throws XMLException {
-        if(super.addMetadata(metadata)){
-            impl.notifyInserted(NCLElementSets.METADATAS, metadata);
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean removeMetadata(Emt metadata) throws XMLException {
-        if(super.removeMetadata(metadata)){
-            impl.notifyRemoved(NCLElementSets.METADATAS, metadata);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseLinks(int ident) {
+        if(!hasLink())
+            return "";
+        
+        String content = "";
+        for(El aux : links)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -319,16 +297,6 @@ public class NCLBody<T extends NCLBody, P extends NCLElement, I extends NCLEleme
         catch(XMLException ex){
             throw new NCLParsingException("Body > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
     

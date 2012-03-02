@@ -40,17 +40,17 @@ package br.uff.midiacom.ana.meta;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends NCLElementImpl>
-        extends NCLMetadataPrototype<T, P, I> implements NCLElement<T, P> {
+public class NCLMetadata<T extends NCLMetadata,
+                         P extends NCLElement,
+                         I extends NCLElementImpl>
+        extends NCLMetadataPrototype<T, P, I>
+        implements NCLElement<T, P> {
 
 
     public NCLMetadata() throws XMLException {
@@ -64,11 +64,33 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
     }
 
 
-    @Override
-    public void setRDFTree(String rdfTree) throws XMLException {
-        StringType aux = this.rdfTree;
-        super.setRDFTree(rdfTree);
-        impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+
+        // param element and attributes declaration
+        content = space + "<metadata>\n";
+        content += parseContent();
+        content += space + "</metadata>\n";
+
+        return content;
+    }
+    
+    
+    protected String parseContent() {
+        String aux = getRDFTree();
+        if(aux != null)
+            return aux + "\n";
+        else
+            return "";
     }
 
 
@@ -81,15 +103,5 @@ public class NCLMetadata<T extends NCLMetadata, P extends NCLElement, I extends 
         catch(XMLException ex){
             throw new NCLParsingException("Metadata:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

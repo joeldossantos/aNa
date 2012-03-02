@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -51,8 +49,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Ea extends NCLAction, Ep extends NCLConnectorParam, Er extends NCLRole>
-        extends NCLCausalConnectorPrototype<T, P, I, Ec, Ea, Ep> implements NCLIdentifiableElement<T, P> {
+public class NCLCausalConnector<T extends NCLCausalConnector,
+                                P extends NCLElement,
+                                I extends NCLElementImpl,
+                                Ec extends NCLCondition,
+                                Ea extends NCLAction,
+                                Ep extends NCLConnectorParam,
+                                Er extends NCLRole>
+        extends NCLCausalConnectorPrototype<T, P, I, Ec, Ea, Ep>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLCausalConnector(String id) throws XMLException {
@@ -71,47 +76,85 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
     }
 
     
-    @Override
-    public void setCondition(Ec condition) {
-        super.setCondition(condition);
-        impl.notifyInserted(NCLElementSets.CONDITIONS, condition);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<causalConnector";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+
+        content += space + "</causalConnector>\n";
+
+        return content;
     }
     
     
-    @Override
-    public void setAction(Ea action) {
-        super.setAction(action);
-        impl.notifyInserted(NCLElementSets.ACTIONS, action);
-    }
-    
+    protected String parseAttributes() {
+        String content = "";
         
-    @Override
-    public boolean addConnectorParam(Ep param) throws XMLException {
-        if(super.addConnectorParam(param)){
-            impl.notifyInserted(NCLElementSets.CONNECTOR_PARAMS, param);
-            return true;
-        }
-        return false;
+        content += parseId();
+        
+        return content;
     }
-
     
-    @Override
-    public boolean removeConnectorParam(String name) throws XMLException {
-        if(super.removeConnectorParam(name)){
-            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, name);
-            return true;
-        }
-        return false;
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseConnectorParams(ident);
+        content += parseCondition(ident);
+        content += parseAction(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeConnectorParam(Ep param) throws XMLException {
-        if(super.removeConnectorParam(param)){
-            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, param);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseConnectorParams(int ident) {
+        if(!hasConnectorParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : conn_params)
+            content += aux.parse(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseCondition(int ident) {
+        Ec aux = getCondition();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
+    }
+    
+    
+    protected String parseAction(int ident) {
+        Ea aux = getAction();
+        if(aux != null)
+            return aux.parse(ident);
+        else
+            return "";
     }
 
 
@@ -191,16 +234,6 @@ public class NCLCausalConnector<T extends NCLCausalConnector, P extends NCLEleme
             
             throw new NCLParsingException("CausalConnector" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

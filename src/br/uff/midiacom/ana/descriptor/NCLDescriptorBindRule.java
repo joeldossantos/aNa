@@ -50,8 +50,13 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Er extends NCLTestRule>
-        extends NCLDescriptorBindRulePrototype<T, P, I, El, Er> implements NCLElement<T, P> {
+public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
+                                   P extends NCLElement,
+                                   I extends NCLElementImpl,
+                                   El extends NCLLayoutDescriptor,
+                                   Er extends NCLTestRule>
+        extends NCLDescriptorBindRulePrototype<T, P, I, El, Er>
+        implements NCLElement<T, P> {
 
 
     public NCLDescriptorBindRule() throws XMLException {
@@ -65,19 +70,51 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
     }
 
 
-    @Override
-    public void setConstituent(El constituent) {
-        El aux = this.constituent;
-        super.setConstituent(constituent);
-        impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<bindRule";
+        content += parseAttributes();
+        content += "/>\n";
+
+
+        return content;
     }
-
-
-    @Override
-    public void setRule(Er rule) {
-        Er aux = this.rule;
-        super.setRule(rule);
-        impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRule();
+        content += parseConstituent();
+        
+        return content;
+    }
+    
+    
+    protected String parseRule() {
+        Er aux = getRule();
+        if(aux != null)
+            return " rule='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseConstituent() {
+        El aux = getConstituent();
+        if(aux != null)
+            return " constituent='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 
@@ -113,15 +150,5 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule, P extends NC
         catch(XMLException ex){
             throw new NCLParsingException("BindRule:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

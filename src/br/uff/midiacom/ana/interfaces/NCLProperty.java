@@ -39,18 +39,20 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
-public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLInterface>
-        extends NCLPropertyPrototype<T, P, I, Ei> implements NCLInterface<Ei, P> {
+public class NCLProperty<T extends NCLProperty,
+                         P extends NCLElement,
+                         I extends NCLElementImpl,
+                         Ei extends NCLInterface>
+        extends NCLPropertyPrototype<T, P, I, Ei>
+        implements NCLInterface<Ei, P> {
 
     
     public NCLProperty(String name) throws XMLException {
@@ -72,29 +74,54 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setName(String name) throws XMLException {
-        String aux = this.getName();
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
-    }    
-
-
-    @Override
-    public void setName(NCLSystemVariable name) throws XMLException {
-        String aux = this.getName();
-        super.setName(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        // <property> element and attributes declaration
+        content = space + "<property";
+        content += parseAttributes();
+        content += "/>\n";
+        
+        
+        return content;
     }
-
-
-    @Override
-    public void setValue(String value) throws XMLException {
-        StringType aux = this.value;
-        super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseName();
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseName() {
+        String aux = getName();
+        if(aux != null)
+            return " name='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseValue() {
+        String aux = getValue();
+        if(aux != null)
+            return " value='" + aux + "'";
+        else
+            return "";
     }
 
 
@@ -123,15 +150,5 @@ public class NCLProperty<T extends NCLProperty, P extends NCLElement, I extends 
             
             throw new NCLParsingException("Property" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

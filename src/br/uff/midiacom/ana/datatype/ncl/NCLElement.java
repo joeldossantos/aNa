@@ -38,6 +38,8 @@
 package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.xml.XMLElement;
+import br.uff.midiacom.xml.XMLException;
+import org.w3c.dom.Element;
 
 
 public interface NCLElement<T extends NCLElement,
@@ -63,4 +65,11 @@ public interface NCLElement<T extends NCLElement,
      *          estiver assiciado.
      */
     public NCLModificationListener getModificationListener();
+    
+    
+    /**
+     * Implementa o método startElement do parser SAX para a recuperação dos objetos
+     * representativos dos elementos NCL a partir de um arquivo XML.
+     */
+    public void load(Element element) throws XMLException;
 }

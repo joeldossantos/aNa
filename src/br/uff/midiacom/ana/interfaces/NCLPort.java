@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
@@ -49,8 +48,13 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLElementImpl, En extends NCLNode, Ei extends NCLInterface>
-        extends NCLPortPrototype<T, P, I, En, Ei> implements NCLInterface<Ei, P> {
+public class NCLPort<T extends NCLPort,
+                     P extends NCLElement,
+                     I extends NCLElementImpl,
+                     En extends NCLNode,
+                     Ei extends NCLInterface>
+        extends NCLPortPrototype<T, P, I, En, Ei>
+        implements NCLInterface<Ei, P> {
 
 
     public NCLPort(String id) throws XMLException {
@@ -67,21 +71,64 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<T, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setComponent(En component) {
-        En aux = this.component;
-        super.setComponent(component);
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        
+        // <port> element and attributes declaration
+        content = space + "<port";
+        content += parseAttributes();
+        content += "/>\n";
+        
+        return content;
     }
     
+    
+    protected String parseAttributes() {
+        String content = "";
         
-    @Override
-    public void setInterface(Ei interfac) {
-        Ei aux = this.interfac;
-        super.setInterface(interfac);
-        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        content += parseId();
+        content += parseComponent();
+        content += parseInterface();
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseComponent() {
+        En aux = getComponent();
+        if(aux != null)
+            return " component='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInterface() {
+        Ei aux = getInterface();
+        if(aux != null)
+            return " interface='" + aux.getId() + "'";
+        else
+            return "";
     }
 
 
@@ -135,15 +182,5 @@ public class NCLPort<T extends NCLPort, P extends NCLElement, I extends NCLEleme
             
             throw new NCLParsingException("Port" + aux + ":\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

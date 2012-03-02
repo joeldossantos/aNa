@@ -43,11 +43,9 @@ import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLBindPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
@@ -57,8 +55,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
-public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLElementImpl, Er extends NCLRole, En extends NCLNode, Ei extends NCLInterface, Ed extends NCLLayoutDescriptor, Ep extends NCLParam>
-        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep> implements NCLElement<T, P>{
+public class NCLBind<T extends NCLBind,
+                     P extends NCLElement,
+                     I extends NCLElementImpl,
+                     Er extends NCLRole,
+                     En extends NCLNode,
+                     Ei extends NCLInterface,
+                     Ed extends NCLLayoutDescriptor,
+                     Ep extends NCLParam>
+        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep>
+        implements NCLElement<T, P>{
 
 
     public NCLBind() throws XMLException {
@@ -70,57 +76,105 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
 
-    @Override
-    public void setRole(Er role) {
-        Er aux = this.role;
-        super.setRole(role);
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
-    }
-    
-    
-    @Override
-    public void setComponent(En component) {
-        En aux = this.component;
-        super.setComponent(component);
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
-    }
-    
-    
-    @Override
-    public void setInterface(Ei interfac) {
-        Ei aux = this.interfac;
-        super.setInterface(interfac);
-        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
-    }
-    
-    
-    @Override
-    public void setDescriptor(Ed descriptor) {
-        Ed aux = this.descriptor;
-        super.setDescriptor(descriptor);
-        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
-    }
-    
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
         
-    @Override
-    public boolean addBindParam(Ep param) throws XMLException {
-        if(super.addBindParam(param)){
-            impl.notifyInserted(NCLElementSets.BINDPARAMS, param);
-            return true;
+        
+        // <bind> element and attributes declaration
+        content = space + "<bind";
+        content += parseAttributes();
+        
+        // <bind> element content
+        if(hasBindParam()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+            
+            content += space + "</bind>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeBindParam(Ep param) throws XMLException {
-        if(super.removeBindParam(param)){
-            impl.notifyRemoved(NCLElementSets.BINDPARAMS, param);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseRole();
+        content += parseComponent();
+        content += parseInterface();
+        content += parseDescriptor();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseBindParams(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseRole() {
+        Er aux = getRole();
+        if(aux != null)
+            return " role='" + aux.getName() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseComponent() {
+        En aux = getComponent();
+        if(aux != null)
+            return " component='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseInterface() {
+        Ei aux = getInterface();
+        if(aux != null)
+            return " interface='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDescriptor() {
+        Ed aux = getDescriptor();
+        if(aux != null)
+            return " descriptor='" + aux.getId() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseBindParams(int ident) {
+        if(!hasBindParam())
+            return "";
+        
+        String content = "";
+        for(Ep aux : bindParams)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -219,16 +273,6 @@ public class NCLBind<T extends NCLBind, P extends NCLElement, I extends NCLEleme
             
             throw new NCLParsingException("Bind" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

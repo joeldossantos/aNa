@@ -43,7 +43,9 @@ import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
 
 
-public interface NCLNode<T extends NCLNode, P extends NCLElement, Ei extends NCLInterface>
+public interface NCLNode<T extends NCLNode,
+                         P extends NCLElement,
+                         Ei extends NCLInterface>
         extends br.uff.midiacom.ana.datatype.ncl.node.NCLNode<T, P>, NCLIdentifiableElement<T, P> {
 
     

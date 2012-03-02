@@ -39,10 +39,8 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorSwitchPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -50,8 +48,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLElement, I extends NCLElementImpl, El extends NCLLayoutDescriptor, Eb extends NCLDescriptorBindRule>
-        extends NCLDescriptorSwitchPrototype<T, P, I, El, Eb> implements NCLLayoutDescriptor<El, P> {
+public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
+                                 P extends NCLElement,
+                                 I extends NCLElementImpl,
+                                 El extends NCLLayoutDescriptor,
+                                 Eb extends NCLDescriptorBindRule>
+        extends NCLDescriptorSwitchPrototype<T, P, I, El, Eb>
+        implements NCLLayoutDescriptor<El, P> {
 
 
     public NCLDescriptorSwitch(String id) throws XMLException {
@@ -70,60 +73,96 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
     }
 
 
-    @Override
-    public boolean addDescriptor(El descriptor) throws XMLException {
-        if(super.addDescriptor(descriptor)){
-            impl.notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<descriptorSwitch";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+
+        content += space + "</descriptorSwitch>\n";
+
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeDescriptor(String id) throws XMLException {
-        if(super.removeDescriptor(id)){
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, id);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeDescriptor(El descriptor) throws XMLException {
-        if(super.removeDescriptor(descriptor)){
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseBinds(ident);
+        content += parseDefaultDescriptor(ident);
+        content += parseDescriptors(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public boolean addBind(Eb bind) throws XMLException {
-        if(super.addBind(bind)){
-            impl.notifyInserted(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
     }
-
-
-    @Override
-    public boolean removeBind(Eb bind) throws XMLException {
-        if(super.removeBind(bind)){
-            impl.notifyRemoved(NCLElementSets.BINDS, bind);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseBinds(int ident) {
+        if(!hasBind())
+            return "";
+        
+        String content = "";
+        for(Eb aux : binds)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public void setDefaultDescriptor(El defaultDescriptor) {
-        super.setDefaultDescriptor(defaultDescriptor);
-        impl.notifyInserted(NCLElementSets.DESCRIPTORS, defaultDescriptor);
+    
+    
+    protected String parseDefaultDescriptor(int ident) {
+        El aux = getDefaultDescriptor();
+        if(aux == null)
+            return "";
+        
+        String space = "";
+        if(ident < 0)
+            ident = 0;
+        
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+        
+        return space + "<defaultDescriptor descriptor='" + aux.getId() + "'/>\n";
+    }
+    
+    
+    protected String parseDescriptors(int ident) {
+        if(!hasDescriptor())
+            return "";
+        
+        String content = "";
+        for(El aux : descriptors)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -194,16 +233,6 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch, P extends NCLEle
             
             throw new NCLParsingException("DescriptorSwitch" + aux + " > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     

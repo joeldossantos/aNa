@@ -40,10 +40,8 @@ package br.uff.midiacom.ana.reuse;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -51,8 +49,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
-public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extends NCLElement, I extends NCLElementImpl, Ei extends NCLImport>
-        extends NCLImportedDocumentBasePrototype<T, P, I, Ei> implements NCLIdentifiableElement<T, P> {
+public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
+                                     P extends NCLElement,
+                                     I extends NCLElementImpl,
+                                     Ei extends NCLImport>
+        extends NCLImportedDocumentBasePrototype<T, P, I, Ei>
+        implements NCLIdentifiableElement<T, P> {
 
 
     public NCLImportedDocumentBase() throws XMLException {
@@ -66,23 +68,70 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
     }
 
 
-    @Override
-    public boolean addImportNCL(Ei importNCL) throws XMLException {
-        if(super.addImportNCL(importNCL)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importNCL);
-            return true;
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<importedDocumentBase";
+        content += parseAttributes();
+
+        if(hasImportNCL()){
+            content += ">\n";
+
+            content += parseElements(ident + 1);
+
+            content += space + "</importedDocumentBase>\n";
         }
-        return false;
+        else
+            content += "/>\n";
+
+        return content;
     }
-
-
-    @Override
-    public boolean removeImportNCL(Ei importNCL) throws XMLException {
-        if(super.removeImportNCL(importNCL)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importNCL);
-            return true;
-        }
-        return false;
+    
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseId();
+        
+        return content;
+    }
+    
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseImportNCL(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseId() {
+        String aux = getId();
+        if(aux != null)
+            return " id='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseImportNCL(int ident) {
+        if(!hasImportNCL())
+            return "";
+        
+        String content = "";
+        for(Ei aux : imports)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -114,16 +163,6 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase, P extend
         catch(XMLException ex){
             throw new NCLParsingException("ImportedDocumentBase > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 
 

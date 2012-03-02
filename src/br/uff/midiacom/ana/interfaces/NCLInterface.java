@@ -41,7 +41,8 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 
 
-public interface NCLInterface<T extends NCLInterface, P extends NCLElement>
+public interface NCLInterface<T extends NCLInterface,
+                              P extends NCLElement>
         extends br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface<T, P>, NCLIdentifiableElement<T, P> {
 
 }

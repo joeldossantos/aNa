@@ -49,8 +49,12 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLElement, I extends NCLElementImpl, Ep extends NCLConnectorParam>
-        extends NCLValueAssessmentPrototype<T, P, I, Ep> implements NCLElement<T, P> {
+public class NCLValueAssessment<T extends NCLValueAssessment,
+                                P extends NCLElement,
+                                I extends NCLElementImpl,
+                                Ep extends NCLConnectorParam>
+        extends NCLValueAssessmentPrototype<T, P, I, Ep>
+        implements NCLElement<T, P> {
 
 
     public NCLValueAssessment() throws XMLException {
@@ -58,23 +62,51 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
     }
 
 
+    public NCLValueAssessment(AssValueParamType<Ep, T> value) throws XMLException {
+        super(value);
+    }
+
+
     @Override
     protected void createImpl() throws XMLException {
         impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
+    
+    
+    public String parse(int ident) {
+        String space, content;
 
+        if(ident < 0)
+            ident = 0;
+        
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
 
-    public NCLValueAssessment(AssValueParamType<Ep, T> value) throws XMLException {
-        super(value);
-        impl = (I) new NCLElementImpl(this);
+        content = space + "<valueAssessment";
+        content += parseAttributes();
+        content += "/>\n";
+
+        return content;
     }
     
-
-    @Override
-    public void setValue(AssValueParamType<Ep, T> value) {
-        AssValueParamType aux = this.value;
-        super.setValue(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+    
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseValue();
+        
+        return content;
+    }
+    
+    
+    protected String parseValue() {
+        AssValueParamType aux = getValue();
+        if(aux != null)
+            return " value='" + aux.parse() + "'";
+        else
+            return "";
     }
 
 
@@ -92,15 +124,5 @@ public class NCLValueAssessment<T extends NCLValueAssessment, P extends NCLEleme
         catch(XMLException ex){
             throw new NCLParsingException("ValueAssessment:\n" + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
 }

@@ -40,12 +40,10 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundConditionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -53,8 +51,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLElement, I extends NCLElementImpl, Ec extends NCLCondition, Es extends NCLStatement, Ep extends NCLConnectorParam, Er extends NCLRole>
-        extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep> implements NCLCondition<Ec, P, Ep, Er> {
+public class NCLCompoundCondition<T extends NCLCompoundCondition,
+                                  P extends NCLElement,
+                                  I extends NCLElementImpl,
+                                  Ec extends NCLCondition,
+                                  Es extends NCLStatement,
+                                  Ep extends NCLConnectorParam,
+                                  Er extends NCLRole>
+        extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep>
+        implements NCLCondition<Ec, P, Ep, Er> {
     
 
     public NCLCompoundCondition() throws XMLException {
@@ -68,59 +73,94 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
     }
 
 
-    @Override
-    public void setOperator(NCLConditionOperator operator) {
-        NCLConditionOperator aux = this.operator;
-        super.setOperator(operator);
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+    public String parse(int ident) {
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<compoundCondition";
+        content += parseAttributes();
+        content += ">\n";
+
+        content += parseElements(ident + 1);
+
+        content += space + "</compoundCondition>\n";
+
+        return content;
     }
     
     
-    @Override
-    public boolean addCondition(Ec condition) throws XMLException {
-        if(super.addCondition(condition)){
-            impl.notifyInserted(NCLElementSets.CONDITIONS, condition);
-            return true;
-        }
-        return false;
+    protected String parseAttributes() {
+        String content = "";
+        
+        content += parseOperator();
+        content += parseDelay();
+        
+        return content;
     }
-
-
-    @Override
-    public boolean removeCondition(Ec condition) throws XMLException {
-        if(super.removeCondition(condition)){
-            impl.notifyRemoved(NCLElementSets.CONDITIONS, condition);
-            return true;
-        }
-        return false;
-    }
-
     
-    @Override
-    public boolean addStatement(Es statement) throws XMLException {
-        if(super.addStatement(statement)){
-            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
-            return true;
-        }
-        return false;
+    
+    protected String parseElements(int ident) {
+        String content = "";
+        
+        content += parseConditions(ident);
+        content += parseStatements(ident);
+        
+        return content;
+    }
+    
+    
+    protected String parseOperator() {
+        NCLConditionOperator aux = getOperator();
+        if(aux != null)
+            return " operator='" + aux.toString() + "'";
+        else
+            return "";
+    }
+    
+    
+    protected String parseDelay() {
+        DoubleParamType aux = getDelay();
+        if(aux == null)
+            return "";
+        
+        String content = " delay='" + aux.parse();
+        if(aux.getValue() != null)
+            content += "s'";
+        else
+            content += "'";
+        
+        return content;
     }
 
 
-    @Override
-    public boolean removeStatement(Es statement) throws XMLException {
-        if(super.removeStatement(statement)){
-            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
-            return true;
-        }
-        return false;
+    protected String parseConditions(int ident) {
+        if(!hasCondition())
+            return "";
+        
+        String content = "";
+        for(Ec aux : conditions)
+            content += aux.parse(ident);
+        
+        return content;
     }
-
-
-    @Override
-    public void setDelay(DoubleParamType<Ep, Ec> delay) {
-        DoubleParamType aux = this.delay;
-        super.setDelay(delay);
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+    
+    
+    protected String parseStatements(int ident) {
+        if(!hasStatement())
+            return "";
+        
+        String content = "";
+        for(Es aux : statements)
+            content += aux.parse(ident);
+        
+        return content;
     }
 
 
@@ -183,16 +223,6 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition, P extends NCLE
         catch(XMLException ex){
             throw new NCLParsingException("CompoundCondition > " + ex.getMessage());
         }
-    }
-
-
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
-    }
-
-
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
     }
     
     
