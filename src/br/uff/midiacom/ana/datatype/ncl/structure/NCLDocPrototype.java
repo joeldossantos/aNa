@@ -59,6 +59,9 @@ public abstract class NCLDocPrototype<T extends NCLDocPrototype,
     protected NCLNamespace xmlns;
     protected Eh head;
     protected Eb body;
+    
+    protected String location;
+    protected String fileName;
 
 
     public NCLDocPrototype() throws XMLException {
@@ -186,5 +189,15 @@ public abstract class NCLDocPrototype<T extends NCLDocPrototype,
      */
     public Eb getBody() {
         return body;
+    }
+    
+    
+    public String getLocation() {
+        return location;
+    }
+    
+    
+    public String getFileName() {
+        return fileName;
     }
 }

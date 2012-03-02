@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.reuse;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
@@ -48,14 +49,16 @@ import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.xml.XMLException;
+import java.io.File;
 import org.w3c.dom.Element;
 
 
 public class NCLImport<T extends NCLImport,
                        P extends NCLElement,
                        I extends NCLElementImpl,
-                       Er extends NCLRegion>
-        extends NCLImportPrototype<T, P, I, Er>
+                       Er extends NCLRegion,
+                       Ed extends NCLDoc>
+        extends NCLImportPrototype<T, P, I, Er, Ed>
         implements NCLElement<T, P> {
 
 
@@ -151,6 +154,12 @@ public class NCLImport<T extends NCLImport,
                 Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
                 setRegion(reg);
             }
+            
+            // load the imported document or base depending on the element type
+            Ed aux = createDoc();
+            String path = impl.getDoc().getLocation() + File.separator + getDocumentURI().parse();
+            aux.loadXML(new File(path));
+            setImportedDoc(aux);
         }
         catch(XMLException ex){
             String aux = getAlias();
@@ -161,5 +170,17 @@ public class NCLImport<T extends NCLImport,
             
             throw new NCLParsingException(type.toString() + aux + ":\n" + ex.getMessage());
         }
+    }
+
+
+    /**
+     * Function to create a document element.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing the document element.
+     */
+    protected Ed createDoc() throws XMLException {
+        return (Ed) new NCLDoc();
     }
 }

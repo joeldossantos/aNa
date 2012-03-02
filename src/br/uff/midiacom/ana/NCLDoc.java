@@ -60,7 +60,7 @@ public class NCLDoc<T extends NCLDoc,
         extends NCLDocPrototype<T, P, I, Eh, Eb>
         implements NCLIdentifiableElement<T, P> {
 
-
+    
     public NCLDoc() throws XMLException {
         super();
     }
@@ -178,6 +178,10 @@ public class NCLDoc<T extends NCLDoc,
      *          if an error occur while parsing the document.
      */
     public void loadXML(File xmlFile) throws XMLException {
+        // Store the file name and location
+        location = xmlFile.getParent();
+        fileName = xmlFile.getName();
+        
         try{
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder parser = factory.newDocumentBuilder();

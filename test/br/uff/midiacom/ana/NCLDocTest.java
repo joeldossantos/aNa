@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.reuse.NCLImport;
 import java.io.File;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.xml.XMLException;
@@ -74,5 +75,17 @@ public class NCLDocTest {
 
         String result = instance.parse(0);
         assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void test3() throws XMLException {
+        String path = "/Users/joel/Desktop/TESTES/testeBases/VivaMais.ncl";
+        File f = new File(path);
+        NCLDoc instance = new NCLDoc();
+        instance.loadXML(f);
+        
+        System.out.println(instance.parse(0));
+        System.out.println("\n\n ======== outro doc ========\n\n");
+        System.out.println(((NCLImport) instance.getHead().getConnectorBase().getImportBases().get(0)).getImportedDoc().parse(0));
     }
 }

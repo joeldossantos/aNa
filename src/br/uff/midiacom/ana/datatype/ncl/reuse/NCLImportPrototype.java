@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
+import br.uff.midiacom.ana.datatype.ncl.structure.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
@@ -54,7 +55,8 @@ import java.util.TreeSet;
 public abstract class NCLImportPrototype<T extends NCLImportPrototype,
                                          P extends NCLElement,
                                          I extends NCLElementImpl,
-                                         Er extends NCLRegionPrototype>
+                                         Er extends NCLRegionPrototype,
+                                         Ed extends NCLDocPrototype>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>, ReferredElement<ReferenceType> {
 
@@ -63,6 +65,7 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
     protected Er region;
 
     protected NCLImportType type;
+    protected Ed importedDoc;
     protected TreeSet<ReferenceType> references;
 
 
@@ -162,6 +165,30 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
      */
     public Er getRegion() {
         return region;
+    }
+    
+    
+    /**
+     * Sets the document imported by the import element.
+     * 
+     * @param importedDoc
+     *          document imported.
+     * @throws XMLException 
+     *          if the import element does not import a document.
+     */
+    public void setImportedDoc(Ed importedDoc) {
+        this.importedDoc = importedDoc;
+    }
+    
+    
+    /**
+     * Returns the document imported by the import element.
+     * 
+     * @return 
+     *          document imported.
+     */
+    public Ed getImportedDoc() {
+        return importedDoc;
     }
     
     
