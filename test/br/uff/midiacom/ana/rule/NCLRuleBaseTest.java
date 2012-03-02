@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
+import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.interfaces.NCLProperty;

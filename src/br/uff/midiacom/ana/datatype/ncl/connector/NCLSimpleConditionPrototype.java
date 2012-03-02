@@ -37,8 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
@@ -46,6 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
@@ -55,18 +57,20 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
                                                   I extends NCLElementImpl,
                                                   Ec extends NCLCondition,
                                                   Er extends NCLRolePrototype,
-                                                  Ep extends NCLConnectorParamPrototype>
+                                                  Ep extends NCLConnectorParamPrototype,
+                                                  Ip extends NCLImportPrototype,
+                                                  R extends ReferenceType<Ec, Ep, Ip>>
         extends NCLElementPrototype<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep> {
+        implements NCLCondition<Ec, P, Ep, Ip, R> {
 
-    protected KeyParamType<Ep, T> key;
+    protected KeyParamType<Ep, Ec, Ip, R> key;
     protected Integer min;
     protected MaxType max;
     protected NCLConditionOperator qualifier;
     protected NCLEventType eventType;
     protected NCLEventTransition transition;
     protected Er role;
-    protected DoubleParamType<Ep, Ec> delay;
+    protected DoubleParamType<Ep, Ec, Ip, R> delay;
     
 
     /**
@@ -192,10 +196,15 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
      * @param key
      *          elemento representando a tecla da condição.
      */
-    public void setKey(KeyParamType<Ep, T> key) {
+    public void setKey(KeyParamType<Ep, Ec, Ip, R> key) throws XMLException {
         KeyParamType aux = this.key;
+        
         this.key = key;
+        this.key.setOwner((Ec) this, NCLElementAttributes.KEY);
+        
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+        if(aux != null)
+            aux.removeOwner();
     }
 
 
@@ -205,7 +214,7 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
      * @return
      *          elemento representando a tecla da condição.
      */
-    public KeyParamType<Ep, T> getKey() {
+    public KeyParamType<Ep, Ec, Ip, R> getKey() {
         return key;
     }
 
@@ -259,15 +268,20 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     @Override
-    public void setDelay(DoubleParamType<Ep, Ec> delay) {
+    public void setDelay(DoubleParamType<Ep, Ec, Ip, R> delay) throws XMLException {
         DoubleParamType aux = this.delay;
+        
         this.delay = delay;
+        this.delay.setOwner((Ec) this, NCLElementAttributes.DELAY);
+        
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        if(aux != null)
+            aux.removeOwner();
     }
 
 
     @Override
-    public DoubleParamType<Ep, Ec> getDelay() {
+    public DoubleParamType<Ep, Ec, Ip, R> getDelay() {
         return delay;
     }
 

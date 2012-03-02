@@ -37,13 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
-import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
+import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
+import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;

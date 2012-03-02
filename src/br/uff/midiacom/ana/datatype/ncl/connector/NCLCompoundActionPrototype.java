@@ -37,13 +37,15 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -53,12 +55,14 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
                                                  P extends NCLElement,
                                                  I extends NCLElementImpl,
                                                  Ea extends NCLAction,
-                                                 Ep extends NCLConnectorParamPrototype>
+                                                 Ep extends NCLConnectorParamPrototype,
+                                                 Ip extends NCLImportPrototype,
+                                                 R extends ReferenceType<Ea, Ep, Ip>>
         extends NCLElementPrototype<Ea, P, I>
-        implements NCLAction<Ea, P, Ep> {
+        implements NCLAction<Ea, P, Ep, Ip, R> {
 
     protected NCLActionOperator operator;
-    protected DoubleParamType<Ep, Ea> delay;
+    protected DoubleParamType<Ep, Ea, Ip, R> delay;
     protected ElementList<Ea, T> actions;
 
 
@@ -169,15 +173,20 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
 
     @Override
-    public void setDelay(DoubleParamType<Ep, Ea> delay) {
+    public void setDelay(DoubleParamType<Ep, Ea, Ip, R> delay) throws XMLException {
         DoubleParamType aux = this.delay;
+        
         this.delay = delay;
+        this.delay.setOwner((Ea) this, NCLElementAttributes.DELAY);
+        
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        if(aux != null)
+            aux.removeOwner();
     }
 
 
     @Override
-    public DoubleParamType<Ep, Ea> getDelay() {
+    public DoubleParamType<Ep, Ea, Ip, R> getDelay() {
         return delay;
     }
     

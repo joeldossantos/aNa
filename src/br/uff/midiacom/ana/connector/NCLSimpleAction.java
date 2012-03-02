@@ -42,15 +42,17 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.auxiliar.ByParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.StringParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.ByParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.StringParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLSimpleActionPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
@@ -61,9 +63,11 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
                              I extends NCLElementImpl,
                              Ea extends NCLAction,
                              Er extends NCLRole,
-                             Ep extends NCLConnectorParam>
-        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep>
-        implements NCLAction<Ea, P, Ep, Er> {
+                             Ep extends NCLConnectorParam,
+                             Ip extends NCLImport,
+                             R extends ReferenceType<Ea, Ep, Ip>>
+        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep, Ip, R>
+        implements NCLAction<Ea, P, Ep, Er, Ip, R> {
 
 
     public NCLSimpleAction() throws XMLException {
@@ -256,7 +260,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             // set the value (optional)
             att_name = NCLElementAttributes.VALUE.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setValue(new StringParamType(att_var, this));
+                setValue(new StringParamType(att_var));
 
             // set the min (optional)
             att_name = NCLElementAttributes.MIN.toString();
@@ -291,27 +295,27 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             // set the repeatDelay (optional)
             att_name = NCLElementAttributes.REPEATDELAY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setRepeatDelay(new DoubleParamType(att_var, this));
+                setRepeatDelay(new DoubleParamType(att_var));
 
             // set the repeat (optional)
             att_name = NCLElementAttributes.REPEAT.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setRepeat(new IntegerParamType(att_var, this));
+                setRepeat(new IntegerParamType(att_var));
 
             // set the duration (optional)
             att_name = NCLElementAttributes.DURATION.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDuration(new DoubleParamType(att_var, this));
+                setDuration(new DoubleParamType(att_var));
 
             // set the by (optional)
             att_name = NCLElementAttributes.BY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setBy(new ByParamType(att_var, this));
+                setBy(new ByParamType(att_var));
 
             // set the delay (optional)
             att_name = NCLElementAttributes.DELAY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDelay(new DoubleParamType(att_var, this));
+                setDelay(new DoubleParamType(att_var));
         }
         catch(XMLException ex){
             throw new NCLParsingException("SimpleAction:\n" + ex.getMessage());

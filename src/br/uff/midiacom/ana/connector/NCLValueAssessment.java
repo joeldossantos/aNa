@@ -40,11 +40,12 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.AssValueParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLValueAssessmentPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -52,8 +53,10 @@ import org.w3c.dom.Element;
 public class NCLValueAssessment<T extends NCLValueAssessment,
                                 P extends NCLElement,
                                 I extends NCLElementImpl,
-                                Ep extends NCLConnectorParam>
-        extends NCLValueAssessmentPrototype<T, P, I, Ep>
+                                Ep extends NCLConnectorParam,
+                                Ip extends NCLImport,
+                                R extends ReferenceType<T, Ep, Ip>>
+        extends NCLValueAssessmentPrototype<T, P, I, Ep, Ip, R>
         implements NCLElement<T, P> {
 
 
@@ -62,7 +65,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment,
     }
 
 
-    public NCLValueAssessment(AssValueParamType<Ep, T> value) throws XMLException {
+    public NCLValueAssessment(AssValueParamType<Ep, T, Ip, R> value) throws XMLException {
         super(value);
     }
 
@@ -117,7 +120,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment,
             // set the value (required)
             att_name = NCLElementAttributes.VALUE.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setValue(new AssValueParamType(att_var, this));
+                setValue(new AssValueParamType(att_var));
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
         }

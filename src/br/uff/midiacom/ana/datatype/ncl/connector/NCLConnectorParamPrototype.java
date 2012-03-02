@@ -37,14 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
-import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
@@ -53,7 +53,7 @@ public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamProt
                                                  P extends NCLElement,
                                                  I extends NCLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
     
     protected StringType type;
     

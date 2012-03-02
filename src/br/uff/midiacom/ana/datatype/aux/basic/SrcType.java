@@ -35,88 +35,106 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.auxiliar;
+package br.uff.midiacom.ana.datatype.aux.basic;
+
+import br.uff.midiacom.ana.datatype.enums.NCLUriType;
 
 
 /**
- * This class represents a value that can be a positive integer or the String
- * "indefinite".
+ * This class represents a source locator. The source locator my be defined as:
+ * <ul>
+ *   <li>untyped locator (ex.: media.ext or /home/media.ext)</li>
+ *   <li>typed locator (ex.: file:///home/media.ext)</li>
+ *   <li>time locator (ex.: 2011:01:01:12:10:10.500)</li>
+ * </ul>
  */
-public class ByType {
+public class SrcType {
 
-    private Integer value;
-    private String indefinite = "indefinite";
-
-
-    /**
-     * Creates the value as a integer number.
-     *
-     * @param value
-     *          a positive integer.
-     * @throws IllegalArgumentException
-     *          if the integer is negative.
-     */
-    public ByType(int value) throws IllegalArgumentException {
-        if(value < 0)
-            throw new IllegalArgumentException("Negative value");
-
-        this.value = value;
-    }
+    private NCLUriType type;
+    private String src;
 
 
     /**
-     * Creates the value as a String.
+     * Creates a untyped locator.
      *
-     * @param value
-     *          String representing a positive integer or the String "unbounded".
-     * @throws NullPointerException
-     *          if the String is null.
+     * @param src
+     *          String representing the locator.
      * @throws IllegalArgumentException
      *          if the String is empty.
      */
-    public ByType(String value) throws NullPointerException, IllegalArgumentException {
-        if(value == null)
-            throw new NullPointerException("Null value String");
-        if("".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
-
-        if(!value.equals(indefinite))
-            this.value = new Integer(value);
+    public SrcType(String src) throws IllegalArgumentException {
+        setSrc(src);
     }
 
 
     /**
-     * Return the value.
+     * Creates a typed locator.
      *
-     * @return
-     *          element representing a positive integer.
+     * @param type
+     *          element representing the locator type.
+     * @param src
+     *          String representing the locator.
+     * @throws IllegalArgumentException
+     *          if the String is empty.
      */
-    public Integer getValue() {
-        return value;
+    public SrcType(NCLUriType type, String src) throws IllegalArgumentException {
+        setType(type);
+        setSrc(src);
     }
 
 
     /**
-     * Check if the value is the String "indefinite".
+     * Creates a time locator.
      *
-     * @return
-     *          true if the value is "indefinite".
+     * @param time
+     *          element representing the time locator content.
+     * @throws IllegalArgumentException
+     *          if the time is not in the required format.
+     * @throws NullPointerException
+     *          if the time is null.
      */
-    public boolean isUnbounded() {
-        return value == null;
+    public SrcType(TimeType time) throws IllegalArgumentException, NullPointerException {
+        if(time == null)
+            throw new NullPointerException("Null time");
+        if(!time.isUTC())
+            throw new IllegalArgumentException("Invalid src");
+
+        setSrc(time.toString());
+    }
+
+
+    private void setSrc(String src) throws IllegalArgumentException {
+        if(src != null && "".equals(src.trim()))
+            throw new IllegalArgumentException("Empty src String");
+
+        this.src = src;
+    }
+
+
+    private void setType(NCLUriType type) {
+        this.type = type;
+    }
+
+
+    public String getExtension() {
+        return src.substring(src.lastIndexOf("."));
     }
 
 
     /**
-     * Returns the value.
+     * Returns the source locator.
      *
      * @return
-     *          String representing the value.
+     *          String representing the source locator.
      */
     public String parse() {
-        if(value == null)
-            return indefinite;
-        else
-            return value.toString();
+        String value = "";
+
+        if(type != null)
+            value += type.toString();
+
+        value += src;
+
+        return value;
     }
 }

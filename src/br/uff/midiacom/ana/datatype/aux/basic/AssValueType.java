@@ -1,4 +1,4 @@
-package br.uff.midiacom.ana.datatype.auxiliar;
+package br.uff.midiacom.ana.datatype.aux.basic;
 
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
 

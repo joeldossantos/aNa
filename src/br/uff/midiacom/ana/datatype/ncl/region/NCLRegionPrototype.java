@@ -37,8 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.region;
 
-import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
-import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -48,6 +47,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
@@ -80,7 +80,7 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
                                          P extends NCLElement,
                                          I extends NCLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
     protected StringType title;
     protected RelativeType left;

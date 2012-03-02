@@ -38,13 +38,17 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.reuse.NCLImport;
 
 
 public interface NCLAction<T extends NCLAction,
                            P extends NCLElement,
                            Ep extends NCLConnectorParam,
-                           Er extends NCLRole>
-        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep>, NCLElement<T, P> {
+                           Er extends NCLRole,
+                           I extends NCLImport,
+                           R extends ReferenceType<T, Ep, I>>
+        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep, I, R>, NCLElement<T, P> {
 
     
     /**

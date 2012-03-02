@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
-import br.uff.midiacom.ana.datatype.auxiliar.PostReferenceElement;
+import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.interfaces.NCLProperty;

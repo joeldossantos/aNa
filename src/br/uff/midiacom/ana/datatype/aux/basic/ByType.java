@@ -35,16 +35,88 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.auxiliar;
-
-import br.uff.midiacom.xml.XMLException;
+package br.uff.midiacom.ana.datatype.aux.basic;
 
 
-public interface PostReferenceElement {
+/**
+ * This class represents a value that can be a positive integer or the String
+ * "indefinite".
+ */
+public class ByType {
 
-    
-    public void fixReference() throws XMLException;
-    
-    
-    public String getId();
+    private Integer value;
+    private String indefinite = "indefinite";
+
+
+    /**
+     * Creates the value as a integer number.
+     *
+     * @param value
+     *          a positive integer.
+     * @throws IllegalArgumentException
+     *          if the integer is negative.
+     */
+    public ByType(int value) throws IllegalArgumentException {
+        if(value < 0)
+            throw new IllegalArgumentException("Negative value");
+
+        this.value = value;
+    }
+
+
+    /**
+     * Creates the value as a String.
+     *
+     * @param value
+     *          String representing a positive integer or the String "unbounded".
+     * @throws NullPointerException
+     *          if the String is null.
+     * @throws IllegalArgumentException
+     *          if the String is empty.
+     */
+    public ByType(String value) throws NullPointerException, IllegalArgumentException {
+        if(value == null)
+            throw new NullPointerException("Null value String");
+        if("".equals(value.trim()))
+            throw new IllegalArgumentException("Empty value String");
+
+        if(!value.equals(indefinite))
+            this.value = new Integer(value);
+    }
+
+
+    /**
+     * Return the value.
+     *
+     * @return
+     *          element representing a positive integer.
+     */
+    public Integer getValue() {
+        return value;
+    }
+
+
+    /**
+     * Check if the value is the String "indefinite".
+     *
+     * @return
+     *          true if the value is "indefinite".
+     */
+    public boolean isUnbounded() {
+        return value == null;
+    }
+
+
+    /**
+     * Returns the value.
+     *
+     * @return
+     *          String representing the value.
+     */
+    public String parse() {
+        if(value == null)
+            return indefinite;
+        else
+            return value.toString();
+    }
 }

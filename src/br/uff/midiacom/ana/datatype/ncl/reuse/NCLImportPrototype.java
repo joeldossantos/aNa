@@ -37,9 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.reuse;
 
-import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
-import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
-import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -47,6 +46,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import java.util.TreeSet;
 
@@ -56,7 +56,7 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
                                          I extends NCLElementImpl,
                                          Er extends NCLRegionPrototype>
         extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P>, ReferredElement {
+        implements NCLElement<T, P>, ReferredElement<ReferenceType> {
 
     protected StringType alias;
     protected SrcType documentURI;

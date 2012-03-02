@@ -1,38 +1,40 @@
-package br.uff.midiacom.ana.datatype.auxiliar;
+package br.uff.midiacom.ana.datatype.aux.parameterized;
 
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
 
-public class AssValueParamType<P extends NCLConnectorParamPrototype, O extends NCLElement> extends ParameterizedValueType<AssValueParamType, O, AssValueType, P>{
+public class DoubleParamType<P extends NCLConnectorParamPrototype,
+                             O extends NCLElement,
+                             Ip extends NCLImportPrototype,
+                             R extends ReferenceType<O, P, Ip>>
+        extends ParameterizedValueType<DoubleParamType, O, P, Double, NCLElementAttributes, R> {
 
     
-    public AssValueParamType(AssValueType value) throws XMLException {
+    public DoubleParamType(Double value) throws XMLException {
         super(value);
     }
 
 
-    public AssValueParamType(P value) throws XMLException {
+    public DoubleParamType(R value) throws XMLException {
         super(value);
     }
     
     
-    public AssValueParamType(String value) throws XMLException {
+    public DoubleParamType(String value) throws XMLException {
         super(value);
-    }
-    
-    
-    public AssValueParamType(String value, O owner) throws XMLException {
-        super(value, owner);
     }
 
 
     @Override
-    protected P createParam(String param, O owner) throws XMLException {
+    protected R createParam(String param, O owner) throws XMLException {
         NCLElement connector = (NCLElement) owner.getParent();
         while(!(connector instanceof NCLCausalConnectorPrototype)){
             connector = (NCLElement) connector.getParent();
@@ -44,13 +46,17 @@ public class AssValueParamType<P extends NCLConnectorParamPrototype, O extends N
         if(par == null)
             throw new NCLParsingException("Could not find a param in connector with name: " + param);
         
-        return par;
+        R ref = (R) new ReferenceType(par, NCLElementAttributes.NAME);
+        return ref;
     }
 
 
     @Override
-    protected AssValueType createValue(String value) throws XMLException {
-        return new AssValueType(value);
+    protected Double createValue(String value) throws XMLException {
+        int index = value.indexOf("s");
+            if(index > 0)
+                value = value.substring(0, index);
+        return new Double(value);
     }
 
 
@@ -59,7 +65,7 @@ public class AssValueParamType<P extends NCLConnectorParamPrototype, O extends N
         if(getValue() == null)
             return null;
         else
-            return getValue().parse();
+            return getValue().toString();
     }
 
 
@@ -68,6 +74,6 @@ public class AssValueParamType<P extends NCLConnectorParamPrototype, O extends N
         if(getParam() == null)
             return null;
         else
-            return getParam().getName();
+            return getParam().getTarget().getName();
     }
 }

@@ -37,16 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
-import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import java.util.TreeSet;
 
 
-public class NCLRolePrototype<T extends NCLRolePrototype, P extends NCLElement> implements ReferredElement {
+public class NCLRolePrototype<T extends NCLRolePrototype,
+                              P extends NCLElement>
+        implements ReferredElement<ReferenceType> {
 
     protected String name;
     protected NCLDefaultConditionRole cname;

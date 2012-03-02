@@ -38,8 +38,8 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
-import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;

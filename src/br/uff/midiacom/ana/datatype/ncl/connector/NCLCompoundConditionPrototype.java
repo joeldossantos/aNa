@@ -37,13 +37,15 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -54,12 +56,14 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
                                                     I extends NCLElementImpl,
                                                     Ec extends NCLCondition,
                                                     Es extends NCLStatement,
-                                                    Ep extends NCLConnectorParamPrototype>
+                                                    Ep extends NCLConnectorParamPrototype,
+                                                    Ip extends NCLImportPrototype,
+                                                    R extends ReferenceType<Ec, Ep, Ip>>
         extends NCLElementPrototype<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep> {
+        implements NCLCondition<Ec, P, Ep, Ip, R> {
     
     protected NCLConditionOperator operator;
-    protected DoubleParamType<Ep, Ec> delay;
+    protected DoubleParamType<Ep, Ec, Ip, R> delay;
     protected ElementList<Ec, T> conditions;
     protected ElementList<Es, T> statements;
     
@@ -245,15 +249,20 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     @Override
-    public void setDelay(DoubleParamType<Ep, Ec> delay) {
+    public void setDelay(DoubleParamType<Ep, Ec, Ip, R> delay) throws XMLException {
         DoubleParamType aux = this.delay;
+        
         this.delay = delay;
+        this.delay.setOwner((Ec) this, NCLElementAttributes.DELAY);
+        
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        if(aux != null)
+            aux.removeOwner();
     }
 
 
     @Override
-    public DoubleParamType<Ep, Ec> getDelay() {
+    public DoubleParamType<Ep, Ec, Ip, R> getDelay() {
         return delay;
     }
     

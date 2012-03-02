@@ -37,8 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
-import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
-import br.uff.midiacom.ana.datatype.auxiliar.ReferredElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
@@ -49,6 +48,7 @@ import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import java.util.TreeSet;
 
 
@@ -62,7 +62,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
                                               Em extends NCLMetaPrototype,
                                               Emt extends NCLMetadataPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
     protected IdentifiableElementList<Ept, T> ports;
     protected IdentifiableElementList<Epp, T> properties;

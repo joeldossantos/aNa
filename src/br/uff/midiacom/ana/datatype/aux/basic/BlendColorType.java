@@ -35,18 +35,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.auxiliar;
+package br.uff.midiacom.ana.datatype.aux.basic;
 
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 
 
 /**
- * This class represents a value that can be a color or the "transparent" String.
+ * This class represents a value that can be a color or the "blend" String.
  */
-public class TranspColorType {
+public class BlendColorType {
 
     private NCLColor color;
-    private String transparent = "transparent";
+    private String blend = "blend";
 
 
     /**
@@ -57,7 +57,7 @@ public class TranspColorType {
      * @throws NullPointerException
      *          if the color is null.
      */
-    public TranspColorType(NCLColor color) throws NullPointerException {
+    public BlendColorType(NCLColor color) throws NullPointerException {
         if(color == null)
             throw new NullPointerException("null color");
 
@@ -69,19 +69,19 @@ public class TranspColorType {
      * Creates the value as a String.
      *
      * @param color
-     *          String representing a color or the "transparent" String.
+     *          String representing a color or the "blend" String.
      * @throws NullPointerException
      *          if the String is null.
      * @throws IllegalArgumentException
      *          if the String is empty.
      */
-    public TranspColorType(String color) throws NullPointerException, IllegalArgumentException {
+    public BlendColorType(String color) throws NullPointerException, IllegalArgumentException {
         if(color == null)
             throw new NullPointerException("Null color String");
         if("".equals(color.trim()))
             throw new IllegalArgumentException("Empty color String");
 
-        if(!color.equals(transparent)){
+        if(!color.equals(blend)){
             for(NCLColor c : NCLColor.values()){
                 if(c.toString().equals(color))
                     this.color = c;
@@ -102,12 +102,12 @@ public class TranspColorType {
 
 
     /**
-     * Check if the value is the String "transparent".
+     * Check if the value is the String "blend".
      *
      * @return
-     *          true if the value is "transparent".
+     *          true if the value is "blend".
      */
-    public boolean isTransparent() {
+    public boolean isBlend() {
         return color == null;
     }
 
@@ -120,7 +120,7 @@ public class TranspColorType {
      */
     public String parse() {
         if(color == null)
-            return transparent;
+            return blend;
         else
             return color.toString();
     }

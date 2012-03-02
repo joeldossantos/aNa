@@ -41,13 +41,15 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLSimpleConditionPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
@@ -58,9 +60,11 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
                                 I extends NCLElementImpl,
                                 Ec extends NCLCondition,
                                 Er extends NCLRole,
-                                Ep extends NCLConnectorParam>
-        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep>
-        implements NCLCondition<Ec, P, Ep, Er> {
+                                Ep extends NCLConnectorParam,
+                                Ip extends NCLImport,
+                                R extends ReferenceType<Ec, Ep, Ip>>
+        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep, Ip, R>
+        implements NCLCondition<Ec, P, Ep, Er, Ip, R> {
 
 
     public NCLSimpleCondition() throws XMLException {
@@ -221,7 +225,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             // set the key (optional)
             att_name = NCLElementAttributes.KEY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setKey(new KeyParamType(att_var, this));
+                setKey(new KeyParamType(att_var));
 
             // set the eventType (optional)
             att_name = NCLElementAttributes.EVENTTYPE.toString();
@@ -236,7 +240,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             // set the delay (optional)
             att_name = NCLElementAttributes.DELAY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDelay(new DoubleParamType(att_var, this));
+                setDelay(new DoubleParamType(att_var));
         }
         catch(XMLException ex){
             throw new NCLParsingException("SimpleCondition:\n" + ex.getMessage());

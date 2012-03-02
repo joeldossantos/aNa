@@ -35,76 +35,80 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.node;
+package br.uff.midiacom.ana.datatype.aux.parameterized;
 
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.datatype.enums.NCLKey;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
-import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
-import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
-import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
+import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
-import java.util.TreeSet;
+import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
 
 
-public abstract class NCLContextPrototype<T extends NCLContextPrototype,
-                                          P extends NCLElement,
-                                          I extends NCLElementImpl,
-                                          Ept extends NCLPortPrototype,
-                                          Epp extends NCLPropertyPrototype,
-                                          En extends NCLNode,
-                                          El extends NCLLinkPrototype,
-                                          Em extends NCLMetaPrototype,
-                                          Emt extends NCLMetadataPrototype>
-        extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
-        implements NCLNode<En, P> {
+public class KeyParamType<P extends NCLConnectorParamPrototype,
+                          O extends NCLElement,
+                          Ip extends NCLImportPrototype,
+                          R extends ReferenceType<O, P, Ip>>
+        extends ParameterizedValueType<KeyParamType, O, P, NCLKey, NCLElementAttributes, R> {
 
-    protected T refer;
+    
+    public KeyParamType(NCLKey value) throws XMLException {
+        super(value);
+    }
+
+
+    public KeyParamType(R value) throws XMLException {
+        super(value);
+    }
     
     
-    /**
-     * Construtor do elemento <i>context</i> da <i>Nested Context Language</i> (NCL).
-     * 
-     * @param id
-     *          identificador do contexto.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do contexto for inválido.
-     */
-    public NCLContextPrototype(String id) throws XMLException {
-        super();
-        setId(id);
+    public KeyParamType(String value) throws XMLException {
+        super(value);
     }
 
 
-    public NCLContextPrototype() throws XMLException {
-        super();
+    @Override
+    protected R createParam(String param, O owner) throws XMLException {
+        NCLElement connector = (NCLElement) owner.getParent();
+        while(!(connector instanceof NCLCausalConnectorPrototype)){
+            connector = (NCLElement) connector.getParent();
+            if(connector == null)
+                throw new NCLParsingException("Could not find a parent connector");
+        }
+        
+        P par = (P) ((NCLCausalConnectorPrototype) connector).getConnectorParams().get(param);
+        if(par == null)
+            throw new NCLParsingException("Could not find a param in connector with name: " + param);
+        
+        R ref = (R) new ReferenceType(par, NCLElementAttributes.NAME);
+        return ref;
     }
 
 
-    /**
-     * Atribui um contexto para ser reutilizado pelo contexto.
-     *
-     * @param refer
-     *          elemento representando o contexto a ser reutilizado.
-     */
-    public void setRefer(T refer) {
-        T aux = this.refer;
-        this.refer = refer;
-        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+    @Override
+    protected NCLKey createValue(String value) throws XMLException {
+        return NCLKey.getEnumType(value);
     }
 
 
-    /**
-     * Retorna o contexto reutilizado pelo contexto.
-     *
-     * @return
-     *          elemento representando o contexto a ser reutilizado.
-     */
-    public T getRefer() {
-        return refer;
+    @Override
+    protected String getStringValue() {
+        if(getValue() == null)
+            return null;
+        else
+            return getValue().toString();
+    }
+
+
+    @Override
+    protected String getStringParam() {
+        if(getParam() == null)
+            return null;
+        else
+            return getParam().getTarget().getName();
     }
 }

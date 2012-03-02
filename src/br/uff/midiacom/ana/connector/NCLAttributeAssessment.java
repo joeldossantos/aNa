@@ -41,12 +41,14 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLAttributeAssessmentPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -55,8 +57,10 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
                                     P extends NCLElement,
                                     I extends NCLElementImpl,
                                     Er extends NCLRole,
-                                    Ep extends NCLConnectorParam>
-        extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep>
+                                    Ep extends NCLConnectorParam,
+                                    Ip extends NCLImport,
+                                    R extends ReferenceType<T, Ep, Ip>>
+        extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep, Ip, R>
         implements NCLElement<T, P>{
 
 
@@ -169,7 +173,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
             // set the key (optional)
             att_name = NCLElementAttributes.KEY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setKey(new KeyParamType(att_var, this));
+                setKey(new KeyParamType(att_var));
 
             // set the attributeType (optional)
             att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
@@ -179,7 +183,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
             // set the offset (optional)
             att_name = NCLElementAttributes.OFFSET.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setOffset(new IntegerParamType(att_var, this));
+                setOffset(new IntegerParamType(att_var));
         }
         catch(XMLException ex){
             throw new NCLParsingException("AttributeAssessment:\n" + ex.getMessage());

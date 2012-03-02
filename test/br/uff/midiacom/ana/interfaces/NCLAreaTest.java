@@ -38,8 +38,8 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.auxiliar.SampleType;
-import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.aux.basic.SampleType;
+import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLSampleType;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.array.ArrayType;

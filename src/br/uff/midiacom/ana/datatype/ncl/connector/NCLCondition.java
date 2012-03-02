@@ -37,13 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.xml.XMLException;
 
 
 public interface NCLCondition<T extends NCLCondition,
                               P extends NCLElement,
-                              Ep extends NCLConnectorParamPrototype>
+                              Ep extends NCLConnectorParamPrototype,
+                              Ip extends NCLImportPrototype,
+                              R extends ReferenceType<T, Ep, Ip>>
         extends NCLElement<T, P> {
 
 
@@ -55,7 +60,7 @@ public interface NCLCondition<T extends NCLCondition,
      * @throws java.lang.IllegalArgumentException
      *          se o inteiro for negativo.
      */
-    public void setDelay(DoubleParamType<Ep, T> delay);
+    public void setDelay(DoubleParamType<Ep, T, Ip, R> delay) throws XMLException;
 
 
     /**
@@ -64,5 +69,5 @@ public interface NCLCondition<T extends NCLCondition,
      * @return
      *          inteiro contendo o atraso, em segundos.
      */
-    public DoubleParamType<Ep, T> getDelay();
+    public DoubleParamType<Ep, T, Ip, R> getDelay();
 }

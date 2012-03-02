@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
+import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;

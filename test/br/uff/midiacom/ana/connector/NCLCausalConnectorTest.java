@@ -37,12 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.AssValueParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.ByParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.StringParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.AssValueParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.ByParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.StringParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;

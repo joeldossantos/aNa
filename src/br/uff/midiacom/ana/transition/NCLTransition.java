@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;

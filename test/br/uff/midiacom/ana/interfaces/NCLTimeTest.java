@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;

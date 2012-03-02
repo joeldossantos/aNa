@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
-import br.uff.midiacom.ana.datatype.auxiliar.ReferenceType;
-import br.uff.midiacom.ana.datatype.auxiliar.SrcType;
-import br.uff.midiacom.ana.datatype.auxiliar.TimeType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;

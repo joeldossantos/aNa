@@ -41,10 +41,12 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.auxiliar.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundActionPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -56,9 +58,11 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
                                I extends NCLElementImpl,
                                Ea extends NCLAction,
                                Ep extends NCLConnectorParam,
-                               Er extends NCLRole>
-        extends NCLCompoundActionPrototype<T, P, I, Ea, Ep>
-        implements NCLAction<Ea, P, Ep, Er> {
+                               Er extends NCLRole,
+                               Ip extends NCLImport,
+                               R extends ReferenceType<Ea, Ep, Ip>>
+        extends NCLCompoundActionPrototype<T, P, I, Ea, Ep, Ip, R>
+        implements NCLAction<Ea, P, Ep, Er, Ip, R> {
 
 
     public NCLCompoundAction() throws XMLException {
@@ -165,7 +169,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
             // set the delay (optional)
             att_name = NCLElementAttributes.DELAY.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDelay(new DoubleParamType(att_var, this));
+                setDelay(new DoubleParamType(att_var));
         }
         catch(XMLException ex){
             throw new NCLParsingException("CompoundAction:\n" + ex.getMessage());

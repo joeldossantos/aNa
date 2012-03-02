@@ -37,16 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.auxiliar.IntegerParamType;
-import br.uff.midiacom.ana.datatype.auxiliar.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
+import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.xml.XMLElementImpl;
-import br.uff.midiacom.xml.XMLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -54,15 +54,17 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
                                                       P extends NCLElement,
                                                       I extends NCLElementImpl,
                                                       Er extends NCLRolePrototype,
-                                                      Ep extends NCLConnectorParamPrototype>
+                                                      Ep extends NCLConnectorParamPrototype,
+                                                      Ip extends NCLImportPrototype,
+                                                      R extends ReferenceType<T, Ep, Ip>>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
     protected Er role;
     protected NCLEventType eventType;
-    protected KeyParamType<Ep, T> key;
+    protected KeyParamType<Ep, T, Ip, R> key;
     protected NCLAttributeType attributeType;
-    protected IntegerParamType<Ep, T> offset;
+    protected IntegerParamType<Ep, T, Ip, R> offset;
     
 
     /**
@@ -137,10 +139,15 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @param key
      *          elemento representando a tecla.
      */
-    public void setKey(KeyParamType<Ep, T> key) {
+    public void setKey(KeyParamType<Ep, T, Ip, R> key) throws XMLException {
         KeyParamType aux = this.key;
+        
         this.key = key;
+        this.key.setOwner((T) this, NCLElementAttributes.KEY);
+        
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+        if(aux != null)
+            aux.removeOwner();
     }
     
     
@@ -150,7 +157,7 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @return
      *          elemento representando a tecla.
      */
-    public KeyParamType<Ep, T> getKey() {
+    public KeyParamType<Ep, T, Ip, R> getKey() {
         return key;
     }
     
@@ -187,10 +194,15 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @throws java.lang.IllegalArgumentException
      *          se o offset for inválido.
      */
-    public void setOffset(IntegerParamType<Ep, T> offset) throws IllegalArgumentException {
+    public void setOffset(IntegerParamType<Ep, T, Ip, R> offset) throws XMLException {
         IntegerParamType aux = this.offset;
+        
         this.offset = offset;
+        this.offset.setOwner((T) this, NCLElementAttributes.OFFSET);
+        
         impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
+        if(aux != null)
+            aux.removeOwner();
     }
     
     
@@ -200,7 +212,7 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @return
      *          inteiro representando o valor do offset a ser utilizado no teste.
      */
-    public IntegerParamType<Ep, T> getOffset() {
+    public IntegerParamType<Ep, T, Ip, R> getOffset() {
         return offset;
     }
 
