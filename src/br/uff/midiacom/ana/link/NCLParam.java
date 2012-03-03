@@ -41,10 +41,13 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLParamPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -52,8 +55,10 @@ import org.w3c.dom.Element;
 public class NCLParam<T extends NCLParam,
                       P extends NCLElement,
                       I extends NCLElementImpl,
-                      Ec extends NCLConnectorParam>
-        extends NCLParamPrototype<T, P, I, Ec>
+                      Ec extends NCLConnectorParam,
+                      Ip extends NCLImport,
+                      R extends ReferenceType<T, Ec, Ip>>
+        extends NCLParamPrototype<T, P, I, Ec, Ip, R>
         implements NCLElement<T, P>{
     
     
@@ -100,9 +105,9 @@ public class NCLParam<T extends NCLParam,
     
     
     protected String parseName() {
-        Ec aux = getName();
+        R aux = getName();
         if(aux != null)
-            return " name='" + aux.getName() + "'";
+            return " name='" + aux.getTarget().getName() + "'";
         else
             return "";
     }
@@ -130,11 +135,12 @@ public class NCLParam<T extends NCLParam,
                 if(paramType.equals(NCLParamInstance.BINDPARAM) && (aux = (P) aux.getParent()) == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                Ec par = (Ec) ((NCLLink) aux).getXconnector().getConnectorParams().get(att_var);
+                Ec par = (Ec) ((NCLCausalConnector) ((NCLLink) aux).getXconnector().getTarget())
+                        .getConnectorParams().get(att_var);
                 if(par == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setName(par);
+                setName(createParamRef(par));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -149,7 +155,7 @@ public class NCLParam<T extends NCLParam,
         catch(XMLException ex){
             String aux = null;
             if(name != null)
-               aux = name.getId();
+               aux = name.getTarget().getId();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -157,5 +163,17 @@ public class NCLParam<T extends NCLParam,
             
             throw new NCLParsingException(paramType.toString() + aux +":\n" + ex.getMessage());
         }
+    }
+
+
+    /**
+     * Function to create a reference to element <i>connectorParam</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to element <i>connectorParam</i>.
+     */
+    protected R createParamRef(Ec par) throws XMLException {
+        return (R) new ReferenceType(par, NCLElementAttributes.NAME);
     }
 }

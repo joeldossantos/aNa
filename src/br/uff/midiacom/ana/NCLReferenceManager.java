@@ -42,12 +42,15 @@ import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.region.NCLRegionBase;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.ana.rule.NCLRuleBase;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.ana.transition.NCLTransition;
@@ -207,7 +210,7 @@ public class NCLReferenceManager {
     }
 
 
-    public NCLCausalConnector findConnectorReference(NCLDoc doc, String id) throws XMLException {
+    public ReferenceType findConnectorReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -217,7 +220,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document connectorBase element");
 
-        NCLCausalConnector result = (NCLCausalConnector) base.getCausalConnectors().get(id);
+        ReferenceType result = base.findConnector(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find connector in connectorBase with id: " + id);

@@ -37,13 +37,17 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
+import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -191,6 +195,47 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
         catch(XMLException ex){
             throw new NCLParsingException("ConnectorBase > " + ex.getMessage());
         }
+    }
+    
+    
+    /**
+     * Searches for a connector inside a connectorBase and its imported bases.
+     * 
+     * @param focusIndex
+     *          focusIndex of the descriptor to be found.
+     * @return 
+     *          descriptor or null if no descriptor was found.
+     */
+    public ReferenceType findConnector(String id) throws XMLException {
+        Ec result;
+        
+        if(!id.contains("#")){
+            result = getCausalConnectors().get(id);
+            if(result != null)
+                return new ReferenceType(result, NCLElementAttributes.ID);
+        }
+        else{
+            int index = id.indexOf("#");
+            String alias = id.substring(0, index);
+            id = id.substring(index + 1);
+            
+            for(Ei imp : imports){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    ReferenceType<NCLLink, Ec, Ei> ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
+                    return new ReferenceType(imp, ref.getTarget(), ref.getTargetAtt());
+                }
+            }
+        }
+        // Search in the imported bases
+        for(Ei imp : imports){
+            result = getCausalConnectors().get(id);
+            if(result != null)
+                return new ReferenceType(imp, result, NCLElementAttributes.ID);
+        }
+        
+        
+        return null;
     }
 
 

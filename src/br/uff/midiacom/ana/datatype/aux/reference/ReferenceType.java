@@ -68,7 +68,7 @@ public class ReferenceType<O extends NCLElement,
      * @param alias
      *          element representing the element location.
      */
-    private void setAlias(I alias) {
+    private void setAlias(I alias) throws XMLException {
         this.alias = alias;
         
         if(alias != null)
@@ -89,7 +89,7 @@ public class ReferenceType<O extends NCLElement,
     
     
     @Override
-    public void clean() {
+    public void clean() throws XMLException {
         super.clean();
         
         if(alias != null)
@@ -103,7 +103,7 @@ public class ReferenceType<O extends NCLElement,
      * @return
      *          string representing the element complete reference string.
      */
-    protected String parse() {
+    public String parse() {
         String content = "";
         
         if(alias != null){

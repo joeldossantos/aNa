@@ -37,12 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
@@ -50,11 +52,13 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 public abstract class NCLParamPrototype<T extends NCLParamPrototype,
                                         P extends NCLElement,
                                         I extends NCLElementImpl,
-                                        Ec extends NCLConnectorParamPrototype>
+                                        Ec extends NCLConnectorParamPrototype,
+                                        Ip extends NCLImportPrototype,
+                                        R extends ReferenceType<T, Ec, Ip>>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>{
 
-    protected Ec name;
+    protected R name;
     protected StringType value;
     protected NCLParamInstance paramType;
     
@@ -83,10 +87,18 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
      * @param connectorParam
      *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
      */
-    public void setName(Ec connectorParam) {
-        Ec aux = this.name;
+    public void setName(R connectorParam) throws XMLException {
+        R aux = this.name;
+        
         this.name = connectorParam;
+        if(this.name != null){
+            this.name.setOwner((T) this);
+            this.name.setOwnerAtt(NCLElementAttributes.NAME);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
+        if(aux != null)
+            aux.clean();
     }
     
     
@@ -95,7 +107,7 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
      * 
      * @return NCLConnectorParam representando o nome do parâmetro.
      */
-    public Ec getName() {
+    public R getName() {
         return name;
     }
     
@@ -137,6 +149,9 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     
     @Override
     public boolean compare(T other) {
+        if(other == null)
+            return false;
+        
         return getName().equals(other.getName());
     }
 }

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -46,6 +47,7 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -58,11 +60,13 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
                                        En extends NCLNode,
                                        Ei extends NCLInterface,
                                        Ed extends NCLLayoutDescriptor,
-                                       Ep extends NCLParamPrototype>
+                                       Ep extends NCLParamPrototype,
+                                       Ip extends NCLImportPrototype,
+                                       Rr extends ReferenceType<T, Er, Ip>>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>{
 
-    protected Er role;
+    protected Rr role;
     protected En component;
     protected Ei interfac;
     protected Ed descriptor;
@@ -84,10 +88,18 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
      * @param role
      *          elemento representando o papel ao qual o bind será associado.
      */
-    public void setRole(Er role) {
-        Er aux = this.role;
+    public void setRole(Rr role) throws XMLException {
+        Rr aux = this.role;
+        
         this.role = role;
+        if(this.role != null){
+            this.role.setOwner((T) this);
+            this.role.setOwnerAtt(NCLElementAttributes.ROLE);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        if(aux != null)
+            aux.clean();
     }
     
     
@@ -97,7 +109,7 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
      * @return
      *          elemento representando o papel ao qual o bind será associado.
      */
-    public Er getRole() {
+    public Rr getRole() {
         return role;
     }
     
@@ -249,13 +261,16 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
     @Override
     public boolean compare(T other) {
+        if(other == null)
+            return false;
+        
         boolean comp = true;
 
         String this_bind, other_bind;
 
         // Compara pelo role
-        if(getRole() == null) this_bind = ""; else this_bind = getRole().getName();
-        if(other.getRole() == null) other_bind = ""; else other_bind = other.getRole().getName();
+        if(getRole() == null) this_bind = ""; else this_bind = getRole().getTarget().getName();
+        if(other.getRole() == null) other_bind = ""; else other_bind = ((NCLRolePrototype) other.getRole().getTarget()).getName();
         comp &= this_bind.equals(other_bind);
 
         // Compara pelo componente

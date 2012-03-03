@@ -45,11 +45,13 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLBindPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -62,8 +64,10 @@ public class NCLBind<T extends NCLBind,
                      En extends NCLNode,
                      Ei extends NCLInterface,
                      Ed extends NCLLayoutDescriptor,
-                     Ep extends NCLParam>
-        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep>
+                     Ep extends NCLParam,
+                     Ip extends NCLImport,
+                     Rr extends ReferenceType<T, Er, Ip>>
+        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep, Ip, Rr>
         implements NCLElement<T, P>{
 
 
@@ -131,9 +135,9 @@ public class NCLBind<T extends NCLBind,
     
     
     protected String parseRole() {
-        Er aux = getRole();
+        Rr aux = getRole();
         if(aux != null)
-            return " role='" + aux.getName() + "'";
+            return " role='" + aux.getTarget().getName() + "'";
         else
             return "";
     }
@@ -190,14 +194,14 @@ public class NCLBind<T extends NCLBind,
                 if((aux = (P) getParent()) == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                NCLCausalConnector conn = (NCLCausalConnector) ((NCLLink) aux).getXconnector();
+                NCLCausalConnector conn = (NCLCausalConnector) ((NCLLink) aux).getXconnector().getTarget();
                 if(conn == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
                 Er rol = (Er) conn.findRole(att_var);
                 if(rol == null)
                     throw new NCLParsingException("Could not find element " + att_var);
-                setRole(rol);
+                setRole(createRoleRef(rol));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -242,7 +246,7 @@ public class NCLBind<T extends NCLBind,
         catch(XMLException ex){
             String aux = null;
             if(role != null)
-                aux = role.getName();
+                aux = role.getTarget().getName();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -265,7 +269,7 @@ public class NCLBind<T extends NCLBind,
         catch(XMLException ex){
             String aux = null;
             if(role != null)
-                aux = role.getName();
+                aux = role.getTarget().getName();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -285,5 +289,17 @@ public class NCLBind<T extends NCLBind,
      */
     protected Ep createBindParam() throws XMLException {
         return (Ep) new NCLParam(NCLParamInstance.BINDPARAM);
+    }
+
+
+    /**
+     * Function to create a reference to element <i>role</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to element <i>role</i>.
+     */
+    protected Rr createRoleRef(Er role) throws XMLException {
+        return (Rr) new ReferenceType(role, NCLElementAttributes.NAME);
     }
 }
