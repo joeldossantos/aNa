@@ -85,7 +85,7 @@ public class NCLDocTest {
         instance.loadXML(f);
         
         System.out.println(instance.parse(0));
-        System.out.println("\n\n ======== outro doc ========\n\n");
-        System.out.println(((NCLImport) instance.getHead().getConnectorBase().getImportBases().get(0)).getImportedDoc().parse(0));
+//        System.out.println("\n\n ======== outro doc ========\n\n");
+//        System.out.println(((NCLImport) instance.getHead().getConnectorBase().getImportBases().get(0)).getImportedDoc().parse(0));
     }
 }

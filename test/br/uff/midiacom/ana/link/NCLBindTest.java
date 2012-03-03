@@ -42,6 +42,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.connector.NCLRole;
 import br.uff.midiacom.ana.connector.NCLSimpleCondition;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.node.NCLMedia;
@@ -62,7 +64,7 @@ public class NCLBindTest {
     @Test
     public void test1() throws XMLException {
         NCLBind b = new NCLBind();
-        b.setRole(new NCLRole("start"));
+        b.setRole(new ReferenceType(new NCLRole("start"), NCLElementAttributes.NAME));
         b.setComponent(new NCLMedia("video"));
         b.setInterface(new NCLArea("track"));
         b.setDescriptor(new NCLDescriptor("dvideo"));
@@ -75,10 +77,10 @@ public class NCLBindTest {
     @Test
     public void test2() throws XMLException {
         NCLBind b = new NCLBind();
-        b.setRole(new NCLRole("set"));
+        b.setRole(new ReferenceType(new NCLRole("set"), NCLElementAttributes.NAME));
         b.setComponent(new NCLMedia("video"));
         NCLParam p = new NCLParam(NCLParamInstance.BINDPARAM);
-        p.setName(new NCLConnectorParam("var"));
+        p.setName(new ReferenceType(new NCLConnectorParam("var"), NCLElementAttributes.NAME));
         p.setValue("10");
         b.addBindParam(p);
 
@@ -313,16 +315,16 @@ public class NCLBindTest {
         NCLLink con = new NCLLink();
 
         nclel1 = new NCLBind();
-        nclel1.setRole(new NCLRole("R1"));
+        nclel1.setRole(new ReferenceType(new NCLRole("R1"), NCLElementAttributes.NAME));
 
         nclel2 = new NCLBind();
-        nclel2.setRole(new NCLRole("R2"));
+        nclel2.setRole(new ReferenceType(new NCLRole("R2"), NCLElementAttributes.NAME));
 
         nclel3 = new NCLBind();
-        nclel3.setRole(new NCLRole("R3"));
+        nclel3.setRole(new ReferenceType(new NCLRole("R3"), NCLElementAttributes.NAME));
 
         nclel4 = new NCLBind();
-        nclel4.setRole(new NCLRole("R4"));
+        nclel4.setRole(new ReferenceType(new NCLRole("R4"), NCLElementAttributes.NAME));
 
         con.addBind(nclel1);
         con.addBind(nclel2);

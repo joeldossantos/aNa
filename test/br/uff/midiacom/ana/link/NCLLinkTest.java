@@ -42,6 +42,9 @@ import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.connector.NCLRole;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
@@ -61,14 +64,14 @@ public class NCLLinkTest {
     public void test1() throws XMLException {
         NCLLink l = new NCLLink();
         l.setId("l1");
-        l.setXconnector(new NCLCausalConnector("onBeginSet"));
+        l.setXconnector(new ReferenceType(new NCLCausalConnector("onBeginSet"), NCLElementAttributes.ID));
 
         NCLBind b = new NCLBind();
-        b.setRole(new NCLRole("set"));
+        b.setRole(new ReferenceType(new NCLRole("set"), NCLElementAttributes.NAME));
         b.setComponent(new NCLMedia("video"));
 
         NCLParam p = new NCLParam(NCLParamInstance.LINKPARAM);
-        p.setName(new NCLConnectorParam("var"));
+        p.setName(new ReferenceType(new NCLConnectorParam("var"), NCLElementAttributes.NAME));
         p.setValue("10");
 
         l.addLinkParam(p);
