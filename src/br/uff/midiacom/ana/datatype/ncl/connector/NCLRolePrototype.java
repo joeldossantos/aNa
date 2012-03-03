@@ -37,25 +37,29 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
-import java.util.TreeSet;
+import org.w3c.dom.Element;
 
 
 public class NCLRolePrototype<T extends NCLRolePrototype,
-                              P extends NCLElement>
+                              P extends NCLElement,
+                              I extends NCLElementImpl>
+        extends NCLElementPrototype<T, P, I>
         implements ReferredElement<ReferenceType> {
 
     protected String name;
     protected NCLDefaultConditionRole cname;
     protected NCLDefaultActionRole aname;
 
-    protected P parent;
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
     
     
     /**
@@ -67,8 +71,9 @@ public class NCLRolePrototype<T extends NCLRolePrototype,
      *          Se o nome a ser atribuído for uma String vazia.
      */
     public NCLRolePrototype(String name) throws XMLException {
+        super();
         setName(name);
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -78,9 +83,10 @@ public class NCLRolePrototype<T extends NCLRolePrototype,
      * @param name
      *          elemento representando o nome do papel.
      */
-    public NCLRolePrototype(NCLDefaultConditionRole name) {
+    public NCLRolePrototype(NCLDefaultConditionRole name) throws XMLException {
+        super();
         setName(name);
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -90,9 +96,10 @@ public class NCLRolePrototype<T extends NCLRolePrototype,
      * @param name
      *          elemento representando o nome do papel.
      */
-    public NCLRolePrototype(NCLDefaultActionRole name) {
+    public NCLRolePrototype(NCLDefaultActionRole name) throws XMLException {
+        super();
         setName(name);
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -193,55 +200,38 @@ public class NCLRolePrototype<T extends NCLRolePrototype,
     public NCLDefaultActionRole getActionName() {
         return aname;
     }
-
-
-    /**
-     * Atribui um elemento pai ao papel.
-     *
-     * @param parent
-     *          elemento NCL representando o elemento pai.
-     * @return
-     *          verdadeiro se o elemento pai foi atribuido. Caso o papel já possua um elemento pai, o retorno será falso.
-     */
-    public boolean setParent(P parent) {
-        if(this.parent != null && parent != null)
-            return false;
-
-        this.parent = parent;
-        return true;
-    }
-
-
-    /**
-     * Retorna o elemento pai do papel.
-     *
-     * @return
-     *          elemento NCL representando o elemento pai.
-     */
-    public P getParent() {
-        return parent;
-    }
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 
 
     public boolean compare(T other) {
         return getName().equals(other.getName());
+    }
+
+    
+    @Deprecated
+    public String parse(int ident) {
+        return getName();
+    }
+
+    
+    @Deprecated
+    public void load(Element element) throws XMLException {
     }
 }

@@ -47,9 +47,9 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.structure.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.TreeSet;
 
 
 public abstract class NCLImportPrototype<T extends NCLImportPrototype,
@@ -66,7 +66,7 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
 
     protected NCLImportType type;
     protected Ed importedDoc;
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -84,7 +84,7 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
             throw new XMLException("Null type");
 
         this.type = type;
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -193,19 +193,19 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 

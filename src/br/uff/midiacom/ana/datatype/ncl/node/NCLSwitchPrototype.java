@@ -45,9 +45,9 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import java.util.TreeSet;
 
 
 public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
@@ -65,7 +65,7 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
     protected ElementList<Eb, T> binds;
     protected IdentifiableElementList<En, T> nodes;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -82,7 +82,7 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
         nodes = new IdentifiableElementList<En, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -91,7 +91,7 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
         nodes = new IdentifiableElementList<En, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -425,19 +425,19 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }

@@ -45,11 +45,11 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.TreeSet;
 
 
 
@@ -92,7 +92,7 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
     protected Integer zIndex;
     protected IdentifiableElementList<T, T> regions;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -107,14 +107,14 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
         super();
         setId(id);
         regions = new IdentifiableElementList<T, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
     public NCLRegionPrototype() throws XMLException {
         super();
         regions = new IdentifiableElementList<T, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -473,19 +473,19 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }

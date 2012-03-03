@@ -45,8 +45,8 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import java.util.TreeSet;
 
 
 public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
@@ -58,7 +58,7 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
     protected NCLOperator operator;
     protected IdentifiableElementList<T, T> rules;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -73,14 +73,14 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
         super();
         setId(id);
         rules = new IdentifiableElementList<T, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
     public NCLCompositeRulePrototype() throws XMLException {
         super();
         rules = new IdentifiableElementList<T, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -196,19 +196,19 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }

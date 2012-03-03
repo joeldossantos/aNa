@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -45,8 +46,9 @@ import br.uff.midiacom.xml.XMLException;
 
 
 public class NCLRole<T extends NCLRole,
-                     P extends NCLElement>
-        extends NCLRolePrototype<T, P> {
+                     P extends NCLElement,
+                     I extends NCLElementImpl>
+        extends NCLRolePrototype<T, P, I> {
 
     
     public NCLRole(String name) throws XMLException {
@@ -54,12 +56,12 @@ public class NCLRole<T extends NCLRole,
     }
 
 
-    public NCLRole(NCLDefaultConditionRole name) {
+    public NCLRole(NCLDefaultConditionRole name) throws XMLException {
         super(name);
     }
 
 
-    public NCLRole(NCLDefaultActionRole name) {
+    public NCLRole(NCLDefaultActionRole name) throws XMLException {
         super(name);
     }
 }

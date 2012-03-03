@@ -52,8 +52,8 @@ import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import java.util.TreeSet;
 
 
 public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
@@ -74,7 +74,7 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     protected IdentifiableElementList<Ea, T> areas;
     protected IdentifiableElementList<Ep, T> properties;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
     
     
     /**
@@ -90,7 +90,7 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
         setId(id);
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -98,7 +98,7 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
         super();
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
     
     
@@ -467,19 +467,19 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }

@@ -46,9 +46,9 @@ public interface NCLAction<T extends NCLAction,
                            P extends NCLElement,
                            Ep extends NCLConnectorParam,
                            Er extends NCLRole,
-                           I extends NCLImport,
-                           R extends ReferenceType<T, Ep, I>>
-        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep, I, R>, NCLElement<T, P> {
+                           Ip extends NCLImport,
+                           R extends ReferenceType<T, Ep, Ip>>
+        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep, Ip, R>, NCLElement<T, P> {
 
     
     /**

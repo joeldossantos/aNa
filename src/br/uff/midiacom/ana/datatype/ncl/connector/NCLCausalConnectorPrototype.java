@@ -37,13 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
+import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
 public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype,
@@ -53,11 +56,13 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
                                                   Ea extends NCLAction,
                                                   Ep extends NCLConnectorParamPrototype>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
     protected Ec condition;
     protected Ea action;
     protected IdentifiableElementList<Ep, T> conn_params;
+    
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -72,12 +77,14 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
         super();
         setId(id);
         conn_params = new IdentifiableElementList<Ep, T>();
+        references = new ItemList<ReferenceType>();
     }
     
     
     public NCLCausalConnectorPrototype() throws XMLException {
         super();
         conn_params = new IdentifiableElementList<Ep, T>();
+        references = new ItemList<ReferenceType>();
     }
     
     
@@ -232,5 +239,23 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
      */
     public IdentifiableElementList<Ep, T> getConnectorParams() {
         return conn_params;
+    }
+    
+    
+    @Override
+    public boolean addReference(ReferenceType reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(ReferenceType reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ItemList<ReferenceType> getReferences() {
+        return references;
     }
 }

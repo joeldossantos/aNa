@@ -45,9 +45,9 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.TreeSet;
 
 
 public abstract class NCLAreaPrototype<T extends NCLAreaPrototype,
@@ -66,7 +66,7 @@ public abstract class NCLAreaPrototype<T extends NCLAreaPrototype,
     protected SampleType last;
     protected StringType label;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
     
     
     /**
@@ -80,13 +80,13 @@ public abstract class NCLAreaPrototype<T extends NCLAreaPrototype,
     public NCLAreaPrototype(String id) throws XMLException {
         super();
         setId(id);
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
     public NCLAreaPrototype() throws XMLException {
         super();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -311,19 +311,19 @@ public abstract class NCLAreaPrototype<T extends NCLAreaPrototype,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }

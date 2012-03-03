@@ -50,10 +50,10 @@ import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
 import br.uff.midiacom.xml.datatype.string.StringType;
-import java.util.TreeSet;
 
 
 public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
@@ -85,7 +85,7 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
     protected Er region;
     protected ElementList<Ep, T> params;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -100,14 +100,14 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
         super();
         setId(id);
         params = new ElementList<Ep, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
     
     
     public NCLDescriptorPrototype() throws XMLException {
         super();
         params = new ElementList<Ep, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -612,19 +612,19 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }

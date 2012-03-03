@@ -46,10 +46,10 @@ import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
-import java.util.TreeSet;
 
 
 public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
@@ -71,7 +71,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
     protected ElementList<Em, T> metas;
     protected ElementList<Emt, T> metadatas;
     
-    protected TreeSet<ReferenceType> references;
+    protected ItemList<ReferenceType> references;
 
 
     /**
@@ -90,7 +90,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
         links = new IdentifiableElementList<El, T>();
         metas = new ElementList<Em, T>();
         metadatas = new ElementList<Emt, T>();
-        references = new TreeSet<ReferenceType>();
+        references = new ItemList<ReferenceType>();
     }
 
 
@@ -643,19 +643,19 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) {
+    public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) {
+    public boolean removeReference(ReferenceType reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public TreeSet<ReferenceType> getReferences() {
+    public ItemList<ReferenceType> getReferences() {
         return references;
     }
 }
