@@ -9,7 +9,7 @@ import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.parameterized.ParameterizedValueType;
+import br.uff.midiacom.xml.datatype.parameterized.ParameterizedValueType;
 
 
 public class AssValueParamType<P extends NCLConnectorParamPrototype,
