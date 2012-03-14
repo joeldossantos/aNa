@@ -43,13 +43,12 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLSimpleConditionPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
@@ -61,10 +60,9 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
                                 Ec extends NCLCondition,
                                 Er extends NCLRole,
                                 Ep extends NCLConnectorParam,
-                                Ip extends NCLImport,
-                                R extends ReferenceType<Ec, Ep, Ip>>
-        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep, Ip, R>
-        implements NCLCondition<Ec, P, Ep, Er, Ip, R> {
+                                R extends ConParamReference>
+        extends NCLSimpleConditionPrototype<T, P, I, Ec, Er, Ep, R>
+        implements NCLCondition<Ec, P, Ep, Er, R> {
 
 
     public NCLSimpleCondition() throws XMLException {

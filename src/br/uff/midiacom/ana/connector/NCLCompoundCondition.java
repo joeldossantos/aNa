@@ -42,11 +42,10 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundConditionPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,10 +59,9 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
                                   Es extends NCLStatement,
                                   Ep extends NCLConnectorParam,
                                   Er extends NCLRole,
-                                  Ip extends NCLImport,
-                                  R extends ReferenceType<Ec, Ep, Ip>>
-        extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep, Ip, R>
-        implements NCLCondition<Ec, P, Ep, Er, Ip, R> {
+                                  R extends ConParamReference>
+        extends NCLCompoundConditionPrototype<T, P, I, Ec, Es, Ep, R>
+        implements NCLCondition<Ec, P, Ep, Er, R> {
     
 
     public NCLCompoundCondition() throws XMLException {

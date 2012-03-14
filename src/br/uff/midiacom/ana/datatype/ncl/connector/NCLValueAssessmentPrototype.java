@@ -38,12 +38,11 @@
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.aux.parameterized.AssValueParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -51,12 +50,11 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
                                                   P extends NCLElement,
                                                   I extends NCLElementImpl,
                                                   Ep extends NCLConnectorParamPrototype,
-                                                  Ip extends NCLImportPrototype,
-                                                  R extends ReferenceType<T, Ep, Ip>>
+                                                  R extends ConParamReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
-    protected AssValueParamType<Ep, T, Ip, R> value;
+    protected AssValueParamType<Ep, T, R> value;
     
 
     /**
@@ -75,7 +73,7 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public NCLValueAssessmentPrototype(AssValueParamType<Ep, T, Ip, R> value) throws XMLException {
+    public NCLValueAssessmentPrototype(AssValueParamType<Ep, T, R> value) throws XMLException {
         super();
         setValue(value);
     }
@@ -89,7 +87,7 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(AssValueParamType<Ep, T, Ip, R> value) throws XMLException {
+    public void setValue(AssValueParamType<Ep, T, R> value) throws XMLException {
         AssValueParamType aux = this.value;
         
         this.value = value;
@@ -108,7 +106,7 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
      * @return
      *          String contendo o valor da assertiva.
      */
-    public AssValueParamType<Ep, T, Ip, R> getValue() {
+    public AssValueParamType<Ep, T, R> getValue() {
         return value;
     }
 

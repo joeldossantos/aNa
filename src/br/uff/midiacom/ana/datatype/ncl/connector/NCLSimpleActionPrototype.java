@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.datatype.aux.parameterized.ByParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.StringParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
@@ -49,7 +49,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
@@ -60,23 +59,22 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
                                                Ea extends NCLAction,
                                                Er extends NCLRolePrototype,
                                                Ep extends NCLConnectorParamPrototype,
-                                               Ip extends NCLImportPrototype,
-                                               R extends ReferenceType<Ea, Ep, Ip>>
+                                               R extends ConParamReference>
         extends NCLElementPrototype<Ea, P, I>
-        implements NCLAction<Ea, P, Ep, Ip, R> {
+        implements NCLAction<Ea, P, Ep, R> {
 
-    protected StringParamType<Ep, Ea, Ip, R> value;
+    protected StringParamType<Ep, Ea, R> value;
     protected Integer min;
     protected MaxType max;
     protected NCLActionOperator qualifier;
     protected NCLEventType eventType;
     protected NCLEventAction actionType;
-    protected IntegerParamType<Ep, Ea, Ip, R> repeat;
-    protected DoubleParamType<Ep, Ea, Ip, R> repeatDelay;
-    protected DoubleParamType<Ep, Ea, Ip, R> duration;
-    protected ByParamType<Ep, Ea, Ip, R> by;
+    protected IntegerParamType<Ep, Ea, R> repeat;
+    protected DoubleParamType<Ep, Ea, R> repeatDelay;
+    protected DoubleParamType<Ep, Ea, R> duration;
+    protected ByParamType<Ep, Ea, R> by;
     protected Er role;
-    protected DoubleParamType<Ep, Ea, Ip, R> delay;
+    protected DoubleParamType<Ep, Ea, R> delay;
 
 
     /**
@@ -95,7 +93,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @throws java.lang.IllegalArgumentException
      *          Se o valor a ser atribuído for uma String vazia.
      */
-    public void setValue(StringParamType<Ep, Ea, Ip, R> value) throws XMLException {
+    public void setValue(StringParamType<Ep, Ea, R> value) throws XMLException {
         StringParamType aux = this.value;
         
         this.value = value;
@@ -113,7 +111,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @return
      *          String representando o valor de atribuição.
      */
-    public StringParamType<Ep, Ea, Ip, R> getValue() {
+    public StringParamType<Ep, Ea, R> getValue() {
         return value;
     }
     
@@ -281,7 +279,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @param repeat
      *          inteiro representando o número de repetições.
      */
-    public void setRepeat(IntegerParamType<Ep, Ea, Ip, R> repeat) throws XMLException {
+    public void setRepeat(IntegerParamType<Ep, Ea, R> repeat) throws XMLException {
         IntegerParamType aux = this.repeat;
         
         this.repeat = repeat;
@@ -299,7 +297,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @return
      *          inteiro representando o número de repetições.
      */
-    public IntegerParamType<Ep, Ea, Ip, R> getRepeat() {
+    public IntegerParamType<Ep, Ea, R> getRepeat() {
         return repeat;
     }
 
@@ -310,7 +308,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @param repeatDelay
      *          inteiro representando o delay entre repetições.
      */
-    public void setRepeatDelay(DoubleParamType<Ep, Ea, Ip, R> repeatDelay) throws XMLException {
+    public void setRepeatDelay(DoubleParamType<Ep, Ea, R> repeatDelay) throws XMLException {
         DoubleParamType aux = this.repeatDelay;
         
         this.repeatDelay = repeatDelay;
@@ -328,7 +326,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @return
      *          inteiro representando o delay entre repetições.
      */
-    public DoubleParamType<Ep, Ea, Ip, R> getRepeatDelay() {
+    public DoubleParamType<Ep, Ea, R> getRepeatDelay() {
         return repeatDelay;
     }
 
@@ -339,7 +337,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @param duration
      *          inteiro representando a duração da atribuição.
      */
-    public void setDuration(DoubleParamType<Ep, Ea, Ip, R> duration) throws XMLException {
+    public void setDuration(DoubleParamType<Ep, Ea, R> duration) throws XMLException {
         DoubleParamType aux = this.duration;
         
         this.duration = duration;
@@ -357,7 +355,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      * @return
      *          inteiro representando a duração da atribuição.
      */
-    public DoubleParamType<Ep, Ea, Ip, R> getDuration() {
+    public DoubleParamType<Ep, Ea, R> getDuration() {
         return duration;
     }
 
@@ -369,7 +367,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      *          inteiro positivo representando o passo da atribuição ou negativo
      *          caso o passo seja definido como a String "indefinite".
      */
-    public void setBy(ByParamType<Ep, Ea, Ip, R> by) throws XMLException {
+    public void setBy(ByParamType<Ep, Ea, R> by) throws XMLException {
         ByParamType aux = this.by;
         
         this.by = by;
@@ -388,13 +386,13 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
      *          inteiro representando o passo da atribuição. Retorna -1 se o
      *          o passo for "indefinite".
      */
-    public ByParamType<Ep, Ea, Ip, R> getBy() {
+    public ByParamType<Ep, Ea, R> getBy() {
         return by;
     }
 
 
     @Override
-    public void setDelay(DoubleParamType<Ep, Ea, Ip, R> delay) throws XMLException {
+    public void setDelay(DoubleParamType<Ep, Ea, R> delay) throws XMLException {
         DoubleParamType aux = this.delay;
         
         this.delay = delay;
@@ -407,7 +405,7 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     @Override
-    public DoubleParamType<Ep, Ea, Ip, R> getDelay() {
+    public DoubleParamType<Ep, Ea, R> getDelay() {
         return delay;
     }
 

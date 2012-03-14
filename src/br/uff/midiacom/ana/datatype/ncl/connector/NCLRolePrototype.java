@@ -49,7 +49,7 @@ import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import org.w3c.dom.Element;
 
 
-public class NCLRolePrototype<T extends NCLRolePrototype,
+public abstract class NCLRolePrototype<T extends NCLRolePrototype,
                               P extends NCLElement,
                               I extends NCLElementImpl>
         extends NCLElementPrototype<T, P, I>

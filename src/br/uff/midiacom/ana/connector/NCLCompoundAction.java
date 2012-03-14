@@ -42,11 +42,10 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCompoundActionPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,10 +58,9 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
                                Ea extends NCLAction,
                                Ep extends NCLConnectorParam,
                                Er extends NCLRole,
-                               Ip extends NCLImport,
-                               R extends ReferenceType<Ea, Ep, Ip>>
-        extends NCLCompoundActionPrototype<T, P, I, Ea, Ep, Ip, R>
-        implements NCLAction<Ea, P, Ep, Er, Ip, R> {
+                               R extends ConParamReference>
+        extends NCLCompoundActionPrototype<T, P, I, Ea, Ep, R>
+        implements NCLAction<Ea, P, Ep, Er, R> {
 
 
     public NCLCompoundAction() throws XMLException {

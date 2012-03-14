@@ -39,14 +39,13 @@ package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -55,16 +54,15 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
                                                       I extends NCLElementImpl,
                                                       Er extends NCLRolePrototype,
                                                       Ep extends NCLConnectorParamPrototype,
-                                                      Ip extends NCLImportPrototype,
-                                                      R extends ReferenceType<T, Ep, Ip>>
+                                                      R extends ConParamReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
     protected Er role;
     protected NCLEventType eventType;
-    protected KeyParamType<Ep, T, Ip, R> key;
+    protected KeyParamType<Ep, T, R> key;
     protected NCLAttributeType attributeType;
-    protected IntegerParamType<Ep, T, Ip, R> offset;
+    protected IntegerParamType<Ep, T, R> offset;
     
 
     /**
@@ -139,7 +137,7 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @param key
      *          elemento representando a tecla.
      */
-    public void setKey(KeyParamType<Ep, T, Ip, R> key) throws XMLException {
+    public void setKey(KeyParamType<Ep, T, R> key) throws XMLException {
         KeyParamType aux = this.key;
         
         this.key = key;
@@ -157,7 +155,7 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @return
      *          elemento representando a tecla.
      */
-    public KeyParamType<Ep, T, Ip, R> getKey() {
+    public KeyParamType<Ep, T, R> getKey() {
         return key;
     }
     
@@ -194,7 +192,7 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @throws java.lang.IllegalArgumentException
      *          se o offset for inválido.
      */
-    public void setOffset(IntegerParamType<Ep, T, Ip, R> offset) throws XMLException {
+    public void setOffset(IntegerParamType<Ep, T, R> offset) throws XMLException {
         IntegerParamType aux = this.offset;
         
         this.offset = offset;
@@ -212,7 +210,7 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
      * @return
      *          inteiro representando o valor do offset a ser utilizado no teste.
      */
-    public IntegerParamType<Ep, T, Ip, R> getOffset() {
+    public IntegerParamType<Ep, T, R> getOffset() {
         return offset;
     }
 

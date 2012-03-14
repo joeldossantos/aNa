@@ -45,13 +45,12 @@ import br.uff.midiacom.ana.datatype.aux.parameterized.ByParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.StringParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLSimpleActionPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 import org.w3c.dom.Element;
@@ -63,10 +62,9 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
                              Ea extends NCLAction,
                              Er extends NCLRole,
                              Ep extends NCLConnectorParam,
-                             Ip extends NCLImport,
-                             R extends ReferenceType<Ea, Ep, Ip>>
-        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep, Ip, R>
-        implements NCLAction<Ea, P, Ep, Er, Ip, R> {
+                             R extends ConParamReference>
+        extends NCLSimpleActionPrototype<T, P, I, Ea, Er, Ep, R>
+        implements NCLAction<Ea, P, Ep, Er, R> {
 
 
     public NCLSimpleAction() throws XMLException {

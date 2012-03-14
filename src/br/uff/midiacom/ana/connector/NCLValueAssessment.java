@@ -42,10 +42,9 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.parameterized.AssValueParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLValueAssessmentPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -54,9 +53,8 @@ public class NCLValueAssessment<T extends NCLValueAssessment,
                                 P extends NCLElement,
                                 I extends NCLElementImpl,
                                 Ep extends NCLConnectorParam,
-                                Ip extends NCLImport,
-                                R extends ReferenceType<T, Ep, Ip>>
-        extends NCLValueAssessmentPrototype<T, P, I, Ep, Ip, R>
+                                R extends ConParamReference>
+        extends NCLValueAssessmentPrototype<T, P, I, Ep, R>
         implements NCLElement<T, P> {
 
 
@@ -65,7 +63,7 @@ public class NCLValueAssessment<T extends NCLValueAssessment,
     }
 
 
-    public NCLValueAssessment(AssValueParamType<Ep, T, Ip, R> value) throws XMLException {
+    public NCLValueAssessment(AssValueParamType<Ep, T, R> value) throws XMLException {
         super(value);
     }
 

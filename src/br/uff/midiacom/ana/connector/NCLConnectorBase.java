@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -206,13 +207,13 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public ReferenceType findConnector(String id) throws XMLException {
+    public ConnectorReference findConnector(String id) throws XMLException {
         Ec result;
         
         if(!id.contains("#")){
             result = getCausalConnectors().get(id);
             if(result != null)
-                return new ReferenceType(result, NCLElementAttributes.ID);
+                return new ConnectorReference(result, NCLElementAttributes.ID);
         }
         else{
             int index = id.indexOf("#");
@@ -223,7 +224,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
                     ReferenceType<NCLLink, Ec, Ei> ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
-                    return new ReferenceType(imp, ref.getTarget(), ref.getTargetAtt());
+                    return new ConnectorReference(imp, ref.getTarget(), ref.getTargetAtt());
                 }
             }
         }
@@ -231,7 +232,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
         for(Ei imp : imports){
             result = getCausalConnectors().get(id);
             if(result != null)
-                return new ReferenceType(imp, result, NCLElementAttributes.ID);
+                return new ConnectorReference(imp, result, NCLElementAttributes.ID);
         }
         
         

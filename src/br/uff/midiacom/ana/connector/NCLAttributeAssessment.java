@@ -43,12 +43,11 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
 import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLAttributeAssessmentPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -58,9 +57,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
                                     I extends NCLElementImpl,
                                     Er extends NCLRole,
                                     Ep extends NCLConnectorParam,
-                                    Ip extends NCLImport,
-                                    R extends ReferenceType<T, Ep, Ip>>
-        extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep, Ip, R>
+                                    R extends ConParamReference>
+        extends NCLAttributeAssessmentPrototype<T, P, I, Er, Ep, R>
         implements NCLElement<T, P>{
 
 
