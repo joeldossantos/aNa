@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
@@ -64,7 +66,7 @@ public class NCLRuleBaseTest {
     public void test2() throws XMLException {
         NCLRuleBase base = new NCLRuleBase();
         NCLRule rule = new NCLRule("r1");
-            rule.setVar(new NCLProperty("legenda"));
+            rule.setVar(new InterfaceReference(new NCLProperty("legenda"), NCLElementAttributes.NAME));
             rule.setComparator(NCLComparator.EQ);
             rule.setValue("ligada");
         NCLImport imp = new NCLImport(NCLImportType.BASE);

@@ -37,13 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.string.StringType;
@@ -52,7 +52,7 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 public abstract class NCLRulePrototype<T extends NCLTestRule,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
-                                       Ep extends NCLPropertyPrototype>
+                                       Ep extends InterfaceReference>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLTestRule<T, P> {
 
@@ -90,10 +90,18 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
      * @param var
      *          elemento representando a propriedade associada ao atributo.
      */
-    public void setVar(Ep var) {
+    public void setVar(Ep var) throws XMLException {
         Ep aux = this.var;
+        
         this.var = var;
+        if(this.var != null){
+            this.var.setOwner((T) this);
+            this.var.setOwnerAtt(NCLElementAttributes.VAR);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
+        if(aux != null)
+            aux.clean();
     }
 
 

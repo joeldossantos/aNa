@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -53,7 +54,7 @@ import org.w3c.dom.Element;
 public class NCLRule<T extends NCLTestRule,
                      P extends NCLElement,
                      I extends NCLElementImpl,
-                     Ep extends NCLProperty>
+                     Ep extends InterfaceReference>
         extends NCLRulePrototype<T, P, I, Ep>
         implements NCLTestRule<T, P>, PostReferenceElement {
 
@@ -119,7 +120,7 @@ public class NCLRule<T extends NCLTestRule,
     protected String parseVar() {
         Ep aux = getVar();
         if(aux != null)
-            return " var='" + aux.getName() + "'";
+            return " var='" + aux.parse() + "'";
         else
             return "";
     }
@@ -157,8 +158,8 @@ public class NCLRule<T extends NCLTestRule,
             // set the var (required)
             att_name = NCLElementAttributes.VAR.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Ep prop = (Ep) new NCLProperty(att_var);
-                setVar(prop);
+                NCLProperty prop = (NCLProperty) new NCLProperty(att_var);
+                setVar(createInterfaceRef(prop));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
             else
@@ -203,9 +204,9 @@ public class NCLRule<T extends NCLTestRule,
         
         try{
             // set the var (required)
-            if((aux = getVar().getName()) != null){
-                Ep prop = (Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux);
-                setVar(prop);
+            if((aux = ((NCLProperty) getVar().getTarget()).getName()) != null){
+                NCLProperty prop = (NCLProperty) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux);
+                setVar(createInterfaceRef(prop));
             }
         }
         catch(XMLException ex){
@@ -217,5 +218,17 @@ public class NCLRule<T extends NCLTestRule,
             
             throw new NCLParsingException("Rule" + aux + ". Fixing reference:\n" + ex.getMessage());
         }
+    }
+
+
+    /**
+     * Function to create a reference to a interface.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a interface.
+     */
+    protected Ep createInterfaceRef(NCLProperty ref) throws XMLException {
+        return (Ep) new InterfaceReference(ref, NCLElementAttributes.NAME);
     }
 }
