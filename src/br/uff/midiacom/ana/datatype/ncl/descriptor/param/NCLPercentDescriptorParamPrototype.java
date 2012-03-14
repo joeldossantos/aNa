@@ -53,6 +53,7 @@ public abstract class NCLPercentDescriptorParamPrototype<T extends NCLPercentDes
 
     public NCLPercentDescriptorParamPrototype() throws XMLException {
         super();
+        relative = false;
     }
 
 

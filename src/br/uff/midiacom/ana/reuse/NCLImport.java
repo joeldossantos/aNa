@@ -50,6 +50,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import org.w3c.dom.Element;
 
 
@@ -155,10 +157,15 @@ public class NCLImport<T extends NCLImport,
             }
             
             // load the imported document or base depending on the element type
-            Ed aux = createDoc();
-            String path = impl.getDoc().getLocation() + File.separator + getDocumentURI().parse();
-            aux.loadXML(new File(path));
-            setImportedDoc(aux);
+            try{
+                Ed aux = createDoc();
+                URI base = new URI(impl.getDoc().getLocation() + File.separator);
+                URI path = base.resolve(getDocumentURI().parse());
+                aux.loadXML(new File(path.getPath()));
+                setImportedDoc(aux);
+            }catch(Exception e){
+                throw new NCLParsingException("Could not find document in location: " + getDocumentURI().parse());
+            }
         }
         catch(XMLException ex){
             String aux = getAlias();
