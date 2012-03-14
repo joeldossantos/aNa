@@ -37,14 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
@@ -52,13 +50,11 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 public abstract class NCLParamPrototype<T extends NCLParamPrototype,
                                         P extends NCLElement,
                                         I extends NCLElementImpl,
-                                        Ec extends NCLConnectorParamPrototype,
-                                        Ip extends NCLImportPrototype,
-                                        R extends ReferenceType<T, Ec, Ip>>
+                                        Ec extends ConParamReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>{
 
-    protected R name;
+    protected Ec name;
     protected StringType value;
     protected NCLParamInstance paramType;
     
@@ -87,8 +83,8 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
      * @param connectorParam
      *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
      */
-    public void setName(R connectorParam) throws XMLException {
-        R aux = this.name;
+    public void setName(Ec connectorParam) throws XMLException {
+        Ec aux = this.name;
         
         this.name = connectorParam;
         if(this.name != null){
@@ -107,7 +103,7 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
      * 
      * @return NCLConnectorParam representando o nome do parâmetro.
      */
-    public R getName() {
+    public Ec getName() {
         return name;
     }
     

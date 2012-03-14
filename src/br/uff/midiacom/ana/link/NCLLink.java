@@ -37,17 +37,15 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.link;
 
-import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,10 +57,8 @@ public class NCLLink<T extends NCLLink,
                      I extends NCLElementImpl,
                      Ep extends NCLParam,
                      Eb extends NCLBind,
-                     Ec extends NCLCausalConnector,
-                     Ip extends NCLImport,
-                     R extends ReferenceType<T, Ec, Ip>>
-        extends NCLLinkPrototype<T, P, I, Ep, Eb, Ec, Ip, R>
+                     Ec extends ConnectorReference>
+        extends NCLLinkPrototype<T, P, I, Ep, Eb, Ec>
         implements NCLIdentifiableElement<T, P>{
 
 
@@ -134,7 +130,7 @@ public class NCLLink<T extends NCLLink,
     
     
     protected String parseXconnector() {
-        R aux = getXconnector();
+        Ec aux = getXconnector();
         if(aux != null)
             return " xconnector='" + aux.parse() + "'";
         else
@@ -179,7 +175,7 @@ public class NCLLink<T extends NCLLink,
             // set the xconnector (required)
             att_name = NCLElementAttributes.XCONNECTOR.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                setXconnector((R) NCLReferenceManager.getInstance().findConnectorReference(impl.getDoc(), att_var));
+                setXconnector((Ec) NCLReferenceManager.getInstance().findConnectorReference(impl.getDoc(), att_var));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");

@@ -37,15 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
+import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -56,13 +55,11 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
                                        I extends NCLElementImpl,
                                        Ep extends NCLParamPrototype,
                                        Eb extends NCLBindPrototype,
-                                       Ec extends NCLCausalConnectorPrototype,
-                                       Ip extends NCLImportPrototype,
-                                       R extends ReferenceType<T, Ec, Ip>>
+                                       Ec extends ConnectorReference>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLIdentifiableElement<T, P>{
 
-    protected R xconnector;
+    protected Ec xconnector;
     protected ElementList<Ep, T> linkParams;
     protected ElementList<Eb, T> binds;
     
@@ -83,8 +80,8 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
      * @param xconnector
      *          conector a ser atribuido ao link.
      */
-    public void setXconnector(R xconnector) throws XMLException {
-        R aux = this.xconnector;
+    public void setXconnector(Ec xconnector) throws XMLException {
+        Ec aux = this.xconnector;
         
         this.xconnector = xconnector;
         if(this.xconnector != null){
@@ -104,7 +101,7 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
      * @return
      *          conector atribuido ao link.
      */
-    public R getXconnector() {
+    public Ec getXconnector() {
         return xconnector;
     }
     
@@ -264,7 +261,8 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
 
         // Compara pelo xconnector
         if(getXconnector() != null && other.getXconnector() != null)
-            comp &= getXconnector().getTarget().compare(other.getXconnector().getTarget());
+            comp &= ((NCLCausalConnector) getXconnector().getTarget())
+                    .compare((NCLCausalConnector) other.getXconnector().getTarget());
 
         // Compara o número de parâmetros
         comp &= linkParams.size() == other.getLinkParams().size();

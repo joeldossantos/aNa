@@ -37,17 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.link;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RoleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -56,17 +55,15 @@ import java.util.Iterator;
 public abstract class NCLBindPrototype<T extends NCLBindPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
-                                       Er extends NCLRolePrototype,
-                                       En extends NCLNode,
-                                       Ei extends NCLInterface,
-                                       Ed extends NCLLayoutDescriptor,
-                                       Ep extends NCLParamPrototype,
-                                       Ip extends NCLImportPrototype,
-                                       Rr extends ReferenceType<T, Er, Ip>>
+                                       Er extends RoleReference,
+                                       En extends NodeReference,
+                                       Ei extends InterfaceReference,
+                                       Ed extends DescriptorReference,
+                                       Ep extends NCLParamPrototype>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>{
 
-    protected Rr role;
+    protected Er role;
     protected En component;
     protected Ei interfac;
     protected Ed descriptor;
@@ -88,8 +85,8 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
      * @param role
      *          elemento representando o papel ao qual o bind será associado.
      */
-    public void setRole(Rr role) throws XMLException {
-        Rr aux = this.role;
+    public void setRole(Er role) throws XMLException {
+        Er aux = this.role;
         
         this.role = role;
         if(this.role != null){
@@ -109,7 +106,7 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
      * @return
      *          elemento representando o papel ao qual o bind será associado.
      */
-    public Rr getRole() {
+    public Er getRole() {
         return role;
     }
     
@@ -269,7 +266,7 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
         String this_bind, other_bind;
 
         // Compara pelo role
-        if(getRole() == null) this_bind = ""; else this_bind = getRole().getTarget().getName();
+        if(getRole() == null) this_bind = ""; else this_bind = ((NCLRolePrototype) getRole().getTarget()).getName();
         if(other.getRole() == null) other_bind = ""; else other_bind = ((NCLRolePrototype) other.getRole().getTarget()).getName();
         comp &= this_bind.equals(other_bind);
 

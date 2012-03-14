@@ -45,13 +45,15 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RoleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.link.NCLBindPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -60,14 +62,12 @@ import org.w3c.dom.NodeList;
 public class NCLBind<T extends NCLBind,
                      P extends NCLElement,
                      I extends NCLElementImpl,
-                     Er extends NCLRole,
-                     En extends NCLNode,
-                     Ei extends NCLInterface,
-                     Ed extends NCLLayoutDescriptor,
-                     Ep extends NCLParam,
-                     Ip extends NCLImport,
-                     Rr extends ReferenceType<T, Er, Ip>>
-        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep, Ip, Rr>
+                     Er extends RoleReference,
+                     En extends NodeReference,
+                     Ei extends InterfaceReference,
+                     Ed extends DescriptorReference,
+                     Ep extends NCLParam>
+        extends NCLBindPrototype<T, P, I, Er, En, Ei, Ed, Ep>
         implements NCLElement<T, P>{
 
 
@@ -135,9 +135,9 @@ public class NCLBind<T extends NCLBind,
     
     
     protected String parseRole() {
-        Rr aux = getRole();
+        Er aux = getRole();
         if(aux != null)
-            return " role='" + aux.getTarget().getName() + "'";
+            return " role='" + aux.parse() + "'";
         else
             return "";
     }
@@ -146,7 +146,7 @@ public class NCLBind<T extends NCLBind,
     protected String parseComponent() {
         En aux = getComponent();
         if(aux != null)
-            return " component='" + aux.getId() + "'";
+            return " component='" + aux.parse() + "'";
         else
             return "";
     }
@@ -155,7 +155,7 @@ public class NCLBind<T extends NCLBind,
     protected String parseInterface() {
         Ei aux = getInterface();
         if(aux != null)
-            return " interface='" + aux.getId() + "'";
+            return " interface='" + aux.parse() + "'";
         else
             return "";
     }
@@ -164,7 +164,7 @@ public class NCLBind<T extends NCLBind,
     protected String parseDescriptor() {
         Ed aux = getDescriptor();
         if(aux != null)
-            return " descriptor='" + aux.getId() + "'";
+            return " descriptor='" + aux.parse() + "'";
         else
             return "";
     }
@@ -198,7 +198,7 @@ public class NCLBind<T extends NCLBind,
                 if(conn == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                Er rol = (Er) conn.findRole(att_var);
+                NCLRole rol = (NCLRole) conn.findRole(att_var);
                 if(rol == null)
                     throw new NCLParsingException("Could not find element " + att_var);
                 setRole(createRoleRef(rol));
@@ -213,15 +213,15 @@ public class NCLBind<T extends NCLBind,
                 if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                En refEl;
+                NCLNode refEl;
                 if(aux instanceof NCLBody)
-                    refEl = (En) ((NCLBody) aux).findNode(att_var);
+                    refEl = (NCLNode) ((NCLBody) aux).findNode(att_var);
                 else
-                    refEl = (En) ((En) aux).findNode(att_var);
+                    refEl = (NCLNode) ((NCLNode) aux).findNode(att_var);
                 if(refEl == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setComponent(refEl);
+                setComponent(createNodeRef(refEl));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -229,24 +229,24 @@ public class NCLBind<T extends NCLBind,
             // set the interface (optional)
             att_name = NCLElementAttributes.INTERFACE.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Ei refEl = (Ei) getComponent().findInterface(att_var);
+                NCLInterface refEl = (NCLInterface) ((NCLNode) getComponent().getTarget()).findInterface(att_var);
                 if(refEl == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setInterface(refEl);
+                setInterface(createInterfaceRef(refEl));
             }
 
             // set the descriptor (optional)
             att_name = NCLElementAttributes.DESCRIPTOR.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
-                setDescriptor(desc);
+                NCLLayoutDescriptor desc = (NCLLayoutDescriptor) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
+                setDescriptor(createDescriptorRef(desc));
             }
         }
         catch(XMLException ex){
             String aux = null;
             if(role != null)
-                aux = role.getTarget().getName();
+                aux = role.parse();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -269,7 +269,7 @@ public class NCLBind<T extends NCLBind,
         catch(XMLException ex){
             String aux = null;
             if(role != null)
-                aux = role.getTarget().getName();
+                aux = role.parse();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -299,7 +299,43 @@ public class NCLBind<T extends NCLBind,
      * @return
      *          element representing a reference to element <i>role</i>.
      */
-    protected Rr createRoleRef(Er role) throws XMLException {
-        return (Rr) new ReferenceType(role, NCLElementAttributes.NAME);
+    protected Er createRoleRef(NCLRole ref) throws XMLException {
+        return (Er) new RoleReference(ref, NCLElementAttributes.NAME);
+    }
+
+
+    /**
+     * Function to create a reference to a node.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a node.
+     */
+    protected En createNodeRef(NCLNode ref) throws XMLException {
+        return (En) new NodeReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a interface.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a interface.
+     */
+    protected Ei createInterfaceRef(NCLInterface ref) throws XMLException {
+        return (Ei) new InterfaceReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a descriptor.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected Ed createDescriptorRef(NCLLayoutDescriptor ref) throws XMLException {
+        return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }
