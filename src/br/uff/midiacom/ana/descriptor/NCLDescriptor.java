@@ -45,6 +45,9 @@ import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
+import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -70,11 +73,12 @@ import org.w3c.dom.NodeList;
 public class NCLDescriptor<T extends NCLDescriptor,
                            P extends NCLElement,
                            I extends NCLElementImpl,
-                           Er extends NCLRegion,
                            El extends NCLLayoutDescriptor,
-                           Et extends NCLTransition,
+                           Er extends RegionReference,
+                           Ed extends DescriptorReference,
+                           Et extends TransitionReference,
                            Ep extends NCLDescriptorParam>
-        extends NCLDescriptorPrototype<T, P, I, Er, El, Et, Ep>
+        extends NCLDescriptorPrototype<T, P, I, El, Er, Ed, Et, Ep>
         implements NCLLayoutDescriptor<El, P>, PostReferenceElement {
 
 
@@ -171,7 +175,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
     protected String parseRegion() {
         Er aux = getRegion();
         if(aux != null)
-            return " region='" + aux.getId() + "'";
+            return " region='" + aux.parse() + "'";
         else
             return "";
     }
@@ -205,36 +209,36 @@ public class NCLDescriptor<T extends NCLDescriptor,
     
     
     protected String parseMoveLeft() {
-        T aux = getMoveLeft();
+        Ed aux = getMoveLeft();
         if(aux != null)
-            return " moveLeft='" + aux.getFocusIndex() + "'";
+            return " moveLeft='" + aux.parse() + "'";
         else
             return "";
     }
     
     
     protected String parseMoveRight() {
-        T aux = getMoveRight();
+        Ed aux = getMoveRight();
         if(aux != null)
-            return " moveRight='" + aux.getFocusIndex() + "'";
+            return " moveRight='" + aux.parse() + "'";
         else
             return "";
     }
     
     
     protected String parseMoveDown() {
-        T aux = getMoveDown();
+        Ed aux = getMoveDown();
         if(aux != null)
-            return " moveDown='" + aux.getFocusIndex() + "'";
+            return " moveDown='" + aux.parse() + "'";
         else
             return "";
     }
     
     
     protected String parseMoveUp() {
-        T aux = getMoveUp();
+        Ed aux = getMoveUp();
         if(aux != null)
-            return " moveUp='" + aux.getFocusIndex() + "'";
+            return " moveUp='" + aux.parse() + "'";
         else
             return "";
     }
@@ -306,7 +310,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
     protected String parseTransIn() {
         Et aux = getTransIn();
         if(aux != null)
-            return " transIn='" + aux.getId() + "'";
+            return " transIn='" + aux.parse() + "'";
         else
             return "";
     }
@@ -315,7 +319,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
     protected String parseTransOut() {
         Et aux = getTransOut();
         if(aux != null)
-            return " transOut='" + aux.getId() + "'";
+            return " transOut='" + aux.parse() + "'";
         else
             return "";
     }
@@ -371,7 +375,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
                 }
                 T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
-                setMoveUp(desc);
+                setMoveUp(createDescriptorRef(desc));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
 
@@ -386,7 +390,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
                 }
                 T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
-                setMoveRight(desc);
+                setMoveRight(createDescriptorRef(desc));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
 
@@ -401,7 +405,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
                 }
                 T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
-                setMoveLeft(desc);
+                setMoveLeft(createDescriptorRef(desc));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
 
@@ -416,7 +420,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
                 }
                 T desc = (T) new NCLDescriptor("aux" + att_var);
                 desc.setFocusIndex(aux);
-                setMoveDown(desc);
+                setMoveDown(createDescriptorRef(desc));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
 
@@ -468,22 +472,22 @@ public class NCLDescriptor<T extends NCLDescriptor,
             // set the transIn (optional)
             att_name = NCLElementAttributes.TRANSIN.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
-                setTransIn(tran);
+                NCLTransition tran = (NCLTransition) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
+                setTransIn(createTransitionRef(tran));
             }
 
             // set the transOut (optional)
             att_name = NCLElementAttributes.TRANSOUT.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Et tran = (Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
-                setTransOut(tran);
+                NCLTransition tran = (NCLTransition) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
+                setTransOut(createTransitionRef(tran));
             }
 
             // set the region (optional)
             att_name = NCLElementAttributes.REGION.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
-                setRegion(reg);
+                NCLRegion reg = (NCLRegion) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
+                setRegion(createRegionRef(reg));
             }
         }
         catch(XMLException ex){
@@ -615,27 +619,27 @@ public class NCLDescriptor<T extends NCLDescriptor,
         
         try{
             // set the moveUp (optional)
-            if((aux = getMoveUp().getFocusIndex()) != null){
+            if((aux = ((T) getMoveUp().getTarget()).getFocusIndex()) != null){
                 T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-                setMoveUp(desc);
+                setMoveUp(createDescriptorRef(desc));
             }
 
             // set the moveRight (optional)
-            if((aux = getMoveRight().getFocusIndex()) != null){
+            if((aux = ((T) getMoveRight().getTarget()).getFocusIndex()) != null){
                 T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-                setMoveRight(desc);
+                setMoveRight(createDescriptorRef(desc));
             }
 
             // set the moveLeft (optional)
-            if((aux = getMoveLeft().getFocusIndex()) != null){
+            if((aux = ((T) getMoveLeft().getTarget()).getFocusIndex()) != null){
                 T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-                setMoveLeft(desc);
+                setMoveLeft(createDescriptorRef(desc));
             }
 
             // set the moveDown (optional)
-            if((aux = getMoveDown().getFocusIndex()) != null){
+            if((aux = ((T) getMoveDown().getTarget()).getFocusIndex()) != null){
                 T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
-                setMoveDown(desc);
+                setMoveDown(createDescriptorRef(desc));
             }
         }
         catch(XMLException ex){
@@ -704,5 +708,41 @@ public class NCLDescriptor<T extends NCLDescriptor,
 
     protected Ep createPlayerLifeDescriptorParam() throws XMLException {
         return (Ep) new NCLPlayerLifeDescriptorParam();
+    }
+
+
+    /**
+     * Function to create a reference to a region.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a region.
+     */
+    protected Er createRegionRef(NCLRegion ref) throws XMLException {
+        return (Er) new RegionReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a descriptor.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected Ed createDescriptorRef(NCLLayoutDescriptor ref) throws XMLException {
+        return (Ed) new DescriptorReference(ref, NCLElementAttributes.FOCUSINDEX);
+    }
+
+
+    /**
+     * Function to create a reference to a transition.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a transition.
+     */
+    protected Et createTransitionRef(NCLTransition ref) throws XMLException {
+        return (Et) new TransitionReference(ref, NCLElementAttributes.ID);
     }
 }

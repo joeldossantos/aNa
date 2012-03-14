@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
@@ -53,16 +56,16 @@ public class NCLBindRuleTest {
         NCLDescriptorSwitch con = new NCLDescriptorSwitch("teste");
 
         nclel1 = new NCLDescriptorBindRule();
-        nclel1.setRule(new NCLRule("R1"));
+        nclel1.setRule(new RuleReference(new NCLRule("R1"), NCLElementAttributes.ID));
 
         nclel2 = new NCLDescriptorBindRule();
-        nclel2.setRule(new NCLRule("R2"));
+        nclel2.setRule(new RuleReference(new NCLRule("R2"), NCLElementAttributes.ID));
 
         nclel3 = new NCLDescriptorBindRule();
-        nclel3.setRule(new NCLRule("R3"));
+        nclel3.setRule(new RuleReference(new NCLRule("R3"), NCLElementAttributes.ID));
 
         nclel4 = new NCLDescriptorBindRule();
-        nclel4.setRule(new NCLRule("R4"));
+        nclel4.setRule(new RuleReference(new NCLRule("R4"), NCLElementAttributes.ID));
 
         con.addBind(nclel1);
         con.addBind(nclel2);

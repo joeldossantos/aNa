@@ -40,8 +40,12 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
+import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
@@ -63,7 +67,7 @@ public class NCLDescriptorTest {
     @Test
     public void test1() throws XMLException {
         NCLDescriptor descriptor = new NCLDescriptor("dTV");
-        descriptor.setRegion(new NCLRegion("rgTV"));
+        descriptor.setRegion(new RegionReference(new NCLRegion("rgTV"), NCLElementAttributes.ID));
         descriptor.setExplicitDur(new TimeType(20));
         descriptor.setFreeze(true);
         descriptor.setPlayer("teste");
@@ -75,10 +79,10 @@ public class NCLDescriptorTest {
             d3.setFocusIndex(3);
             NCLDescriptor d4 = new NCLDescriptor("d4");
             d4.setFocusIndex(4);
-        descriptor.setMoveLeft(d1);
-        descriptor.setMoveRight(d2);
-        descriptor.setMoveDown(d3);
-        descriptor.setMoveUp(d4);
+        descriptor.setMoveLeft(new DescriptorReference(d1, NCLElementAttributes.FOCUSINDEX));
+        descriptor.setMoveRight(new DescriptorReference(d2, NCLElementAttributes.FOCUSINDEX));
+        descriptor.setMoveDown(new DescriptorReference(d3, NCLElementAttributes.FOCUSINDEX));
+        descriptor.setMoveUp(new DescriptorReference(d4, NCLElementAttributes.FOCUSINDEX));
         descriptor.setFocusIndex(10);
         descriptor.setFocusBorderColor(NCLColor.BLACK);
         descriptor.setFocusBorderWidth(5);
@@ -86,8 +90,8 @@ public class NCLDescriptorTest {
         descriptor.setFocusSrc(new SrcType("foco.jpg"));
         descriptor.setFocusSelSrc(new SrcType("sel.jpg"));
         descriptor.setSelBorderColor(NCLColor.AQUA);
-        descriptor.setTransIn(new NCLTransition("tin"));
-        descriptor.setTransOut(new NCLTransition("tout"));
+        descriptor.setTransIn(new TransitionReference(new NCLTransition("tin"), NCLElementAttributes.ID));
+        descriptor.setTransOut(new TransitionReference(new NCLTransition("tout"), NCLElementAttributes.ID));
 
         String expResult = "<descriptor id='dTV' region='rgTV' explicitDur='20.0s' freeze='true' player='teste' moveLeft='1' moveRight='2' moveDown='3' moveUp='4'"+
                 " focusIndex='10' focusBorderColor='black' focusBorderWidth='5' focusBorderTransparency='1.0%' focusSrc='foco.jpg'"+

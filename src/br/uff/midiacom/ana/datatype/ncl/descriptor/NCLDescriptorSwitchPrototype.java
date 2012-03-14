@@ -37,7 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -52,13 +54,14 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
                                                    P extends NCLElement,
                                                    I extends NCLElementImpl,
                                                    El extends NCLLayoutDescriptor,
+                                                   Ed extends DescriptorReference,
                                                    Eb extends NCLDescriptorBindRulePrototype>
         extends NCLIdentifiableElementPrototype<El, P, I>
         implements NCLLayoutDescriptor<El, P> {
 
     protected IdentifiableElementList<El, T> descriptors;
     protected ElementList<Eb, T> binds;
-    protected El defaultDescriptor;
+    protected Ed defaultDescriptor;
     
     protected ItemList<ReferenceType> references;
 
@@ -252,14 +255,19 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
      * @param defaultDescriptor
      *          elemento representando o descritor padrão.
      */
-    public void setDefaultDescriptor(El defaultDescriptor) {
-        if(this.defaultDescriptor != null)
-            impl.notifyRemoved(NCLElementSets.DEFAULTDESCRIPTOR, this.defaultDescriptor);
+    public void setDefaultDescriptor(Ed defaultDescriptor) throws XMLException {
+        if(this.defaultDescriptor != null){
+            impl.notifyRemoved(NCLElementSets.DEFAULTDESCRIPTOR, (El) this.defaultDescriptor.getTarget());
+            this.defaultDescriptor.clean();
+        }
         
         this.defaultDescriptor = defaultDescriptor;
         
-        if(this.defaultDescriptor != null)
-            impl.notifyInserted(NCLElementSets.DEFAULTDESCRIPTOR, this.defaultDescriptor);
+        if(this.defaultDescriptor != null){
+            this.defaultDescriptor.setOwner((T) this);
+            this.defaultDescriptor.setOwnerAtt(NCLElementAttributes.DEFAULTDESCRIPTOR);
+            impl.notifyInserted(NCLElementSets.DEFAULTDESCRIPTOR, (El) this.defaultDescriptor.getTarget());
+        }
     }
 
 
@@ -269,7 +277,7 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
      * @return
      *          elemento representando o descritor padrão.
      */
-    public El getDefaultDescriptor() {
+    public Ed getDefaultDescriptor() {
         return defaultDescriptor;
     }
     

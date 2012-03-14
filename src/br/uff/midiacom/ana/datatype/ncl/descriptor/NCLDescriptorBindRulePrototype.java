@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -48,8 +50,8 @@ import br.uff.midiacom.xml.XMLException;
 public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype,
                                                      P extends NCLElement,
                                                      I extends NCLElementImpl,
-                                                     El extends NCLLayoutDescriptor,
-                                                     Er extends NCLTestRule>
+                                                     El extends DescriptorReference,
+                                                     Er extends RuleReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
@@ -71,10 +73,18 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
      * @param constituent
      *          elemento representando o descritor mapeado pelo bind.
      */
-    public void setConstituent(El constituent) {
+    public void setConstituent(El constituent) throws XMLException {
         El aux = this.constituent;
+        
         this.constituent = constituent;
+        if(this.constituent != null){
+            this.constituent.setOwner((T) this);
+            this.constituent.setOwnerAtt(NCLElementAttributes.CONSTITUENT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -95,10 +105,18 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
      * @param rule
      *          elemento representando a regra de avaliação do bind.
      */
-    public void setRule(Er rule) {
+    public void setRule(Er rule) throws XMLException {
         Er aux = this.rule;
+        
         this.rule = rule;
+        if(this.rule != null){
+            this.rule.setOwner((T) this);
+            this.rule.setOwnerAtt(NCLElementAttributes.RULE);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -118,11 +136,11 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
 
         // Compara pela regra
         if(getRule() != null)
-            comp |= getRule().compare(other.getRule());
+            comp |= ((NCLTestRule) getRule().getTarget()).compare((NCLTestRule) other.getRule().getTarget());
 
         // Compara pelo constituent
         if(getConstituent() != null)
-            comp |= getConstituent().compare(other.getConstituent());
+            comp |= ((NCLLayoutDescriptor) getConstituent().getTarget()).compare((NCLLayoutDescriptor) other.getConstituent().getTarget());
 
         return comp;
     }

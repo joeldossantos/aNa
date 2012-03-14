@@ -40,9 +40,10 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBindRulePrototype;
 import br.uff.midiacom.ana.rule.NCLTestRule;
@@ -53,8 +54,8 @@ import org.w3c.dom.Element;
 public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
                                    P extends NCLElement,
                                    I extends NCLElementImpl,
-                                   El extends NCLLayoutDescriptor,
-                                   Er extends NCLTestRule>
+                                   El extends DescriptorReference,
+                                   Er extends RuleReference>
         extends NCLDescriptorBindRulePrototype<T, P, I, El, Er>
         implements NCLElement<T, P> {
 
@@ -103,7 +104,7 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
     protected String parseRule() {
         Er aux = getRule();
         if(aux != null)
-            return " rule='" + aux.getId() + "'";
+            return " rule='" + aux.parse() + "'";
         else
             return "";
     }
@@ -112,7 +113,7 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
     protected String parseConstituent() {
         El aux = getConstituent();
         if(aux != null)
-            return " constituent='" + aux.getId() + "'";
+            return " constituent='" + aux.parse() + "'";
         else
             return "";
     }
@@ -129,11 +130,11 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
                 if((aux = (P) getParent()) == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                El desc = (El) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
+                NCLLayoutDescriptor desc = (NCLLayoutDescriptor) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
                 if(desc == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setConstituent(desc);
+                setConstituent(createDescriptorRef(desc));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -141,8 +142,8 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
             // set the rule (required)
             att_name = NCLElementAttributes.RULE.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Er rul = (Er) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
-                setRule(rul);
+                NCLTestRule rul = (NCLTestRule) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
+                setRule(createRuleRef(rul));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -150,5 +151,29 @@ public class NCLDescriptorBindRule<T extends NCLDescriptorBindRule,
         catch(XMLException ex){
             throw new NCLParsingException("BindRule:\n" + ex.getMessage());
         }
+    }
+
+
+    /**
+     * Function to create a reference to a descriptor.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected El createDescriptorRef(NCLLayoutDescriptor ref) throws XMLException {
+        return (El) new DescriptorReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a rule.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a rule.
+     */
+    protected Er createRuleRef(NCLTestRule ref) throws XMLException {
+        return (Er) new RuleReference(ref, NCLElementAttributes.ID);
     }
 }

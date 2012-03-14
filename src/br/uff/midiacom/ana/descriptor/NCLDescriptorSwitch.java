@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorSwitchPrototype;
@@ -52,8 +53,9 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
                                  P extends NCLElement,
                                  I extends NCLElementImpl,
                                  El extends NCLLayoutDescriptor,
+                                 Ed extends DescriptorReference,
                                  Eb extends NCLDescriptorBindRule>
-        extends NCLDescriptorSwitchPrototype<T, P, I, El, Eb>
+        extends NCLDescriptorSwitchPrototype<T, P, I, El, Ed, Eb>
         implements NCLLayoutDescriptor<El, P> {
 
 
@@ -139,7 +141,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     
     
     protected String parseDefaultDescriptor(int ident) {
-        El aux = getDefaultDescriptor();
+        Ed aux = getDefaultDescriptor();
         if(aux == null)
             return "";
         
@@ -150,7 +152,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         for(int i = 0; i < ident; i++)
             space += "\t";
         
-        return space + "<defaultDescriptor descriptor='" + aux.getId() + "'/>\n";
+        return space + "<defaultDescriptor descriptor='" + aux.parse() + "'/>\n";
     }
     
     
@@ -219,7 +221,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
                     if(el.getTagName().equals(NCLElementAttributes.DEFAULTDESCRIPTOR.toString())){
                         att_name = NCLElementAttributes.DESCRIPTOR.toString();
                         if(!(att_var = el.getAttribute(att_name)).isEmpty())
-                            setDefaultDescriptor(descriptors.get(att_var));
+                            setDefaultDescriptor(createDescriptorRef(descriptors.get(att_var)));
                     }
                 }
             }
@@ -286,5 +288,17 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      */
     protected El createDescriptor() throws XMLException {
         return (El) new NCLDescriptor();
+    }
+
+
+    /**
+     * Function to create a reference to a descriptor.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected Ed createDescriptorRef(El ref) throws XMLException {
+        return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }

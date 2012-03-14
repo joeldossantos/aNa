@@ -40,6 +40,9 @@ package br.uff.midiacom.ana.datatype.ncl.descriptor;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
+import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -47,8 +50,6 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam;
-import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
-import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
@@ -59,9 +60,10 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
                                              P extends NCLElement,
                                              I extends NCLElementImpl,
-                                             Er extends NCLRegionPrototype,
                                              El extends NCLLayoutDescriptor,
-                                             Et extends NCLTransitionPrototype,
+                                             Er extends RegionReference,
+                                             Ed extends DescriptorReference,
+                                             Et extends TransitionReference,
                                              Ep extends NCLDescriptorParam>
         extends NCLIdentifiableElementPrototype<El, P, I>
         implements NCLLayoutDescriptor<El, P> {
@@ -69,10 +71,10 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
     protected StringType player;
     protected TimeType explicitDur;
     protected Boolean freeze;
-    protected T moveLeft;
-    protected T moveRight;
-    protected T moveUp;
-    protected T moveDown;
+    protected Ed moveLeft;
+    protected Ed moveRight;
+    protected Ed moveUp;
+    protected Ed moveDown;
     protected Integer focusIndex;
     protected NCLColor focusBorderColor;
     protected Integer focusBorderWidth;
@@ -197,10 +199,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveLeft(T descriptor) {
-        T aux = this.moveLeft;
+    public void setMoveLeft(Ed descriptor) throws XMLException {
+        Ed aux = this.moveLeft;
+        
         this.moveLeft = descriptor;
+        if(this.moveLeft != null){
+            this.moveLeft.setOwner((T) this);
+            this.moveLeft.setOwnerAtt(NCLElementAttributes.MOVELEFT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.MOVELEFT, aux, descriptor);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -211,7 +221,7 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveLeft() {
+    public Ed getMoveLeft() {
         return moveLeft;
     }
 
@@ -223,10 +233,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveRight(T descriptor) {
-        T aux = this.moveRight;
+    public void setMoveRight(Ed descriptor) throws XMLException {
+        Ed aux = this.moveRight;
+        
         this.moveRight = descriptor;
+        if(this.moveRight != null){
+            this.moveRight.setOwner((T) this);
+            this.moveRight.setOwnerAtt(NCLElementAttributes.MOVERIGHT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.MOVERIGHT, aux, descriptor);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -237,7 +255,7 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveRight() {
+    public Ed getMoveRight() {
         return moveRight;
     }
 
@@ -249,10 +267,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveUp(T descriptor) {
-        T aux = this.moveUp;
+    public void setMoveUp(Ed descriptor) throws XMLException {
+        Ed aux = this.moveUp;
+        
         this.moveUp = descriptor;
+        if(this.moveUp != null){
+            this.moveUp.setOwner((T) this);
+            this.moveUp.setOwnerAtt(NCLElementAttributes.MOVEUP);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.MOVEUP, aux, descriptor);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -263,7 +289,7 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveUp() {
+    public Ed getMoveUp() {
         return moveUp;
     }
 
@@ -275,10 +301,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param descriptor
      *          elemento representando o descritor que receberá foco.
      */
-    public void setMoveDown(T descriptor) {
-        T aux = this.moveDown;
+    public void setMoveDown(Ed descriptor) throws XMLException {
+        Ed aux = this.moveDown;
+        
         this.moveDown = descriptor;
+        if(this.moveDown != null){
+            this.moveDown.setOwner((T) this);
+            this.moveDown.setOwnerAtt(NCLElementAttributes.MOVEDOWN);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.MOVEDOWN, aux, descriptor);
+        if(aux != null)
+            aux.clean();
     }
 
     
@@ -289,7 +323,7 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @return
      *          elemento representando o descritor que receberá foco.
      */
-    public T getMoveDown() {
+    public Ed getMoveDown() {
         return moveDown;
     }  
     
@@ -478,10 +512,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param transIn
      *          elemento representando uma transição.
      */
-    public void setTransIn(Et transIn) {
+    public void setTransIn(Et transIn) throws XMLException {
         Et aux = this.transIn;
+        
         this.transIn = transIn;
+        if(this.transIn != null){
+            this.transIn.setOwner((T) this);
+            this.transIn.setOwnerAtt(NCLElementAttributes.TRANSIN);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.TRANSIN, aux, transIn);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -502,10 +544,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param transOut
      *          elemento representando uma transição.
      */
-    public void setTransOut(Et transOut) {
+    public void setTransOut(Et transOut) throws XMLException {
         Et aux = this.transOut;
+        
         this.transOut = transOut;
+        if(this.transOut != null){
+            this.transOut.setOwner((T) this);
+            this.transOut.setOwnerAtt(NCLElementAttributes.TRANSOUT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.TRANSOUT, aux, transOut);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -526,10 +576,18 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
      * @param region
      *          elemento representando uma região.
      */
-    public void setRegion(Er region) {
+    public void setRegion(Er region) throws XMLException {
         Er aux = this.region;
+        
         this.region = region;
+        if(this.region != null){
+            this.region.setOwner((T) this);
+            this.region.setOwnerAtt(NCLElementAttributes.REGION);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
+        if(aux != null)
+            aux.clean();
     }
 
 
