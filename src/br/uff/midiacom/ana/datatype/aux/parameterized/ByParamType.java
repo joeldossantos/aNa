@@ -1,22 +1,20 @@
 package br.uff.midiacom.ana.datatype.aux.parameterized;
 
 import br.uff.midiacom.ana.datatype.aux.basic.ByType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.parameterized.ParameterizedValueType;
 
 
 public class ByParamType<P extends NCLConnectorParamPrototype,
                          O extends NCLElement,
-                         Ip extends NCLImportPrototype,
-                         R extends ReferenceType<O, P, Ip>>
-        extends ParameterizedValueType<ByParamType, O, P, ByType, NCLElementAttributes, R> {
+                         R extends ConParamReference>
+        extends ParameterizedValueType<ByParamType, O, ByType, NCLElementAttributes, R> {
 
     
     public ByParamType(ByType value) throws XMLException {
@@ -47,8 +45,7 @@ public class ByParamType<P extends NCLConnectorParamPrototype,
         if(par == null)
             throw new NCLParsingException("Could not find a param in connector with name: " + param);
         
-        R ref = (R) new ReferenceType(par, NCLElementAttributes.NAME);
-        return ref;
+        return createParamRef(par);
     }
 
 
@@ -72,6 +69,18 @@ public class ByParamType<P extends NCLConnectorParamPrototype,
         if(getParam() == null)
             return null;
         else
-            return getParam().getTarget().getName();
+            return getParam().parse();
+    }
+
+
+    /**
+     * Function to create a reference to element <i>connectorParam</i>.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to element <i>connectorParam</i>.
+     */
+    protected R createParamRef(P ref) throws XMLException {
+        return (R) new ConParamReference(ref, NCLElementAttributes.NAME);
     }
 }
