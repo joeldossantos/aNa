@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -54,8 +55,9 @@ public class NCLRegionBase<T extends NCLRegionBase,
                            P extends NCLElement,
                            I extends NCLElementImpl,
                            Er extends NCLRegion,
-                           Ei extends NCLImport>
-        extends NCLRegionBasePrototype<T, P, I, Er, Ei>
+                           Ei extends NCLImport,
+                           Rr extends RegionReference>
+        extends NCLRegionBasePrototype<T, P, I, Er, Ei, Rr>
         implements NCLIdentifiableElement<T, P> {
 
 
@@ -138,9 +140,9 @@ public class NCLRegionBase<T extends NCLRegionBase,
     
     
     protected String parseParentRegion() {
-        Er aux = getParentRegion();
+        Rr aux = getParentRegion();
         if(aux != null)
-            return " region='" + aux.getId() + "'";
+            return " region='" + aux.parse() + "'";
         else
             return "";
     }
@@ -233,7 +235,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
             // set the region (optional)
             att_name = NCLElementAttributes.REGION.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setParentRegion(findRegion(att_var));
+                setParentRegion(createRegionRef(findRegion(att_var)));
         }
         catch(XMLException ex){
             String aux = getId();
@@ -289,5 +291,17 @@ public class NCLRegionBase<T extends NCLRegionBase,
      */
     protected Er createRegion() throws XMLException {
         return (Er) new NCLRegion();
+    }
+
+
+    /**
+     * Function to create a reference to a region.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a region.
+     */
+    protected Rr createRegionRef(Er ref) throws XMLException {
+        return (Rr) new RegionReference(ref, NCLElementAttributes.ID);
     }
 }

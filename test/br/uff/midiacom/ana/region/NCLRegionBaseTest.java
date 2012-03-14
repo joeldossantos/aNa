@@ -99,7 +99,7 @@ public class NCLRegionBaseTest {
         instance.load(loader.getElement());
 
         String expResult = "teste";
-        String result = ((NCLRegionBase) instance.getHead().getRegionBases().get(0)).getParentRegion().getTitle();
+        String result = ((NCLRegion) ((NCLRegionBase) instance.getHead().getRegionBases().get(0)).getParentRegion().getTarget()).getTitle();
         assertEquals(expResult, result);
 
     }

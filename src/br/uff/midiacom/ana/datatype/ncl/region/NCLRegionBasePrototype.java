@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.region;
 
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLBase;
@@ -70,12 +71,13 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
                                              P extends NCLElement,
                                              I extends NCLElementImpl,
                                              Er extends NCLRegionPrototype,
-                                             Ei extends NCLImportPrototype>
+                                             Ei extends NCLImportPrototype,
+                                             Rr extends RegionReference>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLBase<T, P> {
 
     protected StringType device;
-    protected Er parent_region;
+    protected Rr parent_region;
     protected IdentifiableElementList<Er, T> regions;
     protected ElementList<Ei, T> imports;
 
@@ -126,10 +128,18 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
      * @param region
      *          Elemento representando a regiao a ser utilizada como pai.
      */
-    public void setParentRegion(Er region) {
-        Er aux = this.parent_region;
+    public void setParentRegion(Rr region) throws XMLException {
+        Rr aux = this.parent_region;
+        
         this.parent_region = region;
+        if(this.parent_region != null){
+            this.parent_region.setOwner((T) this);
+            this.parent_region.setOwnerAtt(NCLElementAttributes.REGION);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -141,7 +151,7 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
      * @return
      *          elemento representando a regiao pai de uma base de regioes.
      */
-    public Er getParentRegion() {
+    public Rr getParentRegion() {
         return parent_region;
     }
 
