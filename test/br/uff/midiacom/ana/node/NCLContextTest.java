@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.interfaces.NCLPort;
@@ -52,7 +54,7 @@ public class NCLContextTest {
         NCLContext cont = new NCLContext("ctx");
         NCLMedia m1 = new NCLMedia("video");
         NCLPort p1 = new NCLPort("pInicio");
-        p1.setComponent(m1);
+        p1.setComponent(new NodeReference(m1, NCLElementAttributes.ID));
 
         cont.addNode(m1);
         cont.addPort(p1);

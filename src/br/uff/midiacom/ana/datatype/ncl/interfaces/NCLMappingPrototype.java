@@ -37,19 +37,20 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 
 
 public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
                                           P extends NCLElement,
                                           I extends NCLElementImpl,
-                                          En extends NCLNode,
-                                          Ei extends NCLInterface>
+                                          En extends NodeReference,
+                                          Ei extends InterfaceReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
@@ -71,10 +72,18 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
      * @param component
      *          elemento representando o componente mapeado.
      */
-    public void setComponent(En component) {
+    public void setComponent(En component) throws XMLException {
         En aux = this.component;
+        
         this.component = component;
+        if(this.component != null){
+            this.component.setOwner((T) this);
+            this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -95,10 +104,18 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
      * @param interfac
      *          elemento representando a interface mapeada.
      */
-    public void setInterface(Ei interfac) {
+    public void setInterface(Ei interfac) throws XMLException {
         Ei aux = this.interfac;
+        
         this.interfac = interfac;
+        if(this.interfac != null){
+            this.interfac.setOwner((T) this);
+            this.interfac.setOwnerAtt(NCLElementAttributes.INTERFACE);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -118,16 +135,16 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
         boolean comp = true;
 
         // Compara pelo componente
-        En thisComp = getComponent();
-        En otherComp = (En) other.getComponent();
+        En thisComp = (En) getComponent().getTarget();
+        En otherComp = (En) other.getComponent().getTarget();
         if(thisComp != null && otherComp != null)
             comp &= thisComp.compare(otherComp);
         else
             comp &= !(thisComp != null || otherComp != null);
 
         // Compara pela interface
-        Ei thisInt = getInterface();
-        Ei otherInt = (Ei) other.getInterface();
+        Ei thisInt = (Ei) getInterface().getTarget();
+        Ei otherInt = (Ei) other.getInterface().getTarget();
         if(thisInt != null && otherInt != null)
             comp &= thisInt.compare(otherInt);
         else

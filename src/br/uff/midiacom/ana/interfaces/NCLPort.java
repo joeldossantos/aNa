@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
@@ -51,10 +53,11 @@ import org.w3c.dom.Element;
 public class NCLPort<T extends NCLPort,
                      P extends NCLElement,
                      I extends NCLElementImpl,
-                     En extends NCLNode,
-                     Ei extends NCLInterface>
-        extends NCLPortPrototype<T, P, I, En, Ei>
-        implements NCLInterface<Ei, P> {
+                     It extends NCLInterface,
+                     En extends NodeReference,
+                     Ei extends InterfaceReference>
+        extends NCLPortPrototype<T, P, I, It, En, Ei>
+        implements NCLInterface<It, P> {
 
 
     public NCLPort(String id) throws XMLException {
@@ -117,7 +120,7 @@ public class NCLPort<T extends NCLPort,
     protected String parseComponent() {
         En aux = getComponent();
         if(aux != null)
-            return " component='" + aux.getId() + "'";
+            return " component='" + aux.parse() + "'";
         else
             return "";
     }
@@ -126,7 +129,7 @@ public class NCLPort<T extends NCLPort,
     protected String parseInterface() {
         Ei aux = getInterface();
         if(aux != null)
-            return " interface='" + aux.getId() + "'";
+            return " interface='" + aux.parse() + "'";
         else
             return "";
     }
@@ -150,15 +153,15 @@ public class NCLPort<T extends NCLPort,
                 if((aux = (P) getParent()) == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                En refEl;
+                NCLNode refEl;
                 if(aux instanceof NCLBody)
-                    refEl = (En) ((NCLBody) aux).findNode(att_var);
+                    refEl = (NCLNode) ((NCLBody) aux).findNode(att_var);
                 else
-                    refEl = (En) ((En) aux).findNode(att_var);
+                    refEl = (NCLNode) ((NCLNode) aux).findNode(att_var);
                 if(refEl == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setComponent(refEl);
+                setComponent(createNodeRef(refEl));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -166,11 +169,11 @@ public class NCLPort<T extends NCLPort,
             // set the interface (optional)
             att_name = NCLElementAttributes.INTERFACE.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Ei refEl = (Ei) getComponent().findInterface(att_var);
+                NCLInterface refEl = (NCLInterface) ((NCLNode) getComponent().getTarget()).findInterface(att_var);
                 if(refEl == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setInterface(refEl);
+                setInterface(createInterfaceRef(refEl));
             }
         }
         catch(XMLException ex){
@@ -182,5 +185,29 @@ public class NCLPort<T extends NCLPort,
             
             throw new NCLParsingException("Port" + aux + ":\n" + ex.getMessage());
         }
+    }
+
+
+    /**
+     * Function to create a reference to a node.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a node.
+     */
+    protected En createNodeRef(NCLNode ref) throws XMLException {
+        return (En) new NodeReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a interface.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a interface.
+     */
+    protected Ei createInterfaceRef(NCLInterface ref) throws XMLException {
+        return (Ei) new InterfaceReference(ref, NCLElementAttributes.ID);
     }
 }

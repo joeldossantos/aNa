@@ -37,12 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 
@@ -50,10 +51,11 @@ import br.uff.midiacom.xml.aux.ItemList;
 public abstract class NCLPortPrototype<T extends NCLPortPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
-                                       En extends NCLNode,
-                                       Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I>
-        implements NCLInterface<Ei, P> {
+                                       It extends NCLInterface,
+                                       En extends NodeReference,
+                                       Ei extends InterfaceReference>
+        extends NCLIdentifiableElementPrototype<It, P, I>
+        implements NCLInterface<It, P> {
 
     protected En component;
     protected Ei interfac;
@@ -88,10 +90,18 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
      * @param component
      *          elemento representando o nó.
      */
-    public void setComponent(En component) {
+    public void setComponent(En component) throws XMLException {
         En aux = this.component;
+        
         this.component = component;
+        if(this.component != null){
+            this.component.setOwner((T) this);
+            this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        if(aux != null)
+            aux.clean();
     }
     
     
@@ -112,10 +122,18 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
      * @param interfac
      *          elemento representando a interface do nó.
      */
-    public void setInterface(Ei interfac) {
+    public void setInterface(Ei interfac) throws XMLException {
         Ei aux = this.interfac;
+        
         this.interfac = interfac;
+        if(this.interfac != null){
+            this.interfac.setOwner((T) this);
+            this.interfac.setOwnerAtt(NCLElementAttributes.INTERFACE);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        if(aux != null)
+            aux.clean();
     }
     
     

@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLSwitch;
@@ -51,8 +54,8 @@ public class NCLSwitchPortTest {
     public void test1() throws XMLException {
         NCLSwitchPort port = new NCLSwitchPort("pinit");
         NCLMapping map = new NCLMapping();
-        map.setComponent(new NCLMedia("med1"));
-        map.setInterface(new NCLArea("trac1"));
+        map.setComponent(new NodeReference(new NCLMedia("med1"), NCLElementAttributes.ID));
+        map.setInterface(new InterfaceReference(new NCLArea("trac1"), NCLElementAttributes.ID));
         port.addMapping(map);
 
         String expResult = "<switchPort id='pinit'>\n\t<mapping component='med1' interface='trac1'/>\n</switchPort>\n";
