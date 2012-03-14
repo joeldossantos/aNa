@@ -5,6 +5,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
 /**
@@ -18,9 +19,9 @@ import br.uff.midiacom.xml.XMLException;
  *          the type of the element representing the external base where the
  *          referred element is.
  */
-public class ReferenceType<O extends NCLElement,
-                           T extends NCLElement,
-                           I extends NCLImportPrototype>
+public abstract class ReferenceType<O extends NCLElement,
+                                    T extends ReferredElement,
+                                    I extends NCLImportPrototype>
         extends br.uff.midiacom.xml.datatype.reference.ReferenceType<O, T, NCLElementAttributes> {
 
     protected I alias;
@@ -111,15 +112,17 @@ public class ReferenceType<O extends NCLElement,
             content += "#";
         }
         
-        switch(targetAtt){
-            case ID:
-                content += ((NCLIdentifiableElement) target).getId();
-                break;
-//            case NAME:
-//                content += target.getName();
-//                break;
-        }
+        content += parseIdent();
         
         return content;
     }
+    
+    
+    /**
+     * Returns the string that represents the element referred attribute.
+     * 
+     * @return 
+     *          string representing the element referred attribute.
+     */
+    protected abstract String parseIdent();
 }
