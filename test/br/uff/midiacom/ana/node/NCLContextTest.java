@@ -89,7 +89,7 @@ public class NCLContextTest {
         instance.load(loader.getElement());
 
         String expResult = "m1";
-        String result = ((NCLMedia) ((NCLContext) instance.getBody().getNodes().get("da")).getRefer().getNodes().iterator().next()).getId();
+        String result = ((NCLMedia) ((NCLContext) ((NCLContext) instance.getBody().getNodes().get("da")).getRefer().getTarget()).getNodes().iterator().next()).getId();
         assertEquals(expResult, result);
     }
 }

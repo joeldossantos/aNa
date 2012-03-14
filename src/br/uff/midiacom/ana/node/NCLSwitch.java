@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
@@ -58,8 +59,9 @@ public class NCLSwitch<T extends NCLSwitch,
                        En extends NCLNode,
                        Ei extends NCLInterface,
                        Ep extends NCLSwitchPort,
-                       Eb extends NCLSwitchBindRule>
-        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb>
+                       Eb extends NCLSwitchBindRule,
+                       Rn extends NodeReference>
+        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb, Rn>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
 
 
@@ -139,9 +141,9 @@ public class NCLSwitch<T extends NCLSwitch,
     
     
     protected String parseRefer() {
-        T aux = getRefer();
+        Rn aux = getRefer();
         if(aux != null)
-            return " refer='" + aux.getId() + "'";
+            return " refer='" + aux.parse() + "'";
         else
             return "";
     }
@@ -292,8 +294,8 @@ public class NCLSwitch<T extends NCLSwitch,
             // set the refer (optional)
             att_name = NCLElementAttributes.REFER.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                T ref = (T) new NCLSwitch(att_var);
-                setRefer(ref);
+                En ref = (En) new NCLSwitch(att_var);
+                setRefer(createNodeRef(ref));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
         }
@@ -349,9 +351,9 @@ public class NCLSwitch<T extends NCLSwitch,
         
         try{
             // set the refer (optional)
-            if((aux = getRefer().getId()) != null){
-                T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
-                setRefer(ref);
+            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+                En ref = (En) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
+                setRefer(createNodeRef(ref));
             }
         }
         catch(XMLException ex){
@@ -423,5 +425,17 @@ public class NCLSwitch<T extends NCLSwitch,
      */
     protected En createSwitch() throws XMLException {
         return (En) new NCLSwitch();
+    }
+
+
+    /**
+     * Function to create a reference to a node.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a node.
+     */
+    protected Rn createNodeRef(En ref) throws XMLException {
+        return (Rn) new NodeReference(ref, NCLElementAttributes.ID);
     }
 }

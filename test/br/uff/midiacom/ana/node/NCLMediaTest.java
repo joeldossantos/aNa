@@ -37,11 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
+import br.uff.midiacom.ana.datatype.ncl.NCLElement;
+import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -57,9 +62,9 @@ public class NCLMediaTest {
         NCLMedia med = new NCLMedia("m1");
         med.setType(NCLMimeType.AUDIO_MP2);
         med.setSrc(new SrcType("audio.mp2"));
-        med.setRefer(new NCLMedia("m2"));
+        med.setRefer(new NodeReference(new NCLMedia("m2"), NCLElementAttributes.ID));
         med.setInstance(NCLInstanceType.NEW);
-        med.setDescriptor(new NCLDescriptor("dm1"));
+        med.setDescriptor(new DescriptorReference(new NCLDescriptor("dm1"), NCLElementAttributes.ID));
 
         String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
         String result = med.parse(0);
@@ -115,7 +120,7 @@ public class NCLMediaTest {
         instance.load(loader.getElement());
 
         String expResult = "media.png";
-        String result = ((NCLMedia) instance.getBody().getNodes().get("da")).getRefer().getSrc().parse();
+        String result = ((NCLMedia) ((NCLMedia) instance.getBody().getNodes().get("da")).getRefer().getTarget()).getSrc().parse();
         assertEquals(expResult, result);
     }
 
@@ -130,7 +135,7 @@ public class NCLMediaTest {
         instance.load(loader.getElement());
 
         String expResult = "teste";
-        String result = ((NCLDescriptor) ((NCLMedia) instance.getBody().getNodes().get("da")).getDescriptor()).getPlayer();
+        String result = ((NCLDescriptor) ((NCLMedia) instance.getBody().getNodes().get("da")).getDescriptor().getTarget()).getPlayer();
         assertEquals(expResult, result);
     }
 }

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -55,11 +56,12 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
                                          I extends NCLElementImpl,
                                          En extends NCLNode,
                                          Ep extends NCLSwitchPortPrototype,
-                                         Eb extends NCLSwitchBindRulePrototype>
+                                         Eb extends NCLSwitchBindRulePrototype,
+                                         Rn extends NodeReference>
         extends NCLIdentifiableElementPrototype<En, P, I>
         implements NCLNode<En, P> {
 
-    protected T refer;
+    protected Rn refer;
     protected En defaultComponent;
     protected IdentifiableElementList<Ep, T> ports;
     protected ElementList<Eb, T> binds;
@@ -101,10 +103,18 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
      * @param refer
      *          elemento representando o switch a ser reutilizado.
      */
-    public void setRefer(T refer) {
-        T aux = this.refer;
+    public void setRefer(Rn refer) throws XMLException {
+        Rn aux = this.refer;
+        
         this.refer = refer;
+        if(this.refer != null){
+            this.refer.setOwner((T) this);
+            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -114,7 +124,7 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
      * @return
      *          elemento representando o switch a ser reutilizado.
      */
-    public T getRefer() {
+    public Rn getRefer() {
         return refer;
     }
 

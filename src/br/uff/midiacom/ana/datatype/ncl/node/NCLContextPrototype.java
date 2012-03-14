@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
@@ -59,11 +60,12 @@ public abstract class NCLContextPrototype<T extends NCLContextPrototype,
                                           En extends NCLNode,
                                           El extends NCLLinkPrototype,
                                           Em extends NCLMetaPrototype,
-                                          Emt extends NCLMetadataPrototype>
+                                          Emt extends NCLMetadataPrototype,
+                                          Rn extends NodeReference>
         extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
         implements NCLNode<En, P> {
 
-    protected T refer;
+    protected Rn refer;
     
     
     /**
@@ -91,10 +93,18 @@ public abstract class NCLContextPrototype<T extends NCLContextPrototype,
      * @param refer
      *          elemento representando o contexto a ser reutilizado.
      */
-    public void setRefer(T refer) {
-        T aux = this.refer;
+    public void setRefer(Rn refer) throws XMLException {
+        Rn aux = this.refer;
+        
         this.refer = refer;
+        if(this.refer != null){
+            this.refer.setOwner((T) this);
+            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -104,7 +114,7 @@ public abstract class NCLContextPrototype<T extends NCLContextPrototype,
      * @return
      *          elemento representando o contexto a ser reutilizado.
      */
-    public T getRefer() {
+    public Rn getRefer() {
         return refer;
     }
 }

@@ -40,6 +40,8 @@ package br.uff.midiacom.ana.datatype.ncl.node;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
@@ -48,7 +50,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLAreaPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
@@ -61,15 +62,16 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
                                         I extends NCLElementImpl,
                                         Ea extends NCLAreaPrototype,
                                         Ep extends NCLPropertyPrototype,
-                                        Ed extends NCLLayoutDescriptor,
-                                        En extends NCLNode>
+                                        Ed extends DescriptorReference,
+                                        En extends NCLNode,
+                                        Rn extends NodeReference>
         extends NCLIdentifiableElementPrototype<En, P, I>
         implements NCLNode<En, P> {
 
     protected SrcType src;
     protected NCLMimeType type;
     protected Ed descriptor;
-    protected T refer;
+    protected Rn refer;
     protected NCLInstanceType instance;
     protected IdentifiableElementList<Ea, T> areas;
     protected IdentifiableElementList<Ep, T> properties;
@@ -165,10 +167,18 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
      * @param descriptor
      *          elemento representando o descritor da mídia.
      */
-    public void setDescriptor(Ed descriptor) {
+    public void setDescriptor(Ed descriptor) throws XMLException {
         Ed aux = this.descriptor;
+        
         this.descriptor = descriptor;
+        if(this.descriptor != null){
+            this.descriptor.setOwner((T) this);
+            this.descriptor.setOwnerAtt(NCLElementAttributes.DESCRIPTOR);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
+        if(aux != null)
+            aux.clean();
     }
     
     
@@ -189,10 +199,18 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
      * @param refer
      *          elemento representando a media a ser reutilizado.
      */
-    public void setRefer(T refer) {
-        T aux = this.refer;
+    public void setRefer(Rn refer) throws XMLException {
+        Rn aux = this.refer;
+        
         this.refer = refer;
+        if(this.refer != null){
+            this.refer.setOwner((T) this);
+            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -202,7 +220,7 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
      * @return
      *          elemento representando a media a ser reutilizado.
      */
-    public T getRefer() {
+    public Rn getRefer() {
         return refer;
     }
 

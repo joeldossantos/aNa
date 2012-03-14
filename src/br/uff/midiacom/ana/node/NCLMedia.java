@@ -43,6 +43,8 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
@@ -60,10 +62,11 @@ public class NCLMedia<T extends NCLMedia,
                       I extends NCLElementImpl,
                       Ea extends NCLArea,
                       Ep extends NCLProperty,
-                      Ed extends NCLLayoutDescriptor,
+                      Ed extends DescriptorReference,
                       En extends NCLNode,
-                      Ei extends NCLInterface>
-        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En>
+                      Ei extends NCLInterface,
+                      Rn extends NodeReference>
+        extends NCLMediaPrototype<T, P, I, Ea, Ep, Ed, En, Rn>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
     
     
@@ -168,16 +171,16 @@ public class NCLMedia<T extends NCLMedia,
     protected String parseDescriptor() {
         Ed aux = getDescriptor();
         if(aux != null)
-            return " descriptor='" + aux.getId() + "'";
+            return " descriptor='" + aux.parse() + "'";
         else
             return "";
     }
     
     
     protected String parseRefer() {
-        T aux = getRefer();
+        Rn aux = getRefer();
         if(aux != null)
-            return " refer='" + aux.getId() + "'";
+            return " refer='" + aux.parse() + "'";
         else
             return "";
     }
@@ -241,8 +244,8 @@ public class NCLMedia<T extends NCLMedia,
             // set the descriptor (optional)
             att_name = NCLElementAttributes.DESCRIPTOR.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Ed desc = (Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
-                setDescriptor(desc);
+                NCLLayoutDescriptor desc = (NCLLayoutDescriptor) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
+                setDescriptor(createDescriptorRef(desc));
             }
 
             // set the instance (optional)
@@ -297,8 +300,8 @@ public class NCLMedia<T extends NCLMedia,
             // set the refer (optional)
             att_name = NCLElementAttributes.REFER.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                T ref = (T) new NCLMedia(att_var);
-                setRefer(ref);
+                En ref = (En) new NCLMedia(att_var);
+                setRefer(createNodeRef(ref));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
         }
@@ -344,9 +347,9 @@ public class NCLMedia<T extends NCLMedia,
         
         try{
             // set the refer (optional)
-            if((aux = getRefer().getId()) != null){
-                T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
-                setRefer(ref);
+            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+                En ref = (En) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
+                setRefer(createNodeRef(ref));
             }
         }
         catch(XMLException ex){
@@ -382,5 +385,29 @@ public class NCLMedia<T extends NCLMedia,
      */
     protected Ep createProperty() throws XMLException {
         return (Ep) new NCLProperty();
+    }
+
+
+    /**
+     * Function to create a reference to a node.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a node.
+     */
+    protected Rn createNodeRef(En ref) throws XMLException {
+        return (Rn) new NodeReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a descriptor.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected Ed createDescriptorRef(NCLLayoutDescriptor ref) throws XMLException {
+        return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }

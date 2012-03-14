@@ -46,6 +46,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLContextPrototype;
@@ -65,8 +66,9 @@ public class NCLContext<T extends NCLContext,
                         Ei extends NCLInterface,
                         El extends NCLLink,
                         Em extends NCLMeta,
-                        Emt extends NCLMetadata>
-        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt>
+                        Emt extends NCLMetadata,
+                        Rn extends NodeReference>
+        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt, Rn>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
     
     
@@ -152,9 +154,9 @@ public class NCLContext<T extends NCLContext,
     
     
     protected String parseRefer() {
-        T aux = getRefer();
+        Rn aux = getRefer();
         if(aux != null)
-            return " refer='" + aux.getId() + "'";
+            return " refer='" + aux.parse() + "'";
         else
             return "";
     }
@@ -338,7 +340,7 @@ public class NCLContext<T extends NCLContext,
             att_name = NCLElementAttributes.REFER.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
                 T ref = (T) new NCLContext(att_var);
-                setRefer(ref);
+                setRefer(createNodeRef((En) ref));
                 NCLReferenceManager.getInstance().waitReference(this);
             }
         }
@@ -399,9 +401,9 @@ public class NCLContext<T extends NCLContext,
         
         try{
             // set the refer (optional)
-            if((aux = getRefer().getId()) != null){
-                T ref = (T) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
-                setRefer(ref);
+            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+                En ref = (En) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
+                setRefer(createNodeRef(ref));
             }
         }
         catch(XMLException ex){
@@ -509,5 +511,17 @@ public class NCLContext<T extends NCLContext,
      */
     protected El createLink() throws XMLException {
         return (El) new NCLLink();
+    }
+
+
+    /**
+     * Function to create a reference to a node.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a node.
+     */
+    protected Rn createNodeRef(En ref) throws XMLException {
+        return (Rn) new NodeReference(ref, NCLElementAttributes.ID);
     }
 }

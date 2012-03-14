@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
@@ -51,8 +54,8 @@ public class NCLSwitchTest {
         NCLSwitch s = new NCLSwitch("escolhe");
         NCLMedia med = new NCLMedia("m1");
         NCLSwitchBindRule bind = new NCLSwitchBindRule();
-            bind.setRule(new NCLRule("rpt"));
-            bind.setConstituent(med);
+            bind.setRule(new RuleReference(new NCLRule("rpt"), NCLElementAttributes.ID));
+            bind.setConstituent(new NodeReference(med, NCLElementAttributes.ID));
         s.addBind(bind);
         s.addNode(med);
         s.setDefaultComponent(med);

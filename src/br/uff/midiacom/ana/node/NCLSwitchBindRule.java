@@ -42,6 +42,8 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchBindRulePrototype;
 import br.uff.midiacom.ana.rule.NCLTestRule;
@@ -52,8 +54,8 @@ import org.w3c.dom.Element;
 public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
                                P extends NCLElement,
                                I extends NCLElementImpl,
-                               En extends NCLNode,
-                               Er extends NCLTestRule>
+                               En extends NodeReference,
+                               Er extends RuleReference>
         extends NCLSwitchBindRulePrototype<T, P, I, En, Er>
         implements NCLElement<T, P> {
 
@@ -102,7 +104,7 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
     protected String parseRule() {
         Er aux = getRule();
         if(aux != null)
-            return " rule='" + aux.getId() + "'";
+            return " rule='" + aux.parse() + "'";
         else
             return "";
     }
@@ -111,7 +113,7 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
     protected String parseConstituent() {
         En aux = getConstituent();
         if(aux != null)
-            return " constituent='" + aux.getId() + "'";
+            return " constituent='" + aux.parse() + "'";
         else
             return "";
     }
@@ -128,11 +130,11 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
                 if((aux = (P) getParent()) == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                En refEl = (En) ((En) aux).findNode(att_var);
+                NCLNode refEl = (NCLNode) ((NCLNode) aux).findNode(att_var);
                 if(refEl == null)
                     throw new NCLParsingException("Could not find element " + att_var);
 
-                setConstituent(refEl);
+                setConstituent(createNodeRef(refEl));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -140,8 +142,8 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
             // set the rule (required)
             att_name = NCLElementAttributes.RULE.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Er rul = (Er) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
-                setRule(rul);
+                NCLTestRule rul = (NCLTestRule) NCLReferenceManager.getInstance().findRuleReference(impl.getDoc(), att_var);
+                setRule(createRuleRef(rul));
             }
             else
                 throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -149,5 +151,29 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
         catch(XMLException ex){
             throw new NCLParsingException("BindRule:\n" + ex.getMessage());
         }
+    }
+
+
+    /**
+     * Function to create a reference to a node.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a node.
+     */
+    protected En createNodeRef(NCLNode ref) throws XMLException {
+        return (En) new NodeReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
+     * Function to create a reference to a rule.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a rule.
+     */
+    protected Er createRuleRef(NCLTestRule ref) throws XMLException {
+        return (Er) new RuleReference(ref, NCLElementAttributes.ID);
     }
 }

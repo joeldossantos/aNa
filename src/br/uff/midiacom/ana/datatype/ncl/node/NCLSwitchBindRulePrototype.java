@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.node;
 
+import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -48,8 +50,8 @@ import br.uff.midiacom.xml.XMLException;
 public abstract class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRulePrototype,
                                                  P extends NCLElement,
                                                  I extends NCLElementImpl,
-                                                 En extends NCLNode,
-                                                 Er extends NCLTestRule>
+                                                 En extends NodeReference,
+                                                 Er extends RuleReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
@@ -71,10 +73,18 @@ public abstract class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRuleProt
      * @param constituent
      *          elemento representando o nó mapeado pelo bind.
      */
-    public void setConstituent(En constituent) {
+    public void setConstituent(En constituent) throws XMLException {
         En aux = this.constituent;
+        
         this.constituent = constituent;
+        if(this.constituent != null){
+            this.constituent.setOwner((T) this);
+            this.constituent.setOwnerAtt(NCLElementAttributes.CONSTITUENT);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -95,10 +105,18 @@ public abstract class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRuleProt
      * @param rule
      *          elemento representando a regra de avaliação do bind.
      */
-    public void setRule(Er rule) {
+    public void setRule(Er rule) throws XMLException {
         Er aux = this.rule;
+        
         this.rule = rule;
+        if(this.rule != null){
+            this.rule.setOwner((T) this);
+            this.rule.setOwnerAtt(NCLElementAttributes.RULE);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
+        if(aux != null)
+            aux.clean();
     }
 
 
@@ -120,13 +138,13 @@ public abstract class NCLSwitchBindRulePrototype<T extends NCLSwitchBindRuleProt
         String this_sb, other_sb;
 
         // Compara pela regra
-        if(getRule() == null) this_sb = ""; else this_sb = getRule().getId();
-        if(other.getRule() == null) other_sb = ""; else other_sb = other.getRule().getId();
+        if(getRule() == null) this_sb = ""; else this_sb = ((NCLTestRule) getRule().getTarget()).getId();
+        if(other.getRule() == null) other_sb = ""; else other_sb = ((NCLTestRule) other.getRule().getTarget()).getId();
         comp &= this_sb.equals(other_sb);
 
         // Compara pelo constituent
-        if(getConstituent() == null) this_sb = ""; else this_sb = getConstituent().getId();
-        if(other.getConstituent() == null) other_sb = ""; else other_sb = other.getConstituent().getId();
+        if(getConstituent() == null) this_sb = ""; else this_sb = ((NCLNode) getConstituent().getTarget()).getId();
+        if(other.getConstituent() == null) other_sb = ""; else other_sb = ((NCLNode) other.getConstituent().getTarget()).getId();
         comp &= this_sb.equals(other_sb);
 
         return comp;
