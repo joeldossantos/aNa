@@ -37,9 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -235,7 +237,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
             // set the region (optional)
             att_name = NCLElementAttributes.REGION.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setParentRegion(createRegionRef(findRegion(att_var)));
+                setParentRegion((Rr) findRegion(att_var));
         }
         catch(XMLException ex){
             String aux = getId();
@@ -257,14 +259,30 @@ public class NCLRegionBase<T extends NCLRegionBase,
      * @return 
      *          region or null if no region was found.
      */
-    public Er findRegion(String id) throws XMLException {
+    public RegionReference findRegion(String id) throws XMLException {
         Er result;
         
-        for(Er region : regions){
-            result = (Er) region.findRegion(id);
-            if(result != null)
-                return result;
+        if(!id.contains("#")){
+            for(Er region : regions){
+                result = (Er) region.findRegion(id);
+                if(result != null)
+                    return new RegionReference(result, NCLElementAttributes.ID);
+            }   
         }
+        else{
+            int index = id.indexOf("#");
+            String alias = id.substring(0, index);
+            id = id.substring(index + 1);
+            
+            for(Ei imp : imports){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    RegionReference ref = NCLReferenceManager.getInstance().findRegionReference(d, id);
+                    return new RegionReference(imp, (Er) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+        }
+        
         
         return null;
     }

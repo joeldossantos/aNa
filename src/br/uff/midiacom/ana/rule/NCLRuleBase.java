@@ -37,9 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -209,14 +212,30 @@ public class NCLRuleBase<T extends NCLRuleBase,
      * @return 
      *          rule or null if no rule was found.
      */
-    public Et findRule(String id) throws XMLException {
+    public RuleReference findRule(String id) throws XMLException {
         Et result;
         
-        for(Et rule : rules){
-            result = (Et) rule.findRule(id);
-            if(result != null)
-                return result;
+        if(!id.contains("#")){
+            for(Et rule : rules){
+                result = (Et) rule.findRule(id);
+                if(result != null)
+                    return new RuleReference(result, NCLElementAttributes.ID);
+            }
         }
+        else{
+            int index = id.indexOf("#");
+            String alias = id.substring(0, index);
+            id = id.substring(index + 1);
+            
+            for(Ei imp : imports){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    RuleReference ref = NCLReferenceManager.getInstance().findRuleReference(d, id);
+                    return new RuleReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+        }
+        
         
         return null;
     }

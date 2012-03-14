@@ -223,16 +223,10 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    ReferenceType<NCLLink, Ec, Ei> ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
-                    return new ConnectorReference(imp, ref.getTarget(), ref.getTargetAtt());
+                    ConnectorReference ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
+                    return new ConnectorReference(imp, (Ec) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
                 }
             }
-        }
-        // Search in the imported bases
-        for(Ei imp : imports){
-            result = getCausalConnectors().get(id);
-            if(result != null)
-                return new ConnectorReference(imp, result, NCLElementAttributes.ID);
         }
         
         

@@ -41,8 +41,15 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
+import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
+import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -74,8 +81,8 @@ public class NCLReferenceManager {
     }
     
     
-    public NCLRegion findRegionReference(NCLDoc doc, String id) throws XMLException {
-        NCLRegion result = null;
+    public RegionReference findRegionReference(NCLDoc doc, String id) throws XMLException {
+        RegionReference result = null;
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -86,8 +93,11 @@ public class NCLReferenceManager {
         
         IdentifiableElementList<NCLRegionBase, NCLHead> list = head.getRegionBases();
 
-        for(NCLRegionBase base : list)
-            result = (NCLRegion) base.findRegion(id);
+        for(NCLRegionBase base : list){
+            result = base.findRegion(id);
+            if(result != null)
+                break;
+        }
 
         if(result == null)
             throw new NCLParsingException("Could not find region in regionBase with id: " + id);
@@ -96,7 +106,7 @@ public class NCLReferenceManager {
     }
     
     
-    public NCLProperty findPropertyReference(NCLDoc doc, String name) throws XMLException {
+    public InterfaceReference findPropertyReference(NCLDoc doc, String name) throws XMLException {
         NCLBody body = (NCLBody) doc.getBody();
         
         if(body == null)
@@ -107,7 +117,7 @@ public class NCLReferenceManager {
         if(result == null)
             throw new NCLParsingException("Could not find property in body with name: " + name);
         
-        return result;
+        return new InterfaceReference(result, NCLElementAttributes.NAME);
     }
     
     
@@ -130,7 +140,7 @@ public class NCLReferenceManager {
     }
     
     
-    public NCLDescriptor findDescriptorReference(NCLDoc doc, String id) throws XMLException {
+    public DescriptorReference findDescriptorReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -140,7 +150,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document descriptorBase element");
 
-        NCLDescriptor result = (NCLDescriptor) base.findDescriptor(id);
+        DescriptorReference result = base.findDescriptor(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find descriptor in descriptorBase with id: " + id);
@@ -149,7 +159,7 @@ public class NCLReferenceManager {
     }
 
 
-    public NCLTransition findTransitionReference(NCLDoc doc, String id) throws XMLException {
+    public TransitionReference findTransitionReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -159,7 +169,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document transitionBase element");
 
-        NCLTransition result = (NCLTransition) base.getTransitions().get(id);
+        TransitionReference result = base.findTransition(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find transition in transitionBase with id: " + id);
@@ -168,7 +178,7 @@ public class NCLReferenceManager {
     }
     
     
-    public NCLTestRule findRuleReference(NCLDoc doc, String id) throws XMLException {
+    public RuleReference findRuleReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -178,7 +188,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document ruleBase element");
 
-        NCLTestRule result = (NCLTestRule) base.findRule(id);
+        RuleReference result = base.findRule(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find rule in ruleBase with id: " + id);
@@ -200,8 +210,11 @@ public class NCLReferenceManager {
         IdentifiableElementList<NCLCausalConnector, NCLConnectorBase> list = base.getCausalConnectors();
         NCLConnectorParam result = null;
         
-        for(NCLCausalConnector conn : list)
+        for(NCLCausalConnector conn : list){
             result = (NCLConnectorParam) conn.getConnectorParams().get(name);
+            if(result != null)
+                break;
+        }
 
         if(result == null)
             throw new NCLParsingException("Could not find connectorParam in connectorBase with name: " + name);
@@ -210,7 +223,7 @@ public class NCLReferenceManager {
     }
 
 
-    public ReferenceType findConnectorReference(NCLDoc doc, String id) throws XMLException {
+    public ConnectorReference findConnectorReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -220,7 +233,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document connectorBase element");
 
-        ReferenceType result = base.findConnector(id);
+        ConnectorReference result = base.findConnector(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find connector in connectorBase with id: " + id);

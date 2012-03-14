@@ -244,8 +244,7 @@ public class NCLMedia<T extends NCLMedia,
             // set the descriptor (optional)
             att_name = NCLElementAttributes.DESCRIPTOR.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                NCLLayoutDescriptor desc = (NCLLayoutDescriptor) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var);
-                setDescriptor(createDescriptorRef(desc));
+                setDescriptor((Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var));
             }
 
             // set the instance (optional)

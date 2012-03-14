@@ -472,22 +472,19 @@ public class NCLDescriptor<T extends NCLDescriptor,
             // set the transIn (optional)
             att_name = NCLElementAttributes.TRANSIN.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                NCLTransition tran = (NCLTransition) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
-                setTransIn(createTransitionRef(tran));
+                setTransIn((Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var));
             }
 
             // set the transOut (optional)
             att_name = NCLElementAttributes.TRANSOUT.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                NCLTransition tran = (NCLTransition) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var);
-                setTransOut(createTransitionRef(tran));
+                setTransOut((Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var));
             }
 
             // set the region (optional)
             att_name = NCLElementAttributes.REGION.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                NCLRegion reg = (NCLRegion) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
-                setRegion(createRegionRef(reg));
+                setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
             }
         }
         catch(XMLException ex){

@@ -205,8 +205,7 @@ public class NCLRule<T extends NCLTestRule,
         try{
             // set the var (required)
             if((aux = ((NCLProperty) getVar().getTarget()).getName()) != null){
-                NCLProperty prop = (NCLProperty) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux);
-                setVar(createInterfaceRef(prop));
+                setVar((Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux));
             }
         }
         catch(XMLException ex){

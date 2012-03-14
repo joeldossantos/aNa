@@ -37,9 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -191,6 +194,41 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
         catch(XMLException ex){
             throw new NCLParsingException("TransitionBase > " + ex.getMessage());
         }
+    }
+    
+    
+    /**
+     * Searches for a transition inside a transitionBase and its imported bases.
+     * 
+     * @param id
+     *          id of the transition to be found.
+     * @return 
+     *          transition or null if no transition was found.
+     */
+    public TransitionReference findTransition(String id) throws XMLException {
+        Et result;
+        
+        if(!id.contains("#")){
+            result = getTransitions().get(id);
+            if(result != null)
+                return new TransitionReference(result, NCLElementAttributes.ID);
+        }
+        else{
+            int index = id.indexOf("#");
+            String alias = id.substring(0, index);
+            id = id.substring(index + 1);
+            
+            for(Ei imp : imports){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    TransitionReference ref = NCLReferenceManager.getInstance().findTransitionReference(d, id);
+                    return new TransitionReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+        }
+        
+        
+        return null;
     }
 
 

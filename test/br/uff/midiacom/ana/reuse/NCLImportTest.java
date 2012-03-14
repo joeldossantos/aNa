@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.reuse;
 
+import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.ana.region.NCLRegionBase;
@@ -59,7 +60,7 @@ public class NCLImportTest {
         instance.load(loader.getElement());
         
         String expResult = "teste";
-        String result = ((NCLImport) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion().getTitle();
+        String result = ((NCLRegion) ((NCLImport) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion().getTarget()).getTitle();
         assertEquals(expResult, result);
 
     }

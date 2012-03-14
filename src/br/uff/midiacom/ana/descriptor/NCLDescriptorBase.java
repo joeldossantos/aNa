@@ -37,9 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.descriptor;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
@@ -209,14 +212,30 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      * @return 
      *          interface or null if no descriptor was found.
      */
-    public El findDescriptor(String id) throws XMLException {
+    public DescriptorReference findDescriptor(String id) throws XMLException {
         El result;
         
-        for(El desc : descriptors){
-            result = (El) desc.findDescriptor(id);
-            if(result != null)
-                return result;
+        if(!id.contains("#")){
+            for(El desc : descriptors){
+                result = (El) desc.findDescriptor(id);
+                if(result != null)
+                    return new DescriptorReference(result, NCLElementAttributes.ID);
+            }   
         }
+        else{
+            int index = id.indexOf("#");
+            String alias = id.substring(0, index);
+            id = id.substring(index + 1);
+            
+            for(Ei imp : imports){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    DescriptorReference ref = NCLReferenceManager.getInstance().findDescriptorReference(d, id);
+                    return new DescriptorReference(imp, (El) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+        }
+        
         
         return null;
     }

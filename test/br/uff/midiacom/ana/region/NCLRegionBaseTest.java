@@ -37,9 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
@@ -67,7 +69,7 @@ public class NCLRegionBaseTest {
         NCLImport imp = new NCLImport(NCLImportType.BASE);
         imp.setAlias("base");
         imp.setDocumentURI(new SrcType("base.ncl"));
-        imp.setRegion(region);
+        imp.setRegion(new RegionReference(region, NCLElementAttributes.ID));
         base.addImportBase(imp);
         base.addRegion(region);
 
