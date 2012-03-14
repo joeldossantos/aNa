@@ -39,12 +39,12 @@ package br.uff.midiacom.ana.datatype.ncl.reuse;
 
 import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.datatype.ncl.region.NCLRegionPrototype;
 import br.uff.midiacom.ana.datatype.ncl.structure.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
@@ -55,7 +55,7 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 public abstract class NCLImportPrototype<T extends NCLImportPrototype,
                                          P extends NCLElement,
                                          I extends NCLElementImpl,
-                                         Er extends NCLRegionPrototype,
+                                         Er extends RegionReference,
                                          Ed extends NCLDocPrototype>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>, ReferredElement<ReferenceType> {
@@ -150,10 +150,18 @@ public abstract class NCLImportPrototype<T extends NCLImportPrototype,
      * @param region
      *          elemento representando a região associada.
      */
-    public void setRegion(Er region) {
+    public void setRegion(Er region) throws XMLException {
         Er aux = this.region;
+        
         this.region = region;
+        if(this.region != null){
+            this.region.setOwner((T) this);
+            this.region.setOwnerAtt(NCLElementAttributes.REGION);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
+        if(aux != null)
+            aux.clean();
     }
 
 

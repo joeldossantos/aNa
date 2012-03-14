@@ -44,10 +44,10 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
-import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
 import org.w3c.dom.Element;
@@ -56,7 +56,7 @@ import org.w3c.dom.Element;
 public class NCLImport<T extends NCLImport,
                        P extends NCLElement,
                        I extends NCLElementImpl,
-                       Er extends NCLRegion,
+                       Er extends RegionReference,
                        Ed extends NCLDoc>
         extends NCLImportPrototype<T, P, I, Er, Ed>
         implements NCLElement<T, P> {
@@ -124,7 +124,7 @@ public class NCLImport<T extends NCLImport,
     protected String parseRegion() {
         Er aux = getRegion();
         if(aux != null)
-            return " region='" + aux.getId() + "'";
+            return " region='" + aux.parse() + "'";
         else
             return "";
     }
@@ -151,8 +151,7 @@ public class NCLImport<T extends NCLImport,
             // set the region (optional)
             att_name = NCLElementAttributes.REGION.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Er reg = (Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var);
-                setRegion(reg);
+                setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
             }
             
             // load the imported document or base depending on the element type
