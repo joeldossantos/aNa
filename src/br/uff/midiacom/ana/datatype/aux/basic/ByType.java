@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -36,6 +36,8 @@
  * SUCH DAMAGE.
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.basic;
+
+import br.uff.midiacom.xml.XMLException;
 
 
 /**
@@ -53,12 +55,12 @@ public class ByType {
      *
      * @param value
      *          a positive integer.
-     * @throws IllegalArgumentException
+     * @throws XMLException
      *          if the integer is negative.
      */
-    public ByType(int value) throws IllegalArgumentException {
+    public ByType(int value) throws XMLException {
         if(value < 0)
-            throw new IllegalArgumentException("Negative value");
+            throw new XMLException("Negative value");
 
         this.value = value;
     }
@@ -69,16 +71,14 @@ public class ByType {
      *
      * @param value
      *          String representing a positive integer or the String "unbounded".
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty.
+     * @throws XMLException
+     *          if the String is null or empty.
      */
-    public ByType(String value) throws NullPointerException, IllegalArgumentException {
+    public ByType(String value) throws XMLException {
         if(value == null)
-            throw new NullPointerException("Null value String");
+            throw new XMLException("Null value String");
         if("".equals(value.trim()))
-            throw new IllegalArgumentException("Empty value String");
+            throw new XMLException("Empty value String");
 
         if(!value.equals(indefinite))
             this.value = new Integer(value);

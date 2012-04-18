@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.aux.basic;
 
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
+import br.uff.midiacom.xml.XMLException;
 
 
 /**
@@ -54,12 +55,12 @@ public class TranspColorType {
      *
      * @param color
      *          element representing the color.
-     * @throws NullPointerException
+     * @throws XMLException
      *          if the color is null.
      */
-    public TranspColorType(NCLColor color) throws NullPointerException {
+    public TranspColorType(NCLColor color) throws XMLException {
         if(color == null)
-            throw new NullPointerException("null color");
+            throw new XMLException("null color");
 
         this.color = color;
     }
@@ -70,16 +71,14 @@ public class TranspColorType {
      *
      * @param color
      *          String representing a color or the "transparent" String.
-     * @throws NullPointerException
-     *          if the String is null.
-     * @throws IllegalArgumentException
-     *          if the String is empty.
+     * @throws XMLException
+     *          if the String is null or empty.
      */
-    public TranspColorType(String color) throws NullPointerException, IllegalArgumentException {
+    public TranspColorType(String color) throws XMLException {
         if(color == null)
-            throw new NullPointerException("Null color String");
+            throw new XMLException("Null color String");
         if("".equals(color.trim()))
-            throw new IllegalArgumentException("Empty color String");
+            throw new XMLException("Empty color String");
 
         if(!color.equals(transparent)){
             for(NCLColor c : NCLColor.values()){

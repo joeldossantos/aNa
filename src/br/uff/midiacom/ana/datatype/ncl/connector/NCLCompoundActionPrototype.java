@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -50,6 +50,38 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
+/**
+ * Class that represents a connector compound action.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>operator</i> - compound action operator. This attribute is required.</li>
+ *  <li><i>delay</i> - delay waited by the action. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>simpleAction</i> - element representing a connector action. The
+ *                            compound action can have none or several action
+ *                            elements.</li>
+ *  <li><i>compundAction</i> - element representing a connector action. The
+ *                             compound action can have none or several action
+ *                             elements.</li>
+ * </ul>
+ * 
+ * Note that the compound action must have at least two actions.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ea>
+ * @param <Ep>
+ * @param <R> 
+ */
 public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionPrototype,
                                                  P extends NCLElement,
                                                  I extends NCLElementImpl,
@@ -65,7 +97,10 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
 
     /**
-     * Construtor do elemento <i>compoundAction</i> da <i>Nested Context Language</i> (NCL).
+     * Compound action element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLCompoundActionPrototype() throws XMLException {
         super();
@@ -74,12 +109,31 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
     
     
     /**
-     * Determina o operador da ação composta.
+     * Sets the compound action operator. This attribute is required and can not
+     * be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The operator attribute relates the compound action children elements. Its
+     * possible values are "par" and "seq" and are defined in the enumeration
+     * <i>NCLActionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using a "par" operator means that the actions of the compound action will
+     * be executed in any order. Using a "seq" operator means that the actions of
+     * the compound action will be executed in a predetermined order.
      *
      * @param operator
-     *          elemento representando o operador a ser atribuido.
+     *          element representing the compound action operator from the
+     *          enumeration <i>NCLActionOperator</i>.
+     * @throws XMLException 
+     *          if the element representing the operator is null.
      */
-    public void setOperator(NCLActionOperator operator) {
+    public void setOperator(NCLActionOperator operator) throws XMLException {
+        if(operator == null)
+            throw new XMLException("Null operator.");
+        
         NCLActionOperator aux = this.operator;
         this.operator = operator;
         impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
@@ -87,10 +141,25 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
     
     
     /**
-     * Retorna o operador atribuido a ação composta.
-     *
-     * @return
-     *          elemento representando o operador atribuido.
+     * Returns the compound action operator or <i>null</i> if the attribute is
+     * not defined.
+     * 
+     * <br/>
+     * 
+     * The operator attribute relates the compound action children elements. Its
+     * possible values are "par" and "seq" and are defined in the enumeration
+     * <i>NCLActionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using a "par" operator means that the actions of the compound action will
+     * be executed in any order. Using a "seq" operator means that the actions of
+     * the compound action will be executed in a predetermined order.
+     * 
+     * @return 
+     *          element representing the compound action operator from the
+     *          enumeration <i>NCLActionOperator</i> or <i>null</i> if the
+     *          attribute is not defined.
      */
     public NCLActionOperator getOperator() {
         return operator;
@@ -98,14 +167,15 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
     
     /**
-     * Adiciona uma ação a ação composta.
-     *
+     * Adds an action to the compound action. The compound action must have at
+     * least two action elements.
+     * 
      * @param action
-     *          elemento representando a ação a ser adicionada
+     *          element representing an action.
      * @return
-     *          verdadeiro se a ação foi adicionada.
-     *
-     * @see ArrayList#add(java.lang.Object)
+     *          true if the element representing an action was added.
+     * @throws XMLException 
+     *          if the element representing the action is null.
      */
     public boolean addAction(Ea action) throws XMLException {
         if(actions.add(action, (T) this)){
@@ -117,14 +187,15 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
 
     /**
-     * Remove uma ação a ação composta.
-     *
+     * Removes an action of the compound action. The compound action must have at
+     * least two action elements.
+     * 
      * @param action
-     *          elemento representando a ação a ser removida
+     *          element representing an action.
      * @return
-     *          verdadeiro se a ação foi removida.
-     *
-     * @see ArrayList#remove(java.lang.Object)
+     *          true if the element representing an action was removed.
+     * @throws XMLException 
+     *          if the element representing the action is null.
      */
     public boolean removeAction(Ea action) throws XMLException {
         if(actions.remove(action)){
@@ -136,12 +207,15 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
 
     /**
-     * Verifica se a ação composta possui uma ação.
-     *
+     * Verifies if the compound action has a specific element representing an
+     * action. The compound action must have at least two action elements.
+     * 
      * @param action
-     *          elemento representando a ação a ser verificada
+     *          element representing an action.
      * @return
-     *          verdadeiro se a ação existe.
+     *          true if the compound action has the action element.
+     * @throws XMLException 
+     *          if the element representing the action is null.
      */
     public boolean hasAction(Ea action) throws XMLException {
         return actions.contains(action);
@@ -149,10 +223,11 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
 
     /**
-     * Verifica se a ação composta possui alguma ação.
-     *
-     * @return
-     *          verdadeiro se a ação composta possui alguma ação.
+     * Verifies if the compound action has at least one action. The compound
+     * action must have at least two action elements.
+     * 
+     * @return 
+     *          true if the compound action has at least one action.
      */
     public boolean hasAction() {
         return !actions.isEmpty();
@@ -160,10 +235,11 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
 
 
     /**
-     * Retorna as ações da ação composta.
-     *
-     * @return
-     *          lista contendo as ações da ação composta.
+     * Returns the list of actions that a compound action have. The compound
+     * action must have at least two action elements.
+     * 
+     * @return 
+     *          element list with all actions.
      */
     public ElementList<Ea, T> getActions() {
         return actions;
@@ -196,26 +272,26 @@ public abstract class NCLCompoundActionPrototype<T extends NCLCompoundActionProt
         String this_act, other_act;
         NCLCompoundActionPrototype other_comp;
 
-        // Verifica se sao do mesmo tipo
+        // Verify if actions are of the same type
         if(!(other instanceof NCLCompoundActionPrototype))
             return false;
 
         other_comp = (NCLCompoundActionPrototype) other;
         
-        // Compara pelo operador
+        // Compare the operator
         if(getOperator() == null) this_act = ""; else this_act = getOperator().toString();
         if(other_comp.getOperator() == null) other_act = ""; else other_act = other_comp.getOperator().toString();
         comp = this_act.equals(other_act);
 
-        // Compara pelo delay
+        // Compare the delay
         if(getDelay() == null) this_act = ""; else this_act = getDelay().parse();
         if(other_comp.getDelay() == null) other_act = ""; else other_act = other_comp.getDelay().parse();
         comp &= this_act.equals(other_act);
 
-        // Compara o número de acoes
+        // Compare the number of actions
         comp &= actions.size() == other_comp.getActions().size();
 
-        // Compara as acoes
+        // Compare the actions
         Iterator it = other_comp.getActions().iterator();
         for(NCLAction a : actions){
             if(!it.hasNext())

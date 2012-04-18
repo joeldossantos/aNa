@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -48,6 +48,40 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
+/**
+ * Class that represents a base of rules. Those rules can be simple or composite
+ * rules.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the base of rules. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>importBase</i> - element that imports a rule base defined in another
+ *                          NCL document. The base can have none or several import
+ *                          elements.</li>
+ *  <li><i>rule</i> - element representing a simple rule inside the base. The base
+ *                    can have none or several rule elements.</li>
+ *  <li><i>compositeRule</i> - element representing a composite rule inside the
+ *                             base. The base can have none or several composite
+ *                             rule elements.</li>
+ * </ul>
+ * 
+ * Note that the base of rules must have at least one child element, which can
+ * be a import, a simple or a composite rule.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Et>
+ * @param <Ei> 
+ */
 public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
                                            P extends NCLElement,
                                            I extends NCLElementImpl,
@@ -61,7 +95,10 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Construtor do elemento <i>ruleBase</i> da <i>Nested Context Language</i> (NCL).
+     * Base of rules constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLRuleBasePrototype() throws XMLException {
         super();
@@ -71,14 +108,16 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Adiciona uma regra a base de regras.
-     *
+     * Adds a rule to the base of rules. The rule can be a simple rule or a
+     * composite rule. The base of rules can have none or several rules.
+     * 
      * @param rule
-     *          elemento representando a regra a ser adicionada.
+     *          element representing a rule. This rule can be a simple rule or a
+     *          composite rule.
      * @return
-     *          verdadeiro se a regra foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the rule was added.
+     * @throws XMLException 
+     *          if the element representing the rule is null.
      */
     public boolean addRule(Et rule) throws XMLException {
         if(rules.add(rule, (T) this)){
@@ -90,14 +129,16 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Remove uma regra da base de regras.
-     *
+     * Removes a rule of the base of rules. The rule can be a simple rule or a
+     * composite rule. The base of rules can have none or several rules.
+     * 
      * @param rule
-     *          elemento representando a regra a ser removida.
+     *          element representing a rule. This rule can be a simple rule or a
+     *          composite rule.
      * @return
-     *          verdadeiro se a regra foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the rule was removed.
+     * @throws XMLException 
+     *          if the element representing the rule is null.
      */
     public boolean removeRule(Et rule) throws XMLException {
         if(rules.remove(rule)){
@@ -108,6 +149,18 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
     }
 
 
+    /**
+     * Removes a rule of the base of rules. The rule can be a simple rule or a
+     * composite rule. The base of rules can have none or several rules.
+     * 
+     * @param id
+     *          string representing the id of the element representing a rule.
+     *          This rule can be a simple rule or a composite rule.
+     * @return
+     *          true if the rule was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean removeRule(String id) throws XMLException {
         if(rules.remove(id)){
             impl.notifyRemoved(NCLElementSets.RULES, id);
@@ -118,28 +171,48 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Verifica se a base de regras possui uma regra.
-     *
+     * Verifies if the base of rules has a specific element representing
+     * a rule. The rule can be a simple rule or a composite rule. The base of
+     * rules can have none or several rules.
+     * 
      * @param rule
-     *          elemento representando a regra a ser verificada.
+     *          element representing a rule. This rule can be a simple rule or a
+     *          composite rule.
      * @return
-     *          verdadeiro se a regra existir.
+     *          true if the base of rules has the rule element.
+     * @throws XMLException 
+     *          if the element representing the rule is null.
      */
     public boolean hasRule(Et rule) throws XMLException {
         return rules.contains(rule);
     }
 
 
+    /**
+     * Verifies if the base of rules has a rule with a specific id. The rule can
+     * be a simple rule or a composite rule. The base of rules can have none or
+     * several rules.
+     * 
+     * @param id
+     *          string representing the id of the element representing a rule.
+     *          This rule can be a simple rule or a composite rule.
+     * @return
+     *          true if the base of rules has the rule element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasRule(String id) throws XMLException {
         return rules.get(id) != null;
     }
 
 
     /**
-     * Verifica se a base de regras possui alguma regra.
-     *
-     * @return
-     *          verdadeiro se a base de regras possui alguma regra.
+     * Verifies if the base of rules has at least one rule. The rule can
+     * be a simple rule or a composite rule. The base of rules can have none or
+     * several rules.
+     * 
+     * @return 
+     *          true if the base of rules has at least rule.
      */
     public boolean hasRule() {
         return !rules.isEmpty();
@@ -147,10 +220,12 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Retorna as regras da base de regras.
-     *
-     * @return
-     *          lista contendo as regras da base de regras.
+     * Returns the list of rules that a base of rules have. The rule can
+     * be a simple rule or a composite rule. The base of rules can have none or
+     * several rules.
+     * 
+     * @return 
+     *          element list with all rules.
      */
     public IdentifiableElementList<Et, T> getRules() {
         return rules;
@@ -158,12 +233,17 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Adiciona um importador de base à base de regras.
-     *
+     * Adds an element that imports a base of rules defined in another NCL
+     * document to the base of rules. The base can have none or several import
+     * elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element that imports a base of rules defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was added.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(imports.add(importBase, (T) this)){
@@ -175,12 +255,17 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Remove um importador de base da base de regras.
-     *
+     * Removes an element that imports a base of rules defined in another NCL
+     * document of the base of rules. The base can have none or several import
+     * elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element that imports a base of rules defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was removed.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(imports.remove(importBase)){
@@ -192,10 +277,17 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Verifica se a base de regras contém um importador de base.
-     *
+     * Verifies if the base of rules has a specific element that imports a base
+     * of rules defined in another NCL document. The base can have none or
+     * several import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser verificado.
+     *          element that imports a base of rules defined in another NCL
+     *          document.
+     * @return
+     *          true if the base of rules has the import element.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
@@ -203,10 +295,12 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Verifica se a base de regras possui algum importador de base.
-     *
-     * @return
-     *          verdadeiro se a base de regras possuir algum importador de base.
+     * Verifies if the base of rules has at least one element that imports a base
+     * of rules defined in another NCL document. The base can have none or
+     * several import elements.
+     * 
+     * @return 
+     *          true if the base of rules has at least import element.
      */
     public boolean hasImportBase() {
         return !imports.isEmpty();
@@ -214,10 +308,11 @@ public abstract class NCLRuleBasePrototype<T extends NCLRuleBasePrototype,
 
 
     /**
-     * Retorna os importadores de base da base de regras.
-     *
-     * @return
-     *          lista contendo os importadores de base da base de regras.
+     * Returns the list of elements that imports a base of rules defined in
+     * another NCL document. The base can have none or several import elements.
+     * 
+     * @return 
+     *          element list with all import elements.
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;

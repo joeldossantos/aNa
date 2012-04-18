@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -38,17 +38,25 @@
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represent the name of a role. This name can be a default name or
+ * a user defined name.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public abstract class NCLRolePrototype<T extends NCLRolePrototype,
                               P extends NCLElement,
                               I extends NCLElementImpl>
@@ -63,12 +71,15 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
     
     
     /**
-     * Construtor do papel.
+     * Role constructor. Creates the role name from a string. If the string
+     * represents a default role name, it is represented as a value from the
+     * enumerations <i>NCLDefaultConditionRole</i> or <i>NCLDefaultActionRole</i>.
+     * The name is required and can not be set to <i>null</i>.
      * 
      * @param name
-     *          String com o nome do papel.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o nome a ser atribuído for uma String vazia.
+     *          string representing the role name.
+     * @throws XMLException
+     *          if the string is null or empty.
      */
     public NCLRolePrototype(String name) throws XMLException {
         super();
@@ -78,10 +89,15 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Construtor do papel.
+     * Role constructor. Creates the role name as a default condition role. The
+     * name is required and can not be set to <i>null</i>. The possible default
+     * condition names are defined in the enumeration <i>NCLDefaultConditionRole</i>.
      *
      * @param name
-     *          elemento representando o nome do papel.
+     *          value representing the role name from the enumeration
+     *          <i>NCLDefaultConditionRole</i>.
+     * @throws XMLException
+     *          if the name is null.
      */
     public NCLRolePrototype(NCLDefaultConditionRole name) throws XMLException {
         super();
@@ -91,10 +107,15 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Construtor do papel.
+     * Role constructor. Creates the role name as a default action role. The name
+     * is required and can not be set to <i>null</i>. The possible default action
+     * names are defined in the enumeration <i>NCLDefaultActionRole</i>.
      *
      * @param name
-     *          elemento representando o nome do papel.
+     *          value representing the role name from the enumeration
+     *          <i>NCLDefaultActionRole</i>.
+     * @throws XMLException
+     *          if the name is null.
      */
     public NCLRolePrototype(NCLDefaultActionRole name) throws XMLException {
         super();
@@ -104,33 +125,36 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Determina o nome do papel
+     * Sets the role name from a string. If the string represents a default
+     * role name, it is represented as a value from the enumerations
+     * <i>NCLDefaultConditionRole</i> or <i>NCLDefaultActionRole</i>. The name
+     * is required and can not be set to <i>null</i>.
      *
      * @param name
-     *          String com o nome do papel.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o nome a ser atribuído for uma String vazia.
+     *          string representing the role name.
+     * @throws XMLException
+     *          if the string is null or empty.
      */
     public void setName(String name) throws XMLException {
-        if(name != null && "".equals(name.trim()))
+        if(name == null)
+            throw new XMLException("Null name.");
+        if("".equals(name.trim()))
             throw new XMLException("Empty name String");
 
         
-        if(name != null){
-            for(NCLDefaultConditionRole role : NCLDefaultConditionRole.values()){
-                if(name.equals(role.toString())){
-                    setName(role);
-                    return;
-                }
-            }
-            for(NCLDefaultActionRole role : NCLDefaultActionRole.values()){
-                if(name.equals(role.toString())){
-                    setName(role);
-                    return;
-                }
+        for(NCLDefaultConditionRole role : NCLDefaultConditionRole.values()){
+            if(name.equals(role.toString())){
+                setName(role);
+                return;
             }
         }
-
+        for(NCLDefaultActionRole role : NCLDefaultActionRole.values()){
+            if(name.equals(role.toString())){
+                setName(role);
+                return;
+            }
+        }
+        
         this.name = name;
         this.cname = null;
         this.aname = null;
@@ -138,12 +162,20 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Determina o nome do papel seguindo um dos nomes de condição padrões.
+     * Sets the role name as a default condition name. The name is required and
+     * can not be set to <i>null</i>. The possible default condition names are
+     * defined in the enumeration <i>NCLDefaultConditionRole</i>.
      *
      * @param name
-     *          elemento representando o nome do papel.
+     *          value representing the role name from the enumeration
+     *          <i>NCLDefaultConditionRole</i>.
+     * @throws XMLException
+     *          if the name is null.
      */
-    public void setName(NCLDefaultConditionRole name) {
+    public void setName(NCLDefaultConditionRole name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
         this.cname = name;
         this.name = null;
         this.aname = null;
@@ -151,12 +183,20 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Determina o nome do papel seguindo um dos nomes de ação padrões.
+     * Sets the role name as a default action name. The name is required and
+     * can not be set to <i>null</i>. The possible default action names are
+     * defined in the enumeration <i>NCLDefaultActionRole</i>.
      *
      * @param name
-     *          elemento representando o nome do papel.
+     *          value representing the role name from the enumeration
+     *          <i>NCLDefaultActionRole</i>.
+     * @throws XMLException
+     *          if the name is null.
      */
-    public void setName(NCLDefaultActionRole name) {
+    public void setName(NCLDefaultActionRole name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
         aname = name;
         this.name = null;
         this.cname= null;
@@ -164,11 +204,10 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
     
     
     /**
-     * Retorna o nome do papel. Retorna a String que representa um papel padrao
-     * caso o nome do papel tenha sido determinado desta forma.
+     * Returns the string that represents the role name.
      *
      * @return
-     *          String com o nome do papel.
+     *          string representing the role name.
      */
     public String getName() {
         if(cname != null)
@@ -181,10 +220,14 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Retorna o nome do papel caso este tenha sido determinado como uma condicao padrao.
+     * Returns the role name as a default condition name or <i>null</i> if the
+     * name is not a default condition name. The possible default condition names
+     * are defined in the enumeration <i>NCLDefaultConditionRole</i>.
      *
      * @return
-     *          NCLDefaultConditionRole representando o nome do papel
+     *          value representing the role name from the enumeration
+     *          <i>NCLDefaultConditionRole</i> or <i>null</i> if the name is not
+     *          a default condition name.
      */
     public NCLDefaultConditionRole getConditionName() {
         return cname;
@@ -192,10 +235,14 @@ public abstract class NCLRolePrototype<T extends NCLRolePrototype,
 
 
     /**
-     * Retorna o nome do papel caso este tenha sido determinado como uma acao padrao.
+     * Returns the role name as a default action name or <i>null</i> if the name
+     * is not a default action name. The possible default action names are defined
+     * in the enumeration <i>NCLDefaultConditionRole</i>.
      *
      * @return
-     *          NCLDefaultActionRole representando o nome do papel
+     *          value representing the role name from the enumeration
+     *          <i>NCLDefaultActionRole</i> or <i>null</i> if the name is not
+     *          a default action name.
      */
     public NCLDefaultActionRole getActionName() {
         return aname;

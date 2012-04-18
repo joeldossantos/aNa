@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -53,6 +53,39 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
+/**
+ * Class that represents a connector simple action.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>role</i> - action identification. This attribute is required.</li>
+ *  <li><i>delay</i> - delay waited by the action. This attribute is optional.</li>
+ *  <li><i>eventType</i> - type of event. This attribute is optional.</li>
+ *  <li><i>actionType</i> - transition triggered. This attribute is optional.</li>
+ *  <li><i>value</i> - value to be set if the action is an attribution. This
+ *                     attribute is optional.</li>
+ *  <li><i>min</i> - minimum cardinality of the action. This attribute is optional.</li>
+ *  <li><i>max</i> - maximum cardinality of the action. This attribute is optional.</li>
+ *  <li><i>qualifier</i> - relates the action instances when its cardinality is
+ *                         greater than 1. This attribute is optional.</li>
+ *  <li><i>repeat</i> - number of times the action will be repeated. This attribute
+ *                      is optional.</li>
+ *  <li><i>repeatDelay</i> - delay between repetitions. This attribute is optional.</li>
+ *  <li><i>duration</i> - duration of an attribution. This attribute is optional.</li>
+ *  <li><i>by</i> - increment of the attributed value during the interval. This
+ *                  attribute is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ea>
+ * @param <Er>
+ * @param <Ep>
+ * @param <R> 
+ */
 public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototype,
                                                P extends NCLElement,
                                                I extends NCLElementImpl,
@@ -78,7 +111,10 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Construtor do elemento <i>simpleAction</i> da <i>Nested Context Language</i> (NCL).
+     * Simple action element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLSimpleActionPrototype() throws XMLException {
         super();
@@ -86,12 +122,71 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina o valor de atribuição da ação.
+     * Sets the connector interface point, used to identify this simple action
+     * This attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The role must be unique inside the connector.
+     * 
+     * @param role
+     *          element representing the role name.
+     * @throws XMLException
+     *          if the role is null.
+     */
+    public void setRole(Er role) throws XMLException {
+        if(role == null)
+            throw new XMLException("Null role.");
+        
+        //Removes the parent of the actual role
+        if(this.role != null)
+            this.role.setParent(null);
+
+        Er aux = this.role;
+        this.role = role;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        
+        //Set this as the parent of the new role
+        this.role.setParent(this);
+    }
+
+
+    /**
+     * Returns the connector interface point, used to identify this simple
+     * action or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The role must be unique inside the connector.
+     * 
+     * @return
+     *          element representing the role name or <i>null</i> if the
+     *          attribute is not defined.
+     */
+    public Er getRole() {
+        return role;
+    }
+
+
+    /**
+     * Sets the value to be set if the action is an attribution. This attribute
+     * is optional. Set the value to <i>null</i> to erase a value already defined.
+     * 
+     * <br/>
+     * 
+     * The value can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action it.
      *
      * @param value
-     *          String representando o valor de atribuição.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
+     *          element representing the value for the attribution or <i>null</i>
+     *          to erase a value already defined.
+     * @throws XMLException
+     *          if an error occur while creating the value.
      */
     public void setValue(StringParamType<Ep, Ea, R> value) throws XMLException {
         StringParamType aux = this.value;
@@ -106,10 +201,22 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
     
         
     /**
-     * Retorna o valor de atribuição da ação.
+     * Returns the value to be set if the action is an attribution or <i>null</i>
+     * if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The value can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action it.
      *
      * @return
-     *          String representando o valor de atribuição.
+     *          element representing the value for the attribution or <i>null</i>
+     *          if the attribute is not defined.
      */
     public StringParamType<Ep, Ea, R> getValue() {
         return value;
@@ -117,14 +224,23 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
     
     
     /**
-     * Determina o número mínimo de binds que devem usar essa ação.
+     * Sets the minimum cardinality of the simple action. This attribute is
+     * optional. Set the minimum to <i>null</i> to erase a minimum already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The default minimum value is <i>1</i>.
      *
      * @param min
-     *          inteiro positivo representando o número mínimo.
+     *          positive integer representing the minimum cardinality value or
+     *          <i>null</i> to erase a minimum already defined.
+     * @throws XMLException 
+     *          if the value is negative.
      */
-    public void setMin(Integer min) {
+    public void setMin(Integer min) throws XMLException {
         if(min != null && min < 0)
-            throw new IllegalArgumentException("Invalid min");
+            throw new XMLException("Invalid min");
 
         Integer aux = this.min;
         this.min = min;
@@ -133,10 +249,16 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o número mínimo de binds que devem usar essa ação.
+     * Returns the minimum cardinality of the simple action or <i>null</i> if
+     * the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The default minimum value is <i>1</i>.
      *
      * @return
-     *          inteiro positivo representando o número mínimo.
+     *          positive integer representing the minimum cardinality value or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Integer getMin() {
         return min;
@@ -144,11 +266,17 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina o número máximo de binds que devem usar essa ação.
+     * Sets the maximum cardinality of the simple action. This attribute is
+     * optional. Set the maximum to <i>null</i> to erase a maximum already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The default maximum value is <i>1</i>.
      *
      * @param max
-     *          inteiro positivo representando o número máximo ou um inteiro negativo
-     *          caso o número máximo seja a String "umbouded".
+     *          element representing the maximum cardinality value or <i>null</i>
+     *          to erase a minimum already defined.
      */
     public void setMax(MaxType max) {
         MaxType aux = this.max;
@@ -158,11 +286,16 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o número máximo de binds que devem usar essa ação.
+     * Returns the maximum cardinality of the simple action or <i>null</i> if
+     * the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The default maximum value is <i>1</i>.
      *
      * @return
-     *          inteiro positivo representando o número máximo ou -1
-     *          caso o número máximo seja a String "umbouded".
+     *          element representing the maximum cardinality value or <i>null</i>
+     *          if the attribute is not defined.
      */
     public MaxType getMax() {
         return max;
@@ -170,10 +303,30 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina como serão disparados o conjunto de binds que usam essa ação.
+     * Sets the relation among the action instances when its cardinality is
+     * greater than 1. This attribute is optional. Set the qualifier to
+     * <i>null</i> to erase a qualifier already defined.
+     * 
+     * <br/>
+     * 
+     * The qualifier attribute relates the simple action instances. Its
+     * possible values are "par" and "seq" and are defined in the enumeration
+     * <i>NCLActionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using a "par" qualifier means that the instances of the simple action will
+     * be executed in parallel. Using a "seq" qualifier means that the instances
+     * of the simple action will be executed in sequence.
+     * 
+     * <br/>
+     * 
+     * The default qualifier value is <i>par</i>.
      *
      * @param qualifier
-     *          operador que representa como os binds serão disparados.
+     *          element representing the simple action qualifier from the
+     *          enumeration <i>NCLActionOperator</i> or <i>null</i> to erase
+     *          a qualifier already defined.
      */
     public void setQualifier(NCLActionOperator qualifier) {
         NCLActionOperator aux = this.qualifier;
@@ -183,10 +336,29 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna como serão disparados o conjunto de binds que usam essa ação.
+     * Returns the relation among the action instances when its cardinality is
+     * greater than 1 or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The qualifier attribute relates the simple action instances. Its
+     * possible values are "par" and "seq" and are defined in the enumeration
+     * <i>NCLActionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using a "par" qualifier means that the instances of the simple action will
+     * be executed in parallel. Using a "seq" qualifier means that the instances
+     * of the simple action will be executed in sequence.
+     * 
+     * <br/>
+     * 
+     * The default qualifier value is <i>par</i>.
      *
      * @return
-     *          operador que representa como os binds serão disparados.
+     *          element representing the simple action qualifier from the
+     *          enumeration <i>NCLActionOperator</i> or <i>null</i> if the
+     *          attribute is not defined.
      */
     public NCLActionOperator getQualifier() {
         return qualifier;
@@ -194,42 +366,15 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina o nome do papel de ação seguindo um dos nomes padrões.
-     *
-     * @param role
-     *          elemento representando o nome do papel.
-     */
-    public void setRole(Er role) {
-        //Retira o parentesco do role atual
-        if(this.role != null)
-            this.role.setParent(null);
-
-        Er aux = this.role;
-        this.role = role;
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
-        
-        //Se role existe, atribui este como seu parente
-        if(this.role != null)
-            this.role.setParent(this);
-    }
-
-
-    /**
-     * Retorna o papel utilizado na ação.
-     *
-     * @return
-     *          elemento representando o papel.
-     */
-    public Er getRole() {
-        return role;
-    }
-
-
-    /**
-     * Determina o tipo do evento da ação.
-     *
+     * Sets the type of the event used by the simple action. This attribute
+     * is optional. Set the event type to <i>null</i> to erase an event type
+     * already defined. The possible event type values are defined in the
+     * enumeration <i>NCLEventType</i>.
+     * 
      * @param eventType
-     *          elemento representando o tipo do evento da ação.
+     *          value representing the type of event from the enumeration
+     *          <i>NCLEventType</i> or <i>null</i> to erase an event type
+     *          already defined.
      */
     public void setEventType(NCLEventType eventType) {
         NCLEventType aux = this.eventType;
@@ -239,10 +384,14 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o tipo do evento da ação.
-     *
+     * Returns the type of the event used by the simple action or <i>null</i>
+     * if the attribute is not defined. The possible event type values are
+     * defined in the enumeration <i>NCLEventType</i>.
+     * 
      * @return
-     *          elemento representando o tipo do evento da ação.
+     *          value representing the type of event from the enumeration
+     *          <i>NCLEventType</i> or <i>null</i> if the attribute is not
+     *          defined.
      */
     public NCLEventType getEventType() {
         return eventType;
@@ -250,10 +399,20 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina a ação do evento.
+     * Sets the transition to be triggered by the action in the event state
+     * machine. This attribute is optional. Set the action type to <i>null</i>
+     * to erase an action type already defined.
+     * 
+     * <br/>
+     * 
+     * The action type must be defined when the simple action defined the
+     * attribute event type. The possible action type values are defined in the
+     * enumeration <i>NCLEventAction</i>.
      *
      * @param actionType
-     *          elemento representando a ação do evento.
+     *          value representing the type of action from the enumeration
+     *          <i>NCLEventAction</i> or <i>null</i> to erase an action type
+     *          already defined.
      */
     public void setActionType(NCLEventAction actionType) {
         NCLEventAction aux = this.actionType;
@@ -263,10 +422,19 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o tipo do evento da ação.
+     * Returns the transition to be triggered by the action in the event state
+     * machine or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The action type must be defined when the simple action defined the
+     * attribute event type. The possible action type values are defined in the
+     * enumeration <i>NCLEventAction</i>.
      *
      * @return
-     *          elemento representando o tipo do evento da ação.
+     *          value representing the type of action from the enumeration
+     *          <i>NCLEventType</i> or <i>null</i> if the attribute is not
+     *          defined.
      */
     public NCLEventAction getActionType() {
         return actionType;
@@ -274,10 +442,24 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina o número de repetições da ação.
+     * Sets the number of times the action will be repeated. This attribute is
+     * optional. Set the repeat to <i>null</i> to erase a repeat already defined.
+     * 
+     * <br/>
+     * 
+     * The repeat can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @param repeat
-     *          inteiro representando o número de repetições.
+     *          element representing the number of repetitions of the action or
+     *          <i>null</i> to erase a repeat already defined.
+     * @throws XMLException 
+     *          if an error occur while creating the repeat value.
      */
     public void setRepeat(IntegerParamType<Ep, Ea, R> repeat) throws XMLException {
         IntegerParamType aux = this.repeat;
@@ -292,10 +474,22 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o número de repetições da ação.
+     * Returns the number of times the action will be repeated or <i>null</i>
+     * if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The repeat can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @return
-     *          inteiro representando o número de repetições.
+     *          element representing the number of repetitions of the action or
+     *          <i>null</i> if the attribute is not defined.
      */
     public IntegerParamType<Ep, Ea, R> getRepeat() {
         return repeat;
@@ -303,10 +497,24 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina o delay entre repetições da ação.
+     * Sets the delay between action repetitions. This attribute is optional.
+     * Set the repeat to <i>null</i> to erase a repeat already defined.
+     * 
+     * <br/>
+     * 
+     * The delay can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @param repeatDelay
-     *          inteiro representando o delay entre repetições.
+     *          element representing the delay between repetitions of the action
+     *          or <i>null</i> to erase a delay already defined.
+     * @throws XMLException 
+     *          if an error occur while creating the delay value.
      */
     public void setRepeatDelay(DoubleParamType<Ep, Ea, R> repeatDelay) throws XMLException {
         DoubleParamType aux = this.repeatDelay;
@@ -321,10 +529,22 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o delay entre repetições da ação.
+     * Returns the delay between action repetitions or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The delay can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @return
-     *          inteiro representando o delay entre repetições.
+     *          element representing the delay between repetitions of the action
+     *          or <i>null</i> if the attribute is not defined.
      */
     public DoubleParamType<Ep, Ea, R> getRepeatDelay() {
         return repeatDelay;
@@ -332,10 +552,24 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina a duração da ação de atribuição.
+     * Sets the duration of an attribution. This attribute is optional. Set the
+     * duration to <i>null</i> to erase a duration already defined.
+     * 
+     * <br/>
+     * 
+     * The duration can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @param duration
-     *          inteiro representando a duração da atribuição.
+     *          element representing the duration of an attribution or <i>null</i>
+     *          to erase a delay already defined.
+     * @throws XMLException 
+     *          if an error occur while creating the duration value.
      */
     public void setDuration(DoubleParamType<Ep, Ea, R> duration) throws XMLException {
         DoubleParamType aux = this.duration;
@@ -350,10 +584,22 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna a duração da ação de atribuição.
+     * Returns the duration of an attribution or <i>null</i> if the attribute is
+     * not defined.
+     * 
+     * <br/>
+     * 
+     * The duration can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @return
-     *          inteiro representando a duração da atribuição.
+     *          element representing the duration of an attribution or <i>null</i>
+     *          if the attribute is not defined.
      */
     public DoubleParamType<Ep, Ea, R> getDuration() {
         return duration;
@@ -361,11 +607,25 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Determina o passo da ação de atribuição.
+     * Sets the increment of the attributed value during the interval. This
+     * attribute is optional. Set the duration to <i>null</i> to erase a duration
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The increment can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @param by
-     *          inteiro positivo representando o passo da atribuição ou negativo
-     *          caso o passo seja definido como a String "indefinite".
+     *          element representing the increment of an attribution or <i>null</i>
+     *          to erase an increment already defined.
+     * @throws XMLException 
+     *          if an error occur while creating the increment value.
      */
     public void setBy(ByParamType<Ep, Ea, R> by) throws XMLException {
         ByParamType aux = this.by;
@@ -380,11 +640,22 @@ public abstract class NCLSimpleActionPrototype<T extends NCLSimpleActionPrototyp
 
 
     /**
-     * Retorna o passo da ação de atribuição.
+     * Returns the increment of the attributed value during the interval or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The increment can be set as a parameter, in which case its value is defined
+     * by the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple action is.
      *
      * @return
-     *          inteiro representando o passo da atribuição. Retorna -1 se o
-     *          o passo for "indefinite".
+     *          element representing the increment of an attribution or <i>null</i>
+     *          if the attribute is not defined.
      */
     public ByParamType<Ep, Ea, R> getBy() {
         return by;

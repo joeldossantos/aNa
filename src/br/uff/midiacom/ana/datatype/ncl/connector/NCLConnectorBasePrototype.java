@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -48,6 +48,36 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
+/**
+ * Class that represents a base of connectors.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the base of connectors. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>importBase</i> - element that imports a connector base defined in another
+ *                          NCL document. The base can have none or several import
+ *                          elements.</li>
+ *  <li><i>causalConnector</i> - element representing a connector inside the base. The
+ *                          base can have none or several connector elements.</li>
+ * </ul>
+ * 
+ * Note that the base of connectors must have at least one child element, which
+ * can be a import or a causalConnector.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ec>
+ * @param <Ei> 
+ */
 public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBasePrototype,
                                                 P extends NCLElement,
                                                 I extends NCLElementImpl,
@@ -61,7 +91,10 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
     
 
     /**
-     * Construtor do elemento <i>connectorBase</i> da <i>Nested Context Language</i> (NCL).
+     * Base of connectors constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLConnectorBasePrototype() throws XMLException {
         super();
@@ -71,14 +104,15 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
 
     /**
-     * Adiciona um conector a base de conectores.
+     * Adds a connector to the base of connectors. The base of connectors can
+     * have none or several connector elements.
      * 
      * @param connector
-     *          elemento representando o conector a ser adicionado.
+     *          element representing a connector.
      * @return
-     *          verdadeiro se o conector foi adicionado.
-     *
-     * @see TreeSet#add(java.lang.Object)
+     *          true if the element representing a connector was added.
+     * @throws XMLException 
+     *          if the element representing the connector is null.
      */
     public boolean addCausalConnector(Ec connector) throws XMLException {
         if(connectors.add(connector, (T) this)){
@@ -90,15 +124,16 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
     
     
     /**
-     * Remove um conector da base de conectores.
+     * Removes a connector of the base of connectors. The base of connectors can
+     * have none or several connector elements.
      * 
      * @param connector
-     *          elemento representando o conector a ser removido.
+     *          element representing a connector.
      * @return
-     *          verdadeiro se o conector foi removido.
-     *
-     * @see TreeSet#remove(java.lang.Object)
-     */    
+     *          true if the element representing a connector was removed.
+     * @throws XMLException 
+     *          if the element representing the connector is null.
+     */
     public boolean removeCausalConnector(Ec connector) throws XMLException {
         if(connectors.remove(connector)){
             impl.notifyRemoved(NCLElementSets.CONNECTORS, connector);
@@ -108,6 +143,18 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
     }
     
     
+    /**
+     * Removes a connector of the base of connectors. The base of connectors can
+     * have none or several connector elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          connector.
+     * @return
+     *          true if the connector was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean removeCausalConnector(String id) throws XMLException {
         if(connectors.remove(id)){
             impl.notifyRemoved(NCLElementSets.CONNECTORS, id);
@@ -118,12 +165,16 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
     
     
     /**
-     * Verifica se a base de conectores possui um conector.
+     * Verifies if the base of connectors has a specific element representing
+     * connector. The base of connectors can have none or several connector
+     * elements.
      * 
      * @param connector
-     *          elemento representando o conector a ser verificado.
+     *          element representing a connector.
      * @return
-     *          verdadeiro se o conector existir.
+     *          true if the base of connectors has the connector element.
+     * @throws XMLException 
+     *          if the element representing the connector is null.
      */
     public boolean hasCausalConnector(Ec connector) throws XMLException {
         return connectors.contains(connector);        
@@ -131,16 +182,29 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
     }
     
     
+    /**
+     * Verifies if the base of connectors has a connector with a specific id.
+     * The base of connectors can have none or several connector elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          connector.
+     * @return
+     *          true if the base of connectors has the connector element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasCausalConnector(String id) throws XMLException {
         return connectors.get(id) != null;
     }
     
     
     /**
-     * Verifica se a base de conectores possui pelo menos um conector.
+     * Verifies if the base of connectors has at least one connector. The base
+     * of connectors can have none or several connector elements.
      * 
-     * @return
-     *          verdadeiro se a base de conectores possui pelo menos um conector.
+     * @return 
+     *          true if the base of connectors has at least one connector.
      */
     public boolean hasCausalConnector() {
         return !connectors.isEmpty();
@@ -148,10 +212,11 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
     
     /**
-     * Retorna os conectores da base de conectores.
+     * Returns the list of connectors that a base of connectors have. The base
+     * of connectors can have none or several connector elements.
      * 
-     * @return
-     *          lista contendo os conectores da base de conectores.
+     * @return 
+     *          element list with all connectors.
      */
     public IdentifiableElementList<Ec, T> getCausalConnectors() {
         return connectors;        
@@ -159,12 +224,17 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
 
     /**
-     * Adiciona um importador de base à base de conectores.
-     *
+     * Adds an element that imports a base of connectors defined in another NCL
+     * document to the base of connectors. The base can have none or several
+     * import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element that imports a base of connectors defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was added.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(imports.add(importBase, (T) this)){
@@ -176,12 +246,17 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
 
     /**
-     * Remove um importador de base da base de conectores.
-     *
+     * Removes an element that imports a base of connectors defined in another
+     * NCL document of the base of connectors. The base can have none or several
+     * import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element that imports a base of connectors defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was removed.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(imports.remove(importBase)){
@@ -193,10 +268,17 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
 
     /**
-     * Verifica se a base de conectores contém um importador de base.
-     *
+     * Verifies if the base of connectors has a specific element that imports a
+     * base of connectors defined in another NCL document. The base can have
+     * none or several import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser verificado.
+     *          element that imports a base of connectors defined in another NCL
+     *          document.
+     * @return
+     *          true if the base of connectors has the import element.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
@@ -204,10 +286,12 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
 
     /**
-     * Verifica se a base de conectores possui algum importador de base.
-     *
-     * @return
-     *          verdadeiro se a base de conectores possuir algum importador de base.
+     * Verifies if the base of connectors has at least one element that imports
+     * a base of connectors defined in another NCL document. The base can have
+     * none or several import elements.
+     * 
+     * @return 
+     *          true if the base of connectors has at least import element.
      */
     public boolean hasImportBase() {
         return !imports.isEmpty();
@@ -215,10 +299,11 @@ public abstract class NCLConnectorBasePrototype<T extends NCLConnectorBaseProtot
 
 
     /**
-     * Retorna os importadores de base da base de conectores.
-     *
-     * @return
-     *          lista contendo os importadores de base da base de conectores.
+     * Returns the list of elements that imports a base of connectors defined in
+     * another NCL document. The base can have none or several import elements.
+     * 
+     * @return 
+     *          element list with all import elements.
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;

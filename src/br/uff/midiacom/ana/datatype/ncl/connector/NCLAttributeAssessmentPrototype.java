@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -49,6 +49,30 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents a attribute assessment element. This element  represents
+ * the attribute whose value will be compared.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>role</i> - connector interface point, used to identify this attribute
+ *                    assessment. This attribute is required.</li>
+ *  <li><i>eventType</i> - type of the event used in the attribute assessment.
+ *                         This attribute is required.</li>
+ *  <li><i>key</i> - key pressed by the user. This attribute is optional.</li>
+ *  <li><i>attributeType</i> - type of the attribute. This attribute is optional.</li>
+ *  <li><i>offset</i> - value added to the attribute value. This attribute is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Er>
+ * @param <Ep>
+ * @param <R> 
+ */
 public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAssessmentPrototype,
                                                       P extends NCLElement,
                                                       I extends NCLElementImpl,
@@ -66,7 +90,10 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
 
     /**
-     * Construtor do elemento <i>attributeStatement</i> da <i>Nested Context Language</i> (NCL).
+     * Attribute assessment element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLAttributeAssessmentPrototype() throws XMLException {
         super();
@@ -74,15 +101,23 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
 
 
     /**
-     * Determina o papel do atributo da assertiva.
+     * Sets the connector interface point, used to identify this attribute
+     * assessment. This attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The role must be unique inside the connector.
      * 
      * @param role
-     *          String representando o papel definido pela assertiva.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o role for uma String vazia.
+     *          element representing the role name.
+     * @throws XMLException
+     *          if the role is null.
      */
-    public void setRole(Er role) {
-        //Retira o parentesco do role atual
+    public void setRole(Er role) throws XMLException {
+        if(role == null)
+            throw new XMLException("Null role.");
+        
+        //Removes the parent of the actual role
         if(this.role != null)
             this.role.setParent(null);
 
@@ -90,17 +125,22 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
         this.role = role;
         impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
         
-        //Se role existe, atribui este como seu parente
-        if(this.role != null)
-            this.role.setParent(this);
+        //Set this as the parent of the new role
+        this.role.setParent(this);
     }
     
     
     /**
-     * Retorna o papel atribuido ao atributo da assertiva.
+     * Returns the connector interface point, used to identify this attribute
+     * assessment or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The role must be unique inside the connector.
      * 
      * @return
-     *          elemento representando o papel.
+     *          element representing the role name or <i>null</i> if the
+     *          attribute is not defined.
      */
     public Er getRole() {
         return role;
@@ -108,12 +148,20 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Determina o tipo do evento testado pelo atributo da assertiva.
+     * Sets the type of the event used in the attribute assessment. This attribute
+     * is required and can not be set to <i>null</i>. The possible event type
+     * values are defined in the enumeration <i>NCLEventType</i>.
      * 
      * @param eventType
-     *          tipo do evento.
+     *          value representing the type of event from the enumeration
+     *          <i>NCLEventType</i>.
+     * @throws XMLException 
+     *          if the type is null.
      */
-    public void setEventType(NCLEventType eventType) {
+    public void setEventType(NCLEventType eventType) throws XMLException {
+        if(eventType == null)
+            throw new XMLException("Null event type.");
+        
         NCLEventType aux = this.eventType;
         this.eventType = eventType;
         impl.notifyAltered(NCLElementAttributes.ROLE, aux, eventType);
@@ -121,10 +169,14 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Retorna o tipo do evento testado pelo atributo da assertiva.
+     * Returns the type of the event used in the attribute assessment or
+     * <i>null</i> if the attribute is not defined. The possible event type
+     * values are defined in the enumeration <i>NCLEventType</i>.
      * 
      * @return
-     *          elemento representando o tipo do evento.
+     *          value representing the type of event from the enumeration
+     *          <i>NCLEventType</i> or <i>null</i> if the attribute is not
+     *          defined.
      */
     public NCLEventType getEventType() {
         return eventType;
@@ -132,16 +184,32 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Determina a tecla testada pelo atributo da assertiva.
+     * Sets the key pressed by the user, in case a selection event is used. This
+     * attribute is optional. Set the key to <i>null</i> to erase a key already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The key can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this attribute assessment is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
      * 
      * @param key
-     *          elemento representando a tecla.
+     *          element representing the key pressed or <i>null</i> to erase a
+     *          key already defined.
+     * @throws XMLException
+     *          if an error occur while creating the key value.
      */
     public void setKey(KeyParamType<Ep, T, R> key) throws XMLException {
         KeyParamType aux = this.key;
         
         this.key = key;
-        this.key.setOwner((T) this, NCLElementAttributes.KEY);
+        if(this.key != null)
+            this.key.setOwner((T) this, NCLElementAttributes.KEY);
         
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
         if(aux != null)
@@ -150,10 +218,22 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Retorna a tecla testada pelo atributo da assertiva.
+     * Returns the key pressed by the user, in case a selection event is used or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The key can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this attribute assessment is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
      * 
      * @return
-     *          elemento representando a tecla.
+     *          element representing the key pressed or <i>null</i> if the
+     *          attribute is not defined.
      */
     public KeyParamType<Ep, T, R> getKey() {
         return key;
@@ -161,10 +241,14 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Determina o tipo do atributo testado pelo atributo da assertiva.
+     * Sets the type of the attribute. This attribute is optional. Set it to
+     * <i>null</i> to erase an attribute already defined. The possible attribute
+     * type values are defined in the enumeration <i>NCLAttributeType</i>.
      * 
      * @param attributeType
-     *          elemento representando o tipo do atributo.
+     *          value representing the type of attribute from the enumeration
+     *          <i>NCLAttributeType</i> or <i>null</i> to erase an attribute
+     *          already defined.
      */
     public void setAttributeType(NCLAttributeType attributeType) {
         NCLAttributeType aux = this.attributeType;
@@ -174,10 +258,13 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Retorna o tipo do atributo testado pelo atributo da assertiva.
+     * Returns the type of the attribute or <i>null</i> if it is not defined.
+     * The possible attribute type values are defined in the enumeration
+     * <i>NCLAttributeType</i>.
      * 
      * @return
-     *          elemento representando o tipo do atributo.
+     *          value representing the type of attribute from the enumeration
+     *          <i>NCLAttributeType</i> or <i>null</i> if it is not defined.
      */
     public NCLAttributeType getAttributeType() {
         return attributeType;
@@ -185,18 +272,31 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Determina o offset de teste.
+     * Sets the value added to the attribute value. This attribute is optional.
+     * Set the offset to <i>null</i> to erase an offset already defined.
+     * 
+     * <br/>
+     * 
+     * The offset can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this attribute assessment is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
      * 
      * @param offset
-     *          inteiro representando o valor do offset a ser utilizado no teste.
-     * @throws java.lang.IllegalArgumentException
-     *          se o offset for inválido.
+     *          element representing the offset or <i>null</i> to erase an
+     *          offset already defined.
+     * @throws XMLException
+     *          if an error occur while creating the offset value.
      */
     public void setOffset(IntegerParamType<Ep, T, R> offset) throws XMLException {
         IntegerParamType aux = this.offset;
         
         this.offset = offset;
-        this.offset.setOwner((T) this, NCLElementAttributes.OFFSET);
+        if(this.offset != null)
+            this.offset.setOwner((T) this, NCLElementAttributes.OFFSET);
         
         impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
         if(aux != null)
@@ -205,10 +305,22 @@ public abstract class NCLAttributeAssessmentPrototype<T extends NCLAttributeAsse
     
     
     /**
-     * Retorna o offset de teste.
+     * Returns the value added to the attribute value or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The offset can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this attribute assessment is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
      * 
      * @return
-     *          inteiro representando o valor do offset a ser utilizado no teste.
+     *          element representing the offset or <i>null</i> if the attribute
+     *          is not defined.
      */
     public IntegerParamType<Ep, T, R> getOffset() {
         return offset;

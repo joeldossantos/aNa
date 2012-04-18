@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -45,6 +45,14 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
+/**
+ * Class that represents the metadata element. This element is used to describe
+ * an NCL document. This element defines a RDF tree that describes the document.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public abstract class NCLMetadataPrototype<T extends NCLMetadataPrototype,
                                            P extends NCLElement,
                                            I extends NCLElementImpl>
@@ -55,7 +63,10 @@ public abstract class NCLMetadataPrototype<T extends NCLMetadataPrototype,
 
 
     /**
-     * Construtor do elemento <i>metadata</i> da <i>Nested Context Language</i> (NCL).
+     * Metadata element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLMetadataPrototype() throws XMLException {
         super();
@@ -63,14 +74,19 @@ public abstract class NCLMetadataPrototype<T extends NCLMetadataPrototype,
 
 
     /**
-     * Determina a árvore RDF de metadados do elemento metadata.
-     *
+     * Sets the content of the metadata element. This element content is a RDF
+     * tree. This content is required and can not be set to <i>null</i>.
+     * 
      * @param rdfTree
-     *          String representando a árvore RDF.
-     * @throws IllegalArgumentException
-     *          se a String for vazia.
+     *          string representing the metadata content. This content is a RDF
+     *          tree.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public void setRDFTree(String rdfTree) throws XMLException {
+        if(rdfTree == null)
+            throw new XMLException("Null metadata content.");
+        
         StringType aux = this.rdfTree;
         this.rdfTree = new StringType(rdfTree);
         impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
@@ -78,10 +94,12 @@ public abstract class NCLMetadataPrototype<T extends NCLMetadataPrototype,
 
 
     /**
-     * Retorna a árvore RDF de metadados do elemento metadata.
-     *
-     * @return
-     *          String representando a árvore RDF.
+     * Returns the content of the metadata element or <i>null</i> if the content
+     * is not defined. This element content is a RDF tree.
+     * 
+     * @return 
+     *          string representing the metadata content. This content is a RDF
+     *          tree or <i>null</i> if the content is not defined.
      */
     public String getRDFTree() {
         if(rdfTree != null)

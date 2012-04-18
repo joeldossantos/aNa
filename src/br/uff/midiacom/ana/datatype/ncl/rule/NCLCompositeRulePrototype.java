@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
@@ -47,8 +46,40 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
 
+/**
+ * Class that represents a composite rule.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the composite rule element. This attribute is required.</li>
+ *  <li><i>operator</i> - boolean operator relating the composite rule children
+ *                        elements. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>rule</i> - element representing a simple rule inside the composite
+ *                    rule. The composite rule can have none or several rule
+ *                    elements.</li>
+ *  <li><i>compositeRule</i> - element representing a composite rule inside the
+ *                             composite rule. The composite rule can have none
+ *                             or several composite rule elements.</li>
+ * </ul>
+ * 
+ * Note that the composite rule must have at least one child element, which can
+ * be a simple or a composite rule.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
                                                 P extends NCLElement,
                                                 I extends NCLElementImpl>
@@ -62,21 +93,11 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Construtor do elemento <i>compositeRule</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da regra.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da regra não for válido.
+     * Composite rule constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLCompositeRulePrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        rules = new IdentifiableElementList<T, T>();
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLCompositeRulePrototype() throws XMLException {
         super();
         rules = new IdentifiableElementList<T, T>();
@@ -85,12 +106,20 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Atribui um operador a regra composta.
+     * Set the composite rule boolean operator relating the composite rule
+     * children elements. This attribute is required and can not be set to
+     * <i>null</i>. The possible operators to be used are defined in the
+     * enumeration <i>NCLOperator</i>.
      *
      * @param operator
-     *          elemento representando o operador da regra composta.
+     *          composite rule operator from the enumeration <i>NCLOperator</i>.
+     * @throws XMLException 
+     *          if the value representing the operator is null.
      */
-    public void setOperator(NCLOperator operator) {
+    public void setOperator(NCLOperator operator) throws XMLException {
+        if(operator == null)
+            throw new XMLException("Null operator.");
+        
         NCLOperator aux = this.operator;
         this.operator = operator;
         impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
@@ -98,10 +127,14 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Retorna o operador da regra composta.
-     *
+     * Returns the composite rule boolean operator relating the composite rule
+     * children elements or <i>null</i> if the attribute is not defined. The
+     * possible operators to be used are defined in the enumeration
+     * <i>NCLOperator</i>.
+     * 
      * @return
-     *          elemento representando o operador da regra composta.
+     *          composite rule operator from the enumeration <i>NCLOperator</i>
+     *          or <i>null</i> if the operator is not defined.
      */
     public NCLOperator getOperator() {
         return operator;
@@ -109,14 +142,16 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Adiciona uma regra a regra composta.
-     *
+     * Adds a rule to the composite rule. The rule can be a simple rule or a
+     * composite rule. The composite rule must have at least one rule.
+     * 
      * @param rule
-     *          elemento representando a regra a ser adicionada.
+     *          element representing a rule. This rule can be a simple rule or a
+     *          composite rule.
      * @return
-     *          verdadeiro se a regra foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the rule was added.
+     * @throws XMLException 
+     *          if the element representing the rule is null.
      */
     public boolean addRule(T rule) throws XMLException {
         if(rules.add(rule, (T) this)){
@@ -128,14 +163,16 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Remove uma regra da regra composta.
-     *
+     * Removes a rule of the composite rule. The rule can be a simple rule or a
+     * composite rule. The composite rule must have at least one rule.
+     * 
      * @param rule
-     *          elemento representando a regra a ser removida.
+     *          element representing a rule. This rule can be a simple rule or a
+     *          composite rule.
      * @return
-     *          verdadeiro se a regra foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the rule was removed.
+     * @throws XMLException 
+     *          if the element representing the rule is null.
      */
     public boolean removeRule(T rule) throws XMLException {
         if(rules.remove(rule)){
@@ -146,6 +183,18 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
     }
 
 
+    /**
+     * Removes a rule of the composite rule. The rule can be a simple rule or a
+     * composite rule. The composite rule must have at least one rule.
+     * 
+     * @param id
+     *          string representing the id of the element representing a rule.
+     *          This rule can be a simple rule or a composite rule.
+     * @return
+     *          true if the rule was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean removeRule(String id) throws XMLException {
         if(rules.remove(id)){
             impl.notifyRemoved(NCLElementSets.RULES, id);
@@ -156,28 +205,48 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Verifica se a regra composta possui uma regra.
-     *
+     * Verifies if the composite rule has a specific element representing
+     * a rule. The rule can be a simple rule or a composite rule. The composite
+     * rule must have at least one rule.
+     * 
      * @param rule
-     *          elemento representando a regra a ser verificada.
+     *          element representing a rule. This rule can be a simple rule or a
+     *          composite rule.
      * @return
-     *          verdadeiro se a regra existir.
+     *          true if the composite rule has the rule element.
+     * @throws XMLException 
+     *          if the element representing the rule is null.
      */
     public boolean hasRule(T rule) throws XMLException {
         return rules.contains(rule);
     }
 
 
+    /**
+     * Verifies if the composite rule has a rule with a specific id. The rule can
+     * be a simple rule or a composite rule. The composite rule must have at
+     * least one rule.
+     * 
+     * @param id
+     *          string representing the id of the element representing a rule.
+     *          This rule can be a simple rule or a composite rule.
+     * @return
+     *          true if the composite rule has the rule element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasRule(String id) throws XMLException {
         return rules.get(id) != null;
     }
 
 
     /**
-     * Verifica se a regra composta possui alguma regra.
-     *
-     * @return
-     *          verdadeiro se a regra composta possui alguma regra.
+     * Verifies if the composite rule has at least one rule. The rule can
+     * be a simple rule or a composite rule. The composite rule must have at
+     * least one rule.
+     * 
+     * @return 
+     *          true if the composite rule has at least rule.
      */
     public boolean hasRule() {
         return !rules.isEmpty();
@@ -185,10 +254,12 @@ public abstract class NCLCompositeRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Retorna as regras da regra composta.
-     *
-     * @return
-     *          lista contendo as regras da regra composta.
+     * Returns the list of rules that a composite rule have. The rule can
+     * be a simple rule or a composite rule. The composite rule must have at
+     * least one rule.
+     * 
+     * @return 
+     *          element list with all rules.
      */
     public IdentifiableElementList<T, T> getRules() {
         return rules;

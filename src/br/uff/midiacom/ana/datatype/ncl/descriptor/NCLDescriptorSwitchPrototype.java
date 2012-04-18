@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -38,28 +38,64 @@
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
 
+/**
+ * Class that represents a descriptor switch element. A descriptor switch element
+ * represents a set of alternative descriptor to be used by a content node. The
+ * descriptor to be used is chosen during presentation, according to a set of
+ * rules.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the descriptor switch element. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>bindRule</i> - element relating a rule to a descriptor switch component
+ *                        descriptor. The descriptor switch must have at least
+ *                          one bindRule element.</li>
+ *  <li><i>defaultDescriptor</i> - element representing the descriptor switch
+ *                                 component descriptor to be used when no rule
+ *                                 is true. This element is optional.</li>
+ *  <li><i>descriptor</i> - element representing a descriptor. The descriptor
+ *                          switch must have at least one descriptor element.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <El>
+ * @param <Ed>
+ * @param <Eb> 
+ */
 public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitchPrototype,
                                                    P extends NCLElement,
                                                    I extends NCLElementImpl,
                                                    El extends NCLLayoutDescriptor,
+                                                   Edd extends NCLDescriptor,
                                                    Ed extends DescriptorReference,
                                                    Eb extends NCLDescriptorBindRulePrototype>
         extends NCLIdentifiableElementPrototype<El, P, I>
         implements NCLLayoutDescriptor<El, P> {
 
-    protected IdentifiableElementList<El, T> descriptors;
+    protected IdentifiableElementList<Edd, T> descriptors;
     protected ElementList<Eb, T> binds;
     protected Ed defaultDescriptor;
     
@@ -67,39 +103,31 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Construtor do elemento <i>descriptorSwitch</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do switch de descritor.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do switch de descritor não for válido.
+     * Descriptor switch element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLDescriptorSwitchPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        descriptors = new IdentifiableElementList<El, T>();
-        binds = new ElementList<Eb, T>();
-        references = new ItemList<ReferenceType>();
-    }
-    
-    
     public NCLDescriptorSwitchPrototype() throws XMLException {
         super();
-        descriptors = new IdentifiableElementList<El, T>();
+        descriptors = new IdentifiableElementList<Edd, T>();
         binds = new ElementList<Eb, T>();
         references = new ItemList<ReferenceType>();
     }
 
 
     /**
-     * Adiciona um descritor ao switch de descritor.
-     *
+     * Adds a descriptor to the descriptor switch. The descriptor switch must
+     * have at least one descriptor element.
+     * 
      * @param descriptor
-     *          elemento representando o descritor a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element representing a descriptor.
+     * @return
+     *          true if the element representing a descriptor was added.
+     * @throws XMLException 
+     *          if the element representing the descriptor is null.
      */
-    public boolean addDescriptor(El descriptor) throws XMLException {
+    public boolean addDescriptor(Edd descriptor) throws XMLException {
         if(descriptors.add(descriptor, (T) this)){
             impl.notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
             return true;
@@ -109,14 +137,17 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Remove um descritor do switch de descritor.
-     *
+     * Removes a descriptor of the descriptor switch. The descriptor switch must
+     * have at least one descriptor element.
+     * 
      * @param descriptor
-     *          elemento representando o descritor a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element representing a descriptor.
+     * @return
+     *          true if the element representing a descriptor was removed.
+     * @throws XMLException 
+     *          if the element representing the descriptor is null.
      */
-    public boolean removeDescriptor(El descriptor) throws XMLException {
+    public boolean removeDescriptor(Edd descriptor) throws XMLException {
         if(descriptors.remove(descriptor)){
             impl.notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
             return true;
@@ -126,14 +157,16 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Remove um descritor do switch de descritor.
-     *
+     * Removes a descriptor of the descriptor switch. The descriptor switch must
+     * have at least one descriptor element.
+     * 
      * @param id
-     *          identificador do descritor a ser removido.
+     *          string representing the id of the element representing a
+     *          descriptor.
      * @return
-     *          Verdadeiro se o descritor foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the descriptor was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeDescriptor(String id) throws XMLException {
         if(descriptors.remove(id)){
@@ -145,26 +178,45 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Verifica se o switch de descritor contém um descritor.
-     *
+     * Verifies if the descriptor switch has a specific element representing
+     * a descriptor. The descriptor switch must have at least one descriptor
+     * element.
+     * 
      * @param descriptor
-     *          elemento representando o descritor a ser verificado.
+     *          element representing a descriptor.
+     * @return
+     *          true if the descriptor switch has the descriptor element.
+     * @throws XMLException 
+     *          if the element representing the descriptor is null.
      */
-    public boolean hasDescriptor(El descriptor) throws XMLException {
+    public boolean hasDescriptor(Edd descriptor) throws XMLException {
         return descriptors.contains(descriptor);
     }
 
 
+    /**
+     * Verifies if the descriptor switch has a descriptor with a specific id.
+     * The descriptor switch must have at least one descriptor element.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          descriptor.
+     * @return
+     *          true if the descriptor switch has the descriptor element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasDescriptor(String id) throws XMLException {
         return descriptors.get(id) != null;
     }
 
 
     /**
-     * Verifica se o switch de descritor possui algum descritor.
-     *
-     * @return
-     *          verdadeiro se o switch de descritor possuir algum descritor.
+     * Verifies if the descriptor switch has at least one descriptor. The
+     * descriptor switch must have at least one descriptor element.
+     * 
+     * @return 
+     *          true if the descriptor switch has at least one descriptor.
      */
     public boolean hasDescriptor() {
         return !descriptors.isEmpty();
@@ -172,23 +224,27 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Retorna os descritores do switch de descritor.
-     *
-     * @return
-     *          lista contendo os descritores do switch de descritor.
+     * Returns the list of descriptors that a descriptor switch have. The
+     * descriptor switch must have at least one descriptor element.
+     * 
+     * @return 
+     *          element list with all descriptors.
      */
-    public IdentifiableElementList<El, T> getDescriptors() {
+    public IdentifiableElementList<Edd, T> getDescriptors() {
         return descriptors;
     }
 
 
     /**
-     * Adiciona um bind ao switch de descritor.
-     *
+     * Adds an element relating a rule to a descriptor switch component descriptor.
+     * The descriptor switch can have none or several bindRule elements.
+     * 
      * @param bind
-     *          elemento representando o bind a ser adicionado.
-     *
-     * @see ArrayList#add
+     *          element relating a rule to a descriptor switch component descriptor.
+     * @return
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean addBind(Eb bind) throws XMLException {
         if(binds.add(bind, (T) this)){
@@ -200,12 +256,15 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Remove um bind do switch de descritor.
+     * Removes an element relating a rule to a descriptor switch component
+     * descriptor. The descriptor switch can have none or several bindRule elements.
      *
      * @param bind
-     *          elemento representando o bind a ser removido.
-     *
-     * @see ArrayList#remove
+     *          element relating a rule to a descriptor switch component descriptor.
+     * @return
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
@@ -217,10 +276,16 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Verifica se o switch de descritor contém um bind.
+     * Verifies if the descriptor switch element has a specific element relating
+     * a rule to a descriptor switch component descriptor. The descriptor switch
+     * can have none or several bindRule elements.
      *
      * @param bind
-     *          elemento representando o bind a ser verificado.
+     *          element relating a rule to a descriptor switch component descriptor.
+     * @return
+     *          true if the descriptor switch element has the bind.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean hasBind(Eb bind) throws XMLException {
         return binds.contains(bind);
@@ -228,10 +293,12 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Verifica se o switch de descritor possui algum bind.
-     *
-     * @return
-     *          verdadeiro se o switch de descritor possuir algum bind.
+     * Verifies if the descriptor switch element has at least one element relating
+     * a rule to a descriptor switch component descriptor. The descriptor switch
+     * can have none or several bindRule elements.
+     * 
+     * @return 
+     *          true if the descriptor switch has at least one bind.
      */
     public boolean hasBind() {
         return !binds.isEmpty();
@@ -239,10 +306,11 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Retorna os binds do switch de descritor.
-     *
-     * @return
-     *          lista contendo os binds do switch de descritor.
+     * Returns the list of binds that a descriptor switch element have. The
+     * descriptor switch can have none or several bindRule elements.
+     * 
+     * @return 
+     *          element list with all binds.
      */
     public ElementList<Eb, T> getBinds() {
         return binds;
@@ -250,10 +318,17 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Determina o descritor padrão do switch de descritor.
-     *
-     * @param defaultDescriptor
-     *          elemento representando o descritor padrão.
+     * Sets the element representing the descriptor switch component descriptor
+     * to be used when no rule is true. This element is optional. Set the default
+     * descriptor to <i>null</i> to erase a default descriptor already defined.
+     * 
+     * @param defaultDescriptor 
+     *          element representing a reference to a descriptor switch component
+     *          descriptor or <i>null</i> to erase a default descriptor already
+     *          defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor
+     *          switch component descriptor.
      */
     public void setDefaultDescriptor(Ed defaultDescriptor) throws XMLException {
         if(this.defaultDescriptor != null){
@@ -272,10 +347,13 @@ public abstract class NCLDescriptorSwitchPrototype<T extends NCLDescriptorSwitch
 
 
     /**
-     * Retorna o descritor padrão do switch de descritor.
-     *
-     * @return
-     *          elemento representando o descritor padrão.
+     * Returns the element representing the descriptor switch component descriptor
+     * to be used when no rule is true or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * @return 
+     *          element representing a reference to a descriptor switch component
+     *          descriptor or <i>null</i> if the attribute is not defined.
      */
     public Ed getDefaultDescriptor() {
         return defaultDescriptor;

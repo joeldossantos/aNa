@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -43,6 +43,15 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Interface that represents a condition element. The condition can be a simple
+ * condition or a compound condition.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <Ep>
+ * @param <R> 
+ */
 public interface NCLCondition<T extends NCLCondition,
                               P extends NCLElement,
                               Ep extends NCLConnectorParamPrototype,
@@ -51,21 +60,45 @@ public interface NCLCondition<T extends NCLCondition,
 
 
     /**
-     * Atribui um atraso à condicao.
-     *
+     * Sets the delay waited by the condition. This attribute is optional. Set the
+     * delay to <i>null</i> to erase a delay already defined.
+     * 
+     * <br/>
+     * 
+     * The delay can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this condition is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
+     * 
      * @param delay
-     *          inteiro contendo o atraso, em segundos.
-     * @throws java.lang.IllegalArgumentException
-     *          se o inteiro for negativo.
+     *          element representing the delay or <i>null</i> to erase a
+     *          delay already defined.
+     * @throws XMLException
+     *          if an error occur while creating the delay value.
      */
     public void setDelay(DoubleParamType<Ep, T, R> delay) throws XMLException;
 
 
     /**
-     * Retorna o atraso atribuido à condição.
-     *
+     * Returns the delay waited by the condition or <i>null</i> if the attribute
+     * is not defined.
+     * 
+     * <br/>
+     * 
+     * The delay can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this condition is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
+     * 
      * @return
-     *          inteiro contendo o atraso, em segundos.
+     *          element representing the delay or <i>null</i> if the attribute
+     *          is not defined.
      */
     public DoubleParamType<Ep, T, R> getDelay();
 }

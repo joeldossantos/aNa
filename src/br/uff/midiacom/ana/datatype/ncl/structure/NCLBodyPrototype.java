@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -50,6 +50,49 @@ import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents the NCL document body element. The body is a special
+ * type of context node, representing the most external document context.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the document body element. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>port</i> - element representing a body interface point. The body can
+ *                    have none or several port elements.</li>
+ *  <li><i>property</i> - element representing a property. The body can have none
+ *                        or several property elements.</li>
+ *  <li><i>media</i> - element representing a media object. The body can have none
+ *                     or several media elements.</li>
+ *  <li><i>context</i> - element representing a composition. The body can have
+ *                       none or several context elements.</li>
+ *  <li><i>switch</i> - element representing a content control composition. The
+ *                      body can have none or several switch elements.</li>
+ *  <li><i>link</i> - element representing a link among medias or compositions.
+ *                    The body can have none or several link elements.</li>
+ *  <li><i>meta</i> - elements defining meta data. The body can have none or several
+ *                    meta elements.</li>
+ *  <li><i>metadata</i> - elements defining a RDF tree. The body can have none
+ *                        or several metadata elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ept>
+ * @param <Epp>
+ * @param <En>
+ * @param <El>
+ * @param <Em>
+ * @param <Emt> 
+ */
 public abstract class NCLBodyPrototype<T extends NCLBodyPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
@@ -59,17 +102,15 @@ public abstract class NCLBodyPrototype<T extends NCLBodyPrototype,
                                        El extends NCLLinkPrototype,
                                        Em extends NCLMetaPrototype,
                                        Emt extends NCLMetadataPrototype>
-        extends NCLCompositeNodeElement<T, P, I, Ept, Epp, En, El, Em, Emt>
-        implements NCLIdentifiableElement<T, P> {
+        extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
+        implements NCLNode<En, P> {
 
     
     /**
-     * Construtor do elemento <i>context</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do contexto.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do contexto for inválido.
+     * Body element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLBodyPrototype() throws XMLException {
         super();

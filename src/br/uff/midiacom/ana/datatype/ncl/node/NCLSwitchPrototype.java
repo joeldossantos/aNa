@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.SwitchReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -49,20 +49,62 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
 
+/**
+ * Class that represents a switch element. A switch element represents a content
+ * control composition that, when executed, will present alternatively one of its
+ * component nodes.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the switch element. This attribute is required.</li>
+ *  <li><i>refer</i> - reference to a switch element. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>switchPort</i> - element representing a switch interface point. The
+ *                          switch can have none or several switchPort elements.</li>
+ *  <li><i>bindRule</i> - element relating a rule to a switch component node. The
+ *                        switch can have none or several bindRule elements.</li>
+ *  <li><i>defaultComponent</i> - element representing the switch component node
+ *                                presented when no rule is true. This element
+ *                                is optional.</li>
+ *  <li><i>media</i> - element representing a media object. The switch can have
+ *                     none or several media elements.</li>
+ *  <li><i>context</i> - element representing a composition. The switch can have
+ *                       none or several context elements.</li>
+ *  <li><i>switch</i> - element representing a content control composition. The
+ *                      switch can have none or several switch elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <En>
+ * @param <Ep>
+ * @param <Eb>
+ * @param <Rn> 
+ */
 public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
                                          P extends NCLElement,
                                          I extends NCLElementImpl,
                                          En extends NCLNode,
                                          Ep extends NCLSwitchPortPrototype,
                                          Eb extends NCLSwitchBindRulePrototype,
-                                         Rn extends NodeReference>
+                                         Rn extends SwitchReference,
+                                         Ri extends NodeReference>
         extends NCLIdentifiableElementPrototype<En, P, I>
         implements NCLNode<En, P> {
 
     protected Rn refer;
-    protected En defaultComponent;
+    protected Ri defaultComponent;
     protected IdentifiableElementList<Ep, T> ports;
     protected ElementList<Eb, T> binds;
     protected IdentifiableElementList<En, T> nodes;
@@ -71,23 +113,11 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Construtor do elemento <i>switch</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do switch.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do switch for inválido.
+     * Switch element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLSwitchPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        ports = new IdentifiableElementList<Ep, T>();
-        binds = new ElementList<Eb, T>();
-        nodes = new IdentifiableElementList<En, T>();
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLSwitchPrototype() throws XMLException {
         super();
         ports = new IdentifiableElementList<Ep, T>();
@@ -98,10 +128,45 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Atribui um switch para ser reutilizado pelo switch.
-     *
+     * Sets the reference to a switch element. This attribute is optional. Set the
+     * reference to <i>null</i> to erase a reference already defined.
+     * 
+     * <br/>
+     * 
+     * The referred element must be a switch element that represents the same
+     * switch defined in the body of the NCL document where this switch is or
+     * in the body of an imported document. In the last case, the alias of the
+     * imported document must be indicated in the reference.
+     * 
+     * <br/>
+     * 
+     * The referred element must directly define its attributes and child nodes.
+     * It can not refer to another node.
+     * 
+     * <br/>
+     * 
+     * When a switch element defines the refer attribute, all attributes and
+     * child nodes defined by the referred node are inherited. The attribute and
+     * child nodes defined by the switch that makes the reference are ignored,
+     * except the id attribute.
+     * 
+     * <br/>
+     * 
+     * The referred element and the one that makes the reference must be
+     * considered the same, in relation to its data structure. That means that
+     * a node can be represented by more than one NCL element. Since nodes inside
+     * a composite node defines a set of nodes, a node can not be represented by
+     * more than one node inside a composition. That means that the id attribute
+     * of an NCL element representing a node is not only a unique identifier for
+     * the element, but also the only identifier corresponding to a node inside
+     * a composition.
+     * 
      * @param refer
-     *          elemento representando o switch a ser reutilizado.
+     *          reference to a switch element or <i>null</i> to erase a reference
+     *          already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the switch
+     *          element.
      */
     public void setRefer(Rn refer) throws XMLException {
         Rn aux = this.refer;
@@ -119,10 +184,42 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Retorna o switch reutilizado pelo switch.
-     *
-     * @return
-     *          elemento representando o switch a ser reutilizado.
+     * Returns the reference to a switch element or <i>null</i> if the attribute
+     * is not defined.
+     * 
+     * <br/>
+     * 
+     * The referred element must be a switch element that represents the same
+     * switch defined in the body of the NCL document where this switch is or
+     * in the body of an imported document. In the last case, the alias of the
+     * imported document must be indicated in the reference.
+     * 
+     * <br/>
+     * 
+     * The referred element must directly define its attributes and child nodes.
+     * It can not refer to another node.
+     * 
+     * <br/>
+     * 
+     * When a switch element defines the refer attribute, all attributes and
+     * child nodes defined by the referred node are inherited. The attribute and
+     * child nodes defined by the switch that makes the reference are ignored,
+     * except the id attribute.
+     * 
+     * <br/>
+     * 
+     * The referred element and the one that makes the reference must be
+     * considered the same, in relation to its data structure. That means that
+     * a node can be represented by more than one NCL element. Since nodes inside
+     * a composite node defines a set of nodes, a node can not be represented by
+     * more than one node inside a composition. That means that the id attribute
+     * of an NCL element representing a node is not only a unique identifier for
+     * the element, but also the only identifier corresponding to a node inside
+     * a composition.
+     * 
+     * @return 
+     *          reference to a switch element or <i>null</i> if the attribute is
+     *          not defined.
      */
     public Rn getRefer() {
         return refer;
@@ -130,14 +227,15 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Adiciona uma porta ao contexto.
+     * Adds an element representing a switch node interface point to the
+     * switch node. The switch node can have none or several port elements.
      *
      * @param port
-     *          elemento representando a porta a ser adicionada.
+     *          element representing a switch node interface point.
      * @return
-     *          Verdadeiro se a porta foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the port is null.
      */
     public boolean addPort(Ep port) throws XMLException {
         if(ports.add(port, (T) this)){
@@ -149,14 +247,15 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Remove uma porta do contexto.
+     * Removes an element representing a switch node interface point of the
+     * switch node. The switch node can have none or several port elements.
      *
      * @param port
-     *          elemento representando a porta a ser removida.
+     *          element representing a switch node interface point.
      * @return
-     *          Verdadeiro se a porta foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the port is null.
      */
     public boolean removePort(Ep port) throws XMLException {
         if(ports.remove(port)){
@@ -168,14 +267,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Remove uma porta do contexto.
-     *
+     * Removes an element representing a switch node interface point of the
+     * switch node. The switch node can have none or several port elements.
+     * 
      * @param id
-     *          identificador da porta a ser removida.
+     *          string representing the id of the element representing a 
+     *          switch node interface point.
      * @return
-     *          Verdadeiro se a porta foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removePort(String id) throws XMLException {
         if(ports.remove(id)){
@@ -187,12 +288,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o contexto possui uma porta.
-     *
+     * Verifies if the switch element has a specific element representing
+     * a switch node interface point. The switch node can have none or several
+     * port elements.
+     * 
      * @param port
-     *          elemento representando a porta a ser verificada.
+     *          element representing a switch node interface point.
      * @return
-     *          verdadeiro se a porta existir.
+     *          true if the switch node element has the port element.
+     * @throws XMLException 
+     *          if the element representing the port is null.
      */
     public boolean hasPort(Ep port) throws XMLException {
         return ports.contains(port);
@@ -200,12 +305,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o contexto possui uma porta.
-     *
+     * Verifies if the switch element has a interface point with a specific id.
+     * The switch node can have none or several port elements.
+     * 
      * @param id
-     *          identificador da porta a ser verificada.
+     *          string representing the id of the element representing a 
+     *          switch node interface point.
      * @return
-     *          verdadeiro se a porta existir.
+     *          true if the switch element has the port element.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasPort(String id) throws XMLException {
         return ports.get(id) != null;
@@ -213,10 +322,11 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o contexto possui alguma porta.
-     *
-     * @return
-     *          verdadeiro se o contexto possuir alguma porta.
+     * Verifies if the switch element has at least one interface point.
+     * The switch node can have none or several port elements.
+     * 
+     * @return 
+     *          true if the switch node has at least one interface point.
      */
     public boolean hasPort() {
         return !ports.isEmpty();
@@ -224,10 +334,11 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Retorna as portas do contexto.
-     *
-     * @return
-     *          lista contendo as portas do contexto.
+     * Returns the list of interface points that a switch element have.
+     * The switch node can have none or several port elements.
+     * 
+     * @return 
+     *          element list with all interface points.
      */
     public IdentifiableElementList<Ep, T> getPorts() {
         return ports;
@@ -235,40 +346,56 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Determina o componente padrão do switch.
-     *
-     * @param defaultComponent
-     *          elemento representando o componente padrão.
+     * Sets the element representing the switch component node presented when no
+     * rule is true. This element is optional. Set the default component to
+     * <i>null</i> to erase a default component already defined.
+     * 
+     * @param defaultComponent 
+     *          element representing a reference to a switch component node or
+     *          <i>null</i> to erase a default component already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the switch
+     *          component.
      */
-    public void setDefaultComponent(En defaultComponent) {
-        if(this.defaultComponent != null)
-            impl.notifyRemoved(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
+    public void setDefaultComponent(Ri defaultComponent) throws XMLException {
+        if(this.defaultComponent != null){
+            impl.notifyRemoved(NCLElementSets.DEFAULTCOMPONENT, (En) this.defaultComponent.getTarget());
+            this.defaultComponent.clean();
+        }
         
         this.defaultComponent = defaultComponent;
         
-        if(this.defaultComponent != null)
-            impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
+        if(this.defaultComponent != null){
+            this.defaultComponent.setOwner((T) this);
+            this.defaultComponent.setOwnerAtt(NCLElementAttributes.DEFAULTCOMPONENT);
+            impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, (En) this.defaultComponent.getTarget());
+        }
     }
 
 
     /**
-     * Retorna o componente padrão do switch.
-     *
-     * @return
-     *          elemento representando o componente padrão.
+     * Returns the element representing the switch component node presented when
+     * no rule is true or <i>null</i> if the attribute is not defined.
+     * 
+     * @return 
+     *          element representing a reference to a switch component node or
+     *          <i>null</i> if the attribute is not defined.
      */
-    public En getDefaultComponent() {
+    public Ri getDefaultComponent() {
         return defaultComponent;
     }
 
 
     /**
-     * Adiciona um bind ao switch.
-     *
+     * Adds an element relating a rule to a switch component node. The switch
+     * can have none or several bindRule elements.
+     * 
      * @param bind
-     *          elemento representando o bind a ser adicionado.
-     *
-     * @see ArrayList#add
+     *          element relating a rule to a switch component node.
+     * @return
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean addBind(Eb bind) throws XMLException {
         if(binds.add(bind, (T) this)){
@@ -280,12 +407,15 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Remove um bind do switch.
+     * Removes an element relating a rule to a switch component node. The switch
+     * can have none or several bindRule elements.
      *
      * @param bind
-     *          elemento representando o bind a ser removido.
-     *
-     * @see ArrayList#remove
+     *          element relating a rule to a switch component node.
+     * @return
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
@@ -297,10 +427,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o switch contém um bind.
+     * Verifies if the switch element has a specific element relating a rule to
+     * a switch component node. The switch can have none or several bindRule
+     * elements.
      *
      * @param bind
-     *          elemento representando o bind a ser verificado.
+     *          element relating a rule to a switch component node.
+     * @return
+     *          true if the switch element has the bind.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean hasBind(Eb bind) throws XMLException {
         return binds.contains(bind);
@@ -308,10 +444,12 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o switch possui algum bind.
-     *
-     * @return
-     *          verdadeiro se o switch possuir algum bind.
+     * Verifies if the switch element has at least one element relating a rule to
+     * a switch component node. The switch can have none or several bindRule
+     * elements.
+     * 
+     * @return 
+     *          true if the switch has at least one bind.
      */
     public boolean hasBind() {
         return !binds.isEmpty();
@@ -319,10 +457,11 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Retorna os binds do switch.
-     *
-     * @return
-     *          lista contendo os binds do switch.
+     * Returns the list of binds that a switch element have. The switch can have
+     * none or several bindRule elements.
+     * 
+     * @return 
+     *          element list with all binds.
      */
     public ElementList<Eb, T> getBinds() {
         return binds;
@@ -330,14 +469,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Adiciona um nó ao contexto.
-     *
+     * Adds an element representing a node to the switch element. The
+     * node can be a media, a context or a switch element. The switch node
+     * can have none or several node elements.
+     * 
      * @param node
-     *          elemento representando o nó a ser adicionado.
+     *          element representing a node.
      * @return
-     *          Verdadeiro se o nó foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the node is null.
      */
     public boolean addNode(En node) throws XMLException {
         if(nodes.add(node, (T) this)){
@@ -349,14 +490,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Remove um nó do contexto.
-     *
+     * Removes an element representing a node of the switch element. The
+     * node can be a media, a context or a switch element. The switch node
+     * can have none or several node elements.
+     * 
      * @param node
-     *          elemento representando um nó a ser removido.
+     *          element representing a node.
      * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the element representing the node is null.
      */
     public boolean removeNode(En node) throws XMLException {
         if(nodes.remove(node)){
@@ -368,14 +511,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Remove um nó do contexto.
+     * Removes an element representing a node of the switch element. The node
+     * can be a media, a context or a switch element. The switch node can have
+     * none or several node elements.
      *
      * @param id
-     *          identificador do nó a ser removido.
+     *          string representing the id of the node.
      * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeNode(String id) throws XMLException {
         if(nodes.remove(id)){
@@ -387,12 +532,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o contexto possui um nó.
+     * Verifies if the switch element has a specific element representing
+     * a node. The node can be a media, a context or a switch element. The
+     * switch node can have none or several node elements.
      *
      * @param node
-     *          elemento representando o nó a ser verificado.
+     *          element representing a node.
      * @return
-     *          verdadeiro se o nó existir.
+     *          true if the switch node element has the node.
+     * @throws XMLException 
+     *          if the element representing the node is null.
      */
     public boolean hasNode(En node) throws XMLException {
         return nodes.contains(node);
@@ -400,12 +549,16 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o contexto possui um nó.
-     *
+     * Verifies if the switch element has a node with a specific id. The node
+     * can be a media, a context or a switch element. The switch node can have
+     * none or several node elements.
+     * 
      * @param id
-     *          identificador do nó a ser verificado.
+     *          string representing the id of the node.
      * @return
-     *          verdadeiro se o nó existir.
+     *          true if the switch node element has the node.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasNode(String id) throws XMLException {
         return nodes.get(id) != null;
@@ -413,10 +566,12 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Verifica se o contexto possui algum nó.
-     *
-     * @return
-     *          verdadeiro se o contexto possuir algum nó.
+     * Verifies if the switch element has at least one node. The node can be
+     * a media, a context or a switch element. The switch node can have none or
+     * several node elements.
+     * 
+     * @return 
+     *          true if the switch node has at least one node.
      */
     public boolean hasNode() {
         return (!nodes.isEmpty());
@@ -424,10 +579,12 @@ public abstract class NCLSwitchPrototype<T extends NCLSwitchPrototype,
 
 
     /**
-     * Retorna os nós do contexto.
-     *
-     * @return
-     *          lista contendo os nós do contexto.
+     * Returns the list of nodes that the switch element have. The node can be
+     * a media, a context or a switch element. The switch node can have none or
+     * several node elements.
+     * 
+     * @return 
+     *          element list with all nodes.
      */
     public IdentifiableElementList<En, T> getNodes() {
         return nodes;

@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -46,6 +46,26 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents a mapping element. This element represents a mapping
+ * from a switchPort element to a switch inner node or node interface point.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>component</i> - node mapped by the mapping element. This attribute is
+ *                         required.</li>
+ *  <li><i>interface</i> - node interface point mapped by the mapping element. This
+ *                         attribute is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <En>
+ * @param <Ei> 
+ */
 public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
                                           P extends NCLElement,
                                           I extends NCLElementImpl,
@@ -59,7 +79,10 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
 
 
     /**
-     * Construtor do elemento <i>mapping</i> da <i>Nested Context Language</i> (NCL).
+     * Mapping element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLMappingPrototype() throws XMLException {
         super();
@@ -67,19 +90,29 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
 
 
     /**
-     * Determina o componente mapeado pelo mapeamento.
-     *
+     * Sets the node mapped by the mapping element. This attribute is required
+     * and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The node referred must be a node defined in the switch parent of the
+     * switch port that has this mapping element.
+     * 
      * @param component
-     *          elemento representando o componente mapeado.
+     *          element representing a reference to a node element.
+     * @throws XMLException 
+     *          if the node is null or any error occur while creating the
+     *          reference to the node.
      */
     public void setComponent(En component) throws XMLException {
+        if(component == null)
+            throw new XMLException("Null component.");
+        
         En aux = this.component;
         
         this.component = component;
-        if(this.component != null){
-            this.component.setOwner((T) this);
-            this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
-        }
+        this.component.setOwner((T) this);
+        this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
         
         impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
         if(aux != null)
@@ -88,10 +121,17 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
 
 
     /**
-     * Retorna o componente mapeado pelo mapeamento.
-     *
-     * @return
-     *          elemento representando o componente mapeado.
+     * Returns the node mapped by the mapping element or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The node referred must be a node defined in the switch parent of the
+     * switch port that has this mapping element.
+     * 
+     * @return 
+     *          element representing a reference to a node element or <i>null</i>
+     *          if the attribute is not defined.
      */
     public En getComponent() {
         return component;
@@ -99,10 +139,21 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
 
 
     /**
-     * Determina a interface mapeada pelo mapeamento.
-     *
+     * Sets the node interface point mapped by the mapping element. This attribute
+     * is optional. Set the interface to <i>null</i> to erase a interface
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
+     * 
      * @param interfac
-     *          elemento representando a interface mapeada.
+     *          element representing a reference to a interface element or
+     *          <i>null</i> to erase a interface already defined.
+     * @throws XMLException 
      */
     public void setInterface(Ei interfac) throws XMLException {
         Ei aux = this.interfac;
@@ -120,10 +171,19 @@ public abstract class NCLMappingPrototype<T extends NCLMappingPrototype,
 
 
     /**
-     * Retorna a interface mapeada pelo mapeamento.
-     *
-     * @return
-     *          elemento representando a interface mapeada.
+     * Returns the node interface point mapped by the mapping element or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
+     * 
+     * @return 
+     *          element representing a reference to a interface element or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Ei getInterface() {
         return interfac;

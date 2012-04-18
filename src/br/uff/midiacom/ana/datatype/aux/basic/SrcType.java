@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.aux.basic;
 
 import br.uff.midiacom.ana.datatype.enums.NCLUriType;
+import br.uff.midiacom.xml.XMLException;
 
 
 /**
@@ -59,10 +60,10 @@ public class SrcType {
      *
      * @param src
      *          String representing the locator.
-     * @throws IllegalArgumentException
+     * @throws XMLException
      *          if the String is empty.
      */
-    public SrcType(String src) throws IllegalArgumentException {
+    public SrcType(String src) throws XMLException {
         setSrc(src);
     }
 
@@ -74,10 +75,10 @@ public class SrcType {
      *          element representing the locator type.
      * @param src
      *          String representing the locator.
-     * @throws IllegalArgumentException
+     * @throws XMLException
      *          if the String is empty.
      */
-    public SrcType(NCLUriType type, String src) throws IllegalArgumentException {
+    public SrcType(NCLUriType type, String src) throws XMLException {
         setType(type);
         setSrc(src);
     }
@@ -88,24 +89,22 @@ public class SrcType {
      *
      * @param time
      *          element representing the time locator content.
-     * @throws IllegalArgumentException
-     *          if the time is not in the required format.
-     * @throws NullPointerException
-     *          if the time is null.
+     * @throws XMLException
+     *          if the time is not in the required format or null.
      */
-    public SrcType(TimeType time) throws IllegalArgumentException, NullPointerException {
+    public SrcType(TimeType time) throws XMLException {
         if(time == null)
-            throw new NullPointerException("Null time");
+            throw new XMLException("Null time");
         if(!time.isUTC())
-            throw new IllegalArgumentException("Invalid src");
+            throw new XMLException("Invalid src");
 
         setSrc(time.toString());
     }
 
 
-    private void setSrc(String src) throws IllegalArgumentException {
+    private void setSrc(String src) throws XMLException {
         if(src != null && "".equals(src.trim()))
-            throw new IllegalArgumentException("Empty src String");
+            throw new XMLException("Empty src String");
 
         this.src = src;
     }

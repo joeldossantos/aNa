@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -42,34 +42,50 @@ import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
+/**
+ * Interface that represents an NCL element.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLElement<T extends NCLElement,
                             P extends NCLElement>
         extends XMLElement<T, P> {
 
     
     /**
-     * Atribui um ouvinte para notificações de mudança do elemento. Caso o
-     * argumento seja nulo, não utilizará nenhum ouvinte.
+     * Adds a modification listener to the NCL element. The modification listener
+     * will receive notifications as the NCL element is changed. The modification
+     * listener is optional, set it to <i>null</i> to erase the modification
+     * listener already defined.
      *
      * @param listener
-     *          objeto que receberá as notificações.
+     *          element to receive notifications about the NCL element modification
+     *          or null to erase the modification listener already defined.
      */
     public void setModificationListener(NCLModificationListener listener);
 
 
     /**
-     * Retorna o ouvinte para notificações de mudança do elemento.
+     * Returns the modification listener of the NCL element or <i>null</i> if
+     * no modification listener is defined. The modification listener will
+     * receive notifications as the NCL element is changed.
      *
      * @return
-     *          objeto que recebe as notificações ou null se nenhum ouvinte
-     *          estiver assiciado.
+     *          element to receive notifications about the NCL element modification
+     *          or null if no modification listener is defined.
      */
     public NCLModificationListener getModificationListener();
     
     
     /**
-     * Implementa o método startElement do parser SAX para a recuperação dos objetos
-     * representativos dos elementos NCL a partir de um arquivo XML.
+     * Loads the NCL element from a DOM element. This method is used to load an
+     * NCL document from a file.
+     * 
+     * @param element
+     *          DOM element representing the XML element to be loaded
+     * @throws XMLException 
+     *          if any error occur while loading the NCL element.
      */
     public void load(Element element) throws XMLException;
 }

@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -41,67 +41,67 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 
 
-/*******************************************************************************
- * Interface para os objetos que serão notificados de modificações feitas nos
- * Elementos da API.
- ******************************************************************************/
+/**
+ * Interface that represents a modification listener. This listener will receive
+ * notifications as an NCL element is modified.
+ */
 public interface NCLModificationListener {
 
 
-    /***************************************************************************
-     * Método para notificar um objeto de que um elemento NCL (filho) foi inserido
-     * em um conjunto de elementos NCL mantidos por um elemento NCL (pai).
-     *
+    /**
+     * Notifies the modification listener that a child element was added to the
+     * element the listener listen.
+     * 
      * @param source
-     *          elemento que teve seu conjunto de elementos filhos alterada (pai).
+     *          element where the new child element was added.
      * @param setName
-     *          nome do conjunto de elementos que foi alterada.
-     * @param inserted
-     *          elemento que foi inserido na lista de elemento filhos (filho).
-     **************************************************************************/
+     *          name of the set of elements where the new child was added.
+     * @param inserted 
+     *          element added.
+     */
     public void insertedElement(NCLElement source, NCLElementSets setName, NCLElement inserted);
 
 
-    /***************************************************************************
-     * Método para notificar um objeto de que um elemento NCL (filho) foi removido
-     * em um conjunto de elementos NCL mantidos por um elemento NCL (pai).
-     *
+    /**
+     * Notifies the modification listener that a child element was removed of the
+     * element the listener listen.
+     * 
      * @param source
-     *          elemento que teve seu conjunto de elementos filhos alterada (pai).
+     *          element where the new child element was removed.
      * @param setName
-     *          nome do conjunto de elementos que foi alterada.
-     * @param removed
-     *          elemento que foi removido da lista de elemento filhos (filho).
-     **************************************************************************/
+     *          name of the set of elements where the new child was removed.
+     * @param removed 
+     *          element removed.
+     */
     public void removedElement(NCLElement source, NCLElementSets setName, NCLElement removed);
 
 
-    /***************************************************************************
-     * Método para notificar um objeto de que um elemento NCL (filho) foi removido
-     * em um conjunto de elementos NCL mantidos por um elemento NCL (pai).
-     *
+    /**
+     * Notifies the modification listener that a child element was removed of the
+     * element the listener listen.
+     * 
      * @param source
-     *          elemento que teve seu conjunto de elementos filhos alterada (pai).
+     *          element where the new child element was removed.
      * @param setName
-     *          nome do conjunto de elementos que foi alterada.
-     * @param removed
-     *          id do elemento que foi removido da lista de elemento filhos (filho).
-     **************************************************************************/
+     *          name of the set of elements where the new child was removed.
+     * @param removed 
+     *          string representing the id of the element removed.
+     */
     public void removedElement(NCLElement source, NCLElementSets setName, String removed);
 
 
-    /***************************************************************************
-     * Método para notificar um objeto de que um elemento NCL teve um atributo
-     * modificado.
-     *
+    /**
+     * Notifies the modification listener about a change in an attribute of the
+     * element the listener listen.
+     * 
      * @param source
-     *          elemento que teve seu atributo modificado.
+     *          element whose attribute was changed.
      * @param attributeName
-     *          nome do atributo que foi modificado.
+     *          name of the attribute changed.
      * @param oldValue
-     *          valor anterior do atributo.
-     * @param newValue
-     *          valor do atributo após a alteração.
-     **************************************************************************/
+     *          element attribute old value.
+     * @param newValue 
+     *          element attribute new value.
+     */
     public void alteredElement(NCLElement source, NCLElementAttributes attributeName, Object oldValue, Object newValue);
 }

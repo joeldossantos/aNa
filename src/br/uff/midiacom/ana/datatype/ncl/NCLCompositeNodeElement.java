@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
@@ -49,9 +48,52 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
+/**
+ * Class that represents an NCL composite node.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the composite node element. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>port</i> - element representing a composite node interface point. The
+ *                    composite node can have none or several port elements.</li>
+ *  <li><i>property</i> - element representing a property. The composite node can
+ *                        have none or several property elements.</li>
+ *  <li><i>media</i> - element representing a media object. The composite node
+ *                     can have none or several media elements.</li>
+ *  <li><i>context</i> - element representing a composition. The composite node
+ *                       can have none or several context elements.</li>
+ *  <li><i>switch</i> - element representing a content control composition. The
+ *                      composite node can have none or several switch elements.</li>
+ *  <li><i>link</i> - element representing a link among medias or compositions.
+ *                    The composite node can have none or several link elements.</li>
+ *  <li><i>meta</i> - elements defining meta data. The composite node can have
+ *                    none or several meta elements.</li>
+ *  <li><i>metadata</i> - elements defining a RDF tree. The composite node can
+ *                        have none or several metadata elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ept>
+ * @param <Epp>
+ * @param <En>
+ * @param <El>
+ * @param <Em>
+ * @param <Emt> 
+ */
 public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
                                               P extends NCLElement,
                                               I extends NCLElementImpl,
@@ -75,12 +117,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Construtor do elemento <i>context</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do contexto.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do contexto for inválido.
+     * Composite node constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLCompositeNodeElement() throws XMLException {
         super();
@@ -95,14 +135,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Adiciona uma porta ao contexto.
+     * Adds an element representing a composite node interface point to the
+     * composite node. The composite node can have none or several port elements.
      *
      * @param port
-     *          elemento representando a porta a ser adicionada.
+     *          element representing a composite node interface point.
      * @return
-     *          Verdadeiro se a porta foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the port is null.
      */
     public boolean addPort(Ept port) throws XMLException {
         if(ports.add(port, (T) this)){
@@ -114,14 +155,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove uma porta do contexto.
+     * Removes an element representing a composite node interface point of the
+     * composite node. The composite node can have none or several port elements.
      *
      * @param port
-     *          elemento representando a porta a ser removida.
+     *          element representing a composite node interface point.
      * @return
-     *          Verdadeiro se a porta foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the port is null.
      */
     public boolean removePort(Ept port) throws XMLException {
         if(ports.remove(port)){
@@ -133,14 +175,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove uma porta do contexto.
-     *
+     * Removes an element representing a composite node interface point of the
+     * composite node. The composite node can have none or several port elements.
+     * 
      * @param id
-     *          identificador da porta a ser removida.
+     *          string representing the id of the element representing a 
+     *          composite node interface point.
      * @return
-     *          Verdadeiro se a porta foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removePort(String id) throws XMLException {
         if(ports.remove(id)){
@@ -152,12 +196,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui uma porta.
-     *
+     * Verifies if the composite node element has a specific element representing
+     * a composite node interface point of the composite node. The composite node
+     * can have none or several port elements.
+     * 
      * @param port
-     *          elemento representando a porta a ser verificada.
+     *          element representing a composite node interface point.
      * @return
-     *          verdadeiro se a porta existir.
+     *          true if the composite node element has the port element.
+     * @throws XMLException 
+     *          if the element representing the port is null.
      */
     public boolean hasPort(Ept port) throws XMLException {
         return ports.contains(port);
@@ -165,12 +213,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui uma porta.
-     *
+     * Verifies if the composite node element has a interface point with a
+     * specific id. The composite node can have none or several port elements.
+     * 
      * @param id
-     *          identificador da porta a ser verificada.
+     *          string representing the id of the element representing a 
+     *          composite node interface point.
      * @return
-     *          verdadeiro se a porta existir.
+     *          true if the composite node element has the port element.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasPort(String id) throws XMLException {
         return ports.get(id) != null;
@@ -178,10 +230,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui alguma porta.
-     *
-     * @return
-     *          verdadeiro se o contexto possuir alguma porta.
+     * Verifies if the composite node element has at least one interface point.
+     * The composite node can have none or several port elements.
+     * 
+     * @return 
+     *          true if the composite node has at least one interface point.
      */
     public boolean hasPort() {
         return !ports.isEmpty();
@@ -189,10 +242,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Retorna as portas do contexto.
-     *
-     * @return
-     *          lista contendo as portas do contexto.
+     * Returns the list of interface points that a composite node element have.
+     * The composite node can have none or several port elements.
+     * 
+     * @return 
+     *          element list with all interface points.
      */
     public IdentifiableElementList<Ept, T> getPorts() {
         return ports;
@@ -200,14 +254,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Adiciona uma propriedade ao contexto.
+     * Adds an element representing a property to the composite node. The
+     * composite node can have none or several property elements.
      *
      * @param property
-     *          elemento representando a propriedade a ser adicionada.
+     *          element representing a property.
      * @return
-     *          Verdadeiro se a propriedade foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the property is null.
      */
     public boolean addProperty(Epp property) throws XMLException {
         if(properties.add(property, (T) this)){
@@ -219,14 +274,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove uma propriedade do contexto.
+     * Removes an element representing a property of the composite node. The
+     * composite node can have none or several property elements.
      *
      * @param property
-     *          elemento representando a propriedade a ser removida.
+     *          element representing a property.
      * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the element representing the property is null.
      */
     public boolean removeProperty(Epp property) throws XMLException {
         if(properties.remove(property)){
@@ -238,14 +294,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove uma propriedade do contexto.
+     * Removes an element representing a property of the composite node. The
+     * composite node can have none or several property elements.
      *
      * @param name
-     *          nome da propriedade a ser removida.
+     *          string representing the name of the property.
      * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeProperty(String name) throws XMLException {
         if(properties.remove(name)){
@@ -257,12 +314,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui uma propriedade.
+     * Verifies if the composite node element has a specific element representing
+     * a property. The composite node can have none or several property elements.
      *
      * @param property
-     *          elemento representando a propriedade a ser verificada.
+     *          element representing a property.
      * @return
-     *          verdadeiro se a propriedade existir.
+     *          true if the composite node element has the property.
+     * @throws XMLException 
+     *          if the element representing the property is null.
      */
     public boolean hasProperty(Epp property) throws XMLException {
         return properties.contains(property);
@@ -270,12 +330,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui uma propriedade.
-     *
+     * Verifies if the composite node element has a property with a specific
+     * name. The composite node can have none or several property elements.
+     * 
      * @param name
-     *          nome da propriedade a ser verificada.
+     *          string representing the name of the property.
      * @return
-     *          verdadeiro se a propriedade existir.
+     *          true if the composite node element has the property.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasProperty(String name) throws XMLException {
         return properties.get(name) != null;
@@ -283,10 +346,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui alguma propriedade.
-     *
-     * @return
-     *          verdadeiro se o contexto possuir alguma propriedade.
+     * Verifies if the composite node element has at least one property. The
+     * composite node can have none or several property elements.
+     * 
+     * @return 
+     *          true if the composite node has at least one property.
      */
     public boolean hasProperty() {
         return !properties.isEmpty();
@@ -294,10 +358,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Retorna as propriedades do contexto.
-     *
-     * @return
-     *          lista contendo as propriedades do contexto.
+     * Returns the list of properties that a composite node element have. The
+     * composite node can have none or several property elements.
+     * 
+     * @return 
+     *          element list with all properties.
      */
     public IdentifiableElementList<Epp, T> getProperties() {
         return properties;
@@ -305,14 +370,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Adiciona um nó ao contexto.
-     *
+     * Adds an element representing a node to the composite node element. The
+     * node can be a media, a context or a switch element. The composite node
+     * can have none or several node elements.
+     * 
      * @param node
-     *          elemento representando o nó a ser adicionado.
+     *          element representing a node.
      * @return
-     *          Verdadeiro se o nó foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the node is null.
      */
     public boolean addNode(En node) throws XMLException {
         if(nodes.add(node, (T) this)){
@@ -324,14 +391,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove um nó do contexto.
-     *
+     * Removes an element representing a node of the composite node element. The
+     * node can be a media, a context or a switch element. The composite node
+     * can have none or several node elements.
+     * 
      * @param node
-     *          elemento representando um nó a ser removido.
+     *          element representing a node.
      * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the element representing the node is null.
      */
     public boolean removeNode(En node) throws XMLException {
         if(nodes.remove(node)){
@@ -343,14 +412,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove um nó do contexto.
+     * Removes an element representing a node of the composite node element. The
+     * node can be a media, a context or a switch element. The composite node
+     * can have none or several node elements.
      *
      * @param id
-     *          identificador do nó a ser removido.
+     *          string representing the id of the node.
      * @return
-     *          Verdadeiro se o nó foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeNode(String id) throws XMLException {
         if(nodes.remove(id)){
@@ -362,12 +433,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui um nó.
+     * Verifies if the composite node element has a specific element representing
+     * a node. The node can be a media, a context or a switch element. The
+     * composite node can have none or several node elements.
      *
      * @param node
-     *          elemento representando o nó a ser verificado.
+     *          element representing a node.
      * @return
-     *          verdadeiro se o nó existir.
+     *          true if the composite node element has the node.
+     * @throws XMLException 
+     *          if the element representing the node is null.
      */
     public boolean hasNode(En node) throws XMLException {
         return nodes.contains(node);
@@ -375,12 +450,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui um nó.
-     *
+     * Verifies if the composite node element has a node with a specific
+     * id. The node can be a media, a context or a switch element. The composite
+     * node can have none or several node elements.
+     * 
      * @param id
-     *          identificador do nó a ser verificado.
+     *          string representing the id of the node.
      * @return
-     *          verdadeiro se o nó existir.
+     *          true if the composite node element has the node.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasNode(String id) throws XMLException {
         return nodes.get(id) != null;
@@ -388,10 +467,12 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui algum nó.
-     *
-     * @return
-     *          verdadeiro se o contexto possuir algum nó.
+     * Verifies if the composite node element has at least one node. The node 
+     * can be a media, a context or a switch element. The composite node can
+     * have none or several node elements.
+     * 
+     * @return 
+     *          true if the composite node has at least one node.
      */
     public boolean hasNode() {
         return (!nodes.isEmpty());
@@ -399,10 +480,12 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Retorna os nós do contexto.
-     *
-     * @return
-     *          lista contendo os nós do contexto.
+     * Returns the list of nodes that a composite node element have. The node
+     * can be a media, a context or a switch element. The composite node can 
+     * have none or several node elements.
+     * 
+     * @return 
+     *          element list with all nodes.
      */
     public IdentifiableElementList<En, T> getNodes() {
         return nodes;
@@ -410,14 +493,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Adiciona um link ao contexto.
+     * Adds an element representing a link among nodes to the composite node.
+     * The composite node can have none or several link elements.
      *
      * @param link
-     *          elemento representando o link a ser adicionado.
+     *          element representing a link among nodes.
      * @return
-     *          Verdadeiro se o link foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the element was added.
+     * @throws XMLException 
+     *          if the element representing the link is null.
      */
     public boolean addLink(El link) throws XMLException {
         if(links.add(link, (T) this)){
@@ -429,14 +513,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove um link do contexto.
+     * Removes an element representing a link among nodes of the composite node.
+     * The composite node can have none or several link elements.
      *
      * @param link
-     *          elemento representando o link a ser removido.
+     *          element representing a link among nodes.
      * @return
-     *          Verdadeiro se o link foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the element representing the link is null.
      */
     public boolean removeLink(El link) throws XMLException {
         if(links.remove(link)){
@@ -447,6 +532,18 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
     }
 
 
+    /**
+     * Removes an element representing a link among nodes of the composite node.
+     * The composite node can have none or several link elements. Note that it
+     * is possible that a link element does not have an id.
+     *
+     * @param id
+     *          string representing the id of the link.
+     * @return
+     *          true if the element was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean removeLink(String id) throws XMLException {
         if(links.remove(id)){
             impl.notifyRemoved(NCLElementSets.LINKS, id);
@@ -457,28 +554,45 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o contexto possui um link.
+     * Verifies if the composite node element has a specific element representing
+     * a link among nodes. The composite node can have none or several link
+     * elements.
      *
      * @param link
-     *          elemento representando o link a ser verificado.
+     *          element representing a link among nodes.
      * @return
-     *          verdadeiro se o link existir.
+     *          true if the composite node element has the link.
+     * @throws XMLException 
+     *          if the element representing the link is null.
      */
     public boolean hasLink(El link) throws XMLException {
         return links.contains(link);
     }
 
 
+    /**
+     * Verifies if the composite node element has a link among nodes with a
+     * specific id. The composite node can have none or several link elements.
+     * Note that it is possible that a link element does not have an id.
+     * 
+     * @param id
+     *          string representing the id of the link.
+     * @return
+     *          true if the composite node element has the link.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasLink(String id) throws XMLException {
         return links.get(id) != null;
     }
 
 
     /**
-     * Verifica se o contexto possui algum link.
-     *
-     * @return
-     *          verdadeiro se o contexto possuir algum link.
+     * Verifies if the composite node element has at least one link among nodes.
+     * The composite node can have none or several link elements.
+     * 
+     * @return 
+     *          true if the composite node has at least one link.
      */
     public boolean hasLink() {
         return !links.isEmpty();
@@ -486,10 +600,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Retorna os links do contexto.
-     *
-     * @return
-     *          lista contendo os links do contexto.
+     * Returns the list of links among nodes that a composite node element have.
+     * The composite node can have none or several link elements.
+     * 
+     * @return 
+     *          element list with all links.
      */
     public IdentifiableElementList<El, T> getLinks() {
         return links;
@@ -497,14 +612,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Adiciona um metadado ao cabeçalho do documento NCL.
-     *
+     * Adds an element defining meta data to the composite node element. The
+     * composite node can have none or several meta elements.
+     * 
      * @param meta
-     *          elemento representando o metadado a ser adicionado.
+     *          element defining meta data.
      * @return
-     *          Verdadeiro se o metadado foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the meta element was added.
+     * @throws XMLException 
+     *          if the meta element is null.
      */
     public boolean addMeta(Em meta) throws XMLException {
         if(metas.add(meta, (T) this)){
@@ -516,14 +632,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove um metadado do cabeçalho do documento NCL.
-     *
+     * Removes an element defining meta data of the composite node element. The
+     * composite node can have none or several meta elements.
+     * 
      * @param meta
-     *          elemento representando o metadado a ser removido.
+     *          element defining meta data.
      * @return
-     *          Verdadeiro se o link foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the meta element was removed.
+     * @throws XMLException 
+     *          if the meta element is null.
      */
     public boolean removeMeta(Em meta) throws XMLException {
         if(metas.remove(meta)){
@@ -535,12 +652,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o cabeçalho do documento NCL possui um metadado.
-     *
+     * Verifies if the composite node element has a specific meta element. The
+     * composite node can have none or several meta elements.
+     * 
      * @param meta
-     *          elemento representando o metadado a ser verificado.
+     *          element defining meta data.
      * @return
-     *          verdadeiro se o link existir.
+     *          true if the composite node element has the meta element.
+     * @throws XMLException 
+     *          if the meta element is null.
      */
     public boolean hasMeta(Em meta) throws XMLException {
         return metas.contains(meta);
@@ -548,10 +668,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o cabeçalho do documento NCL possui algum metadado.
-     *
-     * @return
-     *          verdadeiro se o corpo do cabeçalho NCL possuir algum metadado.
+     * Verifies if the composite node element has at least one meta element. The
+     * composite node can have none or several meta elements.
+     * 
+     * @return 
+     *          true if the composite node has at least one meta element.
      */
     public boolean hasMeta() {
         return !metas.isEmpty();
@@ -559,10 +680,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Retorna os metadados do cabeçalho do documento NCL.
-     *
-     * @return
-     *          conjunto contendo os metadados do cabeçalho do documento NCL.
+     * Returns the list of meta elements that a composite node element have. The
+     * composite node can have none or several meta elements.
+     * 
+     * @return 
+     *          element list with all meta elements.
      */
     public ElementList<Em, T> getMetas() {
         return metas;
@@ -570,14 +692,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Adiciona um metadado ao cabeçalho do documento NCL.
-     *
+     * Adds an element defining an RDF tree to the composite node element. The
+     * composite node can have none or several metadata elements.
+     * 
      * @param metadata
-     *          elemento representando o metadado a ser adicionado.
+     *          element defining an RDF tree.
      * @return
-     *          Verdadeiro se o metadado foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the metadata element was added.
+     * @throws XMLException 
+     *          if the metadata element is null.
      */
     public boolean addMetadata(Emt metadata) throws XMLException {
         if(metadatas.add(metadata, (T) this)){
@@ -589,14 +712,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Remove um metadado do cabeçalho do documento NCL.
-     *
+     * Removes an element defining an RDF tree of the composite node element. The
+     * composite node can have none or several metadata elements.
+     * 
      * @param metadata
-     *          elemento representando o metadado a ser removido.
+     *          element defining an RDF tree.
      * @return
-     *          Verdadeiro se o link foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the metadata element was removed.
+     * @throws XMLException 
+     *          if the metadata element is null.
      */
     public boolean removeMetadata(Emt metadata) throws XMLException {
         if(metadatas.remove(metadata)){
@@ -608,12 +732,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o cabeçalho do documento NCL possui um metadado.
-     *
-     * @param metadata
-     *          elemento representando o metadado a ser verificado.
+     * Verifies if the composite node element has a specific metadata element.
+     * The composite node can have none or several metadata elements.
+     * 
+     * @param meta
+     *          element defining an RDF tree.
      * @return
-     *          verdadeiro se o link existir.
+     *          true if the composite node element has the metadata element.
+     * @throws XMLException 
+     *          if the metadata element is null.
      */
     public boolean hasMetadata(Emt metadata) throws XMLException {
         return metadatas.contains(metadata);
@@ -621,10 +748,11 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Verifica se o cabeçalho do documento NCL possui algum metadado.
-     *
-     * @return
-     *          verdadeiro se o corpo do cabeçalho NCL possuir algum metadado.
+     * Verifies if the composite node element has at least one metadata element.
+     * The composite node can have none or several metadata elements.
+     * 
+     * @return 
+     *          true if the composite node has at least one metadata element.
      */
     public boolean hasMetadata() {
         return !metadatas.isEmpty();
@@ -632,15 +760,16 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
 
 
     /**
-     * Retorna os metadados do cabeçalho do documento NCL.
-     *
-     * @return
-     *          conjunto contendo os metadados do cabeçalho do documento NCL.
+     * Returns the list of metadata elements that a composite node element have.
+     * The composite node can have none or several metadata elements.
+     * 
+     * @return 
+     *          element list with all metadata elements.
      */
     public ElementList<Emt, T> getMetadatas() {
         return metadatas;
     }
-    
+
     
     @Override
     public boolean addReference(ReferenceType reference) throws XMLException {

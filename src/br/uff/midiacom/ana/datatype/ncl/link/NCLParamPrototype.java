@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -47,6 +47,25 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
+/**
+ * Class that represents a link or bind parameter element. This element is used
+ * to define a value to a parameter defined in a connector.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - reference to the name of the parameter defined by a
+ *                    connector. This attribute is required.</li>
+ *  <li><i>value</i> - value of the parameter defined by a connector. This
+ *                    attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ec> 
+ */
 public abstract class NCLParamPrototype<T extends NCLParamPrototype,
                                         P extends NCLElement,
                                         I extends NCLElementImpl,
@@ -60,13 +79,13 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     
     
     /**
-     * Construtor do parâmetro interno a um elemento <i>link</i> ou <i>bind</i>.
+     * Parameter element constructor.
      * 
      * @param paramType
-     *          define se o parâmetro é de um elemento <i>link</i> ou <i>bind</i>.
-     *
-     * @throws java.lang.NullPointerException
-     *          se o tipo for nulo.
+     *          type of the parameter from the enumeration <i>NCLParamInstance</i>.
+     *          The parameter type can be <i>link</i> or <i>bind</i>.
+     * @throws XMLException 
+     *          if the type is null or an error occur while creating the element.
      */
     public NCLParamPrototype(NCLParamInstance paramType) throws XMLException {
         super();
@@ -78,19 +97,29 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     
     
     /**
-     * Attribui um <i>connectorParam</i> ao parâmetro.
+     * Sets the reference to the name of the parameter defined by the connector.
+     * This attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The connector parameter referred must be a parameter defined by the
+     * connector used by the link where this parameter element is defined.
      * 
      * @param connectorParam
-     *          elemento representando o parâmetro do conector ao qual este parâmetro se refere.
+     *          element representing a reference to a connector parameter name.
+     * @throws XMLException 
+     *          if the connector parameter is null or any error occur while
+     *          creating the reference to the connector parameter.
      */
     public void setName(Ec connectorParam) throws XMLException {
+        if(connectorParam == null)
+            throw new XMLException("Null connector parameter.");
+        
         Ec aux = this.name;
         
         this.name = connectorParam;
-        if(this.name != null){
-            this.name.setOwner((T) this);
-            this.name.setOwnerAtt(NCLElementAttributes.NAME);
-        }
+        this.name.setOwner((T) this);
+        this.name.setOwnerAtt(NCLElementAttributes.NAME);
         
         impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
         if(aux != null)
@@ -99,9 +128,17 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     
     
     /**
-     * Retorna o <i>connectorParam</i> do parâmetro.
+     * Returns the reference to the name of the parameter defined by the
+     * connector or <i>null</i> if the attribute is not defined.
      * 
-     * @return NCLConnectorParam representando o nome do parâmetro.
+     * <br/>
+     * 
+     * The connector parameter referred must be a parameter defined by the
+     * connector used by the link where this parameter element is defined.
+     * 
+     * @return 
+     *          element representing a reference to a connector parameter name
+     *          or <i>null</i> if the attribute is not defined.
      */
     public Ec getName() {
         return name;
@@ -109,15 +146,18 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     
     
     /**
-     * Determina o valor do atributo value do parâmetro.
+     * Sets the value of the parameter defined by a connector. This attribute is
+     * required and can not be set to <i>null</i>.
      * 
      * @param value
-     *          String contendo o valor a ser atribuído ao parâmetro.
-     *
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
+     *          string representing the value to be set to the connector parameter.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public void setValue(String value)  throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
         StringType aux = this.value;
         this.value = new StringType(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
@@ -125,10 +165,12 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     
     
     /**
-     * Retorna o valor do atributo value do parâmetro.
+     * Returns the value of the parameter defined by a connector or <i>null</i>
+     * if the attribute is not defined.
      * 
      * @return
-     *          String contendo o valor atribuído ao parâmetro.
+     *          string representing the value to be set to the connector parameter
+     *          or <i>null</i> if the attribute is not defined.
      */
     public String getValue() {
         if(value != null)
@@ -138,6 +180,17 @@ public abstract class NCLParamPrototype<T extends NCLParamPrototype,
     }
 
 
+    /**
+     * Returns the type of the parameter element. The possible types are defined
+     * in the enumeration <i>NCLParamInstance</i>.
+     * 
+     * <br/>
+     * 
+     * The parameter type can be <i>link</i> or <i>bind</i>.
+     * 
+     * @return 
+     *          type of the parameter from the enumeration <i>NCLParamInstance</i>.
+     */
     public NCLParamInstance getType() {
         return paramType;
     }

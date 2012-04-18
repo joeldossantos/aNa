@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -48,6 +48,37 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
+/**
+ * Class that represents a connector compound statement.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>operator</i> - compound statement operator. This attribute is required.</li>
+ *  <li><i>isNegateed</i> - indicates if the statement is negated. This attribute
+ *                          is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>assessmentStatement</i> - element representing a connector statement. The
+ *                                   compound statement can have none or several
+ *                                   statement elements.</li>
+ *  <li><i>compundStatement</i> - element representing a connector statement. The
+ *                                compound statement can have none or several
+ *                                statement elements.</li>
+ * </ul>
+ * 
+ * Note that the compound statement must have at least two statements.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Es> 
+ */
 public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStatementPrototype,
                                                     P extends NCLElement,
                                                     I extends NCLElementImpl,
@@ -61,7 +92,10 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
 
 
     /**
-     * Construtor do elemento <i>compoundStatement</i> da <i>Nested Context Language</i> (NCL).
+     * Compound statement element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLCompoundStatementPrototype() throws XMLException {
         super();
@@ -70,12 +104,31 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Determina o operador da assertiva composta.
+     * Sets the compound statement operator. This attribute is required and can
+     * not be set to <i>null</i>.
      * 
+     * <br/>
+     * 
+     * The operator attribute relates the compound statement children elements.
+     * Its possible values are "and" and "or" and are defined in the enumeration
+     * <i>NCLOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using an "and" operator means that all statements of the compound statement
+     * must be satisfied at the same time. Using an "or" operator means at least
+     * one statement of the compound statement must be satisfied.
+     *
      * @param operator
-     *          elemento representando o operador a ser atribuido.
+     *          element representing the compound statement operator from the
+     *          enumeration <i>NCLOperator</i>.
+     * @throws XMLException 
+     *          if the element representing the operator is null.
      */
-    public void setOperator(NCLOperator operator) {
+    public void setOperator(NCLOperator operator) throws XMLException {
+        if(operator == null)
+            throw new XMLException("Null operator.");
+        
         NCLOperator aux = this.operator;
         this.operator = operator;
         impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
@@ -83,10 +136,25 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Retorna o operador atribuido a assertiva composta.
+     * Returns the compound statement operator or <i>null</i> if the attribute is
+     * not defined.
      * 
-     * @return
-     *          elemento representando o operador atribuido.
+     * <br/>
+     * 
+     * The operator attribute relates the compound statement children elements.
+     * Its possible values are "and" and "or" and are defined in the enumeration
+     * <i>NCLConditionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using an "and" operator means that all statements of the compound statement
+     * must be satisfied at the same time. Using an "or" operator means at least
+     * one statement of the compound statement must be satisfied.
+     * 
+     * @return 
+     *          element representing the compound statement operator from the
+     *          enumeration <i>NCLOperator</i> or <i>null</i> if the attribute
+     *          is not defined.
      */
     public NCLOperator getOperator() {
         return operator;
@@ -94,10 +162,18 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Determina se a assertiva composta está negada.
+     * Sets the attribute that indicates if the statement is negated. This
+     * attribute is optional. Set the isNegated to <i>null</i> to erase an
+     * inNegated already defined.
+     * 
+     * <br/>
+     * 
+     * If this attribute is true, that means that the compound statement "formula"
+     * is negated.
      * 
      * @param isNegated
-     *          booleano que define se a assertiva está negada.
+     *          boolean indicating if the compound statement is negated or
+     *          <i>null</i> to erase an isNegated already defined.
      */
     public void setIsNegated(Boolean isNegated) {
         Boolean aux = this.isNegated;
@@ -107,10 +183,17 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Retorna se a assertiva composta está negada.
+     * Sets the attribute that indicates if the statement is negated or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * If this attribute is true, that means that the compound statement "formula"
+     * is negated.
      * 
      * @return
-     *          booleano que define se a assertiva está negada.
+     *          boolean indicating if the compound statement is negated or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Boolean getIsNegated() {
         return isNegated;
@@ -118,14 +201,15 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Adiciona uma assertiva a assertiva composta.
+     * Adds a statement to the compound statement. The compound statement must
+     * have at least two statement elements.
      * 
      * @param statement
-     *          elemento representando a assertiva a ser adicionada.
+     *          element representing a statement.
      * @return
-     *          verdadeiro se a assertiva foi adicionada.
-     *
-     * @see ArrayList#add
+     *          true if the element representing a statement was added.
+     * @throws XMLException 
+     *          if the element representing the statement is null.
      */
     public boolean addStatement(Es statement) throws XMLException {
         if(statements.add(statement, (T) this)){
@@ -137,14 +221,15 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Remove uma assertiva da assertiva composta.
-     *
+     * Removes a statement of the compound statement. The compound statement must
+     * have at least two statement elements.
+     * 
      * @param statement
-     *          elemento representando a assertiva a ser removida.
+     *          element representing a statement.
      * @return
-     *          verdadeiro se a assertiva foi removida.
-     *
-     * @see ArrayList#remove
+     *          true if the element representing a statement was removed.
+     * @throws XMLException 
+     *          if the element representing the statement is null.
      */
     public boolean removeStatement(Es statement) throws XMLException {
         if(statements.remove(statement)){
@@ -156,12 +241,15 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Verifica se a assertiva composta possui uma assertiva.
+     * Verifies if the compound statement has a specific element representing a
+     * statement. The compound statement must have at least two statement elements.
      * 
      * @param statement
-     *          elemento representando a assertiva a ser verificada.
+     *          element representing a statement.
      * @return
-     *          verdadeiro se a assertiva existe.
+     *          true if the compound statement has the statement element.
+     * @throws XMLException 
+     *          if the element representing the statement is null.
      */
     public boolean hasStatement(Es statement) throws XMLException {
         return statements.contains(statement);
@@ -169,10 +257,11 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Verifica se a assertiva composta possui pelo menos uma assertiva.
+     * Verifies if the compound statement has at least one statement. The compound
+     * statement must have at least two statement elements.
      * 
-     * @return
-     *          verdadeiro se a assertiva composta possuir pelo menos uma assertiva.
+     * @return 
+     *          true if the compound statement has at least one statement.
      */
     public boolean hasStatement() {
         return !statements.isEmpty();
@@ -180,10 +269,11 @@ public abstract class NCLCompoundStatementPrototype<T extends NCLCompoundStateme
     
     
     /**
-     * Retorna as assertivas da assertiva composta.
-     *
-     * @return
-     *          lista contendo as assertivas da assertiva composta.
+     * Returns the list of statements that a compound statement have. The compound
+     * statement must have at least two statement elements.
+     * 
+     * @return 
+     *          element list with all statements.
      */
     public ElementList<Es, T> getStatements() {
         return statements;

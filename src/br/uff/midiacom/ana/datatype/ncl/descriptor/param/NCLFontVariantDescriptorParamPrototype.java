@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -44,31 +44,65 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents a descriptor parameter whose value is a value from the
+ * enumeration <i>NCLFontVariant</i>.
+ * 
+ * <br/>
+ * 
+ * This element is used to parameterize the presentation of the node associated
+ * to a descriptor. The descriptorParam may redefine the value of an attribute
+ * defined by a region element or define new attributes for the node presentation.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the descriptor parameter. This attribute is required.</li>
+ *  <li><i>value</i> - value of the descriptor parameter. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public abstract class NCLFontVariantDescriptorParamPrototype<T extends NCLFontVariantDescriptorParamPrototype,
                                                              P extends NCLElement,
                                                              I extends NCLElementImpl>
         extends NCLDescriptorParamPrototype<T, P, I, NCLFontVariant> {
 
 
+    /**
+     * Descriptor parameter constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLFontVariantDescriptorParamPrototype() throws XMLException {
         super();
     }
 
 
     @Override
-    public void setName(NCLAttributes name) {
+    public void setName(NCLAttributes name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
         super.setName(NCLAttributes.FONT_VARIANT);
     }
 
 
     @Override
-    protected void setParamValue(String value) throws IllegalArgumentException {
+    protected void setParamValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
         for(NCLFontVariant font : NCLFontVariant.values()){
             if(value.equals(font.toString()))
                 setValue(font);
         }
 
-        setValue(null);
+        throw new XMLException("Could not find value: " + value);
     }
 
 

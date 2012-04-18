@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,8 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.rule;
 
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -46,13 +45,35 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
+/**
+ * Class that represents a simple rule. A rule represents a test of the value of
+ * a variable. This variable can be a system variable or defined by the document.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the simple rule element. This attribute is required.</li>
+ *  <li><i>var</i> - variable tested by the rule. The variable must be a property
+ *                   of media with type settings. This attribute is required.</li>
+ *  <li><i>comparator</i> - relates the variable to the value. This attribute is
+ *                          required.</li>
+ *  <li><i>value</i> - value to be tested by the rule. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ep> 
+ */
 public abstract class NCLRulePrototype<T extends NCLTestRule,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
-                                       Ep extends InterfaceReference>
+                                       Ep extends VariableReference>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLTestRule<T, P> {
 
@@ -64,20 +85,11 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Construtor do elemento <i>rule</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da regra.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da regra não for válido.
+     * Simple rule constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLRulePrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLRulePrototype() throws XMLException {
         super();
         references = new ItemList<ReferenceType>();
@@ -85,19 +97,38 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Atribui uma propriedade ao atributo var.
+     * Sets the variable to be tested by the rule. This attribute is required
+     * and can not be set to <i>null</i>. This method receives an element that
+     * makes reference to that variable.
+     * 
+     * <br/>
+     * 
+     * The variable used by the rule is a global variable in the list defined
+     * by the document. The variable tested by the rule must be indicated by a
+     * property element child of a media element with type <i>settings</i>.
+     * 
+     * <br/>
+     * 
+     * Since a rule can be defined in a document without a body, the variable
+     * remains without a reference from a property element until the document
+     * that uses the rule defines a media node of type <i>settings</i>, whose
+     * property indicates this variable.
      *
      * @param var
-     *          elemento representando a propriedade associada ao atributo.
+     *          element that makes reference to the variable to be tested.
+     * @throws XMLException 
+     *          if the variable is null or any error occur while creating the
+     *          reference to the variable.
      */
     public void setVar(Ep var) throws XMLException {
+        if(var == null)
+            throw new XMLException("Null variable");
+        
         Ep aux = this.var;
         
         this.var = var;
-        if(this.var != null){
-            this.var.setOwner((T) this);
-            this.var.setOwnerAtt(NCLElementAttributes.VAR);
-        }
+        this.var.setOwner((T) this);
+        this.var.setOwnerAtt(NCLElementAttributes.VAR);
         
         impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
         if(aux != null)
@@ -106,10 +137,17 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Retorna a propriedade relacionada ao atributo var.
+     * Returns the variable to be tested by the rule or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The variable tested by the rule must be indicated by a property element
+     * child of a media element with type <i>settings</i>. This method receives
+     * an element to make reference to that property.
      *
      * @return
-     *          elemento representando a propriedade associada ao atributo.
+     *          element that makes reference to the variable to be tested.
      */
     public Ep getVar() {
         return var;
@@ -117,12 +155,20 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Atribui um comparador a regra.
+     * Sets the relation between the variable to the value. This attribute is
+     * required and can not be set to <i>null</i>. The possible comparators to
+     * be used are defined in the enumeration <i>NCLComparator</i>.
      *
      * @param comparator
-     *          elemento representando o comparador da regra.
+     *          relation between the variable to the value from the enumeration
+     *          <i>NCLComparator</i>.
+     * @throws XMLException 
+     *          if the value representing the comparator is null.
      */
-    public void setComparator(NCLComparator comparator) {
+    public void setComparator(NCLComparator comparator) throws XMLException {
+        if(comparator == null)
+            throw new XMLException("Null comparator.");
+        
         NCLComparator aux = this.comparator;
         this.comparator = comparator;
         impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
@@ -130,10 +176,13 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Retorna o comparador da regra.
-     *
+     * Returns the relation between the variable to the value or <i>null</i> if
+     * the attribute is not defined. The possible comparators to be used are
+     * defined in the enumeration <i>NCLComparator</i>.
+     * 
      * @return
-     *          elemento representando o comparador da regra.
+     *          elation between the variable to the value from the enumeration
+     *          <i>NCLComparator</i> or <i>null</i> if the comparator is not defined.
      */
     public NCLComparator getComparator() {
         return comparator;
@@ -141,15 +190,18 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Atribui um valor de comparação a regra.
+     * Sets the value to be tested by the rule. This attribute is required and
+     * can not be set to <i>null</i>.
      *
      * @param value
-     *          String representando o valor de comparação.
-     *
-     * @throws IllegalArgumentException
-     *          se a String for vazia.
+     *          string representing the value to be tested by the rule.
+     * @throws XMLException 
+     *          if the string representing the value is null or empty.
      */
     public void setValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
         StringType aux = this.value;
         this.value = new StringType(value);
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
@@ -157,10 +209,12 @@ public abstract class NCLRulePrototype<T extends NCLTestRule,
 
 
     /**
-     * Retorna o valor de comparação da regra.
-     *
+     * Returns the value to be tested by the rule or <i>null</i> if no value is
+     * defined.
+     * 
      * @return
-     *          String representando o valor de comparação.
+     *         string representing the value to be tested by the rule or
+     *          <i>null</i> if no value is defined.
      */
     public String getValue() {
         if(value != null)

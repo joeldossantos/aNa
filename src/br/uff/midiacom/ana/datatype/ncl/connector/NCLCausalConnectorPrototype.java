@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -46,9 +45,45 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
+/**
+ * Class that represents a causal connector.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the connector. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>connectorParam</i> - parameter used in the connector. The connector
+ *                              can have none or several parameter elements.</li>
+ *  <li><i>simpleCondition</i> - element representing a connector condition. The
+ *                               connector can have none or several condition elements.</li>
+ *  <li><i>compundCondition</i> - element representing a connector condition. The
+ *                                connector can have none or several condition elements.</li>
+ *  <li><i>simpleAction</i> - element representing a connector action. The
+ *                            connector can have none or several action elements.</li>
+ *  <li><i>compundAction</i> - element representing a connector action. The
+ *                             connector can have none or several action elements.</li>
+ * </ul>
+ * 
+ * Note that the connector must have at least one condition and one action.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ec>
+ * @param <Ea>
+ * @param <Ep> 
+ */
 public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPrototype,
                                                   P extends NCLElement,
                                                   I extends NCLElementImpl,
@@ -66,21 +101,11 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
 
 
     /**
-     * Construtor do elemento <i>causalConnector</i> da <i>Nested Context Language</i> (NCL).
+     * Connector element constructor.
      * 
-     * @param id
-     *          identificador do conector.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          caso o identificador seja inválido.
-     */    
-    public NCLCausalConnectorPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        conn_params = new IdentifiableElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
-    }
-    
-    
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */  
     public NCLCausalConnectorPrototype() throws XMLException {
         super();
         conn_params = new IdentifiableElementList<Ep, T>();
@@ -89,20 +114,26 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
     
     
     /**
-     * Atribui uma condição ao conector causal.
+     * Sets the connector condition. The connector condition can be a simple
+     * condition or a compound condition.
      * 
-     * @param condition
-     *          elemento representando uma condição do conector.
-     */    
+     * <br/>
+     * 
+     * The connector must have at least one condition.
+     * 
+     * @param condition 
+     *          element representing a connector condition or <i>null</i> to
+     *          erase a condition already defined.
+     */
     public void setCondition(Ec condition) {
-        //Retira o parentesco do condition atual
+        //Removes the parent of the actual condition
         if(this.condition != null){
             this.condition.setParent(null);
             impl.notifyRemoved(NCLElementSets.CONDITIONS, this.condition);
         }
 
         this.condition = condition;
-        //Se condition existe, atribui este como seu parente
+        //Sets this as the parent of the new condition
         if(this.condition != null){
             this.condition.setParent(this);
             impl.notifyInserted(NCLElementSets.CONDITIONS, this.condition);
@@ -111,31 +142,44 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
     
     
     /**
-     * Retorna a condição atribuida ao conector causal.
+     * Returns the connector condition or <i>null</i> if the condition is not
+     * defined. The connector condition can be a simple condition or a compound
+     * condition.
+     * 
+     * <br/>
+     * 
+     * The connector must have at least one condition.
      * 
      * @return
-     *          elemento representando uma condição do conector.
-     */    
+     *          element representing a connector condition or <i>null</i> if the
+     *          condition is not defined.
+     */
     public Ec getCondition() {
         return condition;
     }
 
 
     /**
-     * Atribui uma ação ao conector causal.
+     * Sets the connector action. The connector action can be a simple action
+     * or a compound action.
      * 
-     * @param action
-     *          elemento representando uma ação do conector.
-     */    
+     * <br/>
+     * 
+     * The connector must have at least one action.
+     * 
+     * @param action 
+     *          element representing a connector action or <i>null</i> to
+     *          erase an action already defined.
+     */
     public void setAction(Ea action) {
-        //Retira o parentesco do action atual
+        //Removes the parent of the actual action
         if(this.action != null){
             this.action.setParent(null);
             impl.notifyRemoved(NCLElementSets.ACTIONS, this.action);
         }
 
         this.action = action;
-        //Se action existe, atribui este como seu parente
+        //Sets this as the parent of the new action
         if(this.action != null){
             this.action.setParent(this);
             impl.notifyInserted(NCLElementSets.ACTIONS, this.action);
@@ -144,10 +188,17 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
     
     
     /**
-     * Retorna a ação atribuida ao conector causal.
-     *
+     * Returns the connector action or <i>null</i> if the action is not
+     * defined. The connector action can be a simple action or a compound
+     * action.
+     * 
+     * <br/>
+     * 
+     * The connector must have at least one action.
+     * 
      * @return
-     *          elemento representando uma ação do conector.
+     *          element representing a connector action or <i>null</i> if the
+     *          action is not defined.
      */
     public Ea getAction() {
         return action;
@@ -155,15 +206,16 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
 
     
     /**
-     * Adiciona um parâmetro ao conector causal NCL.     
+     * Adds a connector parameter to the connector. The connector can have none
+     * or several parameter elements.
      * 
      * @param param
-     *          parâmetro a ser adicionado ao conector.
+     *          element representing a connector parameter.
      * @return
-     *          verdadeiro se o parâmetro for adicionado.
-     *
-     * @see TreeSet#add
-     */    
+     *          true if the element representing a connector parameter was added.
+     * @throws XMLException 
+     *          if the element representing the connector parameter is null.
+     */
     public boolean addConnectorParam(Ep param) throws XMLException {
         if(conn_params.add(param, (T) this)){
             impl.notifyInserted(NCLElementSets.CONNECTOR_PARAMS, param);
@@ -174,12 +226,15 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
 
 
     /**
-     * Remove um parâmetro do conector causal.
-     *
+     * Removes a connector parameter of the connector. The connector can have none
+     * or several parameter elements.
+     * 
      * @param param
-     *          parâmetro a ser removido do conector.
+     *          element representing a connector parameter.
      * @return
-     *          verdadeiro se o parâmetro for removido.
+     *          true if the element representing a connector parameter was removed.
+     * @throws XMLException 
+     *          if the element representing the connector parameter is null.
      */
     public boolean removeConnectorParam(Ep param) throws XMLException {
         if(conn_params.remove(param)){
@@ -191,13 +246,17 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
 
     
     /**
-     * Remove um parâmetro do conector causal.
+     * Removes a connector parameter of the connector. The connector can have none
+     * or several parameter elements.
      * 
      * @param name
-     *          nome do parâmetro a ser removido do conector.
+     *          string representing the name of the element representing a
+     *          connector parameter.
      * @return
-     *          verdadeiro se o parâmetro for removido.
-     */    
+     *          true if the connector parameter was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean removeConnectorParam(String name) throws XMLException {
         if(conn_params.remove(name)){
             impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, name);
@@ -208,23 +267,33 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
 
 
     /**
-     * Verifica se o conector possui pelo menos um parâmetro.
-     *
+     * Verifies if the connector has a specific element representing
+     * connector parameter. The connector can have none or several parameter
+     * elements.
+     * 
+     * @param param
+     *          element representing a connector parameter.
      * @return
-     *          verdadeiro se o conector possuir pelo menos um parâmetro.
+     *          true if the connectors has the connector parameter element.
+     * @throws XMLException 
+     *          if the element representing the connector parameter is null.
      */
-    public boolean hasConnectorParam() {
-        return !conn_params.isEmpty();
+    public boolean hasConnectorParam(Ep param) throws XMLException {
+        return conn_params.contains(param);
     }
 
 
     /**
-     * Verifica se o conector possui um parâmetro.
-     *
+     * Verifies if the connector has a connector parameter with a specific name.
+     * The connector can have none or several parameter elements.
+     * 
      * @param name
-     *          nome do parâmetro a ser verificado.
+     *          string representing the name of the element representing a
+     *          connector parameter.
      * @return
-     *          verdadeiro se o parâmetro existir.
+     *          true if the connectors has the connector parameter element.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasConnectorParam(String name) throws XMLException {
         return conn_params.get(name) != null;
@@ -232,10 +301,23 @@ public abstract class NCLCausalConnectorPrototype<T extends NCLCausalConnectorPr
 
 
     /**
-     * Retorna os parâmetros do conector.
-     *
-     * @return
-     *          lista contendo os parâmetros do conector.
+     * Verifies if the connector has at least one connector parameter. The
+     * connector can have none or several parameter elements.
+     * 
+     * @return 
+     *          true if the connector has at least one connector parameter.
+     */
+    public boolean hasConnectorParam() {
+        return !conn_params.isEmpty();
+    }
+
+
+    /**
+     * Returns the list of connector parameters that a connector have. The
+     * connector can have none or several parameter elements.
+     * 
+     * @return 
+     *          element list with all connector parameters.
      */
     public IdentifiableElementList<Ep, T> getConnectorParams() {
         return conn_params;

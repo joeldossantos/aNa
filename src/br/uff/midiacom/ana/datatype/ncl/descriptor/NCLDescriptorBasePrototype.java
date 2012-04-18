@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -48,6 +48,39 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 
 
+/**
+ * Class that represents a base of descriptors.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the base of descriptors. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>importBase</i> - element that imports a descriptor base defined in another
+ *                          NCL document. The base can have none or several import
+ *                          elements.</li>
+ *  <li><i>descriptor</i> - element representing a descriptor inside the base. The
+ *                          base can have none or several descriptor elements.</li>
+ *  <li><i>descriptorSwitch</i> - element representing a descriptor switch inside
+ *                                the base. The base can have none or several
+ *                                descriptor switch elements.</li>
+ * </ul>
+ * 
+ * Note that the base of descriptors must have at least one child element, which
+ * can be a import, a descriptor or a descriptor switch.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <El>
+ * @param <Ei> 
+ */
 public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBasePrototype,
                                                  P extends NCLElement,
                                                  I extends NCLElementImpl,
@@ -61,7 +94,10 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Construtor do elemento <i>descriptorBase</i> da <i>Nested Context Language</i> (NCL).
+     * Base of descriptors constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLDescriptorBasePrototype() throws XMLException {
         super();
@@ -71,12 +107,18 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Adiciona um descritor à base de descritores.
+     * Adds a descriptor or a descriptor switch to the base of descriptors. The
+     * base of descriptors can have none or several descriptor or descriptor
+     * switch elements.
      * 
      * @param descriptor
-     *          elemento representando o descritor a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element representing a descriptor or a descriptor switch.
+     * @return
+     *          true if the element representing a descriptor or descriptor
+     *          switch was added.
+     * @throws XMLException 
+     *          if the element representing the descriptor or descriptor switch
+     *          is null.
      */
     public boolean addDescriptor(El descriptor) throws XMLException {
         if(descriptors.add(descriptor, (T) this)){
@@ -88,12 +130,18 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Remove um descritor da base de descritores.
-     *
+     * Removes a descriptor or a descriptor switch of the base of descriptors.
+     * The base of descriptors can have none or several descriptor or descriptor
+     * switch elements.
+     * 
      * @param descriptor
-     *          elemento representando o descritor a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element representing a descriptor or a descriptor switch.
+     * @return
+     *          true if the element representing a descriptor or descriptor
+     *          switch was removed.
+     * @throws XMLException 
+     *          if the element representing the descriptor or descriptor switch
+     *          is null.
      */
     public boolean removeDescriptor(El descriptor) throws XMLException {
         if(descriptors.remove(descriptor)){
@@ -105,14 +153,17 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Remove um descritor da base de descritores.
-     *
+     * Removes a descriptor or a descriptor switch of the base of descriptors.
+     * The base of descriptors can have none or several descriptor or descriptor
+     * switch elements.
+     * 
      * @param id
-     *          identificador do descritor a ser removido.
+     *          string representing the id of the element representing a
+     *          descriptor or a descriptor switch.
      * @return
-     *          Verdadeiro se o descritor foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the descriptor or descriptor switch was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeDescriptor(String id) throws XMLException {
         if(descriptors.remove(id)){
@@ -124,26 +175,51 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Verifica se a base de descritores contém um descritor.
+     * Verifies if the base of descriptors has a specific element representing
+     * a descriptor or descriptor switch. The base of descriptors can have none
+     * or several descriptor or descriptor switch elements.
      * 
      * @param descriptor
-     *          elemento representando o descritor a ser verificado.
+     *          element representing a descriptor or descriptor switch.
+     * @return
+     *          true if the base of descriptors has the descriptor or descriptor
+     *          switch element.
+     * @throws XMLException 
+     *          if the element representing the descriptor or descriptor switch
+     *          is null.
      */
     public boolean hasDescriptor(El descriptor) throws XMLException {
         return descriptors.contains(descriptor);
     }
 
 
+    /**
+     * Verifies if the base of descriptors has a descriptor or descriptor switch
+     * with a specific id. The base of descriptors can have none or several
+     * descriptor or descriptor switch elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          descriptor or descriptor switch.
+     * @return
+     *          true if the base of descriptors has the descriptor or descriptor
+     *          switch element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasDescriptor(String id) throws XMLException {
         return descriptors.get(id) != null;
     }
 
 
     /**
-     * Verifica se a base de descritores possui algum descritor.
+     * Verifies if the base of descriptors has at least one descriptor or
+     * descriptor switch. The base of descriptors can have none or several
+     * descriptor or descriptor switch elements.
      * 
-     * @return
-     *          verdadeiro se a base de descritores possuir algum descritor.
+     * @return 
+     *          true if the base of descriptors has at least one descriptor or
+     *          descriptor switch.
      */
     public boolean hasDescriptor() {
         return !descriptors.isEmpty();
@@ -151,10 +227,12 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Retorna os descritores da base de descritores.
-     *
-     * @return
-     *          lista contendo os descritores da base de descritores.
+     * Returns the list of descriptors and descriptor switches that a base of
+     * descriptors have. The base of descriptors can have none or several
+     * descriptor or descriptor switch elements.
+     * 
+     * @return 
+     *          element list with all descriptors and descriptor switches.
      */
     public IdentifiableElementList<El, T> getDescriptors() {
         return descriptors;
@@ -162,12 +240,17 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Adiciona um importador de base à base de descritores.
-     *
+     * Adds an element that imports a base of descriptors defined in another NCL
+     * document to the base of descriptors. The base can have none or several
+     * import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element that imports a base of descriptors defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was added.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(imports.add(importBase, (T) this)){
@@ -179,12 +262,17 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Remove um importador de base da base de descritores.
-     *
+     * Removes an element that imports a base of descriptors defined in another
+     * NCL document of the base of descriptors. The base can have none or several
+     * import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element that imports a base of descriptors defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was removed.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(imports.remove(importBase)){
@@ -196,10 +284,17 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Verifica se a base de descritores contém um importador de base.
-     *
+     * Verifies if the base of descriptors has a specific element that imports a
+     * base of descriptors defined in another NCL document. The base can have
+     * none or several import elements.
+     * 
      * @param importBase
-     *          elemento representando o importador a ser verificado.
+     *          element that imports a base of descriptors defined in another NCL
+     *          document.
+     * @return
+     *          true if the base of descriptors has the import element.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
@@ -207,10 +302,12 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Verifica se a base de descritores possui algum importador de base.
-     *
-     * @return
-     *          verdadeiro se a base de descritores possuir algum importador de base.
+     * Verifies if the base of descriptors has at least one element that imports
+     * a base of descriptors defined in another NCL document. The base can have
+     * none or several import elements.
+     * 
+     * @return 
+     *          true if the base of descriptors has at least import element.
      */
     public boolean hasImportBase() {
         return !imports.isEmpty();
@@ -218,10 +315,11 @@ public abstract class NCLDescriptorBasePrototype<T extends NCLDescriptorBaseProt
 
 
     /**
-     * Retorna os importadores de base da base de descritores.
-     *
-     * @return
-     *          lista contendo os importadores de base da base de descritores.
+     * Returns the list of elements that imports a base of descriptors defined in
+     * another NCL document. The base can have none or several import elements.
+     * 
+     * @return 
+     *          element list with all import elements.
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;

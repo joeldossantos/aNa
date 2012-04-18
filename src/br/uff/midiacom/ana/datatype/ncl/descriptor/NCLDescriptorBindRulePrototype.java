@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -47,6 +47,25 @@ import br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents the bindRule element used inside a switch of descriptors.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>constituent</i> - switch element component descriptor to be related
+ *                           to a rule. This attribute is required.</li>
+ *  <li><i>rule</i> - rule tested when selecting the descriptor to be used. This
+ *                    attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <En>
+ * @param <Er> 
+ */
 public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBindRulePrototype,
                                                      P extends NCLElement,
                                                      I extends NCLElementImpl,
@@ -60,7 +79,10 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
 
 
     /**
-     * Construtor do elemento <i>bindRule</i> da <i>Nested Context Language</i> (NCL).
+     * BindRule element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLDescriptorBindRulePrototype() throws XMLException {
         super();
@@ -68,19 +90,30 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
 
 
     /**
-     * Atribui um constituent ao bind.
-     *
+     * Sets the switch element component descriptor to be related to a rule. This
+     * attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The referred descriptor must be a node internal to the switch element
+     * parent of this bindRule element.
+     * 
      * @param constituent
-     *          elemento representando o descritor mapeado pelo bind.
+     *          element that makes reference to the descriptor that will be
+     *          related to a rule.
+     * @throws XMLException 
+     *          if the constituent is null or any error occur while creating the
+     *          reference to the descriptor.
      */
     public void setConstituent(El constituent) throws XMLException {
+        if(constituent == null)
+            throw new XMLException("Null constituent.");
+        
         El aux = this.constituent;
         
         this.constituent = constituent;
-        if(this.constituent != null){
-            this.constituent.setOwner((T) this);
-            this.constituent.setOwnerAtt(NCLElementAttributes.CONSTITUENT);
-        }
+        this.constituent.setOwner((T) this);
+        this.constituent.setOwnerAtt(NCLElementAttributes.CONSTITUENT);
         
         impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
         if(aux != null)
@@ -89,10 +122,17 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
 
 
     /**
-     * Retorna o constituent do bind.
-     *
-     * @return
-     *          elemento representando o descritor mapeado pelo bind.
+     * Returns the switch element component descriptor to be related to a rule or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The referred descriptor must be a node internal to the switch element parent
+     * of this bindRule element.
+     * 
+     * @return 
+     *          element that makes reference to the descriptor that will be
+     *          related to a rule or <i>null</i> if the attribute is not defined.
      */
     public El getConstituent() {
         return constituent;
@@ -100,19 +140,33 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
 
 
     /**
-     * Atribui uma regra de avaliação ao bind.
-     *
+     * Sets the rule tested when presenting the node indicated in the constituent
+     * attribute. This attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The rule referred can be defined in the document base of rules or in a
+     * base defined in an external document, imported by the base of rules or
+     * by the base of imported documents. When the rule is defined in an external
+     * document, the alias of the imported document must be indicated in the
+     * reference.
+     * 
      * @param rule
-     *          elemento representando a regra de avaliação do bind.
+     *          element representing a reference to a rule element.
+     * @throws XMLException 
+     *          if the rule is null or any error occur while creating the
+     *          reference to the rule.
+     *          
      */
     public void setRule(Er rule) throws XMLException {
+        if(rule == null)
+            throw new XMLException("Null rule.");
+        
         Er aux = this.rule;
         
         this.rule = rule;
-        if(this.rule != null){
-            this.rule.setOwner((T) this);
-            this.rule.setOwnerAtt(NCLElementAttributes.RULE);
-        }
+        this.rule.setOwner((T) this);
+        this.rule.setOwnerAtt(NCLElementAttributes.RULE);
         
         impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
         if(aux != null)
@@ -121,10 +175,20 @@ public abstract class NCLDescriptorBindRulePrototype<T extends NCLDescriptorBind
 
 
     /**
-     * Retorna a regra de avaliação do bind.
+     * Returns the rule tested when presenting the node indicated in the
+     * constituent attribute or <i>null</i> if the attribute is not defined.
      * 
-     * @return
-     *          elemento representando a regra de avaliação do bind.
+     * <br/>
+     * 
+     * The rule referred can be defined in the document base of rules or in a
+     * base defined in an external document, imported by the base of rules or
+     * by the base of imported documents. When the rule is defined in an external
+     * document, the alias of the imported document must be indicated in the
+     * reference.
+     * 
+     * @return 
+     *          element representing a reference to a rule element or <i>null</i>
+     *          if the attribute is not defined.
      */
     public Er getRule() {
         return rule;

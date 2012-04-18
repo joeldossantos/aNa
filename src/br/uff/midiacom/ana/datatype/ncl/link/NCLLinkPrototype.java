@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -50,6 +50,37 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
+/**
+ * Class that represents a link element. A link represents a relationship among
+ * nodes in an NCL document.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the link element. This attribute is optional.</li>
+ *  <li><i>xconnector</i> - connector that defines the relation represented by
+ *                          the link element. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>linkParam</i> - element that defines a value to a parameter defined
+ *                         in the connector. The link can have none or several
+ *                         parameter elements.</li>
+ *  <li><i>bind</i> - element that associates a role defined in the connector to
+ *                    a node. The link must have at least two bind elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ep>
+ * @param <Eb>
+ * @param <Ec> 
+ */
 public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
@@ -65,7 +96,10 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
 
     /**
-     * Construtor do elemento <i>link</i> da <i>Nested Context Language</i> (NCL).
+     * Link element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLLinkPrototype() throws XMLException {
         super();
@@ -75,19 +109,32 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
 
 
     /**
-     * Atribui um conector ao link.
+     * Sets the connector that defines the relation represented by the link
+     * element. This attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The connector referred can be defined in the document base of connectors
+     * or in a base defined in an external document, imported by the base of
+     * connectors or by the base of imported documents. When the connector is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
      * 
      * @param xconnector
-     *          conector a ser atribuido ao link.
+     *          element representing a reference to a connector element.
+     * @throws XMLException 
+     *          if the connector is null or any error occur while creating the
+     *          reference to the connector.
      */
     public void setXconnector(Ec xconnector) throws XMLException {
+        if(xconnector == null)
+            throw new XMLException("Null connector.");
+        
         Ec aux = this.xconnector;
         
         this.xconnector = xconnector;
-        if(this.xconnector != null){
-            this.xconnector.setOwner((T) this);
-            this.xconnector.setOwnerAtt(NCLElementAttributes.XCONNECTOR);
-        }
+        this.xconnector.setOwner((T) this);
+        this.xconnector.setOwnerAtt(NCLElementAttributes.XCONNECTOR);
         
         impl.notifyAltered(NCLElementAttributes.XCONNECTOR, aux, xconnector);
         if(aux != null)
@@ -96,10 +143,20 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Retorna o conector do link.
+     * Returns the connector that defines the relation represented by the link
+     * element or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The connector referred can be defined in the document base of connectors
+     * or in a base defined in an external document, imported by the base of
+     * connectors or by the base of imported documents. When the connector is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
      * 
      * @return
-     *          conector atribuido ao link.
+     *          element representing a reference to a connector element or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Ec getXconnector() {
         return xconnector;
@@ -107,14 +164,16 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Adiciona um parâmetro ao link.
+     * Adds a link parameter to the link. A link parameter defines a value to a
+     * parameter defined in the connector. The link can have none or several
+     * parameter elements.
      * 
      * @param param
-     *          elemento representando o parâmetro a ser adicionado.
+     *          element representing a link parameter.
      * @return
-     *          verdadeiro se o parâmetro foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the parameter was added.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean addLinkParam(Ep param) throws XMLException {
         if(linkParams.add(param, (T) this)){
@@ -126,14 +185,16 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Remove um parâmetro do link.
+     * Removes a link parameter of the link. A link parameter defines a value to
+     * a parameter defined in the connector. The link can have none or several
+     * parameter elements.
      * 
      * @param param
-     *          elemento representando o parâmetro a ser removido.
+     *          element representing a link parameter.
      * @return
-     *          verdadeiro se o parâmetro foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the parameter was removed.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean removeLinkParam(Ep param) throws XMLException {
         if(linkParams.remove(param)){
@@ -145,12 +206,16 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Verifica se o link possui um parâmetro.
+     * Verifies if the link has a specific element representing a link parameter.
+     * A link parameter defines a value to a parameter defined in the connector.
+     * The link can have none or several parameter elements.
      * 
      * @param param
-     *          elemento representando o parâmetro a ser verificado.
+     *          element representing a link parameter.
      * @return
-     *          verdadeiro se o parâmetro existir.
+     *          true if the link has the parameter element.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean hasLinkParam(Ep param) throws XMLException {
         return linkParams.contains(param);
@@ -158,10 +223,12 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Verifica se o link possui algum parâmetro.
+     * Verifies if the link has at least one link parameter. A link parameter
+     * defines a value to a parameter defined in the connector. The link can have
+     * none or several parameter elements.
      * 
-     * @return
-     *          verdadeiro se o link possui algum parâmetro.
+     * @return 
+     *          true if the link has at least one parameter.
      */
     public boolean hasLinkParam() {
         return !linkParams.isEmpty();
@@ -169,10 +236,12 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Retorna os parâmetros do link.
+     * Returns the list of link parameters that a link have. A link parameter
+     * defines a value to a parameter defined in the connector. The link can have
+     * none or several parameter elements.
      * 
-     * @return
-     *          lista contendo os parâmetros do link.
+     * @return 
+     *          element list with all parameters.
      */
     public ElementList<Ep, T> getLinkParams() {
         return linkParams;
@@ -180,14 +249,15 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Adiciona um bind ao link.
+     * Adds a bind to the link. A bind element associates a role defined in the
+     * connector to a node. The link must have at least two bind elements.
      * 
      * @param bind
-     *          elemento representando o bind a ser adicionado.
+     *          element representing a bind.
      * @return
-     *          verdadeiro se o bind for adicionado.
-     *
-     * @see ArrayList#add
+     *          true if the bind was added.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean addBind(Eb bind) throws XMLException {
         if(binds.add(bind, (T) this)){
@@ -199,14 +269,15 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Remove um bind do link.
+     * Removes a bind of the link. A bind element associates a role defined in
+     * the connector to a node. The link must have at least two bind elements.
      * 
      * @param bind
-     *          elemento representando o bind a ser removido.
+     *          element representing a bind.
      * @return
-     *          verdadeiro se o bind for removido.
-     *
-     * @see ArrayList#remove
+     *          true if the bind was removed.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
@@ -218,12 +289,16 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Verifica se o link possui um bind.
+     * Verifies if the link has a specific bind element. A bind element
+     * associates a role defined in the connector to a node. The link must have
+     * at least two bind elements.
      * 
      * @param bind
-     *          elemento representando o bind a ser verificado.
+     *          element representing a bind.
      * @return
-     *          verdadeiro se o bind existir.
+     *          true if the link has the bind element.
+     * @throws XMLException 
+     *          if the element representing the bind is null.
      */
     public boolean hasBind(Eb bind) throws XMLException {
         return binds.contains(bind);
@@ -231,10 +306,12 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
 
 
     /**
-     * Verifica se o link possui algum bind.
-     *
-     * @return
-     *          verdadeiro se o link possuir algum bind.
+     * Verifies if the link has at least one bind element. A bind element
+     * associates a role defined in the connector to a node. The link must have
+     * at least two bind elements.
+     * 
+     * @return 
+     *          true if the link has at least one bind.
      */
     public boolean hasBind() {
         return !binds.isEmpty();
@@ -242,10 +319,12 @@ public abstract class NCLLinkPrototype<T extends NCLLinkPrototype,
     
     
     /**
-     * Retorna os binds do link
+     * Returns the list of bind elements that a link have. A bind element
+     * associates a role defined in the connector to a node. The link must have
+     * at least two bind elements.
      * 
-     * @return
-     *          lista contendo os binds do link.
+     * @return 
+     *          element list with all binds.
      */
     public ElementList<Eb, T> getBinds() {
         return binds;

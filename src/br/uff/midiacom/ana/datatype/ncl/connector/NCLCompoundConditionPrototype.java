@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -50,6 +50,45 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
+/**
+ * Class that represents a connector compound condition.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>operator</i> - compound condition operator. This attribute is required.</li>
+ *  <li><i>delay</i> - delay waited by the condition. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>simpleCondition</i> - element representing a connector condition. The
+ *                               compound condition can have none or several
+ *                               condition elements.</li>
+ *  <li><i>compundCondition</i> - element representing a connector condition. The
+ *                                compound condition can have none or several
+ *                                condition elements.</li>
+ *  <li><i>assessmentStatement</i> - element representing a connector statement. The
+ *                                   compound condition can have none or several
+ *                                   statement elements.</li>
+ *  <li><i>compundStatement</i> - element representing a connector statement. The
+ *                                compound condition can have none or several
+ *                                statement elements.</li>
+ * </ul>
+ * 
+ * Note that the compound condition must have at least two conditions or statements.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ec>
+ * @param <Es>
+ * @param <Ep>
+ * @param <R> 
+ */
 public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditionPrototype,
                                                     P extends NCLElement,
                                                     I extends NCLElementImpl,
@@ -67,7 +106,10 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
     
 
     /**
-     * Construtor do elemento <i>compoundCondition</i> da <i>Nested Context Language</i> (NCL).
+     * Compound condition element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLCompoundConditionPrototype() throws XMLException {
         super();
@@ -77,12 +119,31 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Determina o operador da condição composta.
+     * Sets the compound condition operator. This attribute is required and can
+     * not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The operator attribute relates the compound condition children elements.
+     * Its possible values are "and" and "or" and are defined in the enumeration
+     * <i>NCLConditionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using an "and" operator means that all conditions of the compound condition
+     * must be satisfied at the same time. Using an "or" operator means at least
+     * one condition of the compound condition must be satisfied.
      *
      * @param operator
-     *          elemento representando o operador a ser atribuido.
+     *          element representing the compound condition operator from the
+     *          enumeration <i>NCLConditionOperator</i>.
+     * @throws XMLException 
+     *          if the element representing the operator is null.
      */
-    public void setOperator(NCLConditionOperator operator) {
+    public void setOperator(NCLConditionOperator operator) throws XMLException {
+        if(operator == null)
+            throw new XMLException("Null operator.");
+        
         NCLConditionOperator aux = this.operator;
         this.operator = operator;
         impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
@@ -90,10 +151,25 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
     
     
     /**
-     * Retorna o operador atribuido a condição composta.
-     *
-     * @return
-     *          elemento representando o operador atribuido.
+     * Returns the compound condition operator or <i>null</i> if the attribute is
+     * not defined.
+     * 
+     * <br/>
+     * 
+     * The operator attribute relates the compound condition children elements.
+     * Its possible values are "and" and "or" and are defined in the enumeration
+     * <i>NCLConditionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using an "and" operator means that all conditions of the compound condition
+     * must be satisfied at the same time. Using an "or" operator means at least
+     * one condition of the compound condition must be satisfied.
+     * 
+     * @return 
+     *          element representing the compound condition operator from the
+     *          enumeration <i>NCLConditionOperator</i> or <i>null</i> if the
+     *          attribute is not defined.
      */
     public NCLConditionOperator getOperator() {
         return operator;
@@ -101,14 +177,15 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Adiciona uma condição a condição composta.
+     * Adds a condition to the compound condition. The compound condition must
+     * have at least two condition or statement elements.
      * 
      * @param condition
-     *          elemento representando a condição a ser adicionada
+     *          element representing a condition.
      * @return
-     *          verdadeiro se a condição foi adicionada.
-     *
-     * @see ArrayList#add
+     *          true if the element representing a condition was added.
+     * @throws XMLException 
+     *          if the element representing the condition is null.
      */
     public boolean addCondition(Ec condition) throws XMLException {
         if(conditions.add(condition, (T) this)){
@@ -120,14 +197,15 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Remove uma condição a condição composta.
-     *
+     * Removes a condition of the compound condition. The compound condition must
+     * have at least two condition or statement elements.
+     * 
      * @param condition
-     *          elemento representando a condição a ser removida
+     *          element representing a condition.
      * @return
-     *          verdadeiro se a condição foi removida.
-     *
-     * @see ArrayList#remove
+     *          true if the element representing a condition was removed.
+     * @throws XMLException 
+     *          if the element representing the condition is null.
      */
     public boolean removeCondition(Ec condition) throws XMLException {
         if(conditions.remove(condition)){
@@ -139,12 +217,16 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
     
     /**
-     * Verifica se a condição composta possui uma condição.
+     * Verifies if the compound condition has a specific element representing a
+     * condition. The compound condition must have at least two condition or
+     * statement elements.
      * 
      * @param condition
-     *          elemento representando a condição a ser verificada
+     *          element representing a condition.
      * @return
-     *          verdadeiro se a condição existe.
+     *          true if the compound condition has the condition element.
+     * @throws XMLException 
+     *          if the element representing the condition is null.
      */
     public boolean hasCondition(Ec condition) throws XMLException {
         return conditions.contains(condition);
@@ -152,10 +234,11 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
     
     /**
-     * Verifica se a condição composta possui alguma condição.
-     *
-     * @return
-     *          verdadeiro se a condição composta possui alguma condição.
+     * Verifies if the compound condition has at least one condition. The compound
+     * condition must have at least two condition or statement elements.
+     * 
+     * @return 
+     *          true if the compound condition has at least one condition.
      */
     public boolean hasCondition() {
         return !conditions.isEmpty();
@@ -163,10 +246,11 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Retorna as condições da condição composta.
-     *
-     * @return
-     *          list contendo as condições da condição composta.
+     * Returns the list of conditions that a compound condition have. The compound
+     * condition must have at least two condition or statement elements.
+     * 
+     * @return 
+     *          element list with all conditions.
      */
     public ElementList<Ec, T> getConditions() {
         return conditions;
@@ -174,14 +258,15 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Adiciona uma assertiva a condição composta.
+     * Adds a statement to the compound condition. The compound condition must
+     * have at least two condition or statement elements.
      * 
      * @param statement
-     *          elemento representando a assertiva a ser adicionada.
+     *          element representing a statement.
      * @return
-     *          verdadeiro se a assertiva foi adicionada.
-     *
-     * @see ArrayList#add
+     *          true if the element representing a statement was added.
+     * @throws XMLException 
+     *          if the element representing the statement is null.
      */
     public boolean addStatement(Es statement) throws XMLException {
         if(statements.add(statement, (T) this)){
@@ -193,14 +278,15 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Remove uma assertiva da condição composta.
-     *
+     * Removes a statement of the compound condition. The compound condition must
+     * have at least two condition or statement elements.
+     * 
      * @param statement
-     *          elemento representando a assertiva a ser removida.
+     *          element representing a statement.
      * @return
-     *          verdadeiro se a assertiva foi removida.
-     *
-     * @see ArrayList#remove
+     *          true if the element representing a statement was removed.
+     * @throws XMLException 
+     *          if the element representing the statement is null.
      */
     public boolean removeStatement(Es statement) throws XMLException {
         if(statements.remove(statement)){
@@ -212,12 +298,16 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Verifica se a condição composta possui uma assertiva.
-     *
+     * Verifies if the compound condition has a specific element representing a
+     * statement. The compound condition must have at least two condition or
+     * statement elements.
+     * 
      * @param statement
-     *          elemento representando a assertiva a ser verificada.
+     *          element representing a statement.
      * @return
-     *          verdadeiro se a assertiva existe.
+     *          true if the compound condition has the statement element.
+     * @throws XMLException 
+     *          if the element representing the statement is null.
      */
     public boolean hasStatement(Es statement) throws XMLException {
         return statements.contains(statement);
@@ -225,10 +315,11 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
     
     /**
-     * Verifica se a condição composta possui pelo menos uma assertiva.
-     *
-     * @return
-     *          verdadeiro se a condição composta possuir pelo menos uma assertiva.
+     * Verifies if the compound condition has at least one statement. The compound
+     * condition must have at least two condition or statement elements.
+     * 
+     * @return 
+     *          true if the compound condition has at least one statement.
      */
     public boolean hasStatement() {
         return !statements.isEmpty();
@@ -236,10 +327,11 @@ public abstract class NCLCompoundConditionPrototype<T extends NCLCompoundConditi
 
 
     /**
-     * Retorna as assertivas da condição composta.
-     *
-     * @return
-     *          lista contendo as assertivas da condição composta.
+     * Returns the list of statements that a compound condition have. The compound
+     * condition must have at least two condition or statement elements.
+     * 
+     * @return 
+     *          element list with all statements.
      */
     public ElementList<Es, T> getStatements() {
         return statements;

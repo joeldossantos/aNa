@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -46,6 +46,23 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents a valueAssessment element. The valueAssessment element
+ * represents a value used in an comparison.
+ * 
+ * <br/>
+ * 
+ * This element defines the attribute:
+ * <ul>
+ *  <li><i>value</i> - value used in the comparison. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ep>
+ * @param <R> 
+ */
 public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPrototype,
                                                   P extends NCLElement,
                                                   I extends NCLElementImpl,
@@ -58,7 +75,10 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
     
 
     /**
-     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
+     * ValueAssessment element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLValueAssessmentPrototype() throws XMLException {
         super();
@@ -66,12 +86,12 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
 
 
     /**
-     * Construtor do elemento <i>valueAssessment</i> da <i>Nested Context Language</i> (NCL).
+     * ValueAssessment element constructor. The element is created with a value.
      *
      * @param value
-     *          String contendo o valor da assertiva.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
+     *          element representing the value.
+     * @throws XMLException
+     *          if the element representing the value is null.
      */
     public NCLValueAssessmentPrototype(AssValueParamType<Ep, T, R> value) throws XMLException {
         super();
@@ -80,14 +100,18 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
     
 
     /**
-     * Determina o valor da assertiva do conector.
+     * Sets the element value. The value is required and can not be set to
+     * <i>null</i>.
      *
      * @param value
-     *          String contendo o valor da assertiva.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor a ser atribuído for uma String vazia.
+     *          element representing the value.
+     * @throws XMLException
+     *          if the element representing the value is null.
      */
     public void setValue(AssValueParamType<Ep, T, R> value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+            
         AssValueParamType aux = this.value;
         
         this.value = value;
@@ -100,11 +124,11 @@ public abstract class NCLValueAssessmentPrototype<T extends NCLValueAssessmentPr
     
 
     /**
-     * Retorna o valor da assetiva do conector. Retorna a String que representa um valor
-     * padrao caso o valor tenha sido determinado desta forma.
+     * Returns the element value or <i>null</i> if the attribute is not defined.
      *
      * @return
-     *          String contendo o valor da assertiva.
+     *          element representing the value or <i>null</i> if the attribute
+     *          is not defined.
      */
     public AssValueParamType<Ep, T, R> getValue() {
         return value;

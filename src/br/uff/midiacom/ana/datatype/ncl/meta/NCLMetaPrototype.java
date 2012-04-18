@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -45,6 +45,23 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
+/**
+ * Class that represents the meta element. This element is used to describe an
+ * NCL document.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the metadata property. This attribute is required.</li>
+ *  <li><i>content</i> - value of the metadata property. This attribute is
+ *                     required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl>
@@ -56,7 +73,10 @@ public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
 
 
     /**
-     * Construtor do elemento <i>meta</i> da <i>Nested Context Language</i> (NCL).
+     * Meta element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLMetaPrototype() throws XMLException {
         super();
@@ -64,14 +84,18 @@ public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
 
 
     /**
-     * Atribui um nome ao metadado.
-     *
+     * Sets the name of the metadata property. This attribute is required and
+     * can not be set to <i>null</i>.
+     * 
      * @param name
-     *          String representando o nome do metadado.
-     * @throws IllegalArgumentException
-     *          se a String for vazia.
+     *          string representing the name of the metadata property.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public void setName(String name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
         StringType aux = this.name;
         this.name = new StringType(name);
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
@@ -79,10 +103,12 @@ public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
 
 
     /**
-     * Retorna o nome do metadado.
+     * Returns the name of the metadata property or <i>null</i> if the attribute is
+     * not defined.
      *
      * @return
-     *          String representando o nome do metadado.
+     *          string representing the name of the metadata property or null if
+     *          the attribute is not defined.
      */
     public String getName() {
         if(name != null)
@@ -93,14 +119,18 @@ public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
 
 
     /**
-     * Atribui um conteúdo ao metadado.
-     *
+     * Sets the value of the metadata property. This attribute is required and
+     * can not be set to <i>null</i>.
+     * 
      * @param content
-     *          String representando o conteúdo do metadado.
-     * @throws IllegalArgumentException
-     *          se a String for vazia.
+     *          string representing the name of the metadata property.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public void setContent(String content) throws XMLException {
+        if(content == null)
+            throw new XMLException("Null content.");
+        
         StringType aux = this.mcontent;
         this.mcontent = new StringType(content);
         impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
@@ -108,10 +138,12 @@ public abstract class NCLMetaPrototype<T extends NCLMetaPrototype,
 
 
     /**
-     * Retorna o conteúdo do metadado.
-     * 
+     * Returns the value of the metadata property or <i>null</i> if the attribute
+     * is not defined.
+     *
      * @return
-     *          String representando o conteúdo do metadado.
+     *          string representing the value of the metadata property or null
+     *          if the attribute is not defined.
      */
     public String getContent() {
         if(mcontent != null)

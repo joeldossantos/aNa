@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -52,20 +52,40 @@ import br.uff.midiacom.xml.datatype.string.StringType;
 
 
 /**
- * Esta classe define o elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
- * NCL nos permite definir onde cada no de midia sera apresentado, tanto em que classe de dispositivos como em qual regiao
- * de apresentaçao de cada dispositivo. Para cada classe de dispositivos de saida definimos, no cabeçalho do documento ( dentro do  elemento <i>head</i>),
- * uma colecao de regioes atraves do elemento <i>regionBase</i>.
- * Dentro de uma base de regioes definimos os elementos <i>region</i> que especificam
- * em que regioes da tela do dispositivo de saida serao exibidos os nos de conteudo. Alem de elementos <i>region</i>, uma base de regioes tambem pode
- * conter elementos <i>importBase</i> para importar uma base definida em outro documento NCL. Ela ainda pode conter o atributo device, que especifica o dispositivo
- * de exibicao relacionado aquela base.<br>
- *
+ * Class that represents a base of regions.
  * 
- * @see br.pensario.region.NCLRegionPrototype
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the base of regions. This attribute is optional.</li>
+ *  <li><i>device</i> - class of devices that use the base of regions. This
+ *                      attribute is optional.</li>
+ *  <li><i>region</i> - region to be used as parent of the regions defined in the
+ *                      base of regions. This attribute is optional. See the
+ *                      reference (ABNT NBR 15606-2) to more information.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>importBase</i> - element that imports a region base defined in another
+ *                          NCL document. The base can have none or several import
+ *                          elements.</li>
+ *  <li><i>region</i> - element representing a region inside the base. The base
+ *                      can have none or several region elements.</li>
+ * </ul>
+ * 
+ * Note that the base of regions must have at least one child element, which can
+ * be a import or a region.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Er>
+ * @param <Ei>
+ * @param <Rr> 
  */
 public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
                                              P extends NCLElement,
@@ -83,7 +103,10 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Construtor do elemento <i>regionBase</i> da <i>Nested Context Language</i> (NCL).
+     * Base of regions constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLRegionBasePrototype() throws XMLException {
         super();
@@ -93,12 +116,14 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Define um dispositivo de exibicao associado ao elemento <i>regionBase</i>. Ou seja, esse metodo determina para qual
-     * dispositivo as regioes contidas naquela base serao validas.
+     * Sets the class of devices that use the base of regions. This attribute is
+     * optional. Set the device to <i>null</i> to erase a device already defined.
+     * 
      * @param device
-     *          O metodo recebe como parametro um String representando o dispositivo de exibicao a que se quer relacionar a base de regioes atual.
-     * @throws java.lang.IllegalArgumentException
-     *          O metodo dispara uma excecao caso o usuario passe uma string vazia como parametro.
+     *          string representing the class of devices that use the base of
+     *          regions or <i>null</i> to erase the device already defined.
+     * @throws XMLException 
+     *          if the string is empty.
      */
     public void setDevice(String device) throws XMLException {
         StringType aux = this.device;
@@ -108,10 +133,12 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Metodo de acesso ao elemento device de uma base de regioes.
+     * Returns the class of devices that use the base of regions or <i>null</i>
+     * if the attribute is not defined.
      * 
-     * @return
-     *          Retorna uma String representando o elemento device associado a <i>regionBase</i> em questao.
+     * @return 
+     *          string representing the class of devices that use the base of
+     *          regions or <i>null</i> if the attribute is not defined.
      */
     public String getDevice() {
         if(device != null)
@@ -122,11 +149,17 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * NCL permite que regioes sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma regiao filha pode ser relativa a uma regiao pai
-     * e expressa como porcentagem. Esse metodo atribui a <i>regionBase</i> a regiao pai, ou seja, a regiao mais externa do aninhamento
+     * Sets the region to be used as parent of the regions defined in the base
+     * of regions. This attribute is optional. Set the region to <i>null</i> to
+     * erase a region already defined. This attribute must refer to a region
+     * defined in a base of regions of an active class. See the reference
+     * (ABNT NBR 15606-2) to more information.
      * 
      * @param region
-     *          Elemento representando a regiao a ser utilizada como pai.
+     *          element representing a reference to a region or <i>null</i> to
+     *          erase a region already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the region.
      */
     public void setParentRegion(Rr region) throws XMLException {
         Rr aux = this.parent_region;
@@ -144,12 +177,14 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * NCL permite que regioes sejam aninhadas. Dessa forma, o posicionamento e tamanho de uma regiao filha pode ser relativa a uma regiao pai
-     * e expressa como porcentagem. Esse metodo atribui a <i>regionBase</i> a regiao pai, ou seja, a regiao imediatamente acima no aninhamento.
-     * Esse método retorna a região pai da base de regioes.
+     * Returns the region to be used as parent of the regions defined in the base
+     * of regions or <i>null</i> if the attribute is not defined. This attribute
+     * must refer to a region defined in a base of regions of an active class.
+     * See the reference (ABNT NBR 15606-2) to more information.
      * 
-     * @return
-     *          elemento representando a regiao pai de uma base de regioes.
+     * @return 
+     *          element representing a reference to a region or <i>null</i> if
+     *          the attribute is not defined.
      */
     public Rr getParentRegion() {
         return parent_region;
@@ -157,17 +192,15 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Uma base de regioes pode conter como filhos elementos <i>region</i> e elementos <i>importBase</i>. Este metodo adiciona a base uma
-     * um elemento <i>region</i>, uma regiao da tela do dispositivo relacionado a esta base.
-     *
-     * @see br.pensario.region.NCLRegionPrototype
+     * Adds a region to the base of regions. The base of regions can have none
+     * or several regions.
      * 
      * @param region
-     *          O método recebe como parametro um elemento <i>region</i> a ser adicionado.
+     *          element representing a region.
      * @return
-     *          Retorna verdadeiro se a regiao for adicionada com sucesso.
-     *
-     * @see TreeSet#add
+     *          true if the region was added.
+     * @throws XMLException 
+     *          if the element representing the region is null.
      */
     public boolean addRegion(Er region) throws XMLException {
         if(regions.add(region, (T) this)){
@@ -179,14 +212,15 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Remove uma regiao da base de regioes. Nesta implementacao, o metodo recebe como parametro um objeto <i>region</i> a ser retirado da base.
-     *
+     * Removes a region of the base of regions. The base of regions can have
+     * none or several regions.
+     * 
      * @param region
-     *          Recebe como parametro o proprio elemento region a ser removido.
+     *          element representing a region.
      * @return
-     *          Retorna verdadeiro se a regiao for removida com sucesso.
-     *
-     * @see TreeSet#remove
+     *          true if the region was removed.
+     * @throws XMLException 
+     *          if the element representing the region is null.
      */
     public boolean removeRegion(Er region) throws XMLException {
         if(regions.remove(region)){
@@ -198,14 +232,15 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Este metodo remove um elemento <i>region</i> da base. Nesta implementacao, o metodo recebe o identificador da regiao a ser removida.
-     *
+     * Removes a region of the base of regions. The base of regions can have
+     * none or several regions.
+     * 
      * @param id
-     *          O metodo recebe com parametro uma string representando o  identificador da regiao a ser removida.
+     *          string representing the id of the element representing a region.
      * @return
-     *          Retorna verdadeiro se a regiao for removida com sucesso.
-     *
-     * @see TreeSet#remove
+     *          true if the region was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeRegion(String id) throws XMLException {
         if(regions.remove(id)){
@@ -217,31 +252,43 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Verifica se uma regiao pertence a base.
+     * Verifies if the base of regions has a specific element representing
+     * a region. The base of regions can have none or several regions.
      * 
      * @param region
-     *          elemento representando a regiao a ser verificada.
+     *          element representing a region.
      * @return
-     *           Verdadeiro caso a base contenha a regiao.
-     *           Falso caso a base não contenha a regiao.
-     *          
-     */    
+     *          true if the base of regions has the region element.
+     * @throws XMLException 
+     *          if the element representing the region is null.
+     */
     public boolean hasRegion(Er region) throws XMLException {
         return regions.contains(region);        
     }
 
 
+    /**
+     * Verifies if the base of regions has a region with a specific id. The 
+     * base of regions can have none or several regions.
+     * 
+     * @param id
+     *          string representing the id of the element representing a region.
+     * @return
+     *          true if the base of regions has the region element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasRegion(String id) throws XMLException {
         return regions.get(id) != null;
     }
 
 
     /**
-     * Verifica se a base de regioes possui alguma regiao.
+     * Verifies if the base of regions has at least one region. The base of
+     * regions can have none or several regions.
      * 
-     * @return
-     *          Verdadeiro caso a base possua, pelo menos, uma  regiao.
-     *          Falso caso a base nao possua elementos <i>region</i>
+     * @return 
+     *          true if the base of regions has at least one region.
      */
     public boolean hasRegion() {
         return !regions.isEmpty();
@@ -249,10 +296,11 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Retorna a coleção de regioes da base.
-     *
-     * @return
-     *          lista contendo as regioes da base de regioes.
+     * Returns the list of regions that a base of regions have. The base of
+     * regions can have none or several regions.
+     * 
+     * @return 
+     *          element list with all regions.
      */
     public IdentifiableElementList<Er, T> getRegions() {
         return regions;
@@ -260,13 +308,17 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Adiciona um elemento importBase a base de regioes. O elemento <i>importBase</i>, permite ao documento importar uma base de regioes
-     * pertencente a outro documento NCL.
-     *
+     * Adds an element that imports a base of regions defined in another NCL
+     * document to the base of regions. The base can have none or several import
+     * elements.
+     * 
      * @param importBase
-     *          O método recebe como parametro um elemento <i>importBase</i> a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element that imports a base of regions defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was added.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
         if(imports.add(importBase, (T) this)){
@@ -278,12 +330,17 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Remove um elemento <i>importBase</i> da base de regioes.
-     *
+     * Removes an element that imports a base of regions defined in another NCL
+     * document of the base of regions. The base can have none or several import
+     * elements.
+     * 
      * @param importBase
-     *           O metodo recebe como parâmetro um elemento <i>importBase</i> a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element that imports a base of regions defined in another NCL
+     *          document.
+     * @return
+     *          true if the import element was removed.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(imports.remove(importBase)){
@@ -295,10 +352,17 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Verifica se a base de regioes contem um determinado elemento <i>importBase</i>.
-     *
+     * Verifies if the base of regions has a specific element that imports a base
+     * of regions defined in another NCL document. The base can have none or
+     * several import elements.
+     * 
      * @param importBase
-     *          Elemento representando o importador a ser verificado.
+     *          element that imports a base of regions defined in another NCL
+     *          document.
+     * @return
+     *          true if the base of regions has the import element.
+     * @throws XMLException 
+     *          if the import element is null.
      */
     public boolean hasImportBase(Ei importBase) throws XMLException {
         return imports.contains(importBase);
@@ -306,11 +370,12 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Verifica se a base de regioes possui algum importador de regioes.
-     *
-     * @return
-     *          Verdadeiro se a base de regioes possuir algum elemento <i>importBase</i>.
-     *          Falso se a base de regioes não possuir nenhum elemento <i>importBase</i>.
+     * Verifies if the base of regions has at least one element that imports a base
+     * of regions defined in another NCL document. The base can have none or
+     * several import elements.
+     * 
+     * @return 
+     *          true if the base of regions has at least import element.
      */
     public boolean hasImportBase() {
         return !imports.isEmpty();
@@ -318,10 +383,11 @@ public abstract class NCLRegionBasePrototype<T extends NCLRegionBasePrototype,
 
 
     /**
-     * Retorna os elementos <i>importBase</i> da base de regiões.
-     *
-     * @return
-     *          lista contendo os elementos <i>importBase</i> da base de regiões.
+     * Returns the list of elements that imports a base of regions defined in
+     * another NCL document. The base can have none or several import elements.
+     * 
+     * @return 
+     *          element list with all import elements.
      */
     public ElementList<Ei, T> getImportBases() {
         return imports;

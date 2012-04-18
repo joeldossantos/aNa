@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -48,6 +48,41 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
+/**
+ * Class that represents a assessment statement element. This element is used
+ * to compares to values. The values can be an attribute of a node or event or
+ * a value.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>comparator</i> - indicates the comparison made. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>attributeAssessment</i> - element that represents the attribute whose
+ *                                   value will be compared. The assessment
+ *                                   statement can have one or two attribute
+ *                                   assessment elements.</li>
+ *  <li><i>valueAssessment</i> - element representing value to be compared. The
+ *                               assessment statement can have none or one value
+ *                               assessment element.</li>
+ * </ul>
+ * 
+ * Note that the assessment statement will compare either two attributes or an
+ * attribute with a value.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ea>
+ * @param <Ev>
+ * @param <Es> 
+ */
 public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentStatementPrototype,
                                                       P extends NCLElement,
                                                       I extends NCLElementImpl,
@@ -63,7 +98,10 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
 
     /**
-     * Construtor do elemento <i>assessmentStatement</i> da <i>Nested Context Language</i> (NCL).
+     * Assessment statement element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLAssessmentStatementPrototype() throws XMLException {
         super();
@@ -72,12 +110,20 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
 
 
     /**
-     * Determina o comparador da assertiva.
+     * Sets the type of comparison to be made. This attribute is required an can
+     * not be set to <i>null</i>. The possible comparison values are defined in
+     * the enumeration <i>NCLComparator</i>.
      * 
      * @param comparator
-     *          comparador utilizado pela assertiva.
+     *          element representing the type of comparison from the enumeration
+     *          <i>NCLComparator</i>.
+     * @throws XMLException 
+     *          if the element is null.
      */
-    public void setComparator(NCLComparator comparator) {
+    public void setComparator(NCLComparator comparator) throws XMLException {
+        if(comparator == null)
+            throw new XMLException("Null comparison.");
+        
         NCLComparator aux = this.comparator;
         this.comparator = comparator;
         impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
@@ -85,10 +131,14 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Retorna o comparador da assertiva.
+     * Returns the type of comparison to be made or <i>null</i> if the attribute
+     * is not defined. The possible comparison values are defined in the
+     * enumeration <i>NCLComparator</i>.
      * 
      * @return
-     *          comparador utilizado pela assertiva.
+     *          element representing the type of comparison from the enumeration
+     *          <i>NCLComparator</i> or <i>null</i> if the attribute is not
+     *          defined.
      */
     public NCLComparator getComparator() {
         return comparator;
@@ -96,24 +146,23 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Determina um valor de comparação a assertiva.
+     * Sets the element representing value to be compared. The assessment
+     * statement can have none or one value assessment element. Set the value
+     * assessment to <i>null</i> to erase a value assessment already defined.
      * 
      * @param value
-     *          String representando o valor de comparação a ser utilizado.
-     * @throws java.lang.IllegalArgumentException
-     *          Se o valor for uma String vazia.
-     *
-     * @see NCLValueAssessmentPrototype
+     *          element representing a value assessment or <i>null</i> to erase
+     *          a value already defined.
      */
     public void setValueAssessment(Ev value) {
-        //Retira o parentesco do valueAssessment atual
+        //Removes the parent of the actual value
         if(this.valueAssessment != null){
             this.valueAssessment.setParent(null);
             impl.notifyRemoved(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
         }
 
         this.valueAssessment = value;
-        //Set valueAssessment existe, atribui este como seu parente
+        //Sets this as the parent of the new value
         if(this.valueAssessment != null){
             this.valueAssessment.setParent(this);
             impl.notifyInserted(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
@@ -122,10 +171,13 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Retorna o valor de comparação a assertiva.
+     * Returns the element representing value to be compared or <i>null</i> if
+     * the value is not defined. The assessment statement can have none or one
+     * value assessment element.
      * 
      * @return
-     *          elemento representando o valor de comparação utilizado.
+     *          element representing a value assessment or <i>null</i> if the
+     *          value is not defined.
      */
     public Ev getValueAssessment() {
         return valueAssessment;
@@ -133,16 +185,16 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Adiciona um atributo de comparação a assertiva.
+     * Adds an element that represents the attribute whose value will be compared.
+     * The assessment statement can have one or two attribute assessment elements.
      * 
      * @param attribute
-     *          elemento representando o atributo a ser adicionado.
+     *          element representing an attribute assessment.
      * @return
-     *          verdadeiro se o atributo foi adicionado.
-     * @throws java.lang.Exception
-     *          se o número máximo de atributos for ultrapassado.
-     *
-     * @see ArrayList#add
+     *          true if the element representing an attribute assessment was added.
+     * @throws XMLException 
+     *          if the element representing the attribute assessment is null or
+     *          the assessment statement already have two attribute assessments.
      */
     public boolean addAttributeAssessment(Ea attribute) throws XMLException {
         if(attributeAssessments.size() == 2)
@@ -157,14 +209,15 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Remove um atributo de comparação da assertiva.
+     * Removes an element that represents the attribute whose value will be compared.
+     * The assessment statement can have one or two attribute assessment elements.
      * 
      * @param attribute
-     *          elemento representando o atributo a ser removido.
+     *          element representing an attribute assessment.
      * @return
-     *          verdadeiro se o atributo for removido.
-     *
-     * @see ArrayList#remove
+     *          true if the element representing an attribute assessment was removed.
+     * @throws XMLException 
+     *          if the element representing the attribute assessment is null.
      */
     public boolean removeAttributeAssessment(Ea attribute) throws XMLException {
         if(attributeAssessments.remove(attribute)){
@@ -176,12 +229,17 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Verifica se a assertiva possui um atributo.
+     * Verifies if the assessment statement has a specific element that represents
+     * the attribute whose value will be compared. The assessment statement can
+     * have one or two attribute assessment elements.
      * 
      * @param attribute
-     *          elemento representando o atributo a ser verificado.
+     *          element representing an attribute assessment.
      * @return
-     *          verdadeiro se o atributo estiver presente.
+     *          true if the assessment statement has the element representing an
+     *          attribute assessment.
+     * @throws XMLException 
+     *          if the element representing the attribute assessment is null.
      */
     public boolean hasAttributeAssessment(Ea attribute) throws XMLException {
         return attributeAssessments.contains(attribute);
@@ -189,10 +247,13 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
     
     
     /**
-     * Verifica se a assertiva possui pelo menos um atributo.
+     * Verifies if the assessment statement has at least one element that represents
+     * the attribute whose value will be compared. The assessment statement can
+     * have one or two attribute assessment elements.
      * 
      * @return
-     *          verdadeiro se a assertiva possuir pelo menos um atributo.
+     *          true if the assessment statement has at least one attribute
+     *          assessment.
      */
     public boolean hasAttributeAssessment() {
         return !attributeAssessments.isEmpty();
@@ -200,10 +261,11 @@ public abstract class NCLAssessmentStatementPrototype<T extends NCLAssessmentSta
 
 
     /**
-     * Retorna os atributos da assertiva.
-     *
-     * @return
-     *          lista contendo os atributos da assertiva.
+     * Returns the list of attribute assessments that an assessment statement have.
+     * The assessment statement can have one or two attribute assessment elements.
+     * 
+     * @return 
+     *          element list with all attribute assessments.
      */
     public ElementList<Ea, T> getAttributeAssessments() {
         return attributeAssessments;

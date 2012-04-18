@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.connector;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -45,10 +44,27 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
+/**
+ * Class that represents a connector parameter element. This element is used
+ * to define a parameterized value to be used in a connector.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the parameter. This attribute is required.</li>
+ *  <li><i>type</i> - type of the parameter. This attribute is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamPrototype,
                                                  P extends NCLElement,
                                                  I extends NCLElementImpl>
@@ -61,22 +77,11 @@ public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamProt
     
     
     /**
-     * Construtor do elemento <i>connectorParam</i> da <i>Nested Context Language</i> (NCL).
+     * Parameter element constructor.
      * 
-     * @param name
-     *          String contendo o nome a ser atribuido ao parâmetro.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome do parâmetro for inválido.
-     *         java.lang.IllegalArgumentException
-     *          se a String do tipo for vazia.
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLConnectorParamPrototype(String name) throws XMLException {
-        super();
-        setName(name);
-        references = new ItemList<ReferenceType>();
-    }
-
-    
     public NCLConnectorParamPrototype() throws XMLException {
         super();
         references = new ItemList<ReferenceType>();
@@ -98,14 +103,22 @@ public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamProt
     
     
     /**
-     * Atribui um nome ao parâmetro
-     *
+     * Sets the name of the parameter. This attribute is required and can not be
+     * set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The name of the parameter must be unique inside the connector.
+     * 
      * @param name
-     *          String contendo o nome a ser atribuido ao parâmetro.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o nome do parâmetro for inválido.
+     *          string representing the name of the parameter.
+     * @throws XMLException 
+     *          if the name is null or empty.
      */
     public void setName(String name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
         String aux = this.getName();
         super.setId(name);
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
@@ -113,10 +126,16 @@ public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamProt
     
     
     /**
-     * Retorna o nome do parâmetro
+     * Returns the name of the parameter or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The name of the parameter must be unique inside the connector.
      * 
      * @return
-     *          String contendo o nome atribuido ao parâmetro.
+     *          string representing the name of the parameter or <i>null</i> if
+     *          the attribute is not defined.
      */
     public String getName() {
         return super.getId();
@@ -124,12 +143,14 @@ public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamProt
     
     
     /**
-     * Atribui um tipo ao parâmetro
-     *
+     * Sets the type of the parameter. This attribute is optional. Set the type
+     * to <i>null</i> to erase a type already defined.
+     * 
      * @param type
-     *      String contendo o tipo do parâmetro.
-     * @throws java.lang.IllegalArgumentException
-     *          se a String for vazia.
+     *          string representing the type of the parameter or <i>null</i> to
+     *          erase a type already defined.
+     * @throws XMLException 
+     *          if the string is empty.
      */
     public void setType(String type) throws XMLException {
         StringType aux = this.type;
@@ -139,10 +160,12 @@ public abstract class NCLConnectorParamPrototype<T extends NCLConnectorParamProt
 
 
     /**
-     * Retorna o tipo do parâmetro
+     * Returns the type of the parameter or <i>null</i> if the attribute is not
+     * defined.
      * 
      * @return
-     *      String contendo o tipo do parâmetro.
+     *          string representing the type of the parameter or <i>null</i> if
+     *          the attribute is not defined.
      */
     public String getType() {
         if(type == null)

@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -39,15 +39,44 @@ package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
 import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
 
+/**
+ * Class that represents a port element. A port maps a context inner node or
+ * inner node interface point making it possible to be reached from outside the
+ * context.
+ * 
+ * <br/>
+ * 
+ * When a node or a node interface point is mapped by a port, every action over
+ * the port is reflected to the node or node interface point mapped by it. If the
+ * port interface attribute is not defined, it is assumed that the port maps
+ * the whole node.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the port element. This attribute is required.</li>
+ *  <li><i>component</i> - node mapped by the port. This attribute is required.</li>
+ *  <li><i>interface</i> - node interface point mapped by the port. This attribute
+ *                         is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <It>
+ * @param <En>
+ * @param <Ei> 
+ */
 public abstract class NCLPortPrototype<T extends NCLPortPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
@@ -64,20 +93,11 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
 
 
     /**
-     * Construtor do elemento <i>port</i> da <i>Nested Context Language</i> (NCL).
+     * Port element constructor.
      * 
-     * @param id
-     *          identificador da porta.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador for inválido.
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLPortPrototype(String id) throws XMLException{
-        super();
-        setId(id);
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLPortPrototype() throws XMLException{
         super();
         references = new ItemList<ReferenceType>();
@@ -85,19 +105,29 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
 
 
     /**
-     * Atribui um nó a porta.
+     * Sets the node mapped by the port. This attribute is required and can not
+     * be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The node referred must be a node defined in the composition parent of the
+     * port element.
      * 
      * @param component
-     *          elemento representando o nó.
+     *          element representing a reference to a node element.
+     * @throws XMLException 
+     *          if the node is null or any error occur while creating the
+     *          reference to the node.
      */
     public void setComponent(En component) throws XMLException {
+        if(component == null)
+            throw new XMLException("Null component.");
+        
         En aux = this.component;
         
         this.component = component;
-        if(this.component != null){
-            this.component.setOwner((T) this);
-            this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
-        }
+        this.component.setOwner((T) this);
+        this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
         
         impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
         if(aux != null)
@@ -106,10 +136,17 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
     
     
     /**
-     * Retorna o nó atribuido a porta.
+     * Returns the node mapped by the port or <i>null</i> if the attribute is
+     * not defined.
      * 
-     * @return
-     *          elemento representando o nó.
+     * <br/>
+     * 
+     * The node referred must be a node defined in the composition parent of the
+     * port element.
+     * 
+     * @return 
+     *          element representing a reference to a node element or <i>null</i>
+     *          if the attribute is not defined.
      */
     public En getComponent() {
         return component;
@@ -117,10 +154,21 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
     
     
     /**
-     * Determina a interface de nó atributa a porta.
+     * Sets the node interface point mapped by the port. This attribute
+     * is optional. Set the interface to <i>null</i> to erase a interface
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
      * 
      * @param interfac
-     *          elemento representando a interface do nó.
+     *          element representing a reference to a interface element or
+     *          <i>null</i> to erase a interface already defined.
+     * @throws XMLException 
      */
     public void setInterface(Ei interfac) throws XMLException {
         Ei aux = this.interfac;
@@ -138,10 +186,19 @@ public abstract class NCLPortPrototype<T extends NCLPortPrototype,
     
     
     /**
-     * Retorna a interface de nó atributa a porta.
+     * Returns the node interface point mapped by the port or <i>null</i> if the
+     * attribute is not defined.
      * 
-     * @return
-     *          elemento representando a interface do nó.
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
+     * 
+     * @return 
+     *          element representing a reference to a interface element or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Ei getInterface() {
         return interfac;

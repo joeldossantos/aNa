@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.descriptor;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
+import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
@@ -54,9 +54,73 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
+/**
+ * Class that represents a descriptor element. A descriptor defines a set of
+ * informations used for the presentation of a media object.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the descriptor element. This attribute is required.</li>
+ *  <li><i>player</i> - identification of the presentation tool to be used for the
+ *                      presentation of a media object. This attribute is optional.</li>
+ *  <li><i>explicitDur</i> - ideal duration of a media object. This attribute is
+ *                           optional.</li>
+ *  <li><i>region</i> - region to be used for the presentation of a media object.
+ *                      This attribute is optional.</li>
+ *  <li><i>freeze</i> - behavior of the media object at the end of its presentation.
+ *                      This attribute is optional.</li>
+ *  <li><i>moveLeft</i> - index to receive the focus when the left key is pressed.
+ *                        This attribute is optional.</li>
+ *  <li><i>moveRight</i> - index to receive the focus when the right key is pressed.
+ *                         This attribute is optional.</li>
+ *  <li><i>moveUp</i> - index to receive the focus when the up key is pressed.
+ *                      This attribute is optional.</li>
+ *  <li><i>moveDown</i> - index to receive the focus when the down key is pressed.
+ *                        This attribute is optional.</li>
+ *  <li><i>focusIndex</i> - index for a media object receive the focus. This
+ *                          attribute is optional.</li>
+ *  <li><i>focusBorderColor</i> - color of the border of the media object that
+ *                                received focus. This attribute is optional.</li>
+ *  <li><i>focusBorderWidth</i> - width of the border of the media object that
+ *                                received focus. This attribute is optional.</li>
+ *  <li><i>focusBorderTransparency</i> - transparency of the border of the media
+ *                                       object that received focus. This attribute
+ *                                       is optional.</li>
+ *  <li><i>focusSrc</i> - alternative content to be presented when the media
+ *                        object receive focus. This attribute is optional.</li>
+ *  <li><i>focusSelSrc</i> - alternative content to be presented when the media
+ *                           object is selected. This attribute is optional.</li>
+ *  <li><i>selBorderColor</i> - color of the border of the media object when it
+ *                              is selected. This attribute is optional.</li>
+ *  <li><i>transIn</i> - transition used at the beginning of a media object
+ *                       presentation. This attribute is optional.</li>
+ *  <li><i>transOut</i> - transition used at the end of a media object 
+ *                        presentation. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>descriptorParam</i> - element representing a descriptor parameter. The
+ *                          descriptor can have none or several parameter elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <El>
+ * @param <Er>
+ * @param <Ed>
+ * @param <Et>
+ * @param <Ep> 
+ */
 public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
                                              P extends NCLElement,
                                              I extends NCLElementImpl,
@@ -75,7 +139,7 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
     protected Ed moveRight;
     protected Ed moveUp;
     protected Ed moveDown;
-    protected Integer focusIndex;
+    protected FocusIndexType focusIndex;
     protected NCLColor focusBorderColor;
     protected Integer focusBorderWidth;
     protected PercentageType focusBorderTransparency;
@@ -91,21 +155,11 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Construtor do elemento <i>descriptor</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador do descritor.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador do descritor não for válido.
+     * Descriptor element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLDescriptorPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        params = new ElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
-    }
-    
-    
     public NCLDescriptorPrototype() throws XMLException {
         super();
         params = new ElementList<Ep, T>();
@@ -114,12 +168,15 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Identifica o node da ferramenta de apresentação utilizada pelo descritor.
-     *
+     * Sets the identification of the presentation tool to be used for the
+     * presentation of a media object. This attribute is optional. Set the
+     * player to <i>null</i> to erase a player already defined.
+     * 
      * @param player
-     *          nome da ferramenta a ser utilizada.
-     * @throws java.lang.IllegalArgumentException
-     *          se a String passada como parâmetro for vazia.
+     *          string representing the identification of the presentation tool
+     *          to be used or <i>null</i> to erase a player already defined.
+     * @throws XMLException 
+     *          if the string is empty.
      */
     public void setPlayer(String player) throws XMLException {
         StringType aux = this.player;
@@ -129,10 +186,13 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna o node da ferramenta de apresentação utilizada pelo descritor.
-     *
-     * @return
-     *          String contendo o nome da ferramenta.
+     * Returns the identification of the presentation tool to be used for the
+     * presentation of a media object or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * @return 
+     *          string representing the identification of the presentation tool
+     *          to be used or <i>null</i> if the attribute is not defined.
      */
     public String getPlayer() {
         if(player != null)
@@ -143,10 +203,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui uma duração explícita ao descritor.
-     *
-     * @param explicitDur
-     *          inteiro representando a duração a ser usada pelo descritor em segundos.
+     * Sets the ideal duration of a media object. This attribute is optional.
+     * Set the duration to <i>null</i> to erase a duration already defined.
+     * 
+     * <br/>
+     * 
+     * Every media object that uses this descriptor will have the duration
+     * defined in this attribute.
+     * 
+     * @param explicitDur 
+     *          element representing the ideal duration of a media object or
+     *          <i>null</i> to erase a duration already defined.
      */
     public void setExplicitDur(TimeType explicitDur) {
         TimeType aux = this.explicitDur;
@@ -156,10 +223,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a duração explícita definida no descritor.
-     *
-     * @return
-     *          inteiro representando a duração definida no descritor em segundos.
+     * Returns the ideal duration of a media object or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * Every media object that uses this descriptor will have the duration
+     * defined in this attribute.
+     * 
+     * @return 
+     *          element representing the ideal duration of a media object or
+     *          <i>null</i> if the attribute is not defined.
      */
     public TimeType getExplicitDur() {
         return explicitDur;
@@ -167,11 +241,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Indica se o último quadro de uma mídia continuará sendo apresentando após seu fim.
-     * Este último quadro será apresentando até o fim da duração definida no descritor.
-     *
-     * @param freeze
-     *          booleano definindo se o último quadro deverá ser exibido continuamente.
+     * Sets the behavior of the media object at the end of its presentation.
+     * This attribute is optional. Set the freeze to <i>null</i> to erase a
+     * freeze already defined.
+     * 
+     * <br/>
+     * 
+     * This attribute indicates if the last frame of the media will be
+     * continuously presented until the end of the ideal duration defined by the
+     * descriptor.
+     * 
+     * @param freeze 
+     *          boolean defining if the last frame of the media object will be
+     *          continuously presented or <i>null</i> to erase a freeze already
+     *          defined.
      */
     public void setFreeze(Boolean freeze) {
         Boolean aux = this.freeze;
@@ -181,11 +264,19 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna o valor do atributo freeze que indica se o último quadro de uma mídia
-     * continuará sendo apresentando após seu fim.
-     *
-     * @return
-     *          Verdadeiro se o último quadro deverá ser exibido continuamente.
+     * Returns the behavior of the media object at the end of its presentation
+     * or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * This attribute indicates if the last frame of the media will be
+     * continuously presented until the end of the ideal duration defined by the
+     * descriptor.
+     * 
+     * @return 
+     *          boolean defining if the last frame of the media object will be
+     *          continuously presented or <i>null</i> if the attribute is not
+     *          defined.
      */
     public Boolean getFreeze() {
         return freeze;
@@ -193,11 +284,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
     
     /**
-     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
-     * a esquerda do controle remoto for pressionada e o foco estiver neste descritor.
-     *
+     * Sets the index to receive the focus when the left key is pressed. This
+     * attribute is optional. Set the left to <i>null</i> to erase a left
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The left attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
      * @param descriptor
-     *          elemento representando o descritor que receberá foco.
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> to erase a left already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor.
      */
     public void setMoveLeft(Ed descriptor) throws XMLException {
         Ed aux = this.moveLeft;
@@ -215,11 +315,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
-     * a esquerda do controle remoto for pressionada e o foco estiver neste descritor.
-     *
-     * @return
-     *          elemento representando o descritor que receberá foco.
+     * Returns the index to receive the focus when the left key is pressed or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The left attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
+     * @return 
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> if the attribute is not defined.
      */
     public Ed getMoveLeft() {
         return moveLeft;
@@ -227,11 +333,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
-     * a direita do controle remoto for pressionada e o foco estiver neste descritor.
+     * Sets the index to receive the focus when the right key is pressed. This
+     * attribute is optional. Set the right to <i>null</i> to erase a right
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The right attribute is used for navigating among the media objects
+     * presented in the screen.
      * 
      * @param descriptor
-     *          elemento representando o descritor que receberá foco.
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> to erase a left already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor.
      */
     public void setMoveRight(Ed descriptor) throws XMLException {
         Ed aux = this.moveRight;
@@ -249,11 +364,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
-     * a direita do controle remoto for pressionada e o foco estiver neste descritor.
-     *
-     * @return
-     *          elemento representando o descritor que receberá foco.
+     * Returns the index to receive the focus when the right key is pressed or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The right attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
+     * @return 
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> if the attribute is not defined.
      */
     public Ed getMoveRight() {
         return moveRight;
@@ -261,11 +382,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
-     * cima do controle remoto for pressionada e o foco estiver neste descritor.
-     *
+     * Sets the index to receive the focus when the up key is pressed. This
+     * attribute is optional. Set the up to <i>null</i> to erase a up
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The up attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
      * @param descriptor
-     *          elemento representando o descritor que receberá foco.
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> to erase a up already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor.
      */
     public void setMoveUp(Ed descriptor) throws XMLException {
         Ed aux = this.moveUp;
@@ -283,11 +413,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
-     * cima do controle remoto for pressionada e o foco estiver neste descritor.
-     *
-     * @return
-     *          elemento representando o descritor que receberá foco.
+     * Returns the index to receive the focus when the up key is pressed or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The up attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
+     * @return 
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> if the attribute is not defined.
      */
     public Ed getMoveUp() {
         return moveUp;
@@ -295,11 +431,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui qual o próximo descritor deverá receber foco quando a tecla seta para
-     * baixo do controle remoto for pressionada e o foco estiver neste descritor.
-     *
+     * Sets the index to receive the focus when the down key is pressed. This
+     * attribute is optional. Set the down to <i>null</i> to erase a down
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The down attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
      * @param descriptor
-     *          elemento representando o descritor que receberá foco.
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> to erase a down already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor.
      */
     public void setMoveDown(Ed descriptor) throws XMLException {
         Ed aux = this.moveDown;
@@ -317,11 +462,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
     
     /**
-     * Retorna o próximo descritor deverá receber foco quando a tecla seta para
-     * baixo do controle remoto for pressionada e o foco estiver neste descritor.
-     *
-     * @return
-     *          elemento representando o descritor que receberá foco.
+     * Returns the index to receive the focus when the down key is pressed or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The down attribute is used for navigating among the media objects
+     * presented in the screen.
+     * 
+     * @return 
+     *          element representing a reference to the descriptor that will
+     *          receive focus or <i>null</i> if the attribute is not defined.
      */
     public Ed getMoveDown() {
         return moveDown;
@@ -329,34 +480,52 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
     
     
     /**
-     * Atribui um índice de foco para o descritor.
-     *
-     * @param focusIndex
-     *          inteiro representando o índice de foco do descritor.
+     * Sets the index for a media object receive the focus. This attribute is
+     * optional. Set the index to <i>null</i> to erase an index already defined.
+     * 
+     * <br/>
+     * 
+     * When a media object is presented, the media whose descriptor has the
+     * smaller value of focus index will receive the focus.
+     * 
+     * @param focusIndex 
+     *          element representing the focus index of the descriptor or
+     *          <i>null</i> to erase a focus index already defined.
+     *          
      */
-    public void setFocusIndex(Integer focusIndex) {
-        Integer aux = this.focusIndex;
+    public void setFocusIndex(FocusIndexType focusIndex) {
+        FocusIndexType aux = this.focusIndex;
         this.focusIndex = focusIndex;
         impl.notifyAltered(NCLElementAttributes.FOCUSINDEX, aux, focusIndex);
     }
 
 
     /**
-     * Retorna o índice de foco atribuído ao descritor.
-     *
-     * @return
-     *          inteiro representando o índice de foco do descritor.
+     * Returns the index for a media object receive the focus or <i>null</i> if
+     * the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * When a media object is presented, the media whose descriptor has the
+     * smaller value of focus index will receive the focus.
+     * 
+     * @return 
+     *          element representing the focus index of the descriptor or
+     *          <i>null</i> if the attribute is not defined.
      */
-    public Integer getFocusIndex() {
+    public FocusIndexType getFocusIndex() {
         return focusIndex;
     }
 
 
     /**
-     * Atribui uma cor para a borda do descritor quando este está em foco.
-     *
-     * @param focusBorderColor
-     *          cor da borda do descritor.
+     * Sets the color of the border of the media object that received focus.
+     * This attribute is optional. Set the border color to <i>null</i> to erase
+     * a border color already defined.
+     * 
+     * @param focusBorderColor 
+     *          element representing the color of the border or <i>null</i> to
+     *          erase a border color already defined.
      */
     public void setFocusBorderColor(NCLColor focusBorderColor) {
         NCLColor aux = this.focusBorderColor;
@@ -366,10 +535,12 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a cor para a borda do descritor quando este está em foco utilizada.
+     * Returns the color of the border of the media object that received focus
+     * or <i>null</i> if the attribute is not defined.
      * 
      * @return
-     *          cor da borda do descritor.
+     *          element representing the color of the border or <i>null</i> if
+     *          the attribute is not defined.
      */
     public NCLColor getFocusBorderColor() {
         return focusBorderColor;
@@ -377,10 +548,13 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
     
     /**
-     * Artribui a largura da borda que é apresentada quando o descritor está em foco.
-     *
-     * @param focusBorderWidth
-     *          inteiro representando a largura da borda em pixels.
+     * Sets the width of the border of the media object that received focus.
+     * This attribute is optional. Set the border width to <i>null</i> to erase
+     * a border width already defined.
+     * 
+     * @param focusBorderWidth 
+     *          integer representing the width of the border or <i>null</i> to
+     *          erase a border width already defined.
      */
     public void setFocusBorderWidth(Integer focusBorderWidth) {
         Integer aux = this.focusBorderWidth;
@@ -390,10 +564,12 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a largura da borda que é apresentada quando o descritor está em foco.
+     * Returns the width of the border of the media object that received focus
+     * or <i>null</i> if the attribute is not defined.
      *
      * @return
-     *          inteiro representando a largura da borda em pixels.
+     *          integer representing the width of the border or <i>null</i> if
+     *          the attribute is not defined.
      */
     public Integer getFocusBorderWidth() {
         return focusBorderWidth;
@@ -401,13 +577,13 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui um grau de transparência à borda que é apresentada quando o descritor está em foco.
-     *
-     * @param focusBorderTransparency
-     *          inteiro representando a percentagem relativa a transparência da borda.
-     *          o inteiro deve estar no intervalo [0,100].
-     * @throws java.lang.IllegalArgumentException
-     *          se o valor estiver fora do intervalo.
+     * Sets the transparency of the border of the media object that received focus.
+     * This attribute is optional. Set the border transparency to <i>null</i> to
+     * erase a border transparency already defined.
+     * 
+     * @param focusBorderTransparency 
+     *          element representing the transparency of the border or <i>null</i>
+     *          to erase a border transparency already defined.
      */
     public void setFocusBorderTransparency(PercentageType focusBorderTransparency) {
         PercentageType aux = this.focusBorderTransparency;
@@ -417,11 +593,12 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna o grau de transparência à borda que é apresentada quando o descritor está em foco.
+     * Returns the transparency of the border of the media object that received
+     * focus or <i>null</i> if the attribute is not defined.
      *
      * @return
-     *          inteiro representando a percentagem relativa a transparência da borda.
-     *          o inteiro está no intervalo [0,100].
+     *          element representing the transparency of the border or <i>null</i>
+     *          if the attribute is not defined.
      */
     public PercentageType getFocusBorderTransparency() {
         return focusBorderTransparency;
@@ -429,14 +606,13 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui a URI do conteúdo alternativo que é exibido quando o descritor está em foco.
-     *
-     * @param focusSrc
-     *          String contendo a URI do conteúdo alternativo.
-     * @throws java.net.URISyntaxException
-     *          se a URI não for válida.
-     *
-     * @see java.net.URI
+     * Sets the alternative content to be presented when the media object receive
+     * focus. This attribute is optional. Set the alternative content to <i>null</i>
+     * to erase an alternative content already defined.
+     * 
+     * @param focusSrc 
+     *          element representing the location of the alternative content or
+     *          <i>null</i> to erase an alternative content already defined.
      */
     public void setFocusSrc(SrcType focusSrc) {
         SrcType aux = this.focusSrc;
@@ -446,10 +622,12 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a URI do conteúdo alternativo que é exibido quando o descritor está em foco.
+     * Returns the alternative content to be presented when the media object
+     * receive focus or <i>null</i> if the attribute is not defined.
      *
      * @return
-     *          String contendo a URI do conteúdo alternativo.
+     *          element representing the location of the alternative content or
+     *          <i>null</i> if the attribute is not defined.
      */
     public SrcType getFocusSrc() {
         return focusSrc;
@@ -457,12 +635,13 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui a URI do conteúdo alternativo que é exibido quando o descritor é selecionado.
-     *
-     * @param focusSelSrc
-     *          String contendo a URI do conteúdo alternativo.
-     * @throws java.net.URISyntaxException
-     *          se a URI não for válida (@see java.net.URI).
+     * Sets the alternative content to be presented when the media object is
+     * selected. This attribute is optional. Set the alternative content to
+     * <i>null</i> to erase an alternative content already defined.
+     * 
+     * @param focusSelSrc 
+     *          element representing the location of the alternative content or
+     *          <i>null</i> to erase an alternative content already defined.
      */
     public void setFocusSelSrc(SrcType focusSelSrc) {
         SrcType aux = this.focusSelSrc;
@@ -472,10 +651,12 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a URI do conteúdo alternativo que é exibido quando o descritor é selecionado.
+     * Returns the alternative content to be presented when the media object is
+     * selected or <i>null</i> if the attribute is not defined.
      *
      * @return
-     *          String contendo a URI do conteúdo alternativo.
+     *          element representing the location of the alternative content or
+     *          <i>null</i> if the attribute is not defined.
      */    
     public SrcType getFocusSelSrc() {
         return focusSelSrc;
@@ -483,10 +664,13 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui a cor da borda que é exibida quando o descritor é selecionado.
-     *
-     * @param selBorderColor
-     *          cor da borda do descritor.
+     * Sets the color of the border of the media object when it is selected.
+     * This attribute is optional. Set the border color to <i>null</i> to erase
+     * a border color already defined.
+     * 
+     * @param selBorderColor 
+     *          element representing the color of the border or <i>null</i> to
+     *          erase a border color already defined.
      */
     public void setSelBorderColor(NCLColor selBorderColor) {
         NCLColor aux = this.selBorderColor;
@@ -496,10 +680,12 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a cor da borda que é exibida quando o descritor é selecionado.
-     *
+     * Returns the color of the border of the media object when it is selected
+     * or <i>null</i> if the attribute is not defined.
+     * 
      * @return
-     *          cor da borda do descritor.
+     *          element representing the color of the border or <i>null</i> if
+     *          the attribute is not defined.
      */
     public NCLColor getSelBorderColor() {
         return selBorderColor;
@@ -507,10 +693,23 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui uma transição de entrada ao descritor.
-     *
+     * Sets the transition used at the beginning of a media object presentation.
+     * This attribute is optional. Set the transition to <i>null</i> to erase a
+     * transition already defined.
+     * 
+     * <br/>
+     * 
+     * The transition referred can be defined in the document base of transitions
+     * or in a base defined in an external document, imported by the base of
+     * transitions or by the base of imported documents. When the transition is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
+     * 
      * @param transIn
-     *          elemento representando uma transição.
+     *          element representing a reference to a transition or <i>null</i>
+     *          to erase a transition already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the transition.
      */
     public void setTransIn(Et transIn) throws XMLException {
         Et aux = this.transIn;
@@ -528,10 +727,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a transição de entrada do descritor.
+     * Returns the transition used at the beginning of a media object
+     * presentation or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The transition referred can be defined in the document base of transitions
+     * or in a base defined in an external document, imported by the base of
+     * transitions or by the base of imported documents. When the transition is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
      *
      * @return
-     *          elemento representando uma transição.
+     *          element representing a reference to a transition or <i>null</i>
+     *          if the attribute is not defined.
      */
     public Et getTransIn() {
         return transIn;
@@ -539,10 +748,23 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui uma transição de saida ao descritor.
-     *
+     * Sets the transition used at the end of a media object presentation. This
+     * attribute is optional. Set the transition to <i>null</i> to erase a
+     * transition already defined.
+     * 
+     * <br/>
+     * 
+     * The transition referred can be defined in the document base of transitions
+     * or in a base defined in an external document, imported by the base of
+     * transitions or by the base of imported documents. When the transition is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
+     * 
      * @param transOut
-     *          elemento representando uma transição.
+     *          element representing a reference to a transition or <i>null</i>
+     *          to erase a transition already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the transition.
      */
     public void setTransOut(Et transOut) throws XMLException {
         Et aux = this.transOut;
@@ -560,10 +782,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a transição de saida do descritor.
+     * Returns the transition used at the end of a media object presentation or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The transition referred can be defined in the document base of transitions
+     * or in a base defined in an external document, imported by the base of
+     * transitions or by the base of imported documents. When the transition is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
      *
      * @return
-     *          elemento representando uma transição.
+     *          element representing a reference to a transition or <i>null</i>
+     *          if the attribute is not defined.
      */
     public Et getTransOut() {
         return transOut;
@@ -571,10 +803,23 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Atribui uma região ao descritor.
+     * Sets the region to be used for the presentation of a media object. This
+     * attribute is optional. Set the region to <i>null</i> to erase a region
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The region referred can be defined in the document base of regions or in
+     * a base defined in an external document, imported by the base of regions
+     * or by the base of imported documents. When the region is defined in an
+     * external document, the alias of the imported document must be indicated
+     * in the reference.
      *
      * @param region
-     *          elemento representando uma região.
+     *          element representing a reference to a region or <i>null</i>
+     *          to erase a region already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the region.
      */
     public void setRegion(Er region) throws XMLException {
         Er aux = this.region;
@@ -592,10 +837,20 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna a região relacionada ao descritor.
+     * Returns the region to be used for the presentation of a media object or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The region referred can be defined in the document base of regions or in
+     * a base defined in an external document, imported by the base of regions
+     * or by the base of imported documents. When the region is defined in an
+     * external document, the alias of the imported document must be indicated
+     * in the reference.
      *
      * @return
-     *          elemento representando uma região.
+     *          element representing a reference to a region or <i>null</i>
+     *          if the attribute is not defined.
      */
     public Er getRegion() {
         return region;
@@ -603,12 +858,21 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Adiciona um parâmetro ao descritor.
-     *
+     * Adds a descriptor parameter to the descriptor. The descriptor can have
+     * none or several parameter elements.
+     * 
+     * <br/>
+     * 
+     * A descriptor parameter is used to define additional information to the
+     * media object presentation. A parameter can redefine the value of
+     * attributes defined by a region or define new attributes.
+     * 
      * @param descriptorParam
-     *          elemento representando o parâmetro a ser adicionado.
-     *
-     * @see TreeSet#add
+     *          element representing a descriptor parameter.
+     * @return
+     *          true if the parameter was added.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean addDescriptorParam(Ep descriptorParam) throws XMLException {
         if(params.add(descriptorParam, (T) this)){
@@ -620,12 +884,21 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Remove um parâmetro do descritor.
-     *
+     * Removes a descriptor parameter of the descriptor. The descriptor can have
+     * none or several parameter elements.
+     * 
+     * <br/>
+     * 
+     * A descriptor parameter is used to define additional information to the
+     * media object presentation. A parameter can redefine the value of
+     * attributes defined by a region or define new attributes.
+     * 
      * @param descriptorParam
-     *          elemento representando o parâmetro a ser removido.
-     *
-     * @see TreeSet#remove
+     *          element representing a descriptor parameter.
+     * @return
+     *          true if the parameter was removed.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean removeDescriptorParam(Ep descriptorParam) throws XMLException {
         if(params.remove(descriptorParam)){
@@ -637,10 +910,21 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Verifica se o descritor contém um parâmetro.
-     *
+     * Verifies if the descriptor has a specific element representing a descriptor
+     * parameter. The descriptor can have none or several parameter elements.
+     * 
+     * <br/>
+     * 
+     * A descriptor parameter is used to define additional information to the
+     * media object presentation. A parameter can redefine the value of
+     * attributes defined by a region or define new attributes.
+     * 
      * @param descriptorParam
-     *          elemento representando o parâmetro a ser verificado.
+     *          element representing a descriptor parameter.
+     * @return
+     *          true if the descriptor has the parameter element.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean hasDescriptorParam(Ep descriptorParam) throws XMLException {
         return params.contains(descriptorParam);
@@ -648,10 +932,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Verifica se o descritor possui algum parâmetro.
-     *
-     * @return
-     *          verdadeiro se o descritor possui algum parâmetro.
+     * Verifies if the descriptor has at least one descriptor parameter. The
+     * descriptor can have none or several parameter elements.
+     * 
+     * <br/>
+     * 
+     * A descriptor parameter is used to define additional information to the
+     * media object presentation. A parameter can redefine the value of
+     * attributes defined by a region or define new attributes.
+     * 
+     * @return 
+     *          true if the descriptor has at least one parameter.
      */
     public boolean hasDescriptorParam() {
         return !params.isEmpty();
@@ -659,10 +950,17 @@ public abstract class NCLDescriptorPrototype<T extends NCLDescriptorPrototype,
 
 
     /**
-     * Retorna os parâmetros do descritor.
-     *
-     * @return
-     *          lista contendo os parâmetros do descritor.
+     * Returns the list of descriptor parameters that a descriptor have. The
+     * descriptor can have none or several parameter elements.
+     * 
+     * <br/>
+     * 
+     * A descriptor parameter is used to define additional information to the
+     * media object presentation. A parameter can redefine the value of
+     * attributes defined by a region or define new attributes.
+     * 
+     * @return 
+     *          element list with all parameters.
      */
     public ElementList<Ep, T> getDescriptorParams() {
         return params;

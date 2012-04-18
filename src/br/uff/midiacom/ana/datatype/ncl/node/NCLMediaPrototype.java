@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -38,10 +38,9 @@
 package br.uff.midiacom.ana.datatype.ncl.node;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.MediaReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
@@ -55,8 +54,48 @@ import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
 
+/**
+ * Class that represents a media node element. A media node represents a media
+ * object (text, audio, video, image, etc) inside an NCL document.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the media element. This attribute is required.</li>
+ *  <li><i>src</i> - location of the media element content. This attribute is
+ *                   optional.</li>
+ *  <li><i>refer</i> - reference to a media element. This attribute is optional.</li>
+ *  <li><i>instance</i> - type of reuse the media element does. This attribute
+ *                        is optional.</li>
+ *  <li><i>type</i> - type of a media element. This attribute is optional.</li>
+ *  <li><i>descriptor</i> - descriptor that describes the media presentation. This
+ *                          attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>area</i> - element representing a anchor of the media. An anchor
+ *                    represents a subpart of the node content. The media can
+ *                    have none or several area elements.</li>
+ *  <li><i>property</i> - element representing a property. The media can have
+ *                        none or several property elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ea>
+ * @param <Ep>
+ * @param <Ed>
+ * @param <En>
+ * @param <Rn> 
+ */
 public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
                                         P extends NCLElement,
                                         I extends NCLElementImpl,
@@ -64,7 +103,7 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
                                         Ep extends NCLPropertyPrototype,
                                         Ed extends DescriptorReference,
                                         En extends NCLNode,
-                                        Rn extends NodeReference>
+                                        Rn extends MediaReference>
         extends NCLIdentifiableElementPrototype<En, P, I>
         implements NCLNode<En, P> {
 
@@ -80,22 +119,11 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Construtor do elemento <i>media</i> da <i>Nested Context Language</i> (NCL).
+     * Media element constructor.
      * 
-     * @param id
-     *          identificador do elemento media.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador da media for inválido.
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLMediaPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        areas = new IdentifiableElementList<Ea, T>();
-        properties = new IdentifiableElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLMediaPrototype() throws XMLException {
         super();
         areas = new IdentifiableElementList<Ea, T>();
@@ -105,14 +133,43 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Atribui a URI do conteúdo da mídia.
+     * Sets the location of the media element content. This attribute is
+     * optional. Set the src to <i>null</i> to erase a src already defined.
      * 
-     * @param src
-     *          String contendo a URI do conteúdo da mídia.
-     * @throws java.net.URISyntaxException
-     *          se a URI não for válida.
-     *
-     * @see java.net.URI
+     * <br/>
+     * 
+     * The src value can be of the following type:
+     * <ul>
+     *  <li><i>file:///file_path/#fragment_identifier</i> - for local files.</li>
+     *  <li><i>http://server_identifier/file_path/#fragment_identifier</i> - for
+     *              the remote files got by the interactive channel using the
+     *              http protocol.</li>
+     *  <li><i>https://server_identifier/file_path/#fragment_identifier</i> - for
+     *              the remote files got by the interactive channel using the
+     *              https protocol.</li>
+     *  <li><i>rstp://server_identifier/file_path/#fragment_identifier</i> - for
+     *              streams got by the interactive channel using the rstp
+     *              protocol.</li>
+     * <li><i>rtp://server_identifier/file_path/#fragment_identifier</i> - for
+     *              streams got by the interactive channel using the rtp
+     *              protocol.</li>
+     *  <li><i>ncl-mirror://media_element_identifier</i> - for a content
+     *              identical to the one being presented by another media
+     *              element.</li>
+     *  <li><i>sbtvd-ts://program_number.component_tag</i> - for a stream inside
+     *              the received transport stream.</li>
+     * </ul>
+     * 
+     * <br/>
+     * 
+     * The local URI can be relative. The src can also define a time when the
+     * media represents a clock.
+     * 
+     * @see #setType(br.uff.midiacom.ana.datatype.enums.NCLMimeType) 
+     * 
+     * @param src 
+     *          element representing the location of the media content or
+     *          <i>null</i> to erase the location already defined.
      */
     public void setSrc(SrcType src) {
         SrcType aux = this.src;
@@ -122,14 +179,43 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Retorna o valor da URI do conteúdo da mídia.
+     * Returns the location of the media element content or <i>null</i> if the
+     * attribute is not defined.
      * 
-     * @return
-     *          String contendo a URI do conteúdo da mídia.
-     *
-     * @see NCLMediaPrototype#setSrc(java.lang.String)
-     * @see NCLMediaPrototype#setSrc(br.pensario.datatype.NCLUriType, java.lang.String)
-     * @see NCLMediaPrototype#setSrc(br.pensario.interfaces.TimeType)
+     * <br/>
+     * 
+     * The src value can be of the following type:
+     * <ul>
+     *  <li><i>file:///file_path/#fragment_identifier</i> - for local files.</li>
+     *  <li><i>http://server_identifier/file_path/#fragment_identifier</i> - for
+     *              the remote files got by the interactive channel using the
+     *              http protocol.</li>
+     *  <li><i>https://server_identifier/file_path/#fragment_identifier</i> - for
+     *              the remote files got by the interactive channel using the
+     *              https protocol.</li>
+     *  <li><i>rstp://server_identifier/file_path/#fragment_identifier</i> - for
+     *              streams got by the interactive channel using the rstp
+     *              protocol.</li>
+     * <li><i>rtp://server_identifier/file_path/#fragment_identifier</i> - for
+     *              streams got by the interactive channel using the rtp
+     *              protocol.</li>
+     *  <li><i>ncl-mirror://media_element_identifier</i> - for a content
+     *              identical to the one being presented by another media
+     *              element.</li>
+     *  <li><i>sbtvd-ts://program_number.component_tag</i> - for a stream inside
+     *              the received transport stream.</li>
+     * </ul>
+     * 
+     * <br/>
+     * 
+     * The local URI can be relative. The src can also define a time when the
+     * media represents a clock.
+     * 
+     * @see #setType(br.uff.midiacom.ana.datatype.enums.NCLMimeType) 
+     * 
+     * @return 
+     *          element representing the location of the media content or
+     *          <i>null</i> if the attribute is not defined.
      */
     public SrcType getSrc() {
         return src;
@@ -137,11 +223,27 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Determina o tipo da mídia.
-     * O tipo da mídia será um dos tipos padronizados na norma.
+     * Sets the type of the media element. This attribute is optional. Set the
+     * type to <i>null</i> to erase a type already defined. The possible types
+     * are defined in the enumeration <i>NCLMimeType</i>.
      * 
-     * @param type
-     *          tipo da mídia.
+     * <br/>
+     * 
+     * The type <i>application/x-ginga-settings</i> is applied to a special media
+     * element, whose properties are global variables defined by the author or
+     * system variables  that will be used in the document. An NCL document can
+     * have only one media element with that type.
+     * 
+     * <br/>
+     * 
+     * The type <i>application/x-ginga-time</i> is applied to a special media
+     * element, whose content is a duration (UTC - Universal Time Coordinated).
+     * This type of media defines a clock. This media src is defined with the
+     * following syntax: year:month:day:hour:minute:second:fraction.
+     * 
+     * @param type 
+     *          type of the media element from the enumeration <i>NCLMimeType</i>
+     *          or <i>null</i> to erase a type already defined.
      */
     public void setType(NCLMimeType type) {
         NCLMimeType aux = this.type;
@@ -151,10 +253,27 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Retorna o tipo da mídia.
+     * Returns the type of the media element or <i>null</i> if the attribute is
+     * not defined. The possible types are defined in the enumeration
+     * <i>NCLMimeType</i>.
      * 
-     * @return
-     *          tipo da mídia.
+     * <br/>
+     * 
+     * The type <i>application/x-ginga-settings</i> is applied to a special media
+     * element, whose properties are global variables defined by the author or
+     * system variables  that will be used in the document. An NCL document can
+     * have only one media element with that type.
+     * 
+     * <br/>
+     * 
+     * The type <i>application/x-ginga-time</i> is applied to a special media
+     * element, whose content is a duration (UTC - Universal Time Coordinated).
+     * This type of media defines a clock. This media src is defined with the
+     * following syntax: year:month:day:hour:minute:second:fraction.
+     * 
+     * @return 
+     *          type of the media element from the enumeration <i>NCLMimeType</i>
+     *          or <i>null</i> if the attribute is not defined.
      */
     public NCLMimeType getType() {
         return type;
@@ -162,10 +281,23 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Determina o descritor da mídia.
+     * Sets the descriptor that describes the media presentation. This attribute
+     * is optional. Set the descriptor to <i>null</i> to erase a descriptor 
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The descriptor referred can be defined in the document base of descriptors
+     * or in a base defined in an external document, imported by the base of
+     * descriptors or by the base of imported documents. When the descriptor is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
      * 
      * @param descriptor
-     *          elemento representando o descritor da mídia.
+     *          element representing a reference to a descriptor element or
+     *          <i>null</i> to erase a descriptor already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor.
      */
     public void setDescriptor(Ed descriptor) throws XMLException {
         Ed aux = this.descriptor;
@@ -183,10 +315,20 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Retorna o descritor da mídia.
+     * Returns the descriptor that describes the media presentation or <i>null</i>
+     * is the attribute is not defined.
      * 
-     * @return
-     *          elemento representando o descritor da mídia.
+     * <br/>
+     * 
+     * The descriptor referred can be defined in the document base of descriptors
+     * or in a base defined in an external document, imported by the base of
+     * descriptors or by the base of imported documents. When the descriptor is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
+     * 
+     * @return 
+     *          element representing a reference to a descriptor element or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Ed getDescriptor() {
         return descriptor;
@@ -194,10 +336,55 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Atribui uma media para ser reutilizada pela media.
-     *
+     * Sets the reference to a media element. This attribute is optional. Set the
+     * reference to <i>null</i> to erase a reference already defined.
+     * 
+     * <br/>
+     * 
+     * The referred element must be a media element that represents the same
+     * media defined in the body of the NCL document where this media is or
+     * in the body of an imported document. In the last case, the alias of the
+     * imported document must be indicated in the reference.
+     * 
+     * <br/>
+     * 
+     * The referred element must directly define its attributes and child
+     * elements (area and property). It can not refer to another node.
+     * 
+     * <br/>
+     * 
+     * When a media element defines the refer attribute, all attributes and
+     * child nodes defined by the referred node are inherited. The attributes
+     * defined by the media are ignored, except the id and instance attributes.
+     * The media can add new area and property elements to the referred media
+     * by defining then as children.
+     * 
+     * <br/>
+     * 
+     * If an area or property defined in the media has the same id or name,
+     * respectively, of an area or property defined in the referred media, the
+     * area or property is ignored.
+     * 
+     * <br/>
+     * 
+     * The referred element and the one that makes the reference must be
+     * considered the same, in relation to its data structure. That means that
+     * a node can be represented by more than one NCL element. Since nodes inside
+     * a composite node defines a set of nodes, a node can not be represented by
+     * more than one node inside a composition. That means that the id attribute
+     * of an NCL element representing a node is not only a unique identifier for
+     * the element, but also the only identifier corresponding to a node inside
+     * a composition.
+     * 
+     * @see #setInstance(br.uff.midiacom.ana.datatype.enums.NCLInstanceType) 
+     * 
+     * 
      * @param refer
-     *          elemento representando a media a ser reutilizado.
+     *          reference to a media element or <i>null</i> to erase a reference
+     *          already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the media
+     *          element.
      */
     public void setRefer(Rn refer) throws XMLException {
         Rn aux = this.refer;
@@ -215,10 +402,51 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Retorna a media reutilizada pela media.
-     *
-     * @return
-     *          elemento representando a media a ser reutilizado.
+     * Returns the reference to a media element or <i>null</i> if the attribute
+     * is not defined.
+     * 
+     * <br/>
+     * 
+     * The referred element must be a media element that represents the same
+     * media defined in the body of the NCL document where this media is or
+     * in the body of an imported document. In the last case, the alias of the
+     * imported document must be indicated in the reference.
+     * 
+     * <br/>
+     * 
+     * The referred element must directly define its attributes and child
+     * elements (area and property). It can not refer to another node.
+     * 
+     * <br/>
+     * 
+     * When a media element defines the refer attribute, all attributes and
+     * child nodes defined by the referred node are inherited. The attributes
+     * defined by the media are ignored, except the id and instance attributes.
+     * The media can add new area and property elements to the referred media
+     * by defining then as children.
+     * 
+     * <br/>
+     * 
+     * If an area or property defined in the media has the same id or name,
+     * respectively, of an area or property defined in the referred media, the
+     * area or property is ignored.
+     * 
+     * <br/>
+     * 
+     * The referred element and the one that makes the reference must be
+     * considered the same, in relation to its data structure. That means that
+     * a node can be represented by more than one NCL element. Since nodes inside
+     * a composite node defines a set of nodes, a node can not be represented by
+     * more than one node inside a composition. That means that the id attribute
+     * of an NCL element representing a node is not only a unique identifier for
+     * the element, but also the only identifier corresponding to a node inside
+     * a composition.
+     * 
+     * @see #setInstance(br.uff.midiacom.ana.datatype.enums.NCLInstanceType) 
+     * 
+     * @return 
+     *          reference to a media element or <i>null</i> if the attribute is
+     *          not defined.
      */
     public Rn getRefer() {
         return refer;
@@ -226,10 +454,39 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Determina o tipo de instância de outra media essa media é.
-     *
-     * @param instance
-     *          elemento representando o tipo de instancia.
+     * Sets the type of reuse the media element does. This attribute is optional.
+     * Set its value to <i>null</i> to remove a value already defined. The
+     * possible types of reuse are defined in the enumeration <i>NCLInstanceType</i>.
+     * 
+     * <br/>
+     * 
+     * If the type of reuse is <i>instSame</i> the media element and the referred
+     * media element are represented as one single instance. If a start a media
+     * is started all the other medias that represent the same instance are also
+     * started at the same time.
+     * 
+     * <br/>
+     * 
+     * If the type of reuse is <i>gradSame</i> the media element and the referred
+     * media element are represented as one single instance. The medias
+     * presentation, however, starts as the media nodes are started by links
+     * defined in the document. That means that a media element that reuse another
+     * media element, when started, will begin its presentation at the same point
+     * the referred media presentation is.
+     * 
+     * <br/>
+     * 
+     * If the type of reuse is <i>new</i> the media element represents a new
+     * instance of the media element and its presentation is not related to
+     * the media if refers.
+     * 
+     * <br/>
+     * 
+     * The default value of the instance attribute is <i>new</i>.
+     * 
+     * @param instance 
+     *          type of reuse from the enumeration <i>NCLMimeType</i> or <i>null</i>
+     *          to erase a type already defined.
      */
     public void setInstance(NCLInstanceType instance) {
         NCLInstanceType aux = this.instance;
@@ -239,10 +496,39 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Retorna o tipo de instância de outra media essa media é.
-     *
-     * @return
-     *          elemento representando o tipo de instancia.
+     * Returns the type of reuse the media element does or <i>null</i> if the
+     * attribute is not defined. The possible types of reuse are defined in the
+     * enumeration <i>NCLInstanceType</i>.
+     * 
+     * <br/>
+     * 
+     * If the type of reuse is <i>instSame</i> the media element and the referred
+     * media element are represented as one single instance. If a start a media
+     * is started all the other medias that represent the same instance are also
+     * started at the same time.
+     * 
+     * <br/>
+     * 
+     * If the type of reuse is <i>gradSame</i> the media element and the referred
+     * media element are represented as one single instance. The medias
+     * presentation, however, starts as the media nodes are started by links
+     * defined in the document. That means that a media element that reuse another
+     * media element, when started, will begin its presentation at the same point
+     * the referred media presentation is.
+     * 
+     * <br/>
+     * 
+     * If the type of reuse is <i>new</i> the media element represents a new
+     * instance of the media element and its presentation is not related to
+     * the media if refers.
+     * 
+     * <br/>
+     * 
+     * The default value of the instance attribute is <i>new</i>.
+     * 
+     * @return 
+     *          type of reuse from the enumeration <i>NCLMimeType</i> or <i>null</i>
+     *          if the attribute is not defined.
      */
     public NCLInstanceType getInstance() {
         return instance;
@@ -250,14 +536,15 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Adiciona uma âncora a mídia.
+     * Adds an anchor to the media. An anchor represents a subpart of the node
+     * content. The media can have none or several area elements.
      * 
      * @param area
-     *          elemento representando a âncora a ser adicionada.
+     *          element representing an anchor.
      * @return
-     *          Verdadeiro se a âncora foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the area was added.
+     * @throws XMLException 
+     *          if the element representing the area is null.
      */
     public boolean addArea(Ea area) throws XMLException {
         if(areas.add(area, (T) this)){
@@ -269,14 +556,15 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Remove uma âncora a mídia.
-     *
+     * Removes an anchor of the media. An anchor represents a subpart of the node
+     * content. The media can have none or several area elements.
+     * 
      * @param area
-     *          elemento representando a âncora a ser removida.
+     *          element representing an anchor.
      * @return
-     *          Verdadeiro se a âncora foi removida.
-     *
-     * @see TreeSet#add
+     *          true if the area was removed.
+     * @throws XMLException 
+     *          if the element representing the area is null.
      */
     public boolean removeArea(Ea area) throws XMLException {
         if(areas.remove(area)){
@@ -288,14 +576,15 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Remove uma âncora da mídia.
-     *
+     * Removes an anchor of the media. An anchor represents a subpart of the node
+     * content. The media can have none or several area elements.
+     * 
      * @param id
-     *          identificador da âncora a ser removida.
+     *          string representing the id of the element representing an anchor.
      * @return
-     *          Verdadeiro se a âncora foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the area was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeArea(String id) throws XMLException {
         if(areas.remove(id)){
@@ -307,12 +596,16 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Verifica se a mídia possui uma âncora.
+     * Verifies if the media has a specific element representing an anchor.
+     * An anchor represents a subpart of the node content. The media can have
+     * none or several area elements.
      * 
      * @param area
-     *          elemento representando a âncora a ser verificada.
+     *          element representing an anchor.
      * @return
-     *          verdadeiro se a âncora existir.
+     *          true if the media has the area element.
+     * @throws XMLException 
+     *          if the element representing the are is null.
      */
     public boolean hasArea(Ea area) throws XMLException {
         return areas.contains(area);
@@ -320,12 +613,16 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Verifica se a mídia possui uma âncora.
+     * Verifies if the media has an anchor with a specific id. An anchor
+     * represents a subpart of the node content. The media can have none or
+     * several area elements.
      * 
      * @param id
-     *          identificador da âncora a ser verificada.
+     *          string representing the id of the element representing an anchor.
      * @return
-     *          verdadeiro se a âncora existir.
+     *          true if the media has the area element.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasArea(String id) throws XMLException {
         return areas.get(id) != null;
@@ -333,10 +630,12 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Verifica se a mídia possui alguma âncora.
+     * Verifies if the media has at least one anchor. An anchor represents a
+     * subpart of the node content. The media can have none or several area
+     * elements.
      * 
-     * @return
-     *          verdadeiro se a mídia possuir alguma âncora.
+     * @return 
+     *          true if the media has at least one area.
      */
     public boolean hasArea() {
         return !areas.isEmpty();
@@ -344,10 +643,12 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     *  Retorna as âncoras da mídia.
-     *
-     * @return
-     *          lista contendo as âncoras da mídia.
+     * Returns the list of anchors that a media have. An anchor represents a
+     * subpart of the node content. The media can have none or several area
+     * elements.
+     * 
+     * @return 
+     *          element list with all anchors.
      */
     public IdentifiableElementList<Ea, T> getAreas() {
         return areas;
@@ -355,14 +656,15 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
     
     /**
-     * Adiciona uma propriedade a mídia.
-     *
+     * Adds a property to the media. A property represents a node attribute. The
+     * media can have none or several property elements.
+     * 
      * @param property
-     *          elemento representando a propriedade a ser adicionada.
+     *          element representing a property.
      * @return
-     *          Verdadeiro se a propriedade foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the property was added.
+     * @throws XMLException 
+     *          if the element representing the property is null.
      */
     public boolean addProperty(Ep property) throws XMLException {
         if(properties.add(property, (T) this)){
@@ -374,14 +676,15 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Remove uma propriedade da mídia.
-     *
+     * Removes a property of the media. A property represents a node attribute.
+     * The media can have none or several property elements.
+     * 
      * @param property
-     *          elemento representando a propriedade a ser removida.
+     *          element representing a property.
      * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the property was removed.
+     * @throws XMLException 
+     *          if the element representing the property is null.
      */
     public boolean removeProperty(Ep property) throws XMLException {
         if(properties.remove(property)){
@@ -393,14 +696,15 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
     
 
     /**
-     * Remove uma propriedade da mídia.
-     *
-     * @param name
-     *          nome da propriedade a ser removida.
+     * Removes a property of the media. A property represents a node attribute.
+     * The media can have none or several property elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a property.
      * @return
-     *          Verdadeiro se a propriedade foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the property was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeProperty(String name) throws XMLException {
         if(properties.remove(name)){
@@ -412,12 +716,16 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Verifica se a mídia possui uma propriedade.
-     *
+     * Verifies if the media has a specific element representing a property.
+     * A property represents a node attribute. The media can have none or several
+     * property elements.
+     * 
      * @param property
-     *          elemento representando a propriedade a ser verificada.
+     *          element representing a property.
      * @return
-     *          verdadeiro se a propriedade existir.
+     *          true if the media has the property element.
+     * @throws XMLException 
+     *          if the element representing the property is null.
      */
     public boolean hasProperty(Ep property) throws XMLException {
         return properties.contains(property);
@@ -425,12 +733,16 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Verifica se a mídia possui uma propriedade.
-     *
-     * @param name
-     *          nome da propriedade a ser verificada.
+     * Verifies if the media has a property with a specific id. A property
+     * represents a node attribute. The media can have none or several property
+     * elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a property.
      * @return
-     *          verdadeiro se a propriedade existir.
+     *          true if the media has the property element.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean hasProperty(String name) throws XMLException {
         return properties.get(name) != null;
@@ -438,10 +750,11 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Verifica se a mídia possui alguma propriedade.
-     *
-     * @return
-     *          verdadeiro se a mídia possuir alguma propriedade.
+     * Verifies if the media has at least one property. A property represents a
+     * node attribute. The media can have none or several property elements.
+     * 
+     * @return 
+     *          true if the media has at least one property.
      */
     public boolean hasProperty() {
         return !properties.isEmpty();
@@ -449,10 +762,11 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Retorna as propriedades da mídia.
-     *
-     * @return
-     *          lista contendo as propriedades da mídia.
+     * Returns the list of properties that a media have. A property represents a
+     * node attribute. The media can have none or several property elements.
+     * 
+     * @return 
+     *          element list with all properties.
      */
     public IdentifiableElementList<Ep, T> getProperties() {
         return properties;
@@ -460,10 +774,13 @@ public abstract class NCLMediaPrototype<T extends NCLMediaPrototype,
 
 
     /**
-     * Retorna o tipo da mídia de acordo com seu tipo especificado ou sua URL.
+     * Returns the media type according to its content as defined in the
+     * attribute src.
+     * 
+     * @see #setSrc(br.uff.midiacom.ana.datatype.aux.basic.SrcType) 
      *
      * @return
-     *          elemento representando o tipo da mídia.
+     *          media type from the enumeration <i>NCLMediaType</i>.
      */
     public NCLMediaType getMediaType() {
         if(getType() != null){

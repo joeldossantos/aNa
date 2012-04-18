@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -51,6 +51,32 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.MaxType;
 
 
+/**
+ * Class that represents a connector simple condition.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>role</i> - condition identification. This attribute is required.</li>
+ *  <li><i>delay</i> - delay waited by the condition. This attribute is optional.</li>
+ *  <li><i>eventType</i> - type of event. This attribute is optional.</li>
+ *  <li><i>key</i> - key pressed. This attribute is optional.</li>
+ *  <li><i>transition</i> - transition occurred. This attribute is optional.</li>
+ *  <li><i>min</i> - minimum cardinality of the condition. This attribute is optional.</li>
+ *  <li><i>max</i> - maximum cardinality of the condition. This attribute is optional.</li>
+ *  <li><i>qualifier</i> - relates the condition instances when its cardinality is
+ *                         greater than 1. This attribute is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ec>
+ * @param <Er>
+ * @param <Ep>
+ * @param <R> 
+ */
 public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPrototype,
                                                   P extends NCLElement,
                                                   I extends NCLElementImpl,
@@ -72,7 +98,10 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
     
 
     /**
-     * Construtor do elemento <i>simpleCondition</i> da <i>Nested Context Language</i> (NCL).
+     * Simple condition element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLSimpleConditionPrototype() throws XMLException {
         super();
@@ -80,10 +109,66 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Determina o número mínimo de binds que devem usar essa condição.
+     * Sets the connector interface point, used to identify this simple condition
+     * This attribute is required and can not be set to <i>null</i>.
      * 
+     * <br/>
+     * 
+     * The role must be unique inside the connector.
+     * 
+     * @param role
+     *          element representing the role name.
+     * @throws XMLException
+     *          if the role is null.
+     */
+    public void setRole(Er role) throws XMLException {
+        if(role == null)
+            throw new XMLException("Null role.");
+        
+        //Removes the parent of the actual role
+        if(this.role != null)
+            this.role.setParent(null);
+
+        Er aux = this.role;
+        this.role = role;
+        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        
+        //Set this as the parent of the new role
+        this.role.setParent(this);
+    }
+
+
+    /**
+     * Returns the connector interface point, used to identify this simple
+     * condition or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The role must be unique inside the connector.
+     * 
+     * @return
+     *          element representing the role name or <i>null</i> if the
+     *          attribute is not defined.
+     */
+    public Er getRole() {
+        return role;
+    }
+
+
+    /**
+     * Sets the minimum cardinality of the simple condition. This attribute is
+     * optional. Set the minimum to <i>null</i> to erase a minimum already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The default minimum value is <i>1</i>.
+     *
      * @param min
-     *          inteiro positivo representando o número mínimo.
+     *          positive integer representing the minimum cardinality value or
+     *          <i>null</i> to erase a minimum already defined.
+     * @throws XMLException 
+     *          if the value is negative.
      */
     public void setMin(Integer min) {
         if(min != null && min < 0)
@@ -96,22 +181,34 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Retorna o número mínimo de binds que devem usar essa condição.
+     * Returns the minimum cardinality of the simple condition or <i>null</i> if
+     * the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The default minimum value is <i>1</i>.
      *
      * @return
-     *          inteiro positivo representando o número mínimo.
-     */    
+     *          positive integer representing the minimum cardinality value or
+     *          <i>null</i> if the attribute is not defined.
+     */
     public Integer getMin() {
         return min;
     }
     
 
     /**
-     * Determina o número máximo de binds que devem usar essa condição.
+     * Sets the maximum cardinality of the simple condition. This attribute is
+     * optional. Set the maximum to <i>null</i> to erase a maximum already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The default maximum value is <i>1</i>.
      *
      * @param max
-     *          inteiro positivo representando o número máximo ou um inteiro negativo
-     *          caso o número máximo seja a String "umbouded".
+     *          element representing the maximum cardinality value or <i>null</i>
+     *          to erase a minimum already defined.
      */
     public void setMax(MaxType max) {
         MaxType aux = this.max;
@@ -121,11 +218,16 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Retorna o número máximo de binds que devem usar essa condição.
+     * Returns the maximum cardinality of the simple condition or <i>null</i> if
+     * the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The default maximum value is <i>1</i>.
      *
      * @return
-     *          inteiro positivo representando o número máximo ou -1
-     *          caso o número máximo seja a String "umbouded".
+     *          element representing the maximum cardinality value or <i>null</i>
+     *          if the attribute is not defined.
      */
     public MaxType getMax() {
         return max;
@@ -133,10 +235,30 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Determina como serão avaliados o conjunto de binds que usam essa condição.
+     * Sets the relation among the condition instances when its cardinality is
+     * greater than 1. This attribute is optional. Set the qualifier to
+     * <i>null</i> to erase a qualifier already defined.
+     * 
+     * <br/>
+     * 
+     * The qualifier attribute relates the simple condition instances. Its
+     * possible values are "and" and "or" and are defined in the enumeration
+     * <i>NCLConditionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using an "and" qualifier means that all instances of the simple condition
+     * must be satisfied at the same time. Using an "or" qualifier means that at
+     * least one instance of the simple condition must be satisfied.
+     * 
+     * <br/>
+     * 
+     * The default qualifier value is <i>or</i>.
      *
      * @param qualifier
-     *          operador lógico que representa como os binds serão avaliados.
+     *          element representing the simple condition qualifier from the
+     *          enumeration <i>NCLConditionOperator</i> or <i>null</i> to erase
+     *          a qualifier already defined.
      */
     public void setQualifier(NCLConditionOperator qualifier) {
         NCLConditionOperator aux = this.qualifier;
@@ -146,10 +268,29 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Retorna como serão avaliados o conjunto de binds que usam essa condição.
+     * Returns the relation among the condition instances when its cardinality is
+     * greater than 1 or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The qualifier attribute relates the simple condition instances. Its
+     * possible values are "and" and "or" and are defined in the enumeration
+     * <i>NCLConditionOperator</i>.
+     * 
+     * <br/>
+     * 
+     * Using an "and" qualifier means that all instances of the simple condition
+     * must be satisfied at the same time. Using an "or" qualifier means that at
+     * least one instance of the simple condition must be satisfied.
+     * 
+     * <br/>
+     * 
+     * The default qualifier value is <i>or</i>.
      *
      * @return
-     *          operador lógico que representa como os binds serão avaliados.
+     *          element representing the simple condition qualifier from the
+     *          enumeration <i>NCLConditionOperator</i> or <i>null</i> if the
+     *          attribute is not defined.
      */
     public NCLConditionOperator getQualifier() {
         return qualifier;
@@ -157,48 +298,32 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Determina o nome do papel de condição seguindo um dos nomes padrões.
-     *
-     * @param role
-     *          elemento representando o nome do papel.
-     */
-    public void setRole(Er role) {
-        //Retira o parentesco do role atual
-        if(this.role != null)
-            this.role.setParent(null);
-
-        Er aux = this.role;
-        this.role = role;
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
-        
-        //Se role existe, atribui este como seu parente
-        if(this.role != null)
-            this.role.setParent(this);
-    }
-
-
-    /**
-     * Retorna o papel utilizado na condição.
-     *
-     * @return
-     *          elemento representando o papel.
-     */
-    public Er getRole() {
-        return role;
-    }
-
-
-    /**
-     * Determina a tecla da condição.
-     *
+     * Sets the key pressed by the user, in case a selection event is used. This
+     * attribute is optional. Set the key to <i>null</i> to erase a key already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The key can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this simple condition is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple condition it.
+     * 
      * @param key
-     *          elemento representando a tecla da condição.
+     *          element representing the key pressed or <i>null</i> to erase a
+     *          key already defined.
+     * @throws XMLException
+     *          if an error occur while creating the key value.
      */
     public void setKey(KeyParamType<Ep, Ec, R> key) throws XMLException {
         KeyParamType aux = this.key;
         
         this.key = key;
-        this.key.setOwner((Ec) this, NCLElementAttributes.KEY);
+        if(this.key != null)
+            this.key.setOwner((Ec) this, NCLElementAttributes.KEY);
         
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
         if(aux != null)
@@ -207,10 +332,22 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Retorna a tecla da condição.
-     *
+     * Returns the key pressed by the user, in case a selection event is used or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The key can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this simple condition is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this simple condition it.
+     * 
      * @return
-     *          elemento representando a tecla da condição.
+     *          element representing the key pressed or <i>null</i> if the
+     *          attribute is not defined.
      */
     public KeyParamType<Ep, Ec, R> getKey() {
         return key;
@@ -218,10 +355,15 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Determina o tipo do evento da condição.
-     *
+     * Sets the type of the event tested by the simple condition. This attribute
+     * is optional. Set the event type to <i>null</i> to erase an event type
+     * already defined. The possible event type values are defined in the
+     * enumeration <i>NCLEventType</i>.
+     * 
      * @param eventType
-     *          elemento representando o tipo do evento da condição.
+     *          value representing the type of event from the enumeration
+     *          <i>NCLEventType</i> or <i>null</i> to erase an event type
+     *          already defined.
      */
     public void setEventType(NCLEventType eventType) {
         NCLEventType aux = this.eventType;
@@ -231,10 +373,14 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Retorna o tipo do evento da condição.
-     *
+     * Returns the type of the event tested by the simple condition or <i>null</i>
+     * if the attribute is not defined. The possible event type values are
+     * defined in the enumeration <i>NCLEventType</i>.
+     * 
      * @return
-     *          elemento representando o tipo do evento da condição.
+     *          value representing the type of event from the enumeration
+     *          <i>NCLEventType</i> or <i>null</i> if the attribute is not
+     *          defined.
      */
     public NCLEventType getEventType() {
         return eventType;
@@ -242,10 +388,20 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Determina a transição do evento da condição.
+     * Sets the transition to be tested by the condition in the event state
+     * machine. This attribute is optional. Set the transition to <i>null</i>
+     * to erase a transition already defined.
+     * 
+     * <br/>
+     * 
+     * The transition must be defined when the simple condition defined the
+     * attribute event type. The possible transition values are defined in the
+     * enumeration <i>NCLEventTransition</i>.
      *
      * @param transition
-     *          elemento representando a transição do evento da condição.
+     *          value representing the transition from the enumeration
+     *          <i>NCLEventTransition</i> or <i>null</i> to erase a transition
+     *          already defined.
      */
     public void setTransition(NCLEventTransition transition) {
         NCLEventTransition aux = this.transition;
@@ -255,10 +411,19 @@ public abstract class NCLSimpleConditionPrototype<T extends NCLSimpleConditionPr
 
 
     /**
-     * Retorna a transição do evento da condição.
+     * Returns the transition to be tested by the condition in the event state
+     * machine or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The transition must be defined when the simple condition defined the
+     * attribute event type. The possible transition values are defined in the
+     * enumeration <i>NCLEventTransition</i>.
      *
      * @return
-     *          elemento representando a transição do evento da condição.
+     *          value representing the transition from the enumeration
+     *          <i>NCLEventTransition</i> or <i>null</i> if the attribute is not
+     *          defined.
      */
     public NCLEventTransition getTransition() {
         return transition;

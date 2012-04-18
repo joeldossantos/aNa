@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.interfaces;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
@@ -45,8 +44,41 @@ import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
 
+/**
+ * Class that represents a switch port element. A switch port maps alternative
+ * interface points of the nodes inside a switch element.
+ * 
+ * <br/>
+ * 
+ * When a node or a node interface point is mapped by a port, every action over
+ * the port is reflected to the node or node interface point mapped by it. If the
+ * port interface attribute is not defined, it is assumed that the port maps
+ * the whole node.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the switch port element. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>mapping</i> - element that maps a switch inner node interface point.
+ *                       The switch port must have at least one mapping element.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Em>
+ * @param <Ei> 
+ */
 public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
                                              P extends NCLElement,
                                              I extends NCLElementImpl,
@@ -61,21 +93,11 @@ public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
 
 
     /**
-     * Construtor do elemento <i>switchPort</i> da <i>Nested Context Language</i> (NCL).
-     *
-     * @param id
-     *          identificador da porta de switch.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador for inválido.
+     * Switch port element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLSwitchPortPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        mappings = new ElementList<Em, T>();
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLSwitchPortPrototype() throws XMLException {
         super();
         mappings = new ElementList<Em, T>();
@@ -84,14 +106,15 @@ public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
 
 
     /**
-     * Adiciona um mapeamento a porta de switch.
-     *
+     * Adds an element that maps a switch inner node interface point to the
+     * switch port. The switch port must have at least one mapping element.
+     * 
      * @param mapping
-     *          elemento representando o mapeamento a ser adicionado.
+     *          element that maps a switch inner node interface point.
      * @return
-     *          Verdadeiro se o mapeamento foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the mapping was added.
+     * @throws XMLException 
+     *          if the element representing the mapping is null.
      */
     public boolean addMapping(Em mapping) throws XMLException {
         if(mappings.add(mapping, (T) this)){
@@ -103,14 +126,15 @@ public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
 
 
     /**
-     * Remove um mapeamento da porta de switch.
-     *
+     * Removes an element that maps a switch inner node interface point of the
+     * switch port. The switch port must have at least one mapping element.
+     * 
      * @param mapping
-     *          elemento representando o mapeamento a ser removido.
+     *          element that maps a switch inner node interface point.
      * @return
-     *          Verdadeiro se o mapeamento foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the mapping was removed.
+     * @throws XMLException 
+     *          if the element representing the mapping is null.
      */
     public boolean removeMapping(Em mapping) throws XMLException {
         if(mappings.remove(mapping)){
@@ -122,12 +146,16 @@ public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
 
 
     /**
-     * Verifica se a porta de switch possui um mapeamento.
-     *
+     * Verifies if the switch port has a specific element that maps a switch
+     * inner node interface point of the switch port. The switch port must have
+     * at least one mapping element.
+     * 
      * @param mapping
-     *          elemento representando o mapeamento a ser verificado.
+     *          element that maps a switch inner node interface point.
      * @return
-     *          verdadeiro se o mapeamento existir.
+     *          true if the switch port has the mapping element.
+     * @throws XMLException 
+     *          if the element representing the mapping is null.
      */
     public boolean hasMapping(Em mapping) throws XMLException {
         return mappings.contains(mapping);
@@ -135,10 +163,12 @@ public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
 
 
     /**
-     * Verifica se a porta de switch possui algum mapeamento.
-     *
-     * @return
-     *          verdadeiro se a porta de switch possuir algum mapeamento.
+     * Verifies if the switch port has at least one element that maps a switch
+     * inner node interface point of the switch port. The switch port must have
+     * at least one mapping element.
+     * 
+     * @return 
+     *          true if the switch port has at least one mapping.
      */
     public boolean hasMapping() {
         return !mappings.isEmpty();
@@ -146,10 +176,11 @@ public abstract class NCLSwitchPortPrototype<T extends NCLSwitchPortPrototype,
 
 
     /**
-     * Retorna os mapeamentos da porta de switch.
-     *
-     * @return
-     *          lista contendo os mapeamentos da porta de switch.
+     * Returns the list of mapping that a switch port have. The switch port must have
+     * at least one mapping element.
+     * 
+     * @return 
+     *          element list with all mappings.
      */
     public ElementList<Em, T> getMappings() {
         return mappings;

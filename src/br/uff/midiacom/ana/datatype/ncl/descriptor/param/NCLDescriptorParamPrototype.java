@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -45,6 +45,25 @@ import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Class that represents a descriptor parameter. This element is used to
+ * parameterize the presentation of the node associated to a descriptor. The
+ * descriptorParam may redefine the value of an attribute defined by a region
+ * element or define new attributes for the node presentation.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the descriptor parameter. This attribute is required.</li>
+ *  <li><i>value</i> - value of the descriptor parameter. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <V> 
+ */
 public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam,
                                                   P extends NCLElement,
                                                   I extends NCLElementImpl,
@@ -57,61 +76,38 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam,
 
 
     /**
-     * Construtor do elemento <i>descriptorParam</i> da <i>Nested Context Language</i> (NCL).
+     * Descriptor parameter constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLDescriptorParamPrototype() throws XMLException {
         super();
     }
 
 
-    /**
-     * Atribui um nome ao parâmetro. Segue os nomes padronizados de atributos do descritor.
-     *
-     * @param name
-     *          Elemento representando o nome do parâmetro.
-     */
     @Override
-    public void setName(NCLAttributes name) {
+    public void setName(NCLAttributes name) throws XMLException {
         NCLAttributes aux = this.name;
         this.name = name;
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
-    /**
-     * Retorna o nome do parâmetro.
-     *
-     * @return
-     *          elemento representando o nome do parâmetro.
-     */
     @Override
     public NCLAttributes getName() {
         return name;
     }
 
 
-    /**
-     * Atribui um valor ao parâmetro.
-     *
-     * @param value
-     *          valor do parâmetro.
-     * @throws IllegalArgumentException
-     *          se o valor não estiver de acordo com o esperado.
-     */
     @Override
-    public void setValue(V value) {
+    public void setValue(V value) throws XMLException {
         V aux = this.value;
         this.value = value;
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
 
 
-    /**
-     * Retorna o valor do parâmetro.
-     *
-     * @return
-     *          valor do parâmetro.
-     */
     @Override
     public V getValue() {
         return value;
@@ -125,21 +121,34 @@ public abstract class NCLDescriptorParamPrototype<T extends NCLDescriptorParam,
 
 
     /**
-     * Recebe o valor do parâmetro como uma String. Este método deve ser estendido
-     * de forma a atribuir o valor do tipo correto para cada parâmetro de
-     * descritor.
-     *
-     * @param value
-     *          String representando o valor do parâmetro de descritor.
+     * Receives the parameter value as a string and converts this value to the
+     * type used by the parameter. The value can not be <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * This method must be extended by classes that implement descriptor
+     * parameters.
+     * 
+     * @param value 
+     *          string representing the parameter value.
+     * @throws XMLException 
+     *          if the value is null.
      */
-    protected abstract void setParamValue(String value);
+    protected abstract void setParamValue(String value) throws XMLException;
 
 
     /**
-     * Retorna o valor do parâmetro como uma String.
+     * Returns the parameter value as a string or <i>null</i> if the attribute
+     * is not defined.
+     * 
+     * <br/>
+     * 
+     * This method must be extended by classes that implement descriptor
+     * parameters.
      *
      * @return
-     *          String representando o valor do parâmetro do descritor.
+     *          string representing the parameter value or <i>null</i> if the
+     *          attribute is not defined.
      */
     protected abstract String getParamValue();
 }

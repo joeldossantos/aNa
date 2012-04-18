@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl.region;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
@@ -48,33 +47,66 @@ import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
-
 /**
- * Esta classe define o elemento <i>region</i> da <i>Nested Context Language</i> (NCL).<br/>
- *
- * Regions definem as regioes da tela dos dispositivos de saida onde os nos de midia poderao ser exibidos. Uma regiao pode ser definida
- * com relaco a area total associada aop dispositivo correspondente a uma base de regioes, ou aninhada a uma outra região, recursivamente.<br/>
- *
- * Os atributos de região definem suas coordenadas espacias e podem ser definidos em numeros absolutos, representando a quantidade de pixels,
- * ou em porcentagem, relativa a região pai. São eles:<br/>
- * <i>left</i> - coordenada x tomando como origem a extremidade esquerda da tela,com relação a area total do dispositivo ou (no caso da regiao estar aninhada) com a cordenada x esquerda da região pai.
- * <i>top</i> - coordenada y tomando como origem a extremidade superior da tela, com relação a area total ou a coordenada y superior da regiao pai.
- * <i>right</i> - semelhante ao atributo <i>left</i>, mas com a origem do eixo localizada na fronteira direita da tela.
- * <i>bottom</i> - semelhante ao atributo <i>top</i>, mas tendo a origem do eixo localizada na fronteira inferior da tela.
- * <i>width</i> - dimensão horizontal da região, podendo ser expressa em pixels ou em porcentagem, relativa a regiao pai.
- * <i>height</i> - dimensão vertical da regiao, podendo ser expressa em pixels ou em porcentagem, relativa a pai.
- * <i>zIndex</i> - Coordenada z, tomando como o origem o plano da tela e crescente no sentido "para fora da tela". Esta coordenada serve para definir o critério de sobreposição de midias que
- * ocupem espaços coincidente na tela do dispositivo de saída. Quanto maior o valor do <i>zIndex</i>, maior a prioridade na sobreposição.<br/>
- *
+ * Class that represents a region element.
  * 
- * @see br.pensario.region.NCLRegionBase
- *
- * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
- *          ABNT NBR 15606-2:2007</a>
+ * <br/>
+ * 
+ * A region represents a space in the screen where a node can be presented. A
+ * region can also have child regions defining screen spaces inside the space
+ * defined by the parent region.
+ * 
+ * <br/>
+ * 
+ * The position of a region is relative to its parent, which can be another
+ * region or the device screen, in case that region is a direct child of the
+ * region base.
+ * 
+ * <br/>
+ * 
+ * The intrinsic size of a region is the same size of its parent. It a region
+ * does not specify any position or size, it is assumed that the region has
+ * the same position and size values as its parent region. In particular,
+ * when the region is a direct child of the region base, it is assumed that
+ * the region has all the area of the device screen.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the region. This attribute is required.</li>
+ *  <li><i>title</i> - title of the region. This attribute is optional.</li>
+ *  <li><i>left</i> - location of the region left side regarding the parent
+ *                    left margin. This attribute is optional.</li>
+ *  <li><i>right</i> - location of the region right side regarding the parent
+ *                     right margin. This attribute is optional.</li>
+ *  <li><i>top</i> - location of the region superior side regarding the parent
+ *                   superior margin. This attribute is optional.</li>
+ *  <li><i>bottom</i> - location of the region inferior side regarding the
+ *                      parent inferior margin. This attribute is optional.</li>
+ *  <li><i>height</i> - height of the region. This attribute is optional.</li>
+ *  <li><i>width</i> - width of the region. This attribute is optional.</li>
+ *  <li><i>zIndex</i> - precedence of the region regarding it superposition with
+ *                      other regions. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>region</i> - element representing a region inside the region. The
+ *                      region can have none or several region elements inside
+ *                      it.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
  */
 public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
                                          P extends NCLElement,
@@ -96,21 +128,11 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Construtor do elemento <i>region</i> da <i>Nested Context Language</i> (NCL).
+     * Region element constructor.
      * 
-     * @param id
-     *          identificador da região.
-     * @throws br.pensario.NCLInvalidIdentifierException
-     *          se o identificador for inválido.
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
-    public NCLRegionPrototype(String id) throws XMLException {
-        super();
-        setId(id);
-        regions = new IdentifiableElementList<T, T>();
-        references = new ItemList<ReferenceType>();
-    }
-
-
     public NCLRegionPrototype() throws XMLException {
         super();
         regions = new IdentifiableElementList<T, T>();
@@ -119,12 +141,14 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui um título para a região.
+     * Sets the title of the region. This attribute is optional. Set the title
+     * to <i>null</i> to erase a title already defined.
      * 
      * @param title
-     *          String representando o título da região.
-     * @throws XMLException
-     *          se o título for uma String vazia.
+     *          string representing the region title or <i>null</i> to erase a
+     *          title already defined.
+     * @throws XMLException 
+     *          if the string is empty.
      */
     public void setTitle(String title) throws XMLException {
         StringType aux = this.title;
@@ -134,10 +158,12 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o título da região.
+     * Returns the title of the region or <i>null</i> if the attribute is not
+     * defined.
      * 
-     * @return
-     *          String representando o título da região.
+     * @return 
+     *          string representing the region title or <i>null</i> if the
+     *          attribute is not defined.
      */
     public String getTitle() {
         if(title != null)
@@ -148,14 +174,26 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui o valor da posição a esquerda da região.
+     * Sets the location of the region left side regarding the parent left
+     * margin. This attribute is optional. Set the left location to <i>null</i>
+     * to erase a left location already defined.
      * 
-     * @param left
-     *          inteiro representando a posição a esquerda da região.
-     * @param relative
-     *          booleano indicando se o valor de posição é uma porcentagem.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the left attribute is relative to the region
+     * parent width.
+     * 
+     * <br/>
+     * 
+     * The left attribute has precedence over the other attribute that describes
+     * the horizontal position of the region. It the attributes left, width and
+     * right are defined, the values of the left and width attributes have
+     * precedence over the attribute right.
+     * 
+     * @param left 
+     *          region left location regarding its parent or <i>null</i> to
+     *          erase a location already defined.
      */
     public void setLeft(RelativeType left) {
         RelativeType aux = this.left;
@@ -165,15 +203,25 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o valor da posição a esquerda da região.
+     * Returns the location of the region left side regarding the parent left
+     * margin or <i>null</i> if the attribute is not defined.
      * 
-     * @return
-     *          inteiro representando a posição a esquerda da região.
-     *          pode representar uma grandeza em pixels ou percentual, dependendo
-     *          da especificação de posição relativa.
+     * <br/>
      * 
-     * @see NCLRegionPrototype#setLeft
-     * @see NCLRegionPrototype#isRelativeLeft
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the left attribute is relative to the region
+     * parent width.
+     * 
+     * <br/>
+     * 
+     * The left attribute has precedence over the other attribute that describes
+     * the horizontal position of the region. It the attributes left, width and
+     * right are defined, the values of the left and width attributes have
+     * precedence over the attribute right.
+     * 
+     * @return 
+     *          region left location regarding its parent or <i>null</i> if the
+     *          attribute is not defined.
      */
     public RelativeType getLeft() {
         return left;
@@ -181,14 +229,26 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui o valor da posição a direita da região.
-     *
-     * @param right
-     *          inteiro representando a posição a direita da região.
-     * @param relative
-     *          booleano indicando se o valor de posição é uma porcentagem.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     * Sets the location of the region right side regarding the parent right
+     * margin. This attribute is optional. Set the right location to <i>null</i>
+     * to erase a right location already defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the right attribute is relative to the region
+     * parent width.
+     * 
+     * <br/>
+     * 
+     * The right attribute has no precedence over the other attribute that
+     * describes the horizontal position of the region. It the attributes left,
+     * width and right are defined, the values of the left and width attributes
+     * have precedence over the attribute right.
+     * 
+     * @param right 
+     *          region right location regarding its parent or <i>null</i> to
+     *          erase a location already defined.
      */
     public void setRight(RelativeType right) {
         RelativeType aux = this.right;
@@ -198,15 +258,25 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o valor da posição a direita da região.
-     *
-     * @return
-     *          inteiro representando a posição a direita da região.
-     *          pode representar uma grandeza em pixels ou percentual, dependendo
-     *          da especificação de posição relativa.
-     *
-     * @see NCLRegionPrototype#setRight
-     * @see NCLRegionPrototype#isRelativeRight
+     * Returns the location of the region right side regarding the parent right
+     * margin or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the right attribute is relative to the region
+     * parent width.
+     * 
+     * <br/>
+     * 
+     * The right attribute has no precedence over the other attribute that
+     * describes the horizontal position of the region. It the attributes left,
+     * width and right are defined, the values of the left and width attributes
+     * have precedence over the attribute right.
+     * 
+     * @return 
+     *          region right location regarding its parent or <i>null</i> if the
+     *          attribute is not defined.
      */
     public RelativeType getRight() {
         return right;
@@ -214,14 +284,26 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui o valor da posição de topo da região.
-     *
-     * @param top
-     *          inteiro representando a posição de topo da região.
-     * @param relative
-     *          booleano indicando se o valor de posição é uma porcentagem.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     * Sets the location of the region superior side regarding the parent superior
+     * margin. This attribute is optional. Set the superior location to <i>null</i>
+     * to erase a superior location already defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the top attribute is relative to the region
+     * parent height.
+     * 
+     * <br/>
+     * 
+     * The top attribute has precedence over the other attribute that describes
+     * the vertical position of the region. It the attributes top, height and
+     * bottom are defined, the values of the top and heigh attributes have
+     * precedence over the attribute bottom.
+     * 
+     * @param top 
+     *          region superior location regarding its parent or <i>null</i> to
+     *          erase a location already defined.
      */
     public void setTop(RelativeType top) {
         RelativeType aux = this.top;
@@ -231,15 +313,25 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o valor da posição de topo da região.
-     *
-     * @return
-     *          inteiro representando a posição de topo da região.
-     *          pode representar uma grandeza em pixels ou percentual, dependendo
-     *          da especificação de posição relativa.
-     *
-     * @see NCLRegionPrototype#setRight
-     * @see NCLRegionPrototype#isRelativeRight
+     * Returns the location of the region superior side regarding the parent
+     * superior margin or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the top attribute is relative to the region
+     * parent height.
+     * 
+     * <br/>
+     * 
+     * The top attribute has precedence over the other attribute that describes
+     * the vertical position of the region. It the attributes top, height and
+     * bottom are defined, the values of the top and heigh attributes have
+     * precedence over the attribute bottom.
+     * 
+     * @return 
+     *          region superior location regarding its parent or <i>null</i> if
+     *          the attribute is not defined.
      */
     public RelativeType getTop() {
         return top;
@@ -247,14 +339,26 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui o valor da posição inferior da região.
-     *
-     * @param bottom
-     *          inteiro representando a posição inferior da região.
-     * @param relative
-     *          booleano indicando se o valor de posição é uma porcentagem.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     * Sets the location of the region inferior side regarding the parent inferior
+     * margin. This attribute is optional. Set the inferior location to <i>null</i>
+     * to erase a inferior location already defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the bottom attribute is relative to the region
+     * parent height.
+     * 
+     * <br/>
+     * 
+     * The bottom attribute has no precedence over the other attribute that
+     * describes the vertical position of the region. It the attributes top,
+     * height and bottom are defined, the values of the top and heigh attributes
+     * have precedence over the attribute bottom.
+     * 
+     * @param top 
+     *          region inferior location regarding its parent or <i>null</i> to
+     *          erase a location already defined.
      */
     public void setBottom(RelativeType bottom) {
         RelativeType aux = this.bottom;
@@ -264,15 +368,25 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o valor da posição inferior da região.
-     *
-     * @return
-     *          inteiro representando a posição inferior da região.
-     *          pode representar uma grandeza em pixels ou percentual, dependendo
-     *          da especificação de posição relativa.
-     *
-     * @see NCLRegionPrototype#setBottom
-     * @see NCLRegionPrototype#isRelativeBottom
+     * Returns the location of the region inferior side regarding the parent
+     * inferior margin or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the bottom attribute is relative to the region
+     * parent height.
+     * 
+     * <br/>
+     * 
+     * The bottom attribute has no precedence over the other attribute that
+     * describes the vertical position of the region. It the attributes top,
+     * height and bottom are defined, the values of the top and heigh attributes
+     * have precedence over the attribute bottom.
+     * 
+     * @return 
+     *          region inferior location regarding its parent or <i>null</i> if
+     *          the attribute is not defined.
      */
     public RelativeType getBottom() {
         return bottom;
@@ -280,14 +394,24 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui uma altura a região.
+     * Sets the height of the region. This attribute is optional. Set the height
+     * to <i>null</i> to erase a height already defined.
      * 
-     * @param height
-     *          inteiro representando a altura da região.
-     * @param relative
-     *          booleano indicando se o valor de altura é uma porcentagem.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the height attribute is relative to the region
+     * parent height.
+     * 
+     * <br/>
+     * 
+     * The height attribute has precedence over the bottom attribute when
+     * describing the vertical position of the region. It the attributes top,
+     * height and bottom are defined, the values of the top and heigh attributes
+     * have precedence over the attribute bottom.
+     * 
+     * @param height 
+     *          region height or <i>null</i> to erase a height already defined.
      */
     public void setHeight(RelativeType height) {
         RelativeType aux = this.height;
@@ -297,15 +421,24 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o valor da altura da região.
-     *
-     * @return
-     *          inteiro representando a altura da região.
-     *          pode representar uma grandeza em pixels ou percentual, dependendo
-     *          da especificação de posição relativa.
-     *
-     * @see NCLRegionPrototype#setHeight
-     * @see NCLRegionPrototype#isRelativeHeight
+     * Returns the height of the region or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the height attribute is relative to the region
+     * parent height.
+     * 
+     * <br/>
+     * 
+     * The height attribute has precedence over the bottom attribute when
+     * describing the vertical position of the region. It the attributes top,
+     * height and bottom are defined, the values of the top and heigh attributes
+     * have precedence over the attribute bottom.
+     * 
+     * @return 
+     *          region height or <i>null</i> if the attribute is not defined.
      */
     public RelativeType getHeight() {
         return height;
@@ -313,14 +446,24 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui uma largura a região.
-     *
-     * @param width
-     *          inteiro representando a largura da região.
-     * @param relative
-     *          booleano indicando se o valor de altura é uma porcentagem.
-     * @throws java.lang.IllegalArgumentException
-     *          se a posição for uma porcentagem e seu valor estiver fora do intervalo [0,100]
+     * Sets the width of the region. This attribute is optional. Set the width
+     * to <i>null</i> to erase a width already defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the width attribute is relative to the region
+     * parent width.
+     * 
+     * <br/>
+     * 
+     * The width attribute has precedence over the right attribute when
+     * describing the horizontal position of the region. It the attributes left,
+     * width and right are defined, the values of the left and width attributes
+     * have precedence over the attribute right.
+     * 
+     * @param width 
+     *          region width or <i>null</i> to erase a width already defined.
      */
     public void setWidth(RelativeType width) {
         RelativeType aux = this.width;
@@ -330,15 +473,24 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o valor da largura da região.
-     *
-     * @return
-     *          inteiro representando a largura da região.
-     *          pode representar uma grandeza em pixels ou percentual, dependendo
-     *          da especificação de posição relativa.
-     *
-     * @see NCLRegionPrototype#setWidth
-     * @see NCLRegionPrototype#isRelativeWidth
+     * Returns the width of the region or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The value of the attribute can be a non-negative percent value or pixel
+     * units. A percent value in the width attribute is relative to the region
+     * parent width.
+     * 
+     * <br/>
+     * 
+     * The width attribute has precedence over the right attribute when
+     * describing the horizontal position of the region. It the attributes left,
+     * width and right are defined, the values of the left and width attributes
+     * have precedence over the attribute right.
+     * 
+     * @return 
+     *          region width or <i>null</i> if the attribute is not defined.
      */
     public RelativeType getWidth() {
         return width;
@@ -346,16 +498,31 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Atribui um indice no eixo z (usado para sobreposição) a região.
-     *
+     * Sets the precedence of the region regarding it superposition with other
+     * regions. This attribute is optional. Set the zIndex to <i>null</i> to
+     * erase a zIndex already defined.
+     * 
+     * <br/>
+     * 
+     * Regions with a higher zIndex value are on top of regions with smaller
+     * zIndex values. If two nodes (A and B) are presented in two different
+     * regions with the same zIndex value, if node B starts after node A, then
+     * node B should be presented on top of node A. When both start at the same
+     * time, the order is chosen by the presentation engine.
+     * 
+     * <br/>
+     * 
+     * The default value of a region zIndex is 0.
+     * 
      * @param zIndex
-     *          inteiro representando o índice da região.
-     * @throws java.lang.IllegalArgumentException
-     *          se o índice for um valor negativo.
+     *          precedence of the region regarding it superposition with other
+     *          regions or <i>null</i> to erase a zIndex already defined.
+     * @throws XMLException 
+     *          if the zIndex value is not in the interval [0, 250].
      */
-    public void setzIndex(Integer zIndex) throws IllegalArgumentException {
+    public void setzIndex(Integer zIndex) throws XMLException {
         if(zIndex != null && zIndex < 0 && zIndex > 250)
-            throw new IllegalArgumentException("Illegal index value");
+            throw new XMLException("Illegal index value");
 
         Integer aux = this.zIndex;
         this.zIndex = zIndex;
@@ -364,10 +531,24 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna o indice no eixo z (usado para sobreposição) da região.
-     *
-     * @return
-     *          inteiro representando o índice da região.
+     * Returns the precedence of the region regarding it superposition with
+     * other regions or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * Regions with a higher zIndex value are on top of regions with smaller
+     * zIndex values. If two nodes (A and B) are presented in two different
+     * regions with the same zIndex value, if node B starts after node A, then
+     * node B should be presented on top of node A. When both start at the same
+     * time, the order is chosen by the presentation engine.
+     * 
+     * <br/>
+     * 
+     * The default value of a region zIndex is 0.
+     * 
+     * @return 
+     *          precedence of the region regarding it superposition with other
+     *          regions or <i>null</i> if the attribute is not defined.
      */
     public Integer getzIndex() {
         return zIndex;
@@ -375,15 +556,15 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Adiciona uma região filha à região. A região filha é considerada uma região interna
-     * tendo seus parâmetros relativos a esta região.
-     *
+     * Adds a region to the region. The region can have none or several region
+     * elements inside it.
+     * 
      * @param region
-     *          elemento representando a região a ser adicionada.
+     *          element representing a region.
      * @return
-     *          verdadeiro se a região foi adicionada.
-     *
-     * @see TreeSet#add
+     *          true if the region was added.
+     * @throws XMLException 
+     *          if the element representing the region is null.
      */
     public boolean addRegion(T region) throws XMLException {
         if(regions.add(region, (T) this)){
@@ -395,14 +576,15 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Remove uma região filha da região.
-     *
+     * Removes a region of the region. The region can have none or several region
+     * elements inside it.
+     * 
      * @param region
-     *          elemento representando a região a ser removida.
+     *          element representing a region.
      * @return
-     *          verdadeiro se a região foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the region was removed.
+     * @throws XMLException 
+     *          if the element representing the region is null.
      */
     public boolean removeRegion(T region) throws XMLException {
         if(regions.remove(region)){
@@ -414,14 +596,15 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Remove uma região filha da região.
-     *
+     * Removes a region of the region. The region can have none or several region
+     * elements inside it.
+     * 
      * @param id
-     *          identificador da região a ser removida.
+     *          string representing the id of the element representing a region.
      * @return
-     *          Verdadeiro se a região foi removida.
-     *
-     * @see TreeSet#remove
+     *          true if the region was removed.
+     * @throws XMLException 
+     *          if the string is null or empty.
      */
     public boolean removeRegion(String id) throws XMLException {
         if(regions.remove(id)){
@@ -433,28 +616,43 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Verifica se a região possui uma região como filha.
-     *
-     * @param child
-     *          elemento representando a região a ser verificada.
+     * Verifies if the region has a specific element representing a region
+     * inside it. The region can have none or several region elements inside it.
+     * 
+     * @param region
+     *          element representing a region.
      * @return
-     *          verdadeiro se a região existir.
+     *          true if the region has the region element.
+     * @throws XMLException 
+     *          if the element representing the region is null.
      */
     public boolean hasRegion(T child) throws XMLException {
         return regions.contains(child);
     }
 
 
+    /**
+     * Verifies if the region has a region with a specific id. The region can
+     * have none or several region elements inside it.
+     * 
+     * @param id
+     *          string representing the id of the element representing a region.
+     * @return
+     *          true if the region has the region element.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
     public boolean hasRegion(String id) throws XMLException {
         return regions.get(id) != null;
     }
 
 
     /**
-     * Verifica se a região possui alguma região como filha.
-     *
-     * @return
-     *          verdadeiro se a região possuir alguma região filha.
+     * Verifies if the region has at least one region inside it. The region can
+     * have none or several region elements inside it.
+     * 
+     * @return 
+     *          true if the region has at least one region inside it.
      */
     public boolean hasRegion() {
         return !regions.isEmpty();
@@ -462,10 +660,11 @@ public abstract class NCLRegionPrototype<T extends NCLRegionPrototype,
 
 
     /**
-     * Retorna as regiões internas a região.
-     *
-     * @return
-     *          lista contendo as regiões internas.
+     * Returns the list of regions that a region have. The region can have none
+     * or several region elements inside it.
+     * 
+     * @return 
+     *          element list with all regions.
      */
     public IdentifiableElementList<T, T> getRegions() {
         return regions;

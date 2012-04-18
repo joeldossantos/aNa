@@ -1,7 +1,7 @@
 /********************************************************************************
- * This file is part of the api for NCL authoring - aNa.
+ * This file is part of the API for NCL Authoring - aNa.
  *
- * Copyright (c) 2011, MídiaCom Lab (www.midiacom.uff.br)
+ * Copyright (c) 2011, MidiaCom Lab (www.midiacom.uff.br)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -15,15 +15,15 @@
  *    and/or other materials provided with the distribution.
  *
  *  * All advertising materials mentioning features or use of this software must
- *    display the following acknowledgement:
- *        This product includes the Api for NCL Authoring - aNa
+ *    display the following acknowledgment:
+ *        This product includes the API for NCL Authoring - aNa
  *        (http://joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY MÍDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY MIDIACOM LAB AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE MÍDIACOM LAB OR CONTRIBUTORS BE LIABLE
@@ -52,6 +52,41 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
 
 
+/**
+ * Class that represents a bind element. A bind associates a role defined in a
+ * connector to a node.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>role</i> - role defined in a connector. This attribute is required.</li>
+ *  <li><i>component</i> - node to be associated to the role. This attribute is
+ *                         required.</li>
+ *  <li><i>interface</i> - node interface point to be associated to the role. This
+ *                         attribute is optional.</li>
+ *  <li><i>descriptor</i> - descriptor to be used by the node. This attribute is
+ *                          optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>bindParam</i> - element that defines a value to a parameter defined
+ *                         in the connector. The bind can have none or several
+ *                         parameter elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Er>
+ * @param <En>
+ * @param <Ei>
+ * @param <Ed>
+ * @param <Ep> 
+ */
 public abstract class NCLBindPrototype<T extends NCLBindPrototype,
                                        P extends NCLElement,
                                        I extends NCLElementImpl,
@@ -71,7 +106,10 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
 
     /**
-     * Construtor do elemento <i>bind</i> da <i>Nested Context Language</i> (NCL).
+     * Bind element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
      */
     public NCLBindPrototype() throws XMLException {
         super();
@@ -80,19 +118,29 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
 
 
     /**
-     * Atribui um papel ao bind.
+     * Sets the role defined in a connector used by the bind. This attribute is
+     * required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The role referred must be a role defined by the connector used by the
+     * link parent of the bind element.
      * 
      * @param role
-     *          elemento representando o papel ao qual o bind será associado.
+     *          element representing a reference to a role element.
+     * @throws XMLException 
+     *          if the role is null or any error occur while creating the
+     *          reference to the role.
      */
     public void setRole(Er role) throws XMLException {
+        if(role == null)
+            throw new XMLException("Null role.");
+        
         Er aux = this.role;
         
         this.role = role;
-        if(this.role != null){
-            this.role.setOwner((T) this);
-            this.role.setOwnerAtt(NCLElementAttributes.ROLE);
-        }
+        this.role.setOwner((T) this);
+        this.role.setOwnerAtt(NCLElementAttributes.ROLE);
         
         impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
         if(aux != null)
@@ -101,10 +149,17 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
     
     /**
-     * Retorna o papel relacionado ao bind.
+     * Returns the role defined in a connector used by the bind or <i>null</i>
+     * if the attribute is not defined.
      * 
-     * @return
-     *          elemento representando o papel ao qual o bind será associado.
+     * <br/>
+     * 
+     * The role referred must be a role defined by the connector used by the
+     * link parent of the bind element.
+     * 
+     * @return 
+     *          element representing a reference to a role element or <i>null</i>
+     *          if the attribute is not defined.
      */
     public Er getRole() {
         return role;
@@ -112,23 +167,48 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
     
     /**
-     * Atribui um nó ao bind.
+     * Sets the node to be associated to the role. This attribute is required
+     * and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The node referred must be a node defined in the composition parent of the
+     * link parent of the bind element.
      * 
      * @param component
-     *          elemento representando o nó mapeado pelo bind.
+     *          element representing a reference to a node element.
+     * @throws XMLException 
+     *          if the node is null or any error occur while creating the
+     *          reference to the node.
      */
-    public void setComponent(En component) {
+    public void setComponent(En component) throws XMLException {
+        if(component == null)
+            throw new XMLException("Null component.");
+        
         En aux = this.component;
+        
         this.component = component;
+        this.component.setOwner((T) this);
+        this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
+        
         impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        if(aux != null)
+            aux.clean();
     }
     
     
     /**
-     * Retorna o nó atribuído ao bind.
+     * Returns the node to be associated to the role or <i>null</i> if the
+     * attribute is not defined.
      * 
-     * @return
-     *          elemento representando o nó mapeado pelo bind.
+     * <br/>
+     * 
+     * The node referred must be a node defined in the composition parent of the
+     * link parent of the bind element.
+     * 
+     * @return 
+     *          element representing a reference to a node element or <i>null</i>
+     *          if the attribute is not defined.
      */
     public En getComponent() {
         return component;
@@ -136,23 +216,51 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
     
     /**
-     * Determina a interface do nó atribuído ao bind.
+     * Sets the node interface point to be associated to the role. This attribute
+     * is optional. Set the interface to <i>null</i> to erase a interface
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
      * 
      * @param interfac
-     *          elemento representando a interface do nó.
+     *          element representing a reference to a interface element or
+     *          <i>null</i> to erase a interface already defined.
+     * @throws XMLException 
      */
-    public void setInterface(Ei interfac) {
+    public void setInterface(Ei interfac) throws XMLException {
         Ei aux = this.interfac;
+        
         this.interfac = interfac;
+        if(this.interfac != null){
+            this.interfac.setOwner((T) this);
+            this.interfac.setOwnerAtt(NCLElementAttributes.INTERFACE);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        if(aux != null)
+            aux.clean();
     }
     
     
     /**
-     * Retorna a interface do nó atribuído ao bind.
+     * Returns the node interface point to be associated to the role or
+     * <i>null</i> if the attribute is not defined.
      * 
-     * @return
-     *          elemento representando a interface do nó.
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
+     * 
+     * @return 
+     *          element representing a reference to a interface element or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Ei getInterface() {
         return interfac;
@@ -160,23 +268,54 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
     
     /**
-     * Atribui um descritor ao bind.
+     * Sets the descriptor that describes the node presentation. This attribute
+     * is optional. Set the descriptor to <i>null</i> to erase a descriptor 
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The descriptor referred can be defined in the document base of descriptors
+     * or in a base defined in an external document, imported by the base of
+     * descriptors or by the base of imported documents. When the descriptor is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
      * 
      * @param descriptor
-     *          elemento representando o descritor a ser atribuido.
+     *          element representing a reference to a descriptor element or
+     *          <i>null</i> to erase a descriptor already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the descriptor.
      */
-    public void setDescriptor(Ed descriptor) {
+    public void setDescriptor(Ed descriptor) throws XMLException {
         Ed aux = this.descriptor;
+        
         this.descriptor = descriptor;
+        if(this.descriptor != null){
+            this.descriptor.setOwner((T) this);
+            this.descriptor.setOwnerAtt(NCLElementAttributes.DESCRIPTOR);
+        }
+        
         impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
+        if(aux != null)
+            aux.clean();
     }
     
     
     /**
-     * Retorna o descritor atribuido ao bind.
+     * Returns the descriptor that describes the node presentation or <i>null</i>
+     * is the attribute is not defined.
      * 
-     * @return
-     *          elemento representando o descritor a ser atribuido.
+     * <br/>
+     * 
+     * The descriptor referred can be defined in the document base of descriptors
+     * or in a base defined in an external document, imported by the base of
+     * descriptors or by the base of imported documents. When the descriptor is
+     * defined in an external document, the alias of the imported document must
+     * be indicated in the reference.
+     * 
+     * @return 
+     *          element representing a reference to a descriptor element or
+     *          <i>null</i> if the attribute is not defined.
      */
     public Ed getDescriptor() {
         return descriptor;
@@ -184,14 +323,16 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
     
     
     /**
-     * Adiciona um parâmetro ao bind.
-     *
+     * Adds a bind parameter to the bind. A bind parameter defines a value to a
+     * parameter defined in the connector. The bind can have none or several
+     * parameter elements.
+     * 
      * @param param
-     *          elemento representando o parâmetro a ser adicionado.
+     *          element representing a bind parameter.
      * @return
-     *          verdadeiro se o parâmetro foi adicionado.
-     *
-     * @see TreeSet#add
+     *          true if the parameter was added.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean addBindParam(Ep param) throws XMLException {
         if(bindParams.add(param, (T) this)){
@@ -203,14 +344,16 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
 
 
     /**
-     * Remove um parâmetro do bind.
-     *
+     * Removes a bind parameter of the bind. A bind parameter defines a value to
+     * a parameter defined in the connector. The bind can have none or several
+     * parameter elements.
+     * 
      * @param param
-     *          elemento representando o parâmetro a ser removido.
+     *          element representing a bind parameter.
      * @return
-     *          verdadeiro se o parâmetro foi removido.
-     *
-     * @see TreeSet#remove
+     *          true if the parameter was removed.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean removeBindParam(Ep param) throws XMLException {
         if(bindParams.remove(param)){
@@ -222,12 +365,16 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
 
 
     /**
-     * Verifica se o bind possui um parâmetro.
-     *
+     * Verifies if the bind has a specific element representing a bind parameter.
+     * A bind parameter defines a value to a parameter defined in the connector.
+     * The bind can have none or several parameter elements.
+     * 
      * @param param
-     *          elemento representando o parâmetro a ser verificado.
+     *          element representing a bind parameter.
      * @return
-     *          verdadeiro se o parâmetro existir.
+     *          true if the bind has the parameter element.
+     * @throws XMLException 
+     *          if the element representing the parameter is null.
      */
     public boolean hasBindParam(Ep param) throws XMLException {
         return bindParams.contains(param);
@@ -235,10 +382,12 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
 
 
     /**
-     * Verifica se o bind possui algum parâmetro.
-     *
-     * @return
-     *          verdadeiro se o bind possui algum parâmetro.
+     * Verifies if the bind has at least one bind parameter. A bind parameter
+     * defines a value to a parameter defined in the connector. The bind can have
+     * none or several parameter elements.
+     * 
+     * @return 
+     *          true if the bind has at least one parameter.
      */
     public boolean hasBindParam() {
         return !bindParams.isEmpty();
@@ -246,10 +395,12 @@ public abstract class NCLBindPrototype<T extends NCLBindPrototype,
 
 
     /**
-     * Retorna os parâmetros do bind.
-     *
-     * @return
-     *          lista contendo os parâmetros do bind.
+     * Returns the list of bind parameters that a bind have. A bind parameter
+     * defines a value to a parameter defined in the connector. The bind can have
+     * none or several parameter elements.
+     * 
+     * @return 
+     *          element list with all parameters.
      */
     public ElementList<Ep, T> getBindParams() {
         return bindParams;
