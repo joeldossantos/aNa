@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.datatype.aux.reference.MediaReference;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
@@ -45,6 +46,7 @@ import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
+import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
 import br.uff.midiacom.ana.datatype.ncl.NCLElement;
 import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
@@ -62,11 +64,11 @@ public class NCLMediaTest {
         NCLMedia med = new NCLMedia("m1");
         med.setType(NCLMimeType.AUDIO_MP2);
         med.setSrc(new SrcType("audio.mp2"));
-        med.setRefer(new NodeReference(new NCLMedia("m2"), NCLElementAttributes.ID));
+        med.setRefer(new MediaReference(new NCLMedia("m2"), NCLElementAttributes.ID));
         med.setInstance(NCLInstanceType.NEW);
         med.setDescriptor(new DescriptorReference(new NCLDescriptor("dm1"), NCLElementAttributes.ID));
 
-        String expResult = "<media id='m1' src='audio.mp2' type='audio/mp2' descriptor='dm1' refer='m2' instance='new'/>\n";
+        String expResult = "<media id='m1' src='audio.mp2' refer='m2' instance='new' type='audio/mp2' descriptor='dm1'/>\n";
         String result = med.parse(0);
         assertEquals(expResult, result);
     }
@@ -75,7 +77,7 @@ public class NCLMediaTest {
     public void test2() throws XMLException {
         NCLMedia med = new NCLMedia("m1");
         NCLArea a = new NCLArea("a1");
-        NCLProperty p = new NCLProperty("top");
+        NCLProperty p = new NCLProperty(new NCLAttribute("top"));
         med.addArea(a);
         med.addProperty(p);
 

@@ -133,14 +133,14 @@ public class NCLCausalConnectorTest {
         String expResult = "<causalConnector id='conn1'>\n"+
                 "\t<connectorParam name='val' type='Integer'/>\n"+
                 "\t<compoundCondition operator='and' delay='5.0s'>\n"+
-                "\t\t<simpleCondition role='startSel' key='A' delay='6.0s' min='1' max='2' qualifier='or' eventType='selection' transition='starts'/>\n"+
+                "\t\t<simpleCondition role='startSel' delay='6.0s' eventType='selection' key='A' transition='starts' min='1' max='2' qualifier='or'/>\n"+
                 "\t\t<assessmentStatement comparator='eq'>\n"+
                 "\t\t\t<attributeAssessment role='testeOccurences' eventType='selection' key='ENTER' attributeType='occurrences' offset='2'/>\n"+
                 "\t\t\t<valueAssessment value='1'/>\n"+
                 "\t\t</assessmentStatement>\n"+
                 "\t</compoundCondition>\n"+
                 "\t<compoundAction operator='seq' delay='1.0s'>\n"+
-                "\t\t<simpleAction role='seta2x' value='value0' delay='0.0s' min='1' max='2' qualifier='par' eventType='attribution' actionType='start' repeat='2' repeatDelay='2.0s' duration='20.0s' by='2'/>\n"+
+                "\t\t<simpleAction role='seta2x' delay='0.0s' eventType='attribution' actionType='start' value='value0' min='1' max='2' qualifier='par' repeat='2' repeatDelay='2.0s' duration='20.0s' by='2'/>\n"+
                 "\t\t<simpleAction role='stop'/>\n"+
                 "\t</compoundAction>\n"+
                 "</causalConnector>\n";

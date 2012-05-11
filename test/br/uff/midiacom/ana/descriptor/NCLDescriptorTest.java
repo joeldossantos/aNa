@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLDoc;
+import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
@@ -72,18 +73,18 @@ public class NCLDescriptorTest {
         descriptor.setFreeze(true);
         descriptor.setPlayer("teste");
             NCLDescriptor d1 = new NCLDescriptor("d1");
-            d1.setFocusIndex(1);
+            d1.setFocusIndex(new FocusIndexType(1));
             NCLDescriptor d2 = new NCLDescriptor("d2");
-            d2.setFocusIndex(2);
+            d2.setFocusIndex(new FocusIndexType(2));
             NCLDescriptor d3 = new NCLDescriptor("d3");
-            d3.setFocusIndex(3);
+            d3.setFocusIndex(new FocusIndexType(3));
             NCLDescriptor d4 = new NCLDescriptor("d4");
-            d4.setFocusIndex(4);
+            d4.setFocusIndex(new FocusIndexType(4));
         descriptor.setMoveLeft(new DescriptorReference(d1, NCLElementAttributes.FOCUSINDEX));
         descriptor.setMoveRight(new DescriptorReference(d2, NCLElementAttributes.FOCUSINDEX));
         descriptor.setMoveDown(new DescriptorReference(d3, NCLElementAttributes.FOCUSINDEX));
         descriptor.setMoveUp(new DescriptorReference(d4, NCLElementAttributes.FOCUSINDEX));
-        descriptor.setFocusIndex(10);
+        descriptor.setFocusIndex(new FocusIndexType(10));
         descriptor.setFocusBorderColor(NCLColor.BLACK);
         descriptor.setFocusBorderWidth(5);
         descriptor.setFocusBorderTransparency(new PercentageType(1, true));

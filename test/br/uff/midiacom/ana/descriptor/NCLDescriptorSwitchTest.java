@@ -66,7 +66,7 @@ public class NCLDescriptorSwitchTest {
         ds.addDescriptor(desc);
         ds.setDefaultDescriptor(new DescriptorReference(desc, NCLElementAttributes.ID));
 
-        String expResult = "<descriptorSwitch id='dLegenda'>\n\t<bindRule rule='rpt' constituent='dpt'/>\n\t<defaultDescriptor descriptor='dpt'/>\n\t<descriptor id='dpt'/>\n</descriptorSwitch>\n";
+        String expResult = "<descriptorSwitch id='dLegenda'>\n\t<bindRule constituent='dpt' rule='rpt'/>\n\t<defaultDescriptor descriptor='dpt'/>\n\t<descriptor id='dpt'/>\n</descriptorSwitch>\n";
         String result = ds.parse(0);
         assertEquals(expResult, result);
     }

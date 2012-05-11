@@ -58,9 +58,9 @@ public class NCLSwitchTest {
             bind.setConstituent(new NodeReference(med, NCLElementAttributes.ID));
         s.addBind(bind);
         s.addNode(med);
-        s.setDefaultComponent(med);
+        s.setDefaultComponent(new NodeReference(med, NCLElementAttributes.ID));
 
-        String expResult = "<switch id='escolhe'>\n\t<bindRule rule='rpt' constituent='m1'/>\n\t<defaultComponent component='m1'/>\n\t<media id='m1'/>\n</switch>\n";
+        String expResult = "<switch id='escolhe'>\n\t<bindRule constituent='m1' rule='rpt'/>\n\t<defaultComponent component='m1'/>\n\t<media id='m1'/>\n</switch>\n";
         String result = s.parse(0);
         assertEquals(expResult, result);
     }

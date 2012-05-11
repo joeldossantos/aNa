@@ -38,7 +38,12 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.XMLLoader;
+import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
+import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
+import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
+import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
+import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,13 +56,13 @@ public class NCLPropertyTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-            prop = new NCLProperty("a");
+            prop = new NCLProperty(new NCLAttribute("a"));
     }
 
     @Test
     public void testParse() {
         try{
-            prop.setName("interacao");
+            prop.setName(new NCLAttribute("interacao"));
             prop.setValue("nao");
             String expResult = "<property name='interacao' value='nao'/>\n";
             String result = prop.parse(0);
@@ -71,25 +76,25 @@ public class NCLPropertyTest {
     @Test
     public void testSetName() {
         try{
-            prop.setName((String)null);
+            prop.setName(new NCLAttribute((String)null));
             fail("Deveria gerar exceção");
         }
         catch(Exception e){
         }
         try{
-            prop.setName("qualquer-coisa");
+            prop.setName(new NCLAttribute("qualquer-coisa"));
         }
         catch(Exception e){
             fail("Exceção: " + e);
         }
         try{
-            prop.setName((NCLSystemVariable)null);
+            prop.setName(new NCLAttribute((NCLNodeAttributes)null));
             fail("Deveria gerar exceção");
         }
         catch(Exception e){
         }
         try{
-            prop.setName(NCLSystemVariable.SYSTEM_SCREENSIZE);
+            prop.setName(new VariableReference(new NCLVariable(new SysVarType(NCLSystemVariable.SYSTEM_SCREENSIZE))));
         }
         catch(Exception e){
             fail("Exceção: " + e);

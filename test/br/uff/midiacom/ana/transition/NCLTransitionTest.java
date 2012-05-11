@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.transition;
 
 import br.uff.midiacom.ana.XMLLoader;
+import br.uff.midiacom.ana.datatype.aux.basic.BlendColorType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
@@ -63,7 +64,7 @@ public class NCLTransitionTest {
         trans.setHorRepeat(4);
         trans.setVertRepeat(6);
         trans.setBorderWidth(20);
-        trans.setBorderColor(NCLColor.BLUE);
+        trans.setBorderColor(new BlendColorType(NCLColor.BLUE));
 
         String expResult = "<transition id='tr1' type='fade' subtype='crossfade' dur='5.0s' startProgress='0.1' endProgress='0.9'"+
                 " direction='forward' fadeColor='black' horRepeat='4' vertRepeat='6' borderWidth='20' borderColor='blue'/>\n";
