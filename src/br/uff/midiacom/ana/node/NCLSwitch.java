@@ -363,6 +363,11 @@ public class NCLSwitch<T extends NCLSwitch,
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
+        // if reuses another switch search in it
+        Rn aux;
+        if((aux = getRefer()) != null)
+            return (Ei) ((T) aux.getTarget()).findInterface(id);
+        
         // search as a switchPort
         result = (Ei) ports.get(id);
         if(result != null)
@@ -384,6 +389,11 @@ public class NCLSwitch<T extends NCLSwitch,
         
         if(getId().equals(id))
             return (En) this;
+        
+        // if reuses another switch search in it
+        Rn aux;
+        if((aux = getRefer()) != null)
+            return (En) ((T) aux.getTarget()).findNode(id);
         
         for(En node : nodes){
             result = (En) node.findNode(id);

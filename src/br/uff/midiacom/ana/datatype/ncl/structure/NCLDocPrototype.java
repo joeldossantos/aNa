@@ -399,7 +399,7 @@ public abstract class NCLDocPrototype<T extends NCLDocPrototype,
      * @param list 
      *          element list with all variables.
      */
-    public void mergeGlobalVariableLists(ElementList<Ev, T> list) {
+    public void addGlobalVariableLists(ElementList<Ev, T> list) {
         globalVariables.addAll(list);
     }
 }

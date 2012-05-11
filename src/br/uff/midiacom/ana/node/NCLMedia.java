@@ -368,6 +368,14 @@ public class NCLMedia<T extends NCLMedia,
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
+        // first search in the reused media
+        Rn aux;
+        if((aux = getRefer()) != null){
+            result = (Ei) ((T) aux.getTarget()).findInterface(id);
+            if(result != null)
+                return result;
+        }
+        
         // search as a property
         result = (Ei) properties.get(id);
         if(result != null)

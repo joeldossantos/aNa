@@ -106,6 +106,7 @@ public class NCLImport<T extends NCLImport,
                 URI path = base.resolve(getDocumentURI().parse());
                 aux.loadXML(new File(path.getPath()));
                 setImportedDoc(aux);
+                impl.getDoc().mergeGlobalVariables(aux);
             }catch(Exception e){
                 throw new NCLParsingException("Could not find document in location: " + getDocumentURI().parse());
             }

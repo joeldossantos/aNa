@@ -37,12 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.ana.datatype.ncl.structure.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
@@ -282,6 +286,37 @@ public class NCLDoc<T extends NCLDoc,
         }catch(IOException e){
             throw new NCLParsingException(e.fillInStackTrace());
         }
+    }
+    
+    
+    public void mergeGlobalVariables(T other) throws XMLException {
+        ElementList<Ev,T> other_vars = other.getGlobalVariables();
+        if(other_vars.isEmpty())
+            return;
+        
+        for(Ev var : getGlobalVariables()){
+            for(Ev ovar : other_vars){
+                if(var.compare(ovar)){
+                    mergeVariables(var, ovar);
+                    other_vars.remove(ovar);
+                    break;
+                }
+            }
+        }
+        
+        if(!other_vars.isEmpty())
+            addGlobalVariableLists(other_vars);
+    }
+    
+    
+    protected void mergeVariables(Ev new_var, Ev old_var) throws XMLException {
+        ItemList<VariableReference> old_refs = old_var.getReferences();
+        
+        for(VariableReference ref : old_refs){
+            ref.setTarget(new_var);
+        }
+        
+        old_refs.clear();
     }
 
 

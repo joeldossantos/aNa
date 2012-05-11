@@ -83,4 +83,10 @@ public class VariableReference<T extends NCLVariable,
     public String parse() {
         return getTarget().parse(0);
     }
+    
+    
+    @Override
+    public void setTarget(T target) throws XMLException {
+        super.setTarget(target);
+    }
 }

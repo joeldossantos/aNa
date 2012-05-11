@@ -124,7 +124,6 @@ public class NCLContext<T extends NCLContext,
 
 
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
         NodeList nl;
 
         try{
@@ -416,6 +415,11 @@ public class NCLContext<T extends NCLContext,
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
+        // if reuses another context search in it
+        Rn aux;
+        if((aux = getRefer()) != null)
+            return (Ei) ((T) aux.getTarget()).findInterface(id);
+        
         // search as a property
         result = (Ei) properties.get(id);
         if(result != null)
@@ -442,6 +446,11 @@ public class NCLContext<T extends NCLContext,
         
         if(getId().equals(id))
             return (En) this;
+        
+        // if reuses another context search in it
+        Rn aux;
+        if((aux = getRefer()) != null)
+            return (En) ((T) aux.getTarget()).findNode(id);
         
         for(En node : nodes){
             result = (En) node.findNode(id);
