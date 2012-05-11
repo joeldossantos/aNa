@@ -93,6 +93,23 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadRole(element);
+            loadMin(element);
+            loadMax(element);
+            loadQualifier(element);
+            loadKey(element);
+            loadEventType(element);
+            loadTransition(element);
+            loadDelay(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("SimpleCondition:\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -120,12 +137,34 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
     
     
+    protected void loadRole(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the role (required)
+        att_name = NCLElementAttributes.ROLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRole(createRole(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseKey() {
         KeyParamType aux = getKey();
         if(aux != null)
             return " key='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadKey(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the key (optional)
+        att_name = NCLElementAttributes.KEY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setKey(new KeyParamType(att_var));
     }
     
     
@@ -144,12 +183,37 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
     
     
+    protected void loadDelay(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
+    }
+    
+    
     protected String parseMin() {
         Integer aux = getMin();
         if(aux != null)
             return " min='" + aux + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadMin(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the min (optional)
+        att_name = NCLElementAttributes.MIN.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setMin(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
     }
     
     
@@ -162,12 +226,32 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
     
     
+    protected void loadMax(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the max (optional)
+        att_name = NCLElementAttributes.MAX.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setMax(new MaxType(att_var));
+    }
+    
+    
     protected String parseQualifier() {
         NCLConditionOperator aux = getQualifier();
         if(aux != null)
             return " qualifier='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadQualifier(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the qualifier (optional)
+        att_name = NCLElementAttributes.QUALIFIER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setQualifier(NCLConditionOperator.getEnumType(att_var));
     }
     
     
@@ -180,6 +264,16 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
     
     
+    protected void loadEventType(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the eventType (optional)
+        att_name = NCLElementAttributes.EVENTTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setEventType(NCLEventType.getEnumType(att_var));
+    }
+    
+    
     protected String parseTransition() {
         NCLEventTransition aux = getTransition();
         if(aux != null)
@@ -187,62 +281,15 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadTransition(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the role (required)
-            att_name = NCLElementAttributes.ROLE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setRole(createRole(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the min (optional)
-            att_name = NCLElementAttributes.MIN.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setMin(new Integer(att_var));
-                }catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the max (optional)
-            att_name = NCLElementAttributes.MAX.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setMax(new MaxType(att_var));
-
-            // set the qualifier (optional)
-            att_name = NCLElementAttributes.QUALIFIER.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setQualifier(NCLConditionOperator.getEnumType(att_var));
-
-            // set the key (optional)
-            att_name = NCLElementAttributes.KEY.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setKey(new KeyParamType(att_var));
-
-            // set the eventType (optional)
-            att_name = NCLElementAttributes.EVENTTYPE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setEventType(NCLEventType.getEnumType(att_var));
-
-            // set the transition (optional)
-            att_name = NCLElementAttributes.TRANSITION.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setTransition(NCLEventTransition.getEnumType(att_var));
-
-            // set the delay (optional)
-            att_name = NCLElementAttributes.DELAY.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDelay(new DoubleParamType(att_var));
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("SimpleCondition:\n" + ex.getMessage());
-        }
+        
+        // set the transition (optional)
+        att_name = NCLElementAttributes.TRANSITION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setTransition(NCLEventTransition.getEnumType(att_var));
     }
     
     

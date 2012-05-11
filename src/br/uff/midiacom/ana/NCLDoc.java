@@ -40,6 +40,7 @@ package br.uff.midiacom.ana;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
+import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.ana.datatype.ncl.structure.NCLDocPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
@@ -56,8 +57,9 @@ public class NCLDoc<T extends NCLDoc,
                     P extends NCLElement,
                     I extends NCLElementImpl,
                     Eh extends NCLHead,
-                    Eb extends NCLBody>
-        extends NCLDocPrototype<T, P, I, Eh, Eb>
+                    Eb extends NCLBody,
+                    Ev extends NCLVariable>
+        extends NCLDocPrototype<T, P, I, Eh, Eb, Ev>
         implements NCLIdentifiableElement<T, P> {
 
     
@@ -101,6 +103,32 @@ public class NCLDoc<T extends NCLDoc,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+
+            loadTitle(element);
+
+            loadXmlns(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("NCLDocument:\n" + ex.getMessage());
+        }
+
+        try{
+            loadHead(element);
+
+            loadBody(element);
+
+            // fix the references needed
+            NCLReferenceManager.getInstance().fixReferences();
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Error pasring " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -133,12 +161,32 @@ public class NCLDoc<T extends NCLDoc,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseTitle() {
         String aux = getTitle();
         if(aux != null)
             return " title='" + aux + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadTitle(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the title (optional)
+        att_name = NCLElementAttributes.TITLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setTitle(att_var);
     }
     
     
@@ -151,6 +199,16 @@ public class NCLDoc<T extends NCLDoc,
     }
     
     
+    protected void loadXmlns(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the xmlns (optional)
+        att_name = NCLElementAttributes.XMLNS.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setXmlns(NCLNamespace.getEnumType(att_var));
+    }
+    
+    
     protected String parseHead(int ident) {
         Eh aux = getHead();
         if(aux != null)
@@ -160,12 +218,42 @@ public class NCLDoc<T extends NCLDoc,
     }
     
     
+    protected void loadHead(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the head
+        ch_name = NCLElementAttributes.HEAD.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Eh inst = createHead();
+            setHead(inst);
+            inst.load(el);
+        }
+    }
+    
+    
     protected String parseBody(int ident) {
         Eb aux = getBody();
         if(aux != null)
             return aux.parse(ident);
         else
             return "";
+    }
+    
+    
+    protected void loadBody(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the body
+        ch_name = NCLElementAttributes.BODY.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Eb inst = createBody();
+            setBody(inst);
+            inst.load(el);
+        }
     }
 
 
@@ -193,58 +281,6 @@ public class NCLDoc<T extends NCLDoc,
             throw new NCLParsingException(e.fillInStackTrace());
         }catch(IOException e){
             throw new NCLParsingException(e.fillInStackTrace());
-        }
-    }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
-        Element el;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-
-            // set the title (optional)
-            att_name = NCLElementAttributes.TITLE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setTitle(att_var);
-
-            // set the xmlns (optional)
-            att_name = NCLElementAttributes.XMLNS.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setXmlns(NCLNamespace.getEnumType(att_var));
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("NCLDocument:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the head
-            ch_name = NCLElementAttributes.HEAD.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Eh inst = createHead();
-                setHead(inst);
-                inst.load(el);
-            }
-
-            // create the body
-            ch_name = NCLElementAttributes.BODY.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Eb inst = createBody();
-                setBody(inst);
-                inst.load(el);
-            }
-
-            // fix the references needed
-            NCLReferenceManager.getInstance().fixReferences();
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("Error pasring " + ex.getMessage());
         }
     }
 

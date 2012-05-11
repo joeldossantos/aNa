@@ -39,9 +39,10 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
+import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -50,23 +51,21 @@ import org.w3c.dom.Element;
 public class NCLProperty<T extends NCLProperty,
                          P extends NCLElement,
                          I extends NCLElementImpl,
-                         Ei extends NCLInterface>
-        extends NCLPropertyPrototype<T, P, I, Ei>
+                         Ei extends NCLInterface,
+                         Ep extends VariableReference,
+                         Ea extends NCLAttribute>
+        extends NCLPropertyPrototype<T, P, I, Ei, Ep, Ea>
         implements NCLInterface<Ei, P> {
 
     
-    public NCLProperty(String name) throws XMLException {
-        super(name);
-    }
-
-
-    public NCLProperty(NCLSystemVariable name) throws XMLException {
-        super(name);
-    }
-
-
     public NCLProperty() throws XMLException {
         super();
+    }
+
+
+    public NCLProperty(Ea name) throws XMLException {
+        super();
+        setName(name);
     }
 
 
@@ -95,6 +94,23 @@ public class NCLProperty<T extends NCLProperty,
         
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadName(element);
+            loadValue(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Property" + aux + ":\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -116,6 +132,18 @@ public class NCLProperty<T extends NCLProperty,
     }
     
     
+    protected void loadName(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(createName(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseValue() {
         String aux = getValue();
         if(aux != null)
@@ -123,32 +151,21 @@ public class NCLProperty<T extends NCLProperty,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadValue(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the name (required)
-            att_name = NCLElementAttributes.NAME.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setName(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the value (optional)
-            att_name = NCLElementAttributes.VALUE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setValue(att_var);
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Property" + aux + ":\n" + ex.getMessage());
-        }
+        
+        // set the name (required)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
+    public Ea createName(String name) throws XMLException {
+        return (Ea) new NCLAttribute(name);
     }
 }

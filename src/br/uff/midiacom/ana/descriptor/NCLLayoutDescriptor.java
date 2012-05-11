@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -67,5 +68,5 @@ public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public T findDescriptor(Integer focusIndex) throws XMLException;
+    public T findDescriptor(FocusIndexType focusIndex) throws XMLException;
 }

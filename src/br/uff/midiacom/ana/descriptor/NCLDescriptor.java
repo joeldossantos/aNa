@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
@@ -82,13 +83,14 @@ public class NCLDescriptor<T extends NCLDescriptor,
         implements NCLLayoutDescriptor<El, P>, PostReferenceElement {
 
 
-    public NCLDescriptor(String id) throws XMLException {
-        super(id);
+    public NCLDescriptor() throws XMLException {
+        super();
     }
     
     
-    public NCLDescriptor() throws XMLException {
+    public NCLDescriptor(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -125,6 +127,53 @@ public class NCLDescriptor<T extends NCLDescriptor,
 
         
         return content;
+    }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+            loadPlayer(element);
+            loadExplicitDur(element);
+            loadFreeze(element);
+            loadMoveUp(element);
+            loadMoveRight(element);
+            loadMoveLeft(element);
+            loadMoveDown(element);
+            loadFocusIndex(element);
+            loadFocusBorderColor(element);
+            loadFocusBorderWidth(element);
+            loadFocusBorderTransparency(element);
+            loadFocusSrc(element);
+            loadFocusSelSrc(element);
+            loadSelBorderColor(element);
+            loadTransIn(element);
+            loadTransOut(element);
+            loadRegion(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Descriptor" + aux + ":\n" + ex.getMessage());
+        }
+
+
+        try{
+            loadDescriptorParams(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Descriptor" + aux + " > " + ex.getMessage());
+        }
     }
     
     
@@ -172,12 +221,35 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseRegion() {
         Er aux = getRegion();
         if(aux != null)
             return " region='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadRegion(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the region (optional)
+        att_name = NCLElementAttributes.REGION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
+        }
     }
     
     
@@ -190,12 +262,32 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadExplicitDur(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the explicitDur (optional)
+        att_name = NCLElementAttributes.EXPLICITDUR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setExplicitDur(new TimeType(att_var));
+    }
+    
+    
     protected String parseFreeze() {
         Boolean aux = getFreeze();
         if(aux != null)
             return " freeze='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadFreeze(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the freeze (optional)
+        att_name = NCLElementAttributes.FREEZE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setFreeze(Boolean.parseBoolean(att_var));
     }
     
     
@@ -208,12 +300,36 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadPlayer(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the player (optional)
+        att_name = NCLElementAttributes.PLAYER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setPlayer(att_var);
+    }
+    
+    
     protected String parseMoveLeft() {
         Ed aux = getMoveLeft();
         if(aux != null)
             return " moveLeft='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadMoveLeft(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the moveLeft (optional)
+        att_name = NCLElementAttributes.MOVELEFT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T desc = (T) new NCLDescriptor("aux" + att_var);
+            desc.setFocusIndex(new FocusIndexType(att_var));
+            setMoveLeft(createDescriptorRef(desc));
+            NCLReferenceManager.getInstance().waitReference(this);
+        }
     }
     
     
@@ -226,12 +342,40 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadMoveRight(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the moveRight (optional)
+        att_name = NCLElementAttributes.MOVERIGHT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T desc = (T) new NCLDescriptor("aux" + att_var);
+            desc.setFocusIndex(new FocusIndexType(att_var));
+            setMoveRight(createDescriptorRef(desc));
+            NCLReferenceManager.getInstance().waitReference(this);
+        }
+    }
+    
+    
     protected String parseMoveDown() {
         Ed aux = getMoveDown();
         if(aux != null)
             return " moveDown='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadMoveDown(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the moveDown (optional)
+        att_name = NCLElementAttributes.MOVEDOWN.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T desc = (T) new NCLDescriptor("aux" + att_var);
+            desc.setFocusIndex(new FocusIndexType(att_var));
+            setMoveDown(createDescriptorRef(desc));
+            NCLReferenceManager.getInstance().waitReference(this);
+        }
     }
     
     
@@ -244,12 +388,37 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadMoveUp(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the moveUp (optional)
+        att_name = NCLElementAttributes.MOVEUP.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T desc = (T) new NCLDescriptor("aux" + att_var);
+            desc.setFocusIndex(new FocusIndexType(att_var));
+            setMoveUp(createDescriptorRef(desc));
+            NCLReferenceManager.getInstance().waitReference(this);
+        }
+    }
+    
+    
     protected String parseFocusIndex() {
-        Integer aux = getFocusIndex();
+        FocusIndexType aux = getFocusIndex();
         if(aux != null)
-            return " focusIndex='" + aux + "'";
+            return " focusIndex='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadFocusIndex(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the focusIndex (optional)
+        att_name = NCLElementAttributes.FOCUSINDEX.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setFocusIndex(new FocusIndexType(att_var));
+        }
     }
     
     
@@ -262,12 +431,37 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadFocusBorderColor(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the focusBorderColor (optional)
+        att_name = NCLElementAttributes.FOCUSBORDERCOLOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setFocusBorderColor(NCLColor.getEnumType(att_var));
+    }
+    
+    
     protected String parseFocusBorderWidth() {
         Integer aux = getFocusBorderWidth();
         if(aux != null)
             return " focusBorderWidth='" + aux + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadFocusBorderWidth(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the focusBorderWidth (optional)
+        att_name = NCLElementAttributes.FOCUSBORDERWIDTH.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setFocusBorderWidth(new Integer(att_var));
+            }catch(Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
     }
     
     
@@ -280,12 +474,32 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadFocusBorderTransparency(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the focusBorderTransparency (optional)
+        att_name = NCLElementAttributes.FOCUSBORDERTRANSPARENCY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setFocusBorderTransparency(new PercentageType(att_var));
+    }
+    
+    
     protected String parseFocusSrc() {
         SrcType aux = getFocusSrc();
         if(aux != null)
             return " focusSrc='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadFocusSrc(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the focusSrc (optional)
+        att_name = NCLElementAttributes.FOCUSSRC.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setFocusSrc(new SrcType(att_var));
     }
     
     
@@ -298,12 +512,32 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadFocusSelSrc(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the focusSelSrc (optional)
+        att_name = NCLElementAttributes.FOCUSSELSRC.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setFocusSelSrc(new SrcType(att_var));
+    }
+    
+    
     protected String parseSelBorderColor() {
         NCLColor aux = getSelBorderColor();
         if(aux != null)
             return " SelBorderColor='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadSelBorderColor(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the selBorderColor (optional)
+        att_name = NCLElementAttributes.SELBORDERCOLOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setSelBorderColor(NCLColor.getEnumType(att_var));
     }
     
     
@@ -316,12 +550,34 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
+    protected void loadTransIn(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the transIn (optional)
+        att_name = NCLElementAttributes.TRANSIN.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setTransIn((Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var));
+        }
+    }
+    
+    
     protected String parseTransOut() {
         Et aux = getTransOut();
         if(aux != null)
             return " transOut='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadTransOut(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the transOut (optional)
+        att_name = NCLElementAttributes.TRANSOUT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setTransOut((Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var));
+        }
     }
     
     
@@ -335,188 +591,20 @@ public class NCLDescriptor<T extends NCLDescriptor,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
+    
+    
+    protected void loadDescriptorParams(Element element) throws XMLException {
+        String ch_name;
         NodeList nl;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the player (optional)
-            att_name = NCLElementAttributes.PLAYER.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setPlayer(att_var);
-
-            // set the explicitDur (optional)
-            att_name = NCLElementAttributes.EXPLICITDUR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setExplicitDur(new TimeType(att_var));
-
-            // set the freeze (optional)
-            att_name = NCLElementAttributes.FREEZE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setFreeze(Boolean.parseBoolean(att_var));
-
-            // set the moveUp (optional)
-            att_name = NCLElementAttributes.MOVEUP.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Integer aux;
-                try{
-                    aux = new Integer(att_var);
-                }catch(Exception e){
-                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
-                }
-                T desc = (T) new NCLDescriptor("aux" + att_var);
-                desc.setFocusIndex(aux);
-                setMoveUp(createDescriptorRef(desc));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-
-            // set the moveRight (optional)
-            att_name = NCLElementAttributes.MOVERIGHT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Integer aux;
-                try{
-                    aux = new Integer(att_var);
-                }catch(Exception e){
-                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
-                }
-                T desc = (T) new NCLDescriptor("aux" + att_var);
-                desc.setFocusIndex(aux);
-                setMoveRight(createDescriptorRef(desc));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-
-            // set the moveLeft (optional)
-            att_name = NCLElementAttributes.MOVELEFT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Integer aux;
-                try{
-                    aux = new Integer(att_var);
-                }catch(Exception e){
-                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
-                }
-                T desc = (T) new NCLDescriptor("aux" + att_var);
-                desc.setFocusIndex(aux);
-                setMoveLeft(createDescriptorRef(desc));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-
-            // set the moveDown (optional)
-            att_name = NCLElementAttributes.MOVEDOWN.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                Integer aux;
-                try{
-                    aux = new Integer(att_var);
-                }catch(Exception e){
-                    throw new NCLParsingException("Could not create integer from value: " + att_var + ".");
-                }
-                T desc = (T) new NCLDescriptor("aux" + att_var);
-                desc.setFocusIndex(aux);
-                setMoveDown(createDescriptorRef(desc));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-
-            // set the focusIndex (optional)
-            att_name = NCLElementAttributes.FOCUSINDEX.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setFocusIndex(new Integer(att_var));
-                }catch(Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the focusBorderColor (optional)
-            att_name = NCLElementAttributes.FOCUSBORDERCOLOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setFocusBorderColor(NCLColor.getEnumType(att_var));
-
-            // set the focusBorderWidth (optional)
-            att_name = NCLElementAttributes.FOCUSBORDERWIDTH.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setFocusBorderWidth(new Integer(att_var));
-                }catch(Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the focusBorderTransparency (optional)
-            att_name = NCLElementAttributes.FOCUSBORDERTRANSPARENCY.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setFocusBorderTransparency(new PercentageType(att_var));
-
-            // set the focusSrc (optional)
-            att_name = NCLElementAttributes.FOCUSSRC.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setFocusSrc(new SrcType(att_var));
-
-            // set the focusSelSrc (optional)
-            att_name = NCLElementAttributes.FOCUSSELSRC.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setFocusSelSrc(new SrcType(att_var));
-
-            // set the selBorderColor (optional)
-            att_name = NCLElementAttributes.SELBORDERCOLOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setSelBorderColor(NCLColor.getEnumType(att_var));
-
-            // set the transIn (optional)
-            att_name = NCLElementAttributes.TRANSIN.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                setTransIn((Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var));
-            }
-
-            // set the transOut (optional)
-            att_name = NCLElementAttributes.TRANSOUT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                setTransOut((Et) NCLReferenceManager.getInstance().findTransitionReference(impl.getDoc(), att_var));
-            }
-
-            // set the region (optional)
-            att_name = NCLElementAttributes.REGION.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Descriptor" + aux + ":\n" + ex.getMessage());
-        }
-
-
-        try{
-            // create the descriptor child nodes
-            ch_name = NCLElementAttributes.DESCRIPTORPARAM.toString();
-            nl = element.getElementsByTagName(ch_name);
-            for(int i=0; i < nl.getLength(); i++){
-                Element el = (Element) nl.item(i);
-                Ep inst = createParamByType(el);
-                addDescriptorParam(inst);
-                inst.load(el);
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Descriptor" + aux + " > " + ex.getMessage());
+        
+        // create the descriptor child nodes
+        ch_name = NCLElementAttributes.DESCRIPTORPARAM.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Ep inst = createParamByType(el);
+            addDescriptorParam(inst);
+            inst.load(el);
         }
     }
     
@@ -529,8 +617,8 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
-    public El findDescriptor(Integer focusIndex) throws XMLException {
-        if(this.focusIndex != null && this.focusIndex.intValue() == focusIndex.intValue())
+    public El findDescriptor(FocusIndexType focusIndex) throws XMLException {
+        if(this.focusIndex != null && this.focusIndex.parse().equals(focusIndex.parse()))
             return (El) this;
         else
             return null;
@@ -612,30 +700,38 @@ public class NCLDescriptor<T extends NCLDescriptor,
     
     
     public void fixReference() throws NCLParsingException {
-        Integer aux;
+        FocusIndexType aux;
+        NCLElement base = getParent();
+
+        while(!(base instanceof NCLDescriptorBase)){
+            base = (NCLElement) base.getParent();
+            if(base == null){
+                throw new NCLParsingException("Could not find descriptor base element.");
+            }
+        }
         
         try{
             // set the moveUp (optional)
             if((aux = ((T) getMoveUp().getTarget()).getFocusIndex()) != null){
-                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                T desc = (T) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveUp(createDescriptorRef(desc));
             }
 
             // set the moveRight (optional)
             if((aux = ((T) getMoveRight().getTarget()).getFocusIndex()) != null){
-                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                T desc = (T) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveRight(createDescriptorRef(desc));
             }
 
             // set the moveLeft (optional)
             if((aux = ((T) getMoveLeft().getTarget()).getFocusIndex()) != null){
-                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                T desc = (T) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveLeft(createDescriptorRef(desc));
             }
 
             // set the moveDown (optional)
             if((aux = ((T) getMoveDown().getTarget()).getFocusIndex()) != null){
-                T desc = (T) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), aux);
+                T desc = (T) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveDown(createDescriptorRef(desc));
             }
         }

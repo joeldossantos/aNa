@@ -54,13 +54,14 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
         implements NCLIdentifiableElement<T, P> {
         
     
-    public NCLConnectorParam(String name) throws XMLException {
-        super(name);
+    public NCLConnectorParam() throws XMLException {
+        super();
     }
 
 
-    public NCLConnectorParam() throws XMLException {
+    public NCLConnectorParam(String name) throws XMLException {
         super();
+        setName(name);
     }
 
 
@@ -87,6 +88,23 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadName(element);
+            loadType(element);
+        }
+        catch(XMLException ex){
+            String aux = getName();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("ConnectorParam" + aux + ":\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -108,6 +126,18 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
     }
     
     
+    protected void loadName(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseType() {
         String aux = getType();
         if(aux != null)
@@ -115,32 +145,14 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadType(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the name (required)
-            att_name = NCLElementAttributes.NAME.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setName(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the type (optional)
-            att_name = NCLElementAttributes.TYPE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setType(att_var);
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("ConnectorParam" + aux + ":\n" + ex.getMessage());
-        }
+        
+        // set the type (optional)
+        att_name = NCLElementAttributes.TYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setType(att_var);
     }
 }

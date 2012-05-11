@@ -98,6 +98,48 @@ public class NCLLink<T extends NCLLink,
         
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadId(element);
+            loadXconnector(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Link" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadLinkParams(el);
+                    loadBinds(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Link" + aux + " > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -129,12 +171,35 @@ public class NCLLink<T extends NCLLink,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseXconnector() {
         Ec aux = getXconnector();
         if(aux != null)
             return " xconnector='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadXconnector(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the xconnector (required)
+        att_name = NCLElementAttributes.XCONNECTOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setXconnector((Ec) NCLReferenceManager.getInstance().findConnectorReference(impl.getDoc(), att_var));
+        }
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
@@ -150,6 +215,16 @@ public class NCLLink<T extends NCLLink,
     }
     
     
+    protected void loadLinkParams(Element element) throws XMLException {
+        //create the link params
+        if(element.getTagName().equals(NCLElementAttributes.LINKPARAM.toString())){
+            Ep inst = createLinkParam();
+            addLinkParam(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseBinds(int ident) {
         if(!hasBind())
             return "";
@@ -160,67 +235,14 @@ public class NCLLink<T extends NCLLink,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-
-            // set the xconnector (required)
-            att_name = NCLElementAttributes.XCONNECTOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                setXconnector((Ec) NCLReferenceManager.getInstance().findConnectorReference(impl.getDoc(), att_var));
-            }
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Link" + aux + ":\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the areas
-                    if(el.getTagName().equals(NCLElementAttributes.LINKPARAM.toString())){
-                        Ep inst = createLinkParam();
-                        addLinkParam(inst);
-                        inst.load(el);
-                    }
-                    // create the properties
-                    if(el.getTagName().equals(NCLElementAttributes.BIND.toString())){
-                        Eb inst = createBind();
-                        addBind(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Link" + aux + " > " + ex.getMessage());
+    
+    
+    protected void loadBinds(Element element) throws XMLException {
+        // create the binds
+        if(element.getTagName().equals(NCLElementAttributes.BIND.toString())){
+            Eb inst = createBind();
+            addBind(inst);
+            inst.load(element);
         }
     }
 

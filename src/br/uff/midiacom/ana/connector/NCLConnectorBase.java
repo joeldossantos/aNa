@@ -43,16 +43,13 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorBasePrototype;
-import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -102,6 +99,27 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ConnectorBase:\n" + ex.getMessage());
+        }
+        
+        try{
+            loadImportBases(element);
+            loadCausalConnectors(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ConnectorBase > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -132,6 +150,16 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseImportBases(int ident) {
         if(!hasImportBase())
             return "";
@@ -141,6 +169,22 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadImportBases(Element element) throws XMLException {
+        String ch_name;
+        NodeList nl;
+        
+        // create the import child nodes
+        ch_name = NCLElementAttributes.IMPORTBASE.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Ei inst = createImportBase();
+            addImportBase(inst);
+            inst.load(el);
+        }
     }
     
     
@@ -154,47 +198,20 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
+    
+    
+    protected void loadCausalConnectors(Element element) throws XMLException {
+        String ch_name;
         NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("ConnectorBase:\n" + ex.getMessage());
-        }
         
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the imports
-                    if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
-                        Ei inst = createImportBase();
-                        addImportBase(inst);
-                        inst.load(el);
-                    }
-                    // create the connectors
-                    if(el.getTagName().equals(NCLElementAttributes.CAUSALCONNECTOR.toString())){
-                        Ec inst = createCausalConnector();
-                        addCausalConnector(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("ConnectorBase > " + ex.getMessage());
+        // create the region child nodes
+        ch_name = NCLElementAttributes.CAUSALCONNECTOR.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Ec inst = createCausalConnector();
+            addCausalConnector(inst);
+            inst.load(el);
         }
     }
     

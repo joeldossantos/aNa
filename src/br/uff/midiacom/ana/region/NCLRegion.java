@@ -56,13 +56,14 @@ public class NCLRegion<T extends NCLRegion,
         implements NCLIdentifiableElement<T, P> {
 
 
-    public NCLRegion(String id) throws XMLException {
-        super(id);
+    public NCLRegion() throws XMLException {
+        super();
     }
 
 
-    public NCLRegion() throws XMLException {
+    public NCLRegion(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -97,6 +98,43 @@ public class NCLRegion<T extends NCLRegion,
             content += "/>\n";
 
         return content;
+    }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+            loadTitle(element);
+            loadLeft(element);
+            loadRight(element);
+            loadTop(element);
+            loadBottom(element);
+            loadHeight(element);
+            loadWidth(element);
+            loadzIndex(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Region" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            loadRegions(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Region" + aux + " > " + ex.getMessage());
+        }
     }
     
     
@@ -135,12 +173,34 @@ public class NCLRegion<T extends NCLRegion,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseLeft() {
         RelativeType aux = getLeft();
         if(aux != null)
             return " left='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadLeft(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the left (optional)
+        att_name = NCLElementAttributes.LEFT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setLeft(new RelativeType(att_var));
     }
     
     
@@ -153,12 +213,32 @@ public class NCLRegion<T extends NCLRegion,
     }
     
     
+    protected void loadRight(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the right (optional)
+        att_name = NCLElementAttributes.RIGHT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRight(new RelativeType(att_var));
+    }
+    
+    
     protected String parseTop() {
         RelativeType aux = getTop();
         if(aux != null)
             return " top='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadTop(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the top (optional)
+        att_name = NCLElementAttributes.TOP.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setTop(new RelativeType(att_var));
     }
     
     
@@ -171,12 +251,32 @@ public class NCLRegion<T extends NCLRegion,
     }
     
     
+    protected void loadBottom(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the bottom (optional)
+        att_name = NCLElementAttributes.BOTTOM.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setBottom(new RelativeType(att_var));
+    }
+    
+    
     protected String parseHeight() {
         RelativeType aux = getHeight();
         if(aux != null)
             return " height='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadHeight(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the height (optional)
+        att_name = NCLElementAttributes.HEIGHT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setHeight(new RelativeType(att_var));
     }
     
     
@@ -189,6 +289,16 @@ public class NCLRegion<T extends NCLRegion,
     }
     
     
+    protected void loadWidth(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the width (optional)
+        att_name = NCLElementAttributes.WIDTH.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setWidth(new RelativeType(att_var));
+    }
+    
+    
     protected String parsezIndex() {
         Integer aux = getzIndex();
         if(aux != null)
@@ -198,12 +308,37 @@ public class NCLRegion<T extends NCLRegion,
     }
     
     
+    protected void loadzIndex(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the zIndex (optional)
+        att_name = NCLElementAttributes.ZINDEX.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setzIndex(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
+    }
+    
+    
     protected String parseTitle() {
         String aux = getTitle();
         if(aux != null)
             return " title='" + aux + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadTitle(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the title (optional)
+        att_name = NCLElementAttributes.TITLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setTitle(att_var);
     }
     
     
@@ -217,97 +352,23 @@ public class NCLRegion<T extends NCLRegion,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
+    
+    
+    protected void loadRegions(Element element) throws XMLException {
+        String ch_name;
         NodeList nl;
+        
+        // create the child nodes
+        ch_name = NCLElementAttributes.REGION.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            if(!el.getParentNode().equals(element))
+                continue;
 
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the title (optional)
-            att_name = NCLElementAttributes.TITLE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setTitle(att_var);
-
-            // set the left (optional)
-            att_name = NCLElementAttributes.LEFT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setLeft(new RelativeType(att_var));
-
-            // set the right (optional)
-            att_name = NCLElementAttributes.RIGHT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setRight(new RelativeType(att_var));
-
-            // set the top (optional)
-            att_name = NCLElementAttributes.TOP.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setTop(new RelativeType(att_var));
-
-            // set the bottom (optional)
-            att_name = NCLElementAttributes.BOTTOM.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setBottom(new RelativeType(att_var));
-
-            // set the height (optional)
-            att_name = NCLElementAttributes.HEIGHT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setHeight(new RelativeType(att_var));
-
-            // set the width (optional)
-            att_name = NCLElementAttributes.WIDTH.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setWidth(new RelativeType(att_var));
-
-            // set the zIndex (optional)
-            att_name = NCLElementAttributes.ZINDEX.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setzIndex(new Integer(att_var));
-                }catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Region" + aux + ":\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            ch_name = NCLElementAttributes.REGION.toString();
-            nl = element.getElementsByTagName(ch_name);
-            for(int i=0; i < nl.getLength(); i++){
-                Element el = (Element) nl.item(i);
-                if(!el.getParentNode().equals(element))
-                    continue;
-
-                T inst = createRegion();
-                addRegion(inst);
-                inst.load(el);
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Region" + aux + " > " + ex.getMessage());
+            T inst = createRegion();
+            addRegion(inst);
+            inst.load(el);
         }
     }
     

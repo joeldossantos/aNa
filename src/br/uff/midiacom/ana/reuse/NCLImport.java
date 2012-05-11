@@ -51,7 +51,6 @@ import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.xml.XMLException;
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import org.w3c.dom.Element;
 
 
@@ -92,6 +91,35 @@ public class NCLImport<T extends NCLImport,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadAlias(element);
+            loadDocumentURI(element);
+            loadRegion(element);
+            
+            // load the imported document or base depending on the element type
+            try{
+                Ed aux = createDoc();
+                URI base = new URI(impl.getDoc().getLocation() + File.separator);
+                URI path = base.resolve(getDocumentURI().parse());
+                aux.loadXML(new File(path.getPath()));
+                setImportedDoc(aux);
+            }catch(Exception e){
+                throw new NCLParsingException("Could not find document in location: " + getDocumentURI().parse());
+            }
+        }
+        catch(XMLException ex){
+            String aux = getAlias();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException(type.toString() + aux + ":\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -114,12 +142,36 @@ public class NCLImport<T extends NCLImport,
     }
     
     
+    protected void loadAlias(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the alias (required)
+        att_name = NCLElementAttributes.ALIAS.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setAlias(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseDocumentURI() {
         SrcType aux = getDocumentURI();
         if(aux != null)
             return " documentURI='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadDocumentURI(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the documentURI (required)
+        att_name = NCLElementAttributes.DOCUMENTURI.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDocumentURI(new SrcType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
@@ -130,51 +182,15 @@ public class NCLImport<T extends NCLImport,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadRegion(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the alias (required)
-            att_name = NCLElementAttributes.ALIAS.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setAlias(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the documentURI (required)
-            att_name = NCLElementAttributes.DOCUMENTURI.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDocumentURI(new SrcType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the region (optional)
-            att_name = NCLElementAttributes.REGION.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
-            }
-            
-            // load the imported document or base depending on the element type
-            try{
-                Ed aux = createDoc();
-                URI base = new URI(impl.getDoc().getLocation() + File.separator);
-                URI path = base.resolve(getDocumentURI().parse());
-                aux.loadXML(new File(path.getPath()));
-                setImportedDoc(aux);
-            }catch(Exception e){
-                throw new NCLParsingException("Could not find document in location: " + getDocumentURI().parse());
-            }
-        }
-        catch(XMLException ex){
-            String aux = getAlias();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException(type.toString() + aux + ":\n" + ex.getMessage());
+        
+        // set the region (optional)
+        att_name = NCLElementAttributes.REGION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
         }
     }
 

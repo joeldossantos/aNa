@@ -37,7 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
@@ -47,6 +46,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLMappingPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
+import br.uff.midiacom.ana.node.NCLSwitch;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -90,6 +90,19 @@ public class NCLMapping<T extends NCLMapping,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+
+        try{
+            loadComponent(element);
+            loadInterface(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Mapping:\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -111,6 +124,29 @@ public class NCLMapping<T extends NCLMapping,
     }
     
     
+    protected void loadComponent(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the component (required)
+        att_name = NCLElementAttributes.COMPONENT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            P aux;
+            if((aux = (P) getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            if((aux = (P) getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+
+            NCLNode refEl = (NCLNode) ((NCLSwitch) aux).findNode(att_var);
+            if(refEl == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+
+            setComponent(createNodeRef(refEl));
+        }
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseInterface() {
         Ei aux = getInterface();
         if(aux != null)
@@ -118,44 +154,19 @@ public class NCLMapping<T extends NCLMapping,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadInterface(Element element) throws XMLException {
         String att_name, att_var;
+        
+        // set the interface (optional)
+        att_name = NCLElementAttributes.INTERFACE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            NCLInterface refEl = (NCLInterface) ((NCLNode) getComponent().getTarget()).findInterface(att_var);
+            if(refEl == null)
+                throw new NCLParsingException("Could not find element " + att_var);
 
-        try{
-            // set the component (required)
-            att_name = NCLElementAttributes.COMPONENT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                P aux;
-                if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
-                    throw new NCLParsingException("Could not find element " + att_var);
-
-                NCLNode refEl;
-                if(aux instanceof NCLBody)
-                    refEl = (NCLNode) ((NCLBody) aux).findNode(att_var);
-                else
-                    refEl = (NCLNode) ((NCLNode) aux).findNode(att_var);
-                if(refEl == null)
-                    throw new NCLParsingException("Could not find element " + att_var);
-
-                setComponent(createNodeRef(refEl));
-            }
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the interface (optional)
-            att_name = NCLElementAttributes.INTERFACE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                NCLInterface refEl = (NCLInterface) ((NCLNode) getComponent().getTarget()).findInterface(att_var);
-                if(refEl == null)
-                    throw new NCLParsingException("Could not find element " + att_var);
-
-                setInterface(createInterfaceRef(refEl));
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("Mapping:\n" + ex.getMessage());
+            setInterface(createInterfaceRef(refEl));
         }
     }
 

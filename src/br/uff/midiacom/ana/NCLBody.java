@@ -50,7 +50,10 @@ import br.uff.midiacom.ana.node.NCLContext;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
+import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -67,7 +70,7 @@ public class NCLBody<T extends NCLBody,
                      Em extends NCLMeta,
                      Emt extends NCLMetadata>
         extends NCLBodyPrototype<T, P, I, Ept, Epp, En, El, Em, Emt>
-        implements NCLIdentifiableElement<T, P> {
+        implements NCLNode<En, P, Ei> {
 
     
     public NCLBody() throws XMLException {
@@ -105,6 +108,55 @@ public class NCLBody<T extends NCLBody,
         
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        try{
+            // set the id (optional)
+            att_name = NCLElementAttributes.ID.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setId(att_var);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Body:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes (except ports and links)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadProperties(el);
+                    loadMetas(el);
+                    loadMetadatas(el);
+                    loadMedia(el);
+                    loadContext(el);
+                    loadSwitch(el);
+                }
+            }
+
+            // create the child nodes (ports and links)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadPorts(el);
+                    loadLinks(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Body > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -139,6 +191,16 @@ public class NCLBody<T extends NCLBody,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseMetas(int ident) {
         if(!hasMeta())
             return "";
@@ -148,6 +210,16 @@ public class NCLBody<T extends NCLBody,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadMetas(Element element) throws XMLException {
+        // create the meta
+        if(element.getTagName().equals(NCLElementAttributes.META.toString())){
+            Em inst = createMeta();
+            addMeta(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -163,6 +235,16 @@ public class NCLBody<T extends NCLBody,
     }
     
     
+    protected void loadMetadatas(Element element) throws XMLException {
+        // create the metadata
+        if(element.getTagName().equals(NCLElementAttributes.METADATA.toString())){
+            Emt inst = createMetadata();
+            addMetadata(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parsePorts(int ident) {
         if(!hasPort())
             return "";
@@ -172,6 +254,16 @@ public class NCLBody<T extends NCLBody,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadPorts(Element element) throws XMLException {
+        //create the port
+        if(element.getTagName().equals(NCLElementAttributes.PORT.toString())){
+            Ept inst = createPort();
+            addPort(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -187,6 +279,16 @@ public class NCLBody<T extends NCLBody,
     }
     
     
+    protected void loadProperties(Element element) throws XMLException {
+        // create the property
+        if(element.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
+            Epp inst = createProperty();
+            addProperty(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseNodes(int ident) {
         if(!hasNode())
             return "";
@@ -196,6 +298,36 @@ public class NCLBody<T extends NCLBody,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadMedia(Element element) throws XMLException {
+        // create the media
+        if(element.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
+            En inst = createMedia();
+            addNode(inst);
+            inst.load(element);
+        }
+    }
+    
+    
+    protected void loadContext(Element element) throws XMLException {
+        // create the context
+        if(element.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
+            En inst = createContext();
+            addNode(inst);
+            inst.load(element);
+        }
+    }
+    
+    
+    protected void loadSwitch(Element element) throws XMLException {
+        // create the switch
+        if(element.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
+            En inst = createSwitch();
+            addNode(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -209,93 +341,14 @@ public class NCLBody<T extends NCLBody,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("Body:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes (except ports and links)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    // create the property
-                    if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
-                        Epp inst = createProperty();
-                        addProperty(inst);
-                        inst.load(el);
-                    }
-                    // create the meta
-                    if(el.getTagName().equals(NCLElementAttributes.META.toString())){
-                        Em inst = createMeta();
-                        addMeta(inst);
-                        inst.load(el);
-                    }
-                    // create the metadata
-                    if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
-                        Emt inst = createMetadata();
-                        addMetadata(inst);
-                        inst.load(el);
-                    }
-                    // create the media
-                    if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
-                        En inst = createMedia();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                    // create the context
-                    if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
-                        En inst = createContext();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                    // create the switch
-                    if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
-                        En inst = createSwitch();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-
-            // create the child nodes (ports and links)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the port
-                    if(el.getTagName().equals(NCLElementAttributes.PORT.toString())){
-                        Ept inst = createPort();
-                        addPort(inst);
-                        inst.load(el);
-                    }
-                    // create the link
-                    if(el.getTagName().equals(NCLElementAttributes.LINK.toString())){
-                        El inst = createLink();
-                        addLink(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("Body > " + ex.getMessage());
+    
+    
+    protected void loadLinks(Element element) throws XMLException {
+        // create the link
+        if(element.getTagName().equals(NCLElementAttributes.LINK.toString())){
+            El inst = createLink();
+            addLink(inst);
+            inst.load(element);
         }
     }
 
@@ -345,19 +398,48 @@ public class NCLBody<T extends NCLBody,
     public En findNode(String id) throws XMLException {
         En result;
         
-        // search in the body
-        result = nodes.get(id);
-        if(result != null)
-            return result;
-        
-        // search in inner nodes
         for(En node : nodes){
             result = (En) node.findNode(id);
             if(result != null)
                 return result;
         }
+
+        NCLDoc doc = (NCLDoc) getParent();
+        if(doc == null)
+            throw new NCLParsingException("Could not find document root element");
+        
+        NCLHead head = (NCLHead) doc.getHead();
+        if(head == null)
+            throw new NCLParsingException("Could not find document head element");
+        
+        
+        NCLImportedDocumentBase ib = (NCLImportedDocumentBase) head.getImportedDocumentBase();
+        if(ib == null)
+            return null;
+        
+        for(NCLImport imp : (ElementList<NCLImport, NCLImportedDocumentBase>) ib.getImportNCLs()){
+            NCLDoc d = (NCLDoc) imp.getImportedDoc();
+            result = (En) findNodeReference(d, id);
+            if(result != null)
+                return result;
+        }
         
         return null;
+    }
+    
+    
+    public NCLNode findNodeReference(NCLDoc doc, String id) throws XMLException {
+        NCLBody body = (NCLBody) doc.getBody();
+        
+        if(body == null)
+            throw new NCLParsingException("Could not find document body element");
+
+        NCLNode result = body.findNode(id);
+
+        if(result == null)
+            throw new NCLParsingException("Could not find node in ruleBase with id: " + id);
+        
+        return result;
     }
     
 

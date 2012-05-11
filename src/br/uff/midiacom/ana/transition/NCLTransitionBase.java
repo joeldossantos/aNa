@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
@@ -48,7 +49,9 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.transition.NCLTransitionBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -100,6 +103,35 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("TransitionBase:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadImportBases(el);
+                    loadTransitions(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("TransitionBase > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -130,6 +162,16 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseImportBases(int ident) {
         if(!hasImportBase())
             return "";
@@ -139,6 +181,16 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadImportBases(Element element) throws XMLException {
+        //create the imports
+        if(element.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+            Ei inst = createImportBase();
+            addImportBase(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -152,47 +204,14 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("TransitionBase:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the imports
-                    if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
-                        Ei inst = createImportBase();
-                        addImportBase(inst);
-                        inst.load(el);
-                    }
-                    // create the transitions
-                    if(el.getTagName().equals(NCLElementAttributes.TRANSITION.toString())){
-                        Et inst = createTransition();
-                        addTransition(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("TransitionBase > " + ex.getMessage());
+    
+    
+    protected void loadTransitions(Element element) throws XMLException {
+        //create the transitions
+        if(element.getTagName().equals(NCLElementAttributes.TRANSITION.toString())){
+            Et inst = createTransition();
+            addTransition(inst);
+            inst.load(element);
         }
     }
     
@@ -221,7 +240,16 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    TransitionReference ref = NCLReferenceManager.getInstance().findTransitionReference(d, id);
+                    TransitionReference ref = findTransitionReference(d, id);
+                    return new TransitionReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+            
+            NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
+            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    TransitionReference ref = findTransitionReference(d, id);
                     return new TransitionReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
                 }
             }
@@ -229,6 +257,25 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
         
         
         return null;
+    }
+
+
+    protected TransitionReference findTransitionReference(NCLDoc doc, String id) throws XMLException {
+        NCLHead head = (NCLHead) doc.getHead();
+        
+        if(head == null)
+            throw new NCLParsingException("Could not find document head element");
+        
+        NCLTransitionBase base = (NCLTransitionBase) head.getTransitionBase();
+        if(base == null)
+            throw new NCLParsingException("Could not find document transitionBase element");
+
+        TransitionReference result = base.findTransition(id);
+
+        if(result == null)
+            throw new NCLParsingException("Could not find transition in transitionBase with id: " + id);
+        
+        return result;
     }
 
 

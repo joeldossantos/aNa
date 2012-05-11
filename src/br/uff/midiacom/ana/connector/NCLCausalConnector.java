@@ -60,13 +60,14 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
         implements NCLIdentifiableElement<T, P> {
 
 
-    public NCLCausalConnector(String id) throws XMLException {
-        super(id);
+    public NCLCausalConnector() throws XMLException {
+        super();
     }
     
     
-    public NCLCausalConnector() throws XMLException {
+    public NCLCausalConnector(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -96,6 +97,51 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
         content += space + "</causalConnector>\n";
 
         return content;
+    }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("CausalConnector" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            loadConnectorParams(element);
+
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadSimpleConditions(el);
+                    loadCompoundConditions(el);
+                    loadSimpleActions(el);
+                    loadCompoundActions(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("CausalConnector" + aux + " > " + ex.getMessage());
+        }
     }
     
     
@@ -128,6 +174,18 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseConnectorParams(int ident) {
         if(!hasConnectorParam())
             return "";
@@ -140,12 +198,48 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
     }
     
     
+    protected void loadConnectorParams(Element element) throws XMLException {
+        String ch_name;
+        NodeList nl;
+        
+        // create the connectorParam nodes
+        ch_name = NCLElementAttributes.CONNECTORPARAM.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Ep inst = createConnectorParam();
+            addConnectorParam(inst);
+            inst.load(el);
+        }
+    }
+    
+    
     protected String parseCondition(int ident) {
         Ec aux = getCondition();
         if(aux != null)
             return aux.parse(ident);
         else
             return "";
+    }
+    
+    
+    protected void loadSimpleConditions(Element element) throws XMLException {
+        //create the simpleCondition
+        if(element.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
+            Ec inst = createSimpleCondition();
+            setCondition(inst);
+            inst.load(element);
+        }
+    }
+    
+    
+    protected void loadCompoundConditions(Element element) throws XMLException {
+        // create the compoundCondition
+        if(element.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
+            Ec inst = createCompoundCondition();
+            setCondition(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -156,83 +250,24 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
-        NodeList nl;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    
+    
+    protected void loadSimpleActions(Element element) throws XMLException {
+        //create the simpleAction
+        if(element.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
+            Ea inst = createSimpleAction();
+            setAction(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("CausalConnector" + aux + ":\n" + ex.getMessage());
-        }
-
-        try{
-            // create the connectorParam nodes
-            ch_name = NCLElementAttributes.CONNECTORPARAM.toString();
-            nl = element.getElementsByTagName(ch_name);
-            for(int i=0; i < nl.getLength(); i++){
-                Element el = (Element) nl.item(i);
-                Ep inst = createConnectorParam();
-                addConnectorParam(inst);
-                inst.load(el);
-            }
-
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the simpleCondition
-                    if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
-                        Ec inst = createSimpleCondition();
-                        setCondition(inst);
-                        inst.load(el);
-                    }
-                    // create the compoundCondition
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
-                        Ec inst = createCompoundCondition();
-                        setCondition(inst);
-                        inst.load(el);
-                    }
-                    //create the simpleAction
-                    if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
-                        Ea inst = createSimpleAction();
-                        setAction(inst);
-                        inst.load(el);
-                    }
-                    // create the compoundAction
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
-                        Ea inst = createCompoundAction();
-                        setAction(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("CausalConnector" + aux + " > " + ex.getMessage());
+    }
+    
+    
+    protected void loadCompoundActions(Element element) throws XMLException {
+        // create the compoundAction
+        if(element.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
+            Ea inst = createCompoundAction();
+            setAction(inst);
+            inst.load(element);
         }
     }
     

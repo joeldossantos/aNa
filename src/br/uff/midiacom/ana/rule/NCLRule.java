@@ -37,35 +37,36 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
-import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
-import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
 public class NCLRule<T extends NCLTestRule,
                      P extends NCLElement,
                      I extends NCLElementImpl,
-                     Ep extends InterfaceReference>
+                     Ep extends VariableReference>
         extends NCLRulePrototype<T, P, I, Ep>
-        implements NCLTestRule<T, P>, PostReferenceElement {
+        implements NCLTestRule<T, P> {
 
 
-    public NCLRule(String id) throws XMLException {
-        super(id);
+    public NCLRule() throws XMLException {
+        super();
     }
 
     
-    public NCLRule() throws XMLException {
+    public NCLRule(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -94,6 +95,25 @@ public class NCLRule<T extends NCLTestRule,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+            loadVar(element);
+            loadComparator(element);
+            loadValue(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Rule" + aux + ":\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -117,12 +137,37 @@ public class NCLRule<T extends NCLTestRule,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseVar() {
         Ep aux = getVar();
         if(aux != null)
             return " var='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadVar(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the var (required)
+        att_name = NCLElementAttributes.VAR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setVar(findVariableReference(att_var));
+        }
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
@@ -135,6 +180,18 @@ public class NCLRule<T extends NCLTestRule,
     }
     
     
+    protected void loadComparator(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the comparator (required)
+        att_name = NCLElementAttributes.COMPARATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setComparator(NCLComparator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseValue() {
         String aux = getValue();
         if(aux != null)
@@ -142,52 +199,17 @@ public class NCLRule<T extends NCLTestRule,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadValue(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the var (required)
-            att_name = NCLElementAttributes.VAR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                NCLProperty prop = (NCLProperty) new NCLProperty(att_var);
-                setVar(createInterfaceRef(prop));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the comparator (required)
-            att_name = NCLElementAttributes.COMPARATOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setComparator(NCLComparator.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the value (required)
-            att_name = NCLElementAttributes.VALUE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setValue(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Rule" + aux + ":\n" + ex.getMessage());
-        }
+        
+        // set the value (required)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
@@ -199,24 +221,19 @@ public class NCLRule<T extends NCLTestRule,
     }
     
     
-    public void fixReference() throws NCLParsingException {
-        String aux;
+    public Ep findVariableReference(String name) throws XMLException {
+        NCLDoc doc = impl.getDoc();
         
-        try{
-            // set the var (required)
-            if((aux = ((NCLProperty) getVar().getTarget()).getName()) != null){
-                setVar((Ep) NCLReferenceManager.getInstance().findPropertyReference(impl.getDoc(), aux));
-            }
+        if(doc == null)
+            throw new NCLParsingException("Could not find document doc element");
+
+        for(NCLVariable docVar : (ElementList<NCLVariable, NCLDoc>) doc.getGlobalVariables()){
+            if(docVar.getName().equals(name))
+                return createVariableRef(docVar);
         }
-        catch(XMLException ex){
-            aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Rule" + aux + ". Fixing reference:\n" + ex.getMessage());
-        }
+        
+        NCLVariable newVar = new NCLVariable(name);
+        return createVariableRef(newVar);
     }
 
 
@@ -227,7 +244,7 @@ public class NCLRule<T extends NCLTestRule,
      * @return
      *          element representing a reference to a interface.
      */
-    protected Ep createInterfaceRef(NCLProperty ref) throws XMLException {
-        return (Ep) new InterfaceReference(ref, NCLElementAttributes.NAME);
+    protected Ep createVariableRef(NCLVariable ref) throws XMLException {
+        return (Ep) new VariableReference(ref);
     }
 }

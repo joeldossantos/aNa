@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -53,19 +54,21 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
                                  P extends NCLElement,
                                  I extends NCLElementImpl,
                                  El extends NCLLayoutDescriptor,
+                                 Edd extends NCLDescriptor,
                                  Ed extends DescriptorReference,
                                  Eb extends NCLDescriptorBindRule>
-        extends NCLDescriptorSwitchPrototype<T, P, I, El, Ed, Eb>
+        extends NCLDescriptorSwitchPrototype<T, P, I, El, Edd, Ed, Eb>
         implements NCLLayoutDescriptor<El, P> {
 
 
-    public NCLDescriptorSwitch(String id) throws XMLException {
-        super(id);
+    public NCLDescriptorSwitch() throws XMLException {
+        super();
     }
     
     
-    public NCLDescriptorSwitch() throws XMLException {
+    public NCLDescriptorSwitch(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -96,6 +99,49 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
 
 
         return content;
+    }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("DescriptorSwitch" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            loadDescriptors(element);
+
+            // create the child nodes (ports, binds and defaultComponent)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadBinds(el);
+                    loadDefaultDescriptor(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("DescriptorSwitch" + aux + " > " + ex.getMessage());
+        }
     }
     
     
@@ -128,6 +174,18 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseBinds(int ident) {
         if(!hasBind())
             return "";
@@ -137,6 +195,16 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadBinds(Element element) throws XMLException {
+        // create the bindRule
+        if(element.getTagName().equals(NCLElementAttributes.BINDRULE.toString())){
+            Eb inst = createBindRule();
+            addBind(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -156,84 +224,45 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     }
     
     
+    protected void loadDefaultDescriptor(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // create the defaultDescriptor
+        if(element.getTagName().equals(NCLElementAttributes.DEFAULTDESCRIPTOR.toString())){
+            att_name = NCLElementAttributes.DESCRIPTOR.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setDefaultDescriptor(createDescriptorRef(descriptors.get(att_var)));
+        }
+    }
+    
+    
     protected String parseDescriptors(int ident) {
         if(!hasDescriptor())
             return "";
         
         String content = "";
-        for(El aux : descriptors)
+        for(Edd aux : descriptors)
             content += aux.parse(ident);
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
+    
+    
+    protected void loadDescriptors(Element element) throws XMLException {
+        String ch_name;
         NodeList nl;
+        
+        // create the descriptorSwitch child nodes
+        ch_name = NCLElementAttributes.DESCRIPTOR.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            if(!el.getParentNode().equals(element))
+                continue;
 
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("DescriptorSwitch" + aux + ":\n" + ex.getMessage());
-        }
-
-        try{
-            // create the descriptorSwitch child nodes
-            ch_name = NCLElementAttributes.DESCRIPTOR.toString();
-            nl = element.getElementsByTagName(ch_name);
-            for(int i=0; i < nl.getLength(); i++){
-                Element el = (Element) nl.item(i);
-                if(!el.getParentNode().equals(element))
-                    continue;
-
-                El inst = createDescriptor();
-                addDescriptor(inst);
-                inst.load(el);
-            }
-
-            // create the child nodes (ports, binds and defaultComponent)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    // create the bindRule
-                    if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString())){
-                        Eb inst = createBindRule();
-                        addBind(inst);
-                        inst.load(el);
-                    }
-                    // create the defaultDescriptor
-                    if(el.getTagName().equals(NCLElementAttributes.DEFAULTDESCRIPTOR.toString())){
-                        att_name = NCLElementAttributes.DESCRIPTOR.toString();
-                        if(!(att_var = el.getAttribute(att_name)).isEmpty())
-                            setDefaultDescriptor(createDescriptorRef(descriptors.get(att_var)));
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("DescriptorSwitch" + aux + " > " + ex.getMessage());
+            Edd inst = createDescriptor();
+            addDescriptor(inst);
+            inst.load(el);
         }
     }
     
@@ -244,7 +273,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         if(getId().equals(id))
             return (El) this;
         
-        for(El desc : descriptors){
+        for(Edd desc : descriptors){
             result = (El) desc.findDescriptor(id);
             if(result != null)
                 return result;
@@ -254,10 +283,10 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     }
     
     
-    public El findDescriptor(Integer focusIndex) throws XMLException {
+    public El findDescriptor(FocusIndexType focusIndex) throws XMLException {
         El result;
         
-        for(El desc : descriptors){
+        for(Edd desc : descriptors){
             result = (El) desc.findDescriptor(focusIndex);
             if(result != null)
                 return result;
@@ -286,8 +315,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      * @return
      *          element representing the child <i>descriptor</i>.
      */
-    protected El createDescriptor() throws XMLException {
-        return (El) new NCLDescriptor();
+    protected Edd createDescriptor() throws XMLException {
+        return (Edd) new NCLDescriptor();
     }
 
 
@@ -298,7 +327,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      * @return
      *          element representing a reference to a descriptor.
      */
-    protected Ed createDescriptorRef(El ref) throws XMLException {
+    protected Ed createDescriptorRef(Edd ref) throws XMLException {
         return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }

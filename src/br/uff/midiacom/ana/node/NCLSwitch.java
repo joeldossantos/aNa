@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
@@ -44,6 +45,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.datatype.aux.reference.SwitchReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
@@ -60,18 +62,20 @@ public class NCLSwitch<T extends NCLSwitch,
                        Ei extends NCLInterface,
                        Ep extends NCLSwitchPort,
                        Eb extends NCLSwitchBindRule,
-                       Rn extends NodeReference>
-        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb, Rn>
+                       Rn extends SwitchReference,
+                       Ri extends NodeReference>
+        extends NCLSwitchPrototype<T, P, I, En, Ep, Eb, Rn, Ri>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
-
-
-    public NCLSwitch(String id) throws XMLException {
-        super(id);
-    }
 
 
     public NCLSwitch() throws XMLException {
         super();
+    }
+
+
+    public NCLSwitch(String id) throws XMLException {
+        super();
+        setId(id);
     }
 
 
@@ -107,6 +111,74 @@ public class NCLSwitch<T extends NCLSwitch,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Switch" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes (except ports and binds)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadMedia(el);
+                    loadContext(el);
+                    loadSwitch(el);
+                }
+            }
+
+            // create the child nodes (ports, binds and defaultComponent)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadPorts(el);
+                    loadBinds(el);
+                    loadDefaultComponent(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Switch" + aux + " > " + ex.getMessage());
+        }
+
+        try{
+            loadRefer(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Switch" + aux + ":\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -140,12 +212,37 @@ public class NCLSwitch<T extends NCLSwitch,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseRefer() {
         Rn aux = getRefer();
         if(aux != null)
             return " refer='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadRefer(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the refer (optional)
+        att_name = NCLElementAttributes.REFER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            En ref = (En) new NCLSwitch(att_var);
+            setRefer(createSwitchRef(ref));
+            NCLReferenceManager.getInstance().waitReference(this);
+        }
     }
     
     
@@ -161,6 +258,16 @@ public class NCLSwitch<T extends NCLSwitch,
     }
     
     
+    protected void loadPorts(Element element) throws XMLException {
+        //create the switchPort
+        if(element.getTagName().equals(NCLElementAttributes.SWITCHPORT.toString())){
+            Ep inst = createSwitchPort();
+            addPort(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseBinds(int ident) {
         if(!hasBind())
             return "";
@@ -173,8 +280,18 @@ public class NCLSwitch<T extends NCLSwitch,
     }
     
     
+    protected void loadBinds(Element element) throws XMLException {
+        // create the bindRule
+        if(element.getTagName().equals(NCLElementAttributes.BINDRULE.toString())){
+            Eb inst = createBindRule();
+            addBind(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseDefaultComponent(int ident) {
-        En aux = getDefaultComponent();
+        Ri aux = getDefaultComponent();
         if(aux == null)
             return "";
         
@@ -185,7 +302,19 @@ public class NCLSwitch<T extends NCLSwitch,
         for(int i = 0; i < ident; i++)
             space += "\t";
         
-        return space + "<defaultComponent component='" + aux.getId() + "'/>\n";
+        return space + "<defaultComponent component='" + aux.parse() + "'/>\n";
+    }
+    
+    
+    protected void loadDefaultComponent(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // create the defaultComponent
+        if(element.getTagName().equals(NCLElementAttributes.DEFAULTCOMPONENT.toString())){
+            att_name = NCLElementAttributes.COMPONENT.toString();
+            if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                setDefaultComponent(createNodeRef(nodes.get(att_var)));
+        }
     }
     
     
@@ -199,114 +328,34 @@ public class NCLSwitch<T extends NCLSwitch,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    
+    
+    protected void loadMedia(Element element) throws XMLException {
+        // create the media
+        if(element.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
+            En inst = createMedia();
+            addNode(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Switch" + aux + ":\n" + ex.getMessage());
+    }
+    
+    
+    protected void loadContext(Element element) throws XMLException {
+        // create the context
+        if(element.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
+            En inst = createContext();
+            addNode(inst);
+            inst.load(element);
         }
-
-        try{
-            // create the child nodes (except ports and binds)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    // create the media
-                    if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
-                        En inst = createMedia();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                    // create the context
-                    if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
-                        En inst = createContext();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                    // create the switch
-                    if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
-                        En inst = createSwitch();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-
-            // create the child nodes (ports, binds and defaultComponent)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the switchPort
-                    if(el.getTagName().equals(NCLElementAttributes.SWITCHPORT.toString())){
-                        Ep inst = createSwitchPort();
-                        addPort(inst);
-                        inst.load(el);
-                    }
-                    // create the bindRule
-                    if(el.getTagName().equals(NCLElementAttributes.BINDRULE.toString())){
-                        Eb inst = createBindRule();
-                        addBind(inst);
-                        inst.load(el);
-                    }
-                    // create the defaultComponent
-                    if(el.getTagName().equals(NCLElementAttributes.DEFAULTCOMPONENT.toString())){
-                        att_name = NCLElementAttributes.COMPONENT.toString();
-                        if(!(att_var = el.getAttribute(att_name)).isEmpty())
-                            setDefaultComponent(nodes.get(att_var));
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Switch" + aux + " > " + ex.getMessage());
-        }
-
-        try{
-            // set the refer (optional)
-            att_name = NCLElementAttributes.REFER.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                En ref = (En) new NCLSwitch(att_var);
-                setRefer(createNodeRef(ref));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Switch" + aux + ":\n" + ex.getMessage());
+    }
+    
+    
+    protected void loadSwitch(Element element) throws XMLException {
+        // create the switch
+        if(element.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
+            En inst = createSwitch();
+            addNode(inst);
+            inst.load(element);
         }
     }
     
@@ -352,8 +401,8 @@ public class NCLSwitch<T extends NCLSwitch,
         try{
             // set the refer (optional)
             if((aux = ((En) getRefer().getTarget()).getId()) != null){
-                En ref = (En) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
-                setRefer(createNodeRef(ref));
+                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
+                setRefer(createSwitchRef(ref));
             }
         }
         catch(XMLException ex){
@@ -429,13 +478,25 @@ public class NCLSwitch<T extends NCLSwitch,
 
 
     /**
+     * Function to create a reference to a switch.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a switch.
+     */
+    protected Rn createSwitchRef(En ref) throws XMLException {
+        return (Rn) new SwitchReference(ref, NCLElementAttributes.ID);
+    }
+
+
+    /**
      * Function to create a reference to a node.
      * This function must be overwritten in classes that extends this one.
      *
      * @return
      *          element representing a reference to a node.
      */
-    protected Rn createNodeRef(En ref) throws XMLException {
-        return (Rn) new NodeReference(ref, NCLElementAttributes.ID);
+    protected Ri createNodeRef(En ref) throws XMLException {
+        return (Ri) new NodeReference(ref, NCLElementAttributes.ID);
     }
 }

@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.basic.BlendColorType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
@@ -59,13 +60,14 @@ public class NCLTransition<T extends NCLTransition,
         implements NCLIdentifiableElement<T, P> {
 
     
-    public NCLTransition(String id) throws XMLException {
-        super(id);
+    public NCLTransition() throws XMLException {
+        super();
     }
 
 
-    public NCLTransition() throws XMLException {
+    public NCLTransition(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -94,6 +96,33 @@ public class NCLTransition<T extends NCLTransition,
         content += "/>\n";
 
         return content;
+    }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+            loadType(element);
+            loadSubtype(element);
+            loadDur(element);
+            loadStartProgress(element);
+            loadEndProgress(element);
+            loadDirection(element);
+            loadFadeColor(element);
+            loadHorRepeat(element);
+            loadVertRepeat(element);
+            loadBorderWidth(element);
+            loadBorderColor(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Transition" + aux + ":\n" + ex.getMessage());
+        }
     }
     
     
@@ -126,12 +155,36 @@ public class NCLTransition<T extends NCLTransition,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseType() {
         NCLTransitionType aux = getType();
         if(aux != null)
             return " type='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadType(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the type (required)
+        att_name = NCLElementAttributes.TYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setType(NCLTransitionType.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
@@ -144,12 +197,32 @@ public class NCLTransition<T extends NCLTransition,
     }
     
     
+    protected void loadSubtype(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the subtype (optional)
+        att_name = NCLElementAttributes.SUBTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setSubtype(NCLTransitionSubtype.getEnumType(att_var));
+    }
+    
+    
     protected String parseDur() {
         TimeType aux = getDur();
         if(aux != null)
             return " dur='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadDur(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the duration (optional)
+        att_name = NCLElementAttributes.DUR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDur(new TimeType(att_var));
     }
     
     
@@ -162,12 +235,43 @@ public class NCLTransition<T extends NCLTransition,
     }
     
     
+    protected void loadStartProgress(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the startProgress (optional)
+        att_name = NCLElementAttributes.STARTPROGRESS.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setStartProgress(new Double(att_var));
+            }
+            catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
+    }
+    
+    
     protected String parseEndProgress() {
         Double aux = getEndProgress();
         if(aux != null)
             return " endProgress='" + aux + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadEndProgress(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the endProgress (optional)
+        att_name = NCLElementAttributes.ENDPROGRESS.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setEndProgress(new Double(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
     }
     
     
@@ -180,12 +284,32 @@ public class NCLTransition<T extends NCLTransition,
     }
     
     
+    protected void loadDirection(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the direction (optional)
+        att_name = NCLElementAttributes.DIRECTION.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDirection(NCLTransitionDirection.getEnumType(att_var));
+    }
+    
+    
     protected String parseFadeColor() {
         NCLColor aux = getFadeColor();
         if(aux != null)
             return " fadeColor='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadFadeColor(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the fadeColor (optional)
+        att_name = NCLElementAttributes.FADECOLOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setFadeColor(NCLColor.getEnumType(att_var));
     }
     
     
@@ -198,12 +322,42 @@ public class NCLTransition<T extends NCLTransition,
     }
     
     
+    protected void loadHorRepeat(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the horRepeat (optional)
+        att_name = NCLElementAttributes.HORREPEAT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setHorRepeat(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
+    }
+    
+    
     protected String parseVertRepeat() {
         Integer aux = getVertRepeat();
         if(aux != null)
             return " vertRepeat='" + aux + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadVertRepeat(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the vertRepeat (optional)
+        att_name = NCLElementAttributes.VERTREPEAT.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setVertRepeat(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
     }
     
     
@@ -216,117 +370,36 @@ public class NCLTransition<T extends NCLTransition,
     }
     
     
+    protected void loadBorderWidth(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the borderWidth (optional)
+        att_name = NCLElementAttributes.BORDERWIDTH.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            try{
+                setBorderWidth(new Integer(att_var));
+            }catch (Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        }
+    }
+    
+    
     protected String parseBorderColor() {
-        NCLColor aux = getBorderColor();
+        BlendColorType aux = getBorderColor();
         if(aux != null)
-            return " borderColor='" + aux.toString() + "'";
+            return " borderColor='" + aux.parse() + "'";
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadBorderColor(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the type (required)
-            att_name = NCLElementAttributes.TYPE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setType(NCLTransitionType.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the subtype (optional)
-            att_name = NCLElementAttributes.SUBTYPE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setSubtype(NCLTransitionSubtype.getEnumType(att_var));
-
-            // set the duration (optional)
-            att_name = NCLElementAttributes.DUR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDur(new TimeType(att_var));
-
-            // set the startProgress (optional)
-            att_name = NCLElementAttributes.STARTPROGRESS.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setStartProgress(new Double(att_var));
-                }
-                catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the endProgress (optional)
-            att_name = NCLElementAttributes.ENDPROGRESS.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setEndProgress(new Double(att_var));
-                }catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the direction (optional)
-            att_name = NCLElementAttributes.DIRECTION.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDirection(NCLTransitionDirection.getEnumType(att_var));
-
-            // set the fadeColor (optional)
-            att_name = NCLElementAttributes.FADECOLOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setFadeColor(NCLColor.getEnumType(att_var));
-
-            // set the horRepeat (optional)
-            att_name = NCLElementAttributes.HORREPEAT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setHorRepeat(new Integer(att_var));
-                }catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the vertRepeat (optional)
-            att_name = NCLElementAttributes.VERTREPEAT.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setVertRepeat(new Integer(att_var));
-                }catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the borderWidth (optional)
-            att_name = NCLElementAttributes.BORDERWIDTH.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                try{
-                    setBorderWidth(new Integer(att_var));
-                }catch (Exception e){
-                    throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
-                }
-            }
-
-            // set the borderColor (optional)
-            att_name = NCLElementAttributes.BORDERCOLOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setBorderColor(NCLColor.getEnumType(att_var));
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Transition" + aux + ":\n" + ex.getMessage());
-        }
+        
+        // set the borderColor (optional)
+        att_name = NCLElementAttributes.BORDERCOLOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setBorderColor(new BlendColorType(att_var));
     }
 }

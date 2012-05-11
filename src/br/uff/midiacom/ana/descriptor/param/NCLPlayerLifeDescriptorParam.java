@@ -86,6 +86,17 @@ public class NCLPlayerLifeDescriptorParam<T extends NCLPlayerLifeDescriptorParam
 
         return content;
     }
+
+    
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadName(element);
+            loadValue(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("DescriptorParam:\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -107,6 +118,18 @@ public class NCLPlayerLifeDescriptorParam<T extends NCLPlayerLifeDescriptorParam
     }
     
     
+    protected void loadName(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setName(NCLAttributes.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseValue() {
         String aux = getParamValue();
         if(aux != null)
@@ -114,28 +137,16 @@ public class NCLPlayerLifeDescriptorParam<T extends NCLPlayerLifeDescriptorParam
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadValue(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the name (required)
-            att_name = NCLElementAttributes.NAME.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setName(NCLAttributes.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the value (required)
-            att_name = NCLElementAttributes.VALUE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setValue(NCLPlayerLife.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("DescriptorParam:\n" + ex.getMessage());
-        }
+        
+        // set the value (required)
+        att_name = NCLElementAttributes.VALUE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setValue(NCLPlayerLife.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 }

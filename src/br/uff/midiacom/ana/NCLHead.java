@@ -99,6 +99,39 @@ public class NCLHead<T extends NCLHead,
         
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        Element el;
+
+        try{
+            loadImportedDocumentBase(element);
+
+            loadRuleBase(element);
+
+            loadTransitionBase(element);
+
+            // create the child nodes (regionBases, metas and metadatas)
+            NodeList nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    el = (Element) nl.item(i);
+
+                    loadRegionBases(el);
+                    loadMetas(el);
+                    loadMetadatas(el);
+                }
+            }
+
+            loadDescriptorBase(element);
+
+            loadConnectorBase(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("Head > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseElements(int ident) {
@@ -126,6 +159,21 @@ public class NCLHead<T extends NCLHead,
     }
     
     
+    protected void loadImportedDocumentBase(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the importedDocumentBase
+        ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Eib inst = createImportedDocumentBase();
+            setImportedDocumentBase(inst);
+            inst.load(el);
+        }
+    }
+    
+    
     protected String parseRuleBase(int ident) {
         Erl aux = getRuleBase();
         if(aux != null)
@@ -135,12 +183,42 @@ public class NCLHead<T extends NCLHead,
     }
     
     
+    protected void loadRuleBase(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the ruleBase
+        ch_name = NCLElementAttributes.RULEBASE.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Erl inst = createRuleBase();
+            setRuleBase(inst);
+            inst.load(el);
+        }
+    }
+    
+    
     protected String parseTransitionBase(int ident) {
         Etb aux = getTransitionBase();
         if(aux != null)
             return aux.parse(ident);
         else
             return "";
+    }
+    
+    
+    protected void loadTransitionBase(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the transitionBase
+        ch_name = NCLElementAttributes.TRANSITIONBASE.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Etb inst = createTransitionBase();
+            setTransitionBase(inst);
+            inst.load(el);
+        }
     }
     
     
@@ -156,6 +234,16 @@ public class NCLHead<T extends NCLHead,
     }
     
     
+    protected void loadRegionBases(Element element) throws XMLException {
+        // create the regionBase
+        if(element.getTagName().equals(NCLElementAttributes.REGIONBASE.toString())){
+            Erb inst = createRegionBase();
+            addRegionBase(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseDescriptorBase(int ident) {
         Edb aux = getDescriptorBase();
         if(aux != null)
@@ -165,12 +253,42 @@ public class NCLHead<T extends NCLHead,
     }
     
     
+    protected void loadDescriptorBase(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the descriptorBase
+        ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Edb inst = createDescriptorBase();
+            setDescriptorBase(inst);
+            inst.load(el);
+        }
+    }
+    
+    
     protected String parseConnectorBase(int ident) {
         Ecb aux = getConnectorBase();
         if(aux != null)
             return aux.parse(ident);
         else
             return "";
+    }
+    
+    
+    protected void loadConnectorBase(Element element) throws XMLException {
+        String ch_name;
+        Element el;
+        
+        // create the connectorBase
+        ch_name = NCLElementAttributes.CONNECTORBASE.toString();
+        el = (Element) element.getElementsByTagName(ch_name).item(0);
+        if(el != null){
+            Ecb inst = createConnectorBase();
+            setConnectorBase(inst);
+            inst.load(el);
+        }
     }
     
     
@@ -186,6 +304,16 @@ public class NCLHead<T extends NCLHead,
     }
     
     
+    protected void loadMetas(Element element) throws XMLException {
+        // create the meta
+        if(element.getTagName().equals(NCLElementAttributes.META.toString())){
+            Em inst = createMeta();
+            addMeta(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseMetadatas(int ident) {
         if(!hasMetadata())
             return "";
@@ -196,88 +324,14 @@ public class NCLHead<T extends NCLHead,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String ch_name;
-        Element el;
-
-        try{
-            // create the importedDocumentBase
-            ch_name = NCLElementAttributes.IMPORTEDDOCUMENTBASE.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Eib inst = createImportedDocumentBase();
-                setImportedDocumentBase(inst);
-                inst.load(el);
-            }
-
-            // create the ruleBase
-            ch_name = NCLElementAttributes.RULEBASE.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Erl inst = createRuleBase();
-                setRuleBase(inst);
-                inst.load(el);
-            }
-
-            // create the transitionBase
-            ch_name = NCLElementAttributes.TRANSITIONBASE.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Etb inst = createTransitionBase();
-                setTransitionBase(inst);
-                inst.load(el);
-            }
-
-            // create the child nodes (regionBases, metas and metadatas)
-            NodeList nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    el = (Element) nl.item(i);
-
-                    // create the regionBase
-                    if(el.getTagName().equals(NCLElementAttributes.REGIONBASE.toString())){
-                        Erb inst = createRegionBase();
-                        addRegionBase(inst);
-                        inst.load(el);
-                    }
-                    // create the meta
-                    if(el.getTagName().equals(NCLElementAttributes.META.toString())){
-                        Em inst = createMeta();
-                        addMeta(inst);
-                        inst.load(el);
-                    }
-                    // create the metadata
-                    if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
-                        Emt inst = createMetadata();
-                        addMetadata(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-
-            // create the descriptorBase
-            ch_name = NCLElementAttributes.DESCRIPTORBASE.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Edb inst = createDescriptorBase();
-                setDescriptorBase(inst);
-                inst.load(el);
-            }
-
-            // create the connectorBase
-            ch_name = NCLElementAttributes.CONNECTORBASE.toString();
-            el = (Element) element.getElementsByTagName(ch_name).item(0);
-            if(el != null){
-                Ecb inst = createConnectorBase();
-                setConnectorBase(inst);
-                inst.load(el);
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("Head > " + ex.getMessage());
+    
+    
+    protected void loadMetadatas(Element element) throws XMLException {
+        // create the metadata
+        if(element.getTagName().equals(NCLElementAttributes.METADATA.toString())){
+            Emt inst = createMetadata();
+            addMetadata(inst);
+            inst.load(element);
         }
     }
 

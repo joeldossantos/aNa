@@ -95,6 +95,37 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        try{
+            loadOperator(element);
+            loadDelay(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundAction:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadSimpleActions(el);
+                    loadCompoundActions(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundAction > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -125,6 +156,18 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
     }
     
     
+    protected void loadOperator(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLActionOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseDelay() {
         DoubleParamType aux = getDelay();
         if(aux == null)
@@ -138,6 +181,16 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
         
         return content;
     }
+    
+    
+    protected void loadDelay(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
+    }
 
 
     protected String parseActions(int ident) {
@@ -150,54 +203,24 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the operator (required)
-            att_name = NCLElementAttributes.OPERATOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setOperator(NCLActionOperator.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the delay (optional)
-            att_name = NCLElementAttributes.DELAY.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDelay(new DoubleParamType(att_var));
+    
+    
+    protected void loadSimpleActions(Element element) throws XMLException {
+        //create the simpleAction
+        if(element.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
+            Ea inst = createSimpleAction();
+            addAction(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            throw new NCLParsingException("CompoundAction:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the simpleAction
-                    if(el.getTagName().equals(NCLElementAttributes.SIMPLEACTION.toString())){
-                        Ea inst = createSimpleAction();
-                        addAction(inst);
-                        inst.load(el);
-                    }
-                    // create the compoundAction
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
-                        Ea inst = createCompoundAction();
-                        addAction(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("CompoundAction > " + ex.getMessage());
+    }
+    
+    
+    protected void loadCompoundActions(Element element) throws XMLException {
+        // create the compoundAction
+        if(element.getTagName().equals(NCLElementAttributes.COMPOUNDACTION.toString())){
+            Ea inst = createCompoundAction();
+            addAction(inst);
+            inst.load(element);
         }
     }
     

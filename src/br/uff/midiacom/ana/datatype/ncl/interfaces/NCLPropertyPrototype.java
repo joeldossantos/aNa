@@ -291,6 +291,16 @@ public abstract class NCLPropertyPrototype<T extends NCLPropertyPrototype,
     }
     
     
+    public boolean compare(Ei other) {
+        if(other == null)
+            return false;
+        if(!(other instanceof NCLPropertyPrototype))
+            return false;
+        
+        return getName().compareTo(other.getId()) == 0;
+    }
+    
+    
     @Override
     public boolean addReference(ReferenceType reference) throws XMLException {
         return references.add(reference);

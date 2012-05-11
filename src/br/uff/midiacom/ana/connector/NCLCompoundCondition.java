@@ -96,6 +96,38 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadOperator(element);
+            loadDelay(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundCondition:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadSimpleConditions(el);
+                    loadCompoundConditions(el);
+                    loadAssessmentStatements(el);
+                    loadCompoundStatements(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundCondition > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -127,6 +159,18 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
     }
     
     
+    protected void loadOperator(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLConditionOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseDelay() {
         DoubleParamType aux = getDelay();
         if(aux == null)
@@ -139,6 +183,16 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
             content += "'";
         
         return content;
+    }
+    
+    
+    protected void loadDelay(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the delay (optional)
+        att_name = NCLElementAttributes.DELAY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setDelay(new DoubleParamType(att_var));
     }
 
 
@@ -154,6 +208,26 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
     }
     
     
+    protected void loadSimpleConditions(Element element) throws XMLException {
+        //create the simpleCondition
+        if(element.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
+            Ec inst = createSimpleCondition();
+            addCondition(inst);
+            inst.load(element);
+        }
+    }
+    
+    
+    protected void loadCompoundConditions(Element element) throws XMLException {
+        // create the compoundCondition
+        if(element.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
+            Ec inst = createCompoundCondition();
+            addCondition(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseStatements(int ident) {
         if(!hasStatement())
             return "";
@@ -164,66 +238,24 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the operator (required)
-            att_name = NCLElementAttributes.OPERATOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setOperator(NCLConditionOperator.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the delay (optional)
-            att_name = NCLElementAttributes.DELAY.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDelay(new DoubleParamType(att_var));
+    
+    
+    protected void loadAssessmentStatements(Element element) throws XMLException {
+        //create the assessmentStatement
+        if(element.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
+            Es inst = createAssessmentStatement();
+            addStatement(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            throw new NCLParsingException("CompoundCondition:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the simpleCondition
-                    if(el.getTagName().equals(NCLElementAttributes.SIMPLECONDITION.toString())){
-                        Ec inst = createSimpleCondition();
-                        addCondition(inst);
-                        inst.load(el);
-                    }
-                    // create the compoundCondition
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDCONDITION.toString())){
-                        Ec inst = createCompoundCondition();
-                        addCondition(inst);
-                        inst.load(el);
-                    }
-                    //create the assessmentStatement
-                    if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
-                        Es inst = createAssessmentStatement();
-                        addStatement(inst);
-                        inst.load(el);
-                    }
-                    // create the compoundStatement
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
-                        Es inst = createCompoundStatement();
-                        addStatement(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("CompoundCondition > " + ex.getMessage());
+    }
+    
+    
+    protected void loadCompoundStatements(Element element) throws XMLException {
+        // create the compoundStatement
+        if(element.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
+            Es inst = createCompoundStatement();
+            addStatement(inst);
+            inst.load(element);
         }
     }
     

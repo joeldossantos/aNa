@@ -94,6 +94,23 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ImportedDocumentBase:\n" + ex.getMessage());
+        }
+
+        try{
+            loadImportNCL(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("ImportedDocumentBase > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -123,6 +140,16 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseImportNCL(int ident) {
         if(!hasImportNCL())
             return "";
@@ -133,35 +160,20 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
+    
+    
+    protected void loadImportNCL(Element element) throws XMLException {
+        String ch_name;
         NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("ImportedDocumentBase:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            ch_name = NCLElementAttributes.IMPORTNCL.toString();
-            nl = element.getElementsByTagName(ch_name);
-            for(int i=0; i < nl.getLength(); i++){
-                Element el = (Element) nl.item(i);
-                Ei inst = createImportNCL();
-                addImportNCL(inst);
-                inst.load(el);
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("ImportedDocumentBase > " + ex.getMessage());
+        
+        // create the child nodes
+        ch_name = NCLElementAttributes.IMPORTNCL.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Ei inst = createImportNCL();
+            addImportNCL(inst);
+            inst.load(el);
         }
     }
 

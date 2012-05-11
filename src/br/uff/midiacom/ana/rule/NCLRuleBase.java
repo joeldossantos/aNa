@@ -40,15 +40,17 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.rule.NCLRuleBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -100,6 +102,37 @@ public class NCLRuleBase<T extends NCLRuleBase,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("RuleBase:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadImportBases(el);
+                    loadRules(el);
+                    loadCompositeRules(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("RuleBase > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -130,6 +163,16 @@ public class NCLRuleBase<T extends NCLRuleBase,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseImportBases(int ident) {
         if(!hasImportBase())
             return "";
@@ -139,6 +182,19 @@ public class NCLRuleBase<T extends NCLRuleBase,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadImportBases(Element element) throws XMLException {
+        String ch_name;
+        NodeList nl;
+        
+        //create the imports
+        if(element.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+            Ei inst = createImportBase();
+            addImportBase(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -152,53 +208,24 @@ public class NCLRuleBase<T extends NCLRuleBase,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
+    
+    
+    protected void loadRules(Element element) throws XMLException {
+        //create the rules
+        if(element.getTagName().equals(NCLElementAttributes.RULE.toString())){
+            Et inst = createRule();
+            addRule(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            throw new NCLParsingException("RuleBase:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the imports
-                    if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
-                        Ei inst = createImportBase();
-                        addImportBase(inst);
-                        inst.load(el);
-                    }
-                    //create the rules
-                    if(el.getTagName().equals(NCLElementAttributes.RULE.toString())){
-                        Et inst = createRule();
-                        addRule(inst);
-                        inst.load(el);
-                    }
-                    // create the compositeRules
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
-                        Et inst = createCompositeRule();
-                        addRule(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("RuleBase > " + ex.getMessage());
+    }
+    
+    
+    protected void loadCompositeRules(Element element) throws XMLException {
+        // create the compositeRules
+        if(element.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
+            Et inst = createCompositeRule();
+            addRule(inst);
+            inst.load(element);
         }
     }
     
@@ -230,7 +257,16 @@ public class NCLRuleBase<T extends NCLRuleBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    RuleReference ref = NCLReferenceManager.getInstance().findRuleReference(d, id);
+                    RuleReference ref = findRuleReference(d, id);
+                    return new RuleReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+            
+            NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
+            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    RuleReference ref = findRuleReference(d, id);
                     return new RuleReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
                 }
             }
@@ -238,6 +274,25 @@ public class NCLRuleBase<T extends NCLRuleBase,
         
         
         return null;
+    }
+    
+    
+    protected RuleReference findRuleReference(NCLDoc doc, String id) throws XMLException {
+        NCLHead head = (NCLHead) doc.getHead();
+        
+        if(head == null)
+            throw new NCLParsingException("Could not find document head element");
+        
+        NCLRuleBase base = (NCLRuleBase) head.getRuleBase();
+        if(base == null)
+            throw new NCLParsingException("Could not find document ruleBase element");
+
+        RuleReference result = base.findRule(id);
+
+        if(result == null)
+            throw new NCLParsingException("Could not find rule in ruleBase with id: " + id);
+        
+        return result;
     }
 
 

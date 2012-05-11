@@ -90,6 +90,20 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadRole(element);
+            loadEventType(element);
+            loadKey(element);
+            loadAttributeType(element);
+            loadOffset(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("AttributeAssessment:\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -114,12 +128,36 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     }
     
     
+    protected void loadRole(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the role (required)
+        att_name = NCLElementAttributes.ROLE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setRole(createRole(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseEventType() {
         NCLEventType aux = getEventType();
         if(aux != null)
             return " eventType='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadEventType(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the eventType (required)
+        att_name = NCLElementAttributes.EVENTTYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setEventType(NCLEventType.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
@@ -132,12 +170,32 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     }
     
     
+    protected void loadKey(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the key (optional)
+        att_name = NCLElementAttributes.KEY.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setKey(new KeyParamType(att_var));
+    }
+    
+    
     protected String parseAttributeType() {
         NCLAttributeType aux = getAttributeType();
         if(aux != null)
             return " attributeType='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadAttributeType(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the attributeType (optional)
+        att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setAttributeType(NCLAttributeType.getEnumType(att_var));
     }
     
     
@@ -148,44 +206,15 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         else
             return "";
     }
-
-
-    public void load(Element element) throws NCLParsingException {
+    
+    
+    protected void loadOffset(Element element) throws XMLException {
         String att_name, att_var;
-
-        try{
-            // set the role (required)
-            att_name = NCLElementAttributes.ROLE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setRole(createRole(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the eventType (required)
-            att_name = NCLElementAttributes.EVENTTYPE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setEventType(NCLEventType.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the key (optional)
-            att_name = NCLElementAttributes.KEY.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setKey(new KeyParamType(att_var));
-
-            // set the attributeType (optional)
-            att_name = NCLElementAttributes.ATTRIBUTETYPE.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setAttributeType(NCLAttributeType.getEnumType(att_var));
-
-            // set the offset (optional)
-            att_name = NCLElementAttributes.OFFSET.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setOffset(new IntegerParamType(att_var));
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("AttributeAssessment:\n" + ex.getMessage());
-        }
+        
+        // set the offset (optional)
+        att_name = NCLElementAttributes.OFFSET.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOffset(new IntegerParamType(att_var));
     }
     
     

@@ -91,6 +91,37 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        try{
+            loadOperator(element);
+            loadIsNegated(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundStatement:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadAssessmentStatements(el);
+                    loadCompoundStatements(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("CompoundStatement > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -121,12 +152,34 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
     }
     
     
+    protected void loadOperator(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the operator (required)
+        att_name = NCLElementAttributes.OPERATOR.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setOperator(NCLOperator.getEnumType(att_var));
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseIsNegated() {
         Boolean aux = getIsNegated();
         if(aux != null)
             return " isNegated='" + aux.toString() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadIsNegated(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the isNegated (optional)
+        att_name = NCLElementAttributes.ISNEGATED.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setIsNegated(Boolean.valueOf(att_var));
     }
     
     
@@ -140,54 +193,24 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the operator (required)
-            att_name = NCLElementAttributes.OPERATOR.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setOperator(NCLOperator.getEnumType(att_var));
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-
-            // set the isNegated (optional)
-            att_name = NCLElementAttributes.ISNEGATED.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setIsNegated(Boolean.valueOf(att_var));
+    
+    
+    protected void loadAssessmentStatements(Element element) throws XMLException {
+        //create the assessmentStatement
+        if(element.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
+            Es inst = createAssessmentStatement();
+            addStatement(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            throw new NCLParsingException("CompoundStatement:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the assessmentStatement
-                    if(el.getTagName().equals(NCLElementAttributes.ASSESSMENTSTATEMENT.toString())){
-                        Es inst = createAssessmentStatement();
-                        addStatement(inst);
-                        inst.load(el);
-                    }
-                    // create the compoundStatement
-                    if(el.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
-                        Es inst = createCompoundStatement();
-                        addStatement(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("CompoundStatement > " + ex.getMessage());
+    }
+    
+    
+    protected void loadCompoundStatements(Element element) throws XMLException {
+        // create the compoundStatement
+        if(element.getTagName().equals(NCLElementAttributes.COMPOUNDSTATEMENT.toString())){
+            Es inst = createCompoundStatement();
+            addStatement(inst);
+            inst.load(element);
         }
     }
     

@@ -56,13 +56,14 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
         implements NCLInterface<Ei, P> {
 
 
-    public NCLSwitchPort(String id) throws XMLException {
-        super(id);
+    public NCLSwitchPort() throws XMLException {
+        super();
     }
 
 
-    public NCLSwitchPort() throws XMLException {
+    public NCLSwitchPort(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -95,6 +96,35 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("SwitchPort" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            loadMappings(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("SwitchPort" + aux + " > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -124,6 +154,18 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseMappings(int ident) {
         if(!hasMapping())
             return "";
@@ -134,49 +176,20 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var, ch_name;
+    
+    
+    protected void loadMappings(Element element) throws XMLException {
+        String ch_name;
         NodeList nl;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("SwitchPort" + aux + ":\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            ch_name = NCLElementAttributes.MAPPING.toString();
-            nl = element.getElementsByTagName(ch_name);
-            for(int i=0; i < nl.getLength(); i++){
-                Element el = (Element) nl.item(i);
-                Em inst = createMapping();
-                addMapping(inst);
-                inst.load(el);
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("SwitchPort" + aux + " > " + ex.getMessage());
+        
+        // create the child nodes
+        ch_name = NCLElementAttributes.MAPPING.toString();
+        nl = element.getElementsByTagName(ch_name);
+        for(int i=0; i < nl.getLength(); i++){
+            Element el = (Element) nl.item(i);
+            Em inst = createMapping();
+            addMapping(inst);
+            inst.load(el);
         }
     }
 

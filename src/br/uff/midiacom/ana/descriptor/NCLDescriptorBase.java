@@ -40,15 +40,18 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.NCLReferenceManager;
+import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorBasePrototype;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -100,6 +103,36 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
 
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("DescriptorBase:\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadImportBases(el);
+                    loadDescriptors(el);
+                    loadDescriptorSwitches(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            throw new NCLParsingException("DescriptorBase > " + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -130,6 +163,16 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (optional)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+    }
+    
+    
     protected String parseImportBases(int ident) {
         if(!hasImportBase())
             return "";
@@ -139,6 +182,16 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadImportBases(Element element) throws XMLException {
+        //create the imports
+        if(element.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
+            Ei inst = createImportBase();
+            addImportBase(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -152,53 +205,24 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (optional)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
+    
+    
+    protected void loadDescriptors(Element element) throws XMLException {
+        //create the descriptor
+        if(element.getTagName().equals(NCLElementAttributes.DESCRIPTOR.toString())){
+            El inst = createDescriptor();
+            addDescriptor(inst);
+            inst.load(element);
         }
-        catch(XMLException ex){
-            throw new NCLParsingException("DescriptorBase:\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the imports
-                    if(el.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
-                        Ei inst = createImportBase();
-                        addImportBase(inst);
-                        inst.load(el);
-                    }
-                    //create the descriptor
-                    if(el.getTagName().equals(NCLElementAttributes.DESCRIPTOR.toString())){
-                        El inst = createDescriptor();
-                        addDescriptor(inst);
-                        inst.load(el);
-                    }
-                    // create the descriptorSwitch
-                    if(el.getTagName().equals(NCLElementAttributes.DESCRIPTORSWITCH.toString())){
-                        El inst = createDescriptorSwitch();
-                        addDescriptor(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            throw new NCLParsingException("DescriptorBase > " + ex.getMessage());
+    }
+    
+    
+    protected void loadDescriptorSwitches(Element element) throws XMLException {
+        // create the descriptorSwitch
+        if(element.getTagName().equals(NCLElementAttributes.DESCRIPTORSWITCH.toString())){
+            El inst = createDescriptorSwitch();
+            addDescriptor(inst);
+            inst.load(element);
         }
     }
     
@@ -230,7 +254,16 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    DescriptorReference ref = NCLReferenceManager.getInstance().findDescriptorReference(d, id);
+                    DescriptorReference ref = findDescriptorReference(d, id);
+                    return new DescriptorReference(imp, (El) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                }
+            }
+            
+            NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
+            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    DescriptorReference ref = findDescriptorReference(d, id);
                     return new DescriptorReference(imp, (El) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
                 }
             }
@@ -249,7 +282,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public El findDescriptor(Integer focusIndex) throws XMLException {
+    public El findDescriptor(FocusIndexType focusIndex) throws XMLException {
         El result;
         
         for(El desc : descriptors){
@@ -258,7 +291,60 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
                 return result;
         }
         
+        for(Ei imp : imports){
+            NCLDoc d = (NCLDoc) imp.getImportedDoc();
+            result = (El) findDescriptorReference(d, focusIndex);
+            if(result != null)
+                return result;
+        }
+
+        NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
+        for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+            NCLDoc d = (NCLDoc) imp.getImportedDoc();
+            result = (El) findDescriptorReference(d, focusIndex);
+            if(result != null)
+                return result;
+        }
+        
         return null;
+    }
+    
+    
+    public DescriptorReference findDescriptorReference(NCLDoc doc, String id) throws XMLException {
+        NCLHead head = (NCLHead) doc.getHead();
+        
+        if(head == null)
+            throw new NCLParsingException("Could not find document head element");
+        
+        NCLDescriptorBase base = (NCLDescriptorBase) head.getDescriptorBase();
+        if(base == null)
+            throw new NCLParsingException("Could not find document descriptorBase element");
+
+        DescriptorReference result = base.findDescriptor(id);
+
+        if(result == null)
+            throw new NCLParsingException("Could not find descriptor in descriptorBase with id: " + id);
+        
+        return result;
+    }
+    
+    
+    protected NCLDescriptor findDescriptorReference(NCLDoc doc, FocusIndexType focusIndex) throws XMLException {
+        NCLHead head = (NCLHead) doc.getHead();
+        
+        if(head == null)
+            throw new NCLParsingException("Could not find document head element");
+        
+        NCLDescriptorBase base = (NCLDescriptorBase) head.getDescriptorBase();
+        if(base == null)
+            throw new NCLParsingException("Could not find document descriptorBase element");
+
+        NCLDescriptor result = (NCLDescriptor) base.findDescriptor(focusIndex);
+
+        if(result == null)
+            throw new NCLParsingException("Could not find descriptor in descriptorBase with focusIndex: " + focusIndex);
+        
+        return result;
     }
 
 

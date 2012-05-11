@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.link.NCLLink;
@@ -46,9 +47,10 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ContextReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
 import br.uff.midiacom.ana.datatype.ncl.node.NCLContextPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
@@ -67,18 +69,19 @@ public class NCLContext<T extends NCLContext,
                         El extends NCLLink,
                         Em extends NCLMeta,
                         Emt extends NCLMetadata,
-                        Rn extends NodeReference>
+                        Rn extends ContextReference>
         extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt, Rn>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
     
     
-    public NCLContext(String id) throws XMLException {
-        super(id);
+    public NCLContext() throws XMLException {
+        super();
     }
 
 
-    public NCLContext() throws XMLException {
+    public NCLContext(String id) throws XMLException {
         super();
+        setId(id);
     }
 
 
@@ -118,6 +121,77 @@ public class NCLContext<T extends NCLContext,
         
         return content;
     }
+
+
+    public void load(Element element) throws NCLParsingException {
+        String att_name, att_var;
+        NodeList nl;
+
+        try{
+            loadId(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Context" + aux + ":\n" + ex.getMessage());
+        }
+
+        try{
+            // create the child nodes (except ports and links)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadProperties(el);
+                    loadMetas(el);
+                    loadMetadatas(el);
+                    loadMedia(el);
+                    loadContext(el);
+                    loadSwitch(el);
+                }
+            }
+
+            // create the child nodes (ports and links)
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+
+                    loadPorts(el);
+                    loadLinks(el);
+                }
+            }
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Context" + aux + " > " + ex.getMessage());
+        }
+
+        try{
+            loadRefer(element);
+        }
+        catch(XMLException ex){
+            String aux = getId();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Context" + aux + ":\n" + ex.getMessage());
+        }
+    }
     
     
     protected String parseAttributes() {
@@ -153,12 +227,37 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    protected void loadId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the id (required)
+        att_name = NCLElementAttributes.ID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty())
+            setId(att_var);
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
     protected String parseRefer() {
         Rn aux = getRefer();
         if(aux != null)
             return " refer='" + aux.parse() + "'";
         else
             return "";
+    }
+    
+    
+    protected void loadRefer(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the refer (optional)
+        att_name = NCLElementAttributes.REFER.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T ref = (T) new NCLContext(att_var);
+            setRefer(createContextRef((En) ref));
+            NCLReferenceManager.getInstance().waitReference(this);
+        }
     }
     
     
@@ -174,6 +273,16 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    protected void loadMetas(Element element) throws XMLException {
+        // create the meta
+        if(element.getTagName().equals(NCLElementAttributes.META.toString())){
+            Em inst = createMeta();
+            addMeta(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseMetadatas(int ident) {
         if(!hasMetadata())
             return "";
@@ -183,6 +292,16 @@ public class NCLContext<T extends NCLContext,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadMetadatas(Element element) throws XMLException {
+        // create the metadata
+        if(element.getTagName().equals(NCLElementAttributes.METADATA.toString())){
+            Emt inst = createMetadata();
+            addMetadata(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -198,6 +317,16 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    protected void loadPorts(Element element) throws XMLException {
+        //create the port
+        if(element.getTagName().equals(NCLElementAttributes.PORT.toString())){
+            Ept inst = createPort();
+            addPort(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseProperties(int ident) {
         if(!hasProperty())
             return "";
@@ -207,6 +336,16 @@ public class NCLContext<T extends NCLContext,
             content += aux.parse(ident);
         
         return content;
+    }
+    
+    
+    protected void loadProperties(Element element) throws XMLException {
+        // create the property
+        if(element.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
+            Epp inst = createProperty();
+            addProperty(inst);
+            inst.load(element);
+        }
     }
     
     
@@ -222,6 +361,36 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    protected void loadMedia(Element element) throws XMLException {
+        // create the media
+        if(element.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
+            En inst = createMedia();
+            addNode(inst);
+            inst.load(element);
+        }
+    }
+    
+    
+    protected void loadContext(Element element) throws XMLException {
+        // create the context
+        if(element.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
+            En inst = createContext();
+            addNode(inst);
+            inst.load(element);
+        }
+    }
+    
+    
+    protected void loadSwitch(Element element) throws XMLException {
+        // create the switch
+        if(element.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
+            En inst = createSwitch();
+            addNode(inst);
+            inst.load(element);
+        }
+    }
+    
+    
     protected String parseLinks(int ident) {
         if(!hasLink())
             return "";
@@ -232,126 +401,14 @@ public class NCLContext<T extends NCLContext,
         
         return content;
     }
-
-
-    public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-        NodeList nl;
-
-        try{
-            // set the id (required)
-            att_name = NCLElementAttributes.ID.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setId(att_var);
-            else
-                throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Context" + aux + ":\n" + ex.getMessage());
-        }
-
-        try{
-            // create the child nodes (except ports and links)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    // create the property
-                    if(el.getTagName().equals(NCLElementAttributes.PROPERTY.toString())){
-                        Epp inst = createProperty();
-                        addProperty(inst);
-                        inst.load(el);
-                    }
-                    // create the meta
-                    if(el.getTagName().equals(NCLElementAttributes.META.toString())){
-                        Em inst = createMeta();
-                        addMeta(inst);
-                        inst.load(el);
-                    }
-                    // create the metadata
-                    if(el.getTagName().equals(NCLElementAttributes.METADATA.toString())){
-                        Emt inst = createMetadata();
-                        addMetadata(inst);
-                        inst.load(el);
-                    }
-                    // create the media
-                    if(el.getTagName().equals(NCLElementAttributes.MEDIA.toString())){
-                        En inst = createMedia();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                    // create the context
-                    if(el.getTagName().equals(NCLElementAttributes.CONTEXT.toString())){
-                        En inst = createContext();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                    // create the switch
-                    if(el.getTagName().equals(NCLElementAttributes.SWITCH.toString())){
-                        En inst = createSwitch();
-                        addNode(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-
-            // create the child nodes (ports and links)
-            nl = element.getChildNodes();
-            for(int i=0; i < nl.getLength(); i++){
-                Node nd = nl.item(i);
-                if(nd instanceof Element){
-                    Element el = (Element) nl.item(i);
-
-                    //create the port
-                    if(el.getTagName().equals(NCLElementAttributes.PORT.toString())){
-                        Ept inst = createPort();
-                        addPort(inst);
-                        inst.load(el);
-                    }
-                    // create the link
-                    if(el.getTagName().equals(NCLElementAttributes.LINK.toString())){
-                        El inst = createLink();
-                        addLink(inst);
-                        inst.load(el);
-                    }
-                }
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Context" + aux + " > " + ex.getMessage());
-        }
-
-        try{
-            // set the refer (optional)
-            att_name = NCLElementAttributes.REFER.toString();
-            if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-                T ref = (T) new NCLContext(att_var);
-                setRefer(createNodeRef((En) ref));
-                NCLReferenceManager.getInstance().waitReference(this);
-            }
-        }
-        catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Context" + aux + ":\n" + ex.getMessage());
+    
+    
+    protected void loadLinks(Element element) throws XMLException {
+        // create the link
+        if(element.getTagName().equals(NCLElementAttributes.LINK.toString())){
+            El inst = createLink();
+            addLink(inst);
+            inst.load(element);
         }
     }
     
@@ -402,8 +459,8 @@ public class NCLContext<T extends NCLContext,
         try{
             // set the refer (optional)
             if((aux = ((En) getRefer().getTarget()).getId()) != null){
-                En ref = (En) NCLReferenceManager.getInstance().findNodeReference(impl.getDoc(), aux);
-                setRefer(createNodeRef(ref));
+                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
+                setRefer(createContextRef(ref));
             }
         }
         catch(XMLException ex){
@@ -521,7 +578,7 @@ public class NCLContext<T extends NCLContext,
      * @return
      *          element representing a reference to a node.
      */
-    protected Rn createNodeRef(En ref) throws XMLException {
-        return (Rn) new NodeReference(ref, NCLElementAttributes.ID);
+    protected Rn createContextRef(En ref) throws XMLException {
+        return (Rn) new ContextReference((NCLCompositeNodeElement)ref, NCLElementAttributes.ID);
     }
 }
