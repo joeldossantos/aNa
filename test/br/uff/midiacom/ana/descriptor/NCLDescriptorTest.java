@@ -48,10 +48,12 @@ import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLRelativeDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
+import br.uff.midiacom.xml.datatype.number.RelativeType;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -104,9 +106,9 @@ public class NCLDescriptorTest {
     @Test
     public void test2() throws XMLException {
         NCLDescriptor descriptor = new NCLDescriptor("dTV");
-        NCLDoubleDescriptorParam param = new NCLDoubleDescriptorParam();
+        NCLRelativeDescriptorParam param = new NCLRelativeDescriptorParam();
         param.setName(NCLAttributes.TOP);
-        param.setValue(new Double(100));
+        param.setValue(new RelativeType(100));
         descriptor.addDescriptorParam(param);
 
         String expResult = "<descriptor id='dTV'>\n\t<descriptorParam name='top' value='100'/>\n</descriptor>\n";

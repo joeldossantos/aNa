@@ -35,46 +35,64 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.interfaces;
+package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLIntegerDescriptorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
-public class NCLProperty<T extends NCLProperty,
-                         P extends NCLElement,
-                         I extends NCLElementImpl,
-                         Ei extends NCLInterface,
-                         Ep extends VariableReference,
-                         Ea extends NCLAttribute>
-        extends NCLPropertyPrototype<T, P, I, Ei, Ep, Ea>
-        implements NCLInterface<Ei, P> {
+/**
+ * Class that represents a descriptor parameter whose value is a integer value.
+ * 
+ * <br/>
+ * 
+ * This element is used to parameterize the presentation of the node associated
+ * to a descriptor. The descriptorParam may redefine the value of an attribute
+ * defined by a region element or define new attributes for the node presentation.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the descriptor parameter. This attribute is required.</li>
+ *  <li><i>value</i> - value of the descriptor parameter. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
+public class NCLIntegerDescriptorParam<T extends NCLIntegerDescriptorParam,
+                                       P extends NCLElement,
+                                       I extends NCLElementImpl>
+        extends NCLIntegerDescriptorParamPrototype<T, P, I>
+        implements NCLDescriptorParam<T, P, Integer> {
 
-    
-    public NCLProperty() throws XMLException {
+
+    /**
+     * Descriptor parameter constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
+    public NCLIntegerDescriptorParam() throws XMLException {
         super();
-    }
-
-
-    public NCLProperty(Ea name) throws XMLException {
-        super();
-        setName(name);
     }
 
 
     @Override
     protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
     }
-    
-    
+
+
     public String parse(int ident) {
         String space, content;
 
@@ -85,30 +103,24 @@ public class NCLProperty<T extends NCLProperty,
         space = "";
         for(int i = 0; i < ident; i++)
             space += "\t";
-        
-        // <property> element and attributes declaration
-        content = space + "<property";
+
+
+        // param element and attributes declaration
+        content = space + "<descriptorParam";
         content += parseAttributes();
         content += "/>\n";
-        
-        
+
         return content;
     }
 
-
+    
     public void load(Element element) throws NCLParsingException {
         try{
             loadName(element);
             loadValue(element);
         }
         catch(XMLException ex){
-            String aux = getId();
-            if(aux != null)
-                aux = "(" + aux + ")";
-            else
-                aux = "";
-            
-            throw new NCLParsingException("Property" + aux + ":\n" + ex.getMessage());
+            throw new NCLParsingException("DescriptorParam:\n" + ex.getMessage());
         }
     }
     
@@ -124,9 +136,9 @@ public class NCLProperty<T extends NCLProperty,
     
     
     protected String parseName() {
-        String aux = getName();
+        NCLAttributes aux = getName();
         if(aux != null)
-            return " name='" + aux + "'";
+            return " name='" + aux.toString() + "'";
         else
             return "";
     }
@@ -138,14 +150,14 @@ public class NCLProperty<T extends NCLProperty,
         // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setName(createName(att_var));
+            setName(NCLAttributes.getEnumType(att_var));
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
     protected String parseValue() {
-        String aux = getValue();
+        String aux = getParamValue();
         if(aux != null)
             return " value='" + aux + "'";
         else
@@ -156,14 +168,15 @@ public class NCLProperty<T extends NCLProperty,
     protected void loadValue(Element element) throws XMLException {
         String att_name, att_var;
         
-        // set the name (required)
+        // set the value (required)
         att_name = NCLElementAttributes.VALUE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setValue(att_var);
-    }
-    
-    
-    public Ea createName(String name) throws XMLException {
-        return (Ea) new NCLAttribute(name);
+            try{
+                setValue(new Integer(att_var));
+            }catch(Exception e){
+                throw new NCLParsingException("Could not set " + att_name + " value: " + att_var + ".");
+            }
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 }

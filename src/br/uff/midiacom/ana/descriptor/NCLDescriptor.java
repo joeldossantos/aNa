@@ -59,10 +59,13 @@ import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLFitDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLFontVariantDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLFontWeightDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLIntegerDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLPercentDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLPlayerLifeDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLRelativeDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLScrollDescriptorParam;
 import br.uff.midiacom.ana.descriptor.param.NCLStringDescriptorParam;
+import br.uff.midiacom.ana.descriptor.param.NCLTranspColorDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.xml.XMLException;
@@ -640,17 +643,17 @@ public class NCLDescriptor<T extends NCLDescriptor,
 
         switch(att){
             case TOP:
-                return createDoubleDescriptorParam();
+                return createRelativeDescriptorParam();
             case LEFT:
-                return createDoubleDescriptorParam();
+                return createRelativeDescriptorParam();
             case BOTTOM:
-                return createDoubleDescriptorParam();
+                return createRelativeDescriptorParam();
             case RIGHT:
-                return createDoubleDescriptorParam();
+                return createRelativeDescriptorParam();
             case WIDTH:
-                return createDoubleDescriptorParam();
+                return createRelativeDescriptorParam();
             case HEIGHT:
-                return createDoubleDescriptorParam();
+                return createRelativeDescriptorParam();
             case LOCATION:
                 return createStringDescriptorParam();
             case SIZE:
@@ -658,7 +661,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
             case BOUNDS:
                 return createStringDescriptorParam();
             case BACKGROUND:
-                return createColorDescriptorParam();
+                return createTranspColorDescriptorParam();
             case VISIBLE:
                 return createBooleanDescriptorParam();
             case TRANSPARENCY:
@@ -678,7 +681,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
             case BASS_LEVEL:
                 return createPercentDescriptorParam();
             case ZINDEX:
-                return createDoubleDescriptorParam();
+                return createIntegerDescriptorParam();
             case FONT_FAMILY:
                 return createStringDescriptorParam();
             case FONT_SIZE:
@@ -801,6 +804,21 @@ public class NCLDescriptor<T extends NCLDescriptor,
 
     protected Ep createPlayerLifeDescriptorParam() throws XMLException {
         return (Ep) new NCLPlayerLifeDescriptorParam();
+    }
+
+
+    protected Ep createRelativeDescriptorParam() throws XMLException {
+        return (Ep) new NCLRelativeDescriptorParam();
+    }
+
+
+    protected Ep createTranspColorDescriptorParam() throws XMLException {
+        return (Ep) new NCLTranspColorDescriptorParam();
+    }
+
+
+    protected Ep createIntegerDescriptorParam() throws XMLException {
+        return (Ep) new NCLIntegerDescriptorParam();
     }
 
 

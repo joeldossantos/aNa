@@ -76,7 +76,7 @@ public class DescriptorReference<T extends NCLLayoutDescriptor,
             case ID:
                 return getTarget().getId();
             case FOCUSINDEX:
-                return ((NCLDescriptorPrototype) getTarget()).getFocusIndex().toString();
+                return ((NCLDescriptorPrototype) getTarget()).getFocusIndex().parse();
         }
         return null;
     }

@@ -130,7 +130,8 @@ public abstract class NCLPropertyPrototype<T extends NCLPropertyPrototype,
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
         
         //Erase the name as a variable
-        varName.clean();
+        if(varName != null)
+            varName.clean();
         varName = null;
     }
 
@@ -198,7 +199,7 @@ public abstract class NCLPropertyPrototype<T extends NCLPropertyPrototype,
         if(varName != null)
             return varName.parse();
         if(attName != null)
-            return attName.toString();
+            return attName.getName();
         else
             return null;
     }

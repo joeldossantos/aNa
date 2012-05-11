@@ -73,6 +73,8 @@ public class NCLContext<T extends NCLContext,
         extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt, Rn>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
     
+    private String refer_id;
+    
     
     public NCLContext() throws XMLException {
         super();
@@ -253,8 +255,9 @@ public class NCLContext<T extends NCLContext,
         // set the refer (optional)
         att_name = NCLElementAttributes.REFER.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            T ref = (T) new NCLContext(att_var);
-            setRefer(createContextRef((En) ref));
+//            T ref = (T) new NCLContext(att_var);
+//            setRefer(createContextRef((En) ref));
+            refer_id = att_var;
             NCLReferenceManager.getInstance().waitReference(this);
         }
     }
@@ -467,8 +470,9 @@ public class NCLContext<T extends NCLContext,
         
         try{
             // set the refer (optional)
-            if((aux = ((En) getRefer().getTarget()).getId()) != null){
-                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
+//            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+            if(refer_id != null){
+                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(refer_id);
                 setRefer(createContextRef(ref));
             }
         }

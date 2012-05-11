@@ -85,8 +85,8 @@ public abstract class NCLStringDescriptorParamPrototype<T extends NCLStringDescr
     public void setName(NCLAttributes name) throws XMLException {
         if(name == null)
             throw new XMLException("Null name.");
-        if(!name.equals(NCLAttributes.STYLE) && !name.equals(NCLAttributes.FONT_FAMILY))
-            throw new XMLException("This parameter type can not be used with this name.");
+//        if(!name.equals(NCLAttributes.STYLE) && !name.equals(NCLAttributes.FONT_FAMILY))
+//            throw new XMLException("This parameter type can not be used with this name.");
 
         super.setName(name);
     }
