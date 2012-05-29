@@ -37,11 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLDescriptorPrototype;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.ana.descriptor.NCLDescriptor;
+import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -55,7 +55,7 @@ import br.uff.midiacom.xml.XMLException;
  */
 public class DescriptorReference<T extends NCLLayoutDescriptor,
                                  O extends NCLElement,
-                                 I extends NCLImportPrototype,
+                                 I extends NCLImport,
                                  A extends NCLElementAttributes>
         extends ExternalReferenceType<O, T, I, A> {
 
@@ -76,7 +76,7 @@ public class DescriptorReference<T extends NCLLayoutDescriptor,
             case ID:
                 return getTarget().getId();
             case FOCUSINDEX:
-                return ((NCLDescriptorPrototype) getTarget()).getFocusIndex().parse();
+                return ((NCLDescriptor) getTarget()).getFocusIndex().parse();
         }
         return null;
     }

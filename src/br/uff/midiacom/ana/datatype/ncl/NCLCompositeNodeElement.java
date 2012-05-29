@@ -37,13 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPropertyPrototype;
-import br.uff.midiacom.ana.datatype.ncl.link.NCLLinkPrototype;
-import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
-import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
+import br.uff.midiacom.ana.interfaces.NCLPort;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.link.NCLLink;
+import br.uff.midiacom.ana.meta.NCLMeta;
+import br.uff.midiacom.ana.meta.NCLMetadata;
+import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
@@ -97,12 +100,12 @@ import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
                                               P extends NCLElement,
                                               I extends NCLElementImpl,
-                                              Ept extends NCLPortPrototype,
-                                              Epp extends NCLPropertyPrototype,
+                                              Ept extends NCLPort,
+                                              Epp extends NCLProperty,
                                               En extends NCLNode,
-                                              El extends NCLLinkPrototype,
-                                              Em extends NCLMetaPrototype,
-                                              Emt extends NCLMetadataPrototype>
+                                              El extends NCLLink,
+                                              Em extends NCLMeta,
+                                              Emt extends NCLMetadata>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 

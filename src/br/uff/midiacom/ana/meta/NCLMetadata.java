@@ -39,28 +39,81 @@ package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetadataPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents the metadata element. This element is used to describe
+ * an NCL document. This element defines a RDF tree that describes the document.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public class NCLMetadata<T extends NCLMetadata,
                          P extends NCLElement,
                          I extends NCLElementImpl>
-        extends NCLMetadataPrototype<T, P, I>
+        extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
+    protected StringType rdfTree;
 
+
+    /**
+     * Metadata element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLMetadata() throws XMLException {
         super();
     }
 
 
+    /**
+     * Sets the content of the metadata element. This element content is a RDF
+     * tree. This content is required and can not be set to <i>null</i>.
+     * 
+     * @param rdfTree
+     *          string representing the metadata content. This content is a RDF
+     *          tree.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
+    public void setRDFTree(String rdfTree) throws XMLException {
+        if(rdfTree == null)
+            throw new XMLException("Null metadata content.");
+        
+        StringType aux = this.rdfTree;
+        this.rdfTree = new StringType(rdfTree);
+        impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
+    }
+
+
+    /**
+     * Returns the content of the metadata element or <i>null</i> if the content
+     * is not defined. This element content is a RDF tree.
+     * 
+     * @return 
+     *          string representing the metadata content. This content is a RDF
+     *          tree or <i>null</i> if the content is not defined.
+     */
+    public String getRDFTree() {
+        if(rdfTree != null)
+            return rdfTree.getValue();
+        else
+            return null;
+    }
+
+
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public boolean compare(T other) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

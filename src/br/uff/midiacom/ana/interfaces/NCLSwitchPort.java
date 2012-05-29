@@ -41,35 +41,179 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLSwitchPortPrototype;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
+/**
+ * Class that represents a switch port element. A switch port maps alternative
+ * interface points of the nodes inside a switch element.
+ * 
+ * <br/>
+ * 
+ * When a node or a node interface point is mapped by a port, every action over
+ * the port is reflected to the node or node interface point mapped by it. If the
+ * port interface attribute is not defined, it is assumed that the port maps
+ * the whole node.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the switch port element. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>mapping</i> - element that maps a switch inner node interface point.
+ *                       The switch port must have at least one mapping element.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Em>
+ * @param <Ei> 
+ */
 public class NCLSwitchPort<T extends NCLSwitchPort,
                            P extends NCLElement,
                            I extends NCLElementImpl,
                            Em extends NCLMapping,
                            Ei extends NCLInterface>
-        extends NCLSwitchPortPrototype<T, P, I, Em, Ei>
+        extends NCLIdentifiableElementPrototype<Ei, P, I>
         implements NCLInterface<Ei, P> {
 
+    protected ElementList<Em, T> mappings;
+    
+    protected ItemList<ReferenceType> references;
 
+
+    /**
+     * Switch port element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLSwitchPort() throws XMLException {
         super();
+        mappings = new ElementList<Em, T>();
+        references = new ItemList<ReferenceType>();
     }
-
-
+    
+    
     public NCLSwitchPort(String id) throws XMLException {
         super();
+        mappings = new ElementList<Em, T>();
+        references = new ItemList<ReferenceType>();
         setId(id);
     }
 
 
+    /**
+     * Adds an element that maps a switch inner node interface point to the
+     * switch port. The switch port must have at least one mapping element.
+     * 
+     * @param mapping
+     *          element that maps a switch inner node interface point.
+     * @return
+     *          true if the mapping was added.
+     * @throws XMLException 
+     *          if the element representing the mapping is null.
+     */
+    public boolean addMapping(Em mapping) throws XMLException {
+        if(mappings.add(mapping, (T) this)){
+            impl.notifyInserted(NCLElementSets.MAPPINGS, mapping);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Removes an element that maps a switch inner node interface point of the
+     * switch port. The switch port must have at least one mapping element.
+     * 
+     * @param mapping
+     *          element that maps a switch inner node interface point.
+     * @return
+     *          true if the mapping was removed.
+     * @throws XMLException 
+     *          if the element representing the mapping is null.
+     */
+    public boolean removeMapping(Em mapping) throws XMLException {
+        if(mappings.remove(mapping)){
+            impl.notifyRemoved(NCLElementSets.MAPPINGS, mapping);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Verifies if the switch port has a specific element that maps a switch
+     * inner node interface point of the switch port. The switch port must have
+     * at least one mapping element.
+     * 
+     * @param mapping
+     *          element that maps a switch inner node interface point.
+     * @return
+     *          true if the switch port has the mapping element.
+     * @throws XMLException 
+     *          if the element representing the mapping is null.
+     */
+    public boolean hasMapping(Em mapping) throws XMLException {
+        return mappings.contains(mapping);
+    }
+
+
+    /**
+     * Verifies if the switch port has at least one element that maps a switch
+     * inner node interface point of the switch port. The switch port must have
+     * at least one mapping element.
+     * 
+     * @return 
+     *          true if the switch port has at least one mapping.
+     */
+    public boolean hasMapping() {
+        return !mappings.isEmpty();
+    }
+
+
+    /**
+     * Returns the list of mapping that a switch port have. The switch port must have
+     * at least one mapping element.
+     * 
+     * @return 
+     *          element list with all mappings.
+     */
+    public ElementList<Em, T> getMappings() {
+        return mappings;
+    }
+    
+    
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+    public boolean addReference(ReferenceType reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(ReferenceType reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ItemList<ReferenceType> getReferences() {
+        return references;
     }
 
 

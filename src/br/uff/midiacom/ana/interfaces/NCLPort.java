@@ -44,36 +44,193 @@ import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLPortPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents a port element. A port maps a context inner node or
+ * inner node interface point making it possible to be reached from outside the
+ * context.
+ * 
+ * <br/>
+ * 
+ * When a node or a node interface point is mapped by a port, every action over
+ * the port is reflected to the node or node interface point mapped by it. If the
+ * port interface attribute is not defined, it is assumed that the port maps
+ * the whole node.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the port element. This attribute is required.</li>
+ *  <li><i>component</i> - node mapped by the port. This attribute is required.</li>
+ *  <li><i>interface</i> - node interface point mapped by the port. This attribute
+ *                         is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <It>
+ * @param <En>
+ * @param <Ei> 
+ */
 public class NCLPort<T extends NCLPort,
                      P extends NCLElement,
                      I extends NCLElementImpl,
                      It extends NCLInterface,
                      En extends NodeReference,
                      Ei extends InterfaceReference>
-        extends NCLPortPrototype<T, P, I, It, En, Ei>
+        extends NCLIdentifiableElementPrototype<It, P, I>
         implements NCLInterface<It, P> {
 
+    protected En component;
+    protected Ei interfac;
+    
+    protected ItemList<ReferenceType> references;
 
-    public NCLPort() throws XMLException {
+
+    /**
+     * Port element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
+    public NCLPort() throws XMLException{
         super();
+        references = new ItemList<ReferenceType>();
     }
-
-
-    public NCLPort(String id) throws XMLException {
+    
+    
+    public NCLPort(String id) throws XMLException{
         super();
+        references = new ItemList<ReferenceType>();
         setId(id);
     }
 
 
+    /**
+     * Sets the node mapped by the port. This attribute is required and can not
+     * be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The node referred must be a node defined in the composition parent of the
+     * port element.
+     * 
+     * @param component
+     *          element representing a reference to a node element.
+     * @throws XMLException 
+     *          if the node is null or any error occur while creating the
+     *          reference to the node.
+     */
+    public void setComponent(En component) throws XMLException {
+        if(component == null)
+            throw new XMLException("Null component.");
+        
+        En aux = this.component;
+        
+        this.component = component;
+        this.component.setOwner((T) this);
+        this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
+        
+        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        if(aux != null)
+            aux.clean();
+    }
+    
+    
+    /**
+     * Returns the node mapped by the port or <i>null</i> if the attribute is
+     * not defined.
+     * 
+     * <br/>
+     * 
+     * The node referred must be a node defined in the composition parent of the
+     * port element.
+     * 
+     * @return 
+     *          element representing a reference to a node element or <i>null</i>
+     *          if the attribute is not defined.
+     */
+    public En getComponent() {
+        return component;
+    }
+    
+    
+    /**
+     * Sets the node interface point mapped by the port. This attribute
+     * is optional. Set the interface to <i>null</i> to erase a interface
+     * already defined.
+     * 
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
+     * 
+     * @param interfac
+     *          element representing a reference to a interface element or
+     *          <i>null</i> to erase a interface already defined.
+     * @throws XMLException 
+     */
+    public void setInterface(Ei interfac) throws XMLException {
+        Ei aux = this.interfac;
+        
+        this.interfac = interfac;
+        if(this.interfac != null){
+            this.interfac.setOwner((T) this);
+            this.interfac.setOwnerAtt(NCLElementAttributes.INTERFACE);
+        }
+        
+        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        if(aux != null)
+            aux.clean();
+    }
+    
+    
+    /**
+     * Returns the node interface point mapped by the port or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The interface referred must be a interface point of the node referred by
+     * the component attribute.
+     * 
+     * @see #setComponent(br.uff.midiacom.ana.datatype.aux.reference.NodeReference) 
+     * 
+     * @return 
+     *          element representing a reference to a interface element or
+     *          <i>null</i> if the attribute is not defined.
+     */
+    public Ei getInterface() {
+        return interfac;
+    }
+    
+    
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+    public boolean addReference(ReferenceType reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(ReferenceType reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ItemList<ReferenceType> getReferences() {
+        return references;
     }
     
     

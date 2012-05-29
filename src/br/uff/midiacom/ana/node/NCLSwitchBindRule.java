@@ -40,35 +40,182 @@ package br.uff.midiacom.ana.node;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLSwitchBindRulePrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.rule.NCLRuleBase;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents the bindRule element used inside a switch node element.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>constituent</i> - switch element component node to be related to a rule.
+ *                           This attribute is required.</li>
+ *  <li><i>rule</i> - rule tested when presenting the node indicated in the
+ *                    constituent attribute. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <En>
+ * @param <Er> 
+ */
 public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
                                P extends NCLElement,
                                I extends NCLElementImpl,
                                En extends NodeReference,
                                Er extends RuleReference>
-        extends NCLSwitchBindRulePrototype<T, P, I, En, Er>
+        extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
+    protected En constituent;
+    protected Er rule;
 
+
+    /**
+     * BindRule element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLSwitchBindRule() throws XMLException {
         super();
     }
 
+    
+    /**
+     * Sets the switch element component node to be related to a rule. This
+     * attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The referred node must be a node internal to the switch element parent
+     * of this bindRule element.
+     * 
+     * @param constituent
+     *          element that makes reference to the node that will be related to
+     *          a rule.
+     * @throws XMLException 
+     *          if the constituent is null or any error occur while creating the
+     *          reference to the node.
+     */
+    public void setConstituent(En constituent) throws XMLException {
+        if(constituent == null)
+            throw new XMLException("Null constituent.");
+        
+        En aux = this.constituent;
+        
+        this.constituent = constituent;
+        this.constituent.setOwner((T) this);
+        this.constituent.setOwnerAtt(NCLElementAttributes.CONSTITUENT);
+        
+        impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
+        if(aux != null)
+            aux.clean();
+    }
+
+
+    /**
+     * Returns the switch element component node to be related to a rule or
+     * <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The referred node must be a node internal to the switch element parent
+     * of this bindRule element.
+     * 
+     * @return 
+     *          element that makes reference to the node that will be related to
+     *          a rule or <i>null</i> if the attribute is not defined.
+     */
+    public En getConstituent() {
+        return constituent;
+    }
+
+
+    /**
+     * Sets the rule tested when presenting the node indicated in the constituent
+     * attribute. This attribute is required and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The rule referred can be defined in the document base of rules or in a
+     * base defined in an external document, imported by the base of rules or
+     * by the base of imported documents. When the rule is defined in an external
+     * document, the alias of the imported document must be indicated in the
+     * reference.
+     * 
+     * @param rule
+     *          element representing a reference to a rule element.
+     * @throws XMLException 
+     *          if the rule is null or any error occur while creating the
+     *          reference to the rule.
+     *          
+     */
+    public void setRule(Er rule) throws XMLException {
+        if(rule == null)
+            throw new XMLException("Null rule.");
+        
+        Er aux = this.rule;
+        
+        this.rule = rule;
+        this.rule.setOwner((T) this);
+        this.rule.setOwnerAtt(NCLElementAttributes.RULE);
+        
+        impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
+        if(aux != null)
+            aux.clean();
+    }
+
+
+    /**
+     * Returns the rule tested when presenting the node indicated in the
+     * constituent attribute or <i>null</i> if the attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The rule referred can be defined in the document base of rules or in a
+     * base defined in an external document, imported by the base of rules or
+     * by the base of imported documents. When the rule is defined in an external
+     * document, the alias of the imported document must be indicated in the
+     * reference.
+     * 
+     * @return 
+     *          element representing a reference to a rule element or <i>null</i>
+     *          if the attribute is not defined.
+     */
+    public Er getRule() {
+        return rule;
+    }
+
 
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public boolean compare(T other) {
+        boolean comp = true;
+        
+        String this_sb, other_sb;
+
+        // Compara pela regra
+        if(getRule() == null) this_sb = ""; else this_sb = ((NCLTestRule) getRule().getTarget()).getId();
+        if(other.getRule() == null) other_sb = ""; else other_sb = ((NCLTestRule) other.getRule().getTarget()).getId();
+        comp &= this_sb.equals(other_sb);
+
+        // Compara pelo constituent
+        if(getConstituent() == null) this_sb = ""; else this_sb = ((NCLNode) getConstituent().getTarget()).getId();
+        if(other.getConstituent() == null) other_sb = ""; else other_sb = ((NCLNode) other.getConstituent().getTarget()).getId();
+        comp &= this_sb.equals(other_sb);
+
+        return comp;
     }
 
 

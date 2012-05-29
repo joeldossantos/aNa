@@ -35,12 +35,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl.descriptor.param;
+package br.uff.midiacom.ana.descriptor.param;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 

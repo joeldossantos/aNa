@@ -39,10 +39,20 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
+/**
+ * Interface that represents a node interface point. A interface point can be
+ * a mapping to a node inside a composite node or an anchor representing a node
+ * attribute or a subpart of a node content.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLInterface<T extends NCLInterface,
                               P extends NCLElement>
-        extends br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface<T, P>, NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
 }

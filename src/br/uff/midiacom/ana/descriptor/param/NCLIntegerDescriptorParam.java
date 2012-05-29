@@ -39,11 +39,9 @@ package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLIntegerDescriptorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -72,8 +70,7 @@ import org.w3c.dom.Element;
 public class NCLIntegerDescriptorParam<T extends NCLIntegerDescriptorParam,
                                        P extends NCLElement,
                                        I extends NCLElementImpl>
-        extends NCLIntegerDescriptorParamPrototype<T, P, I>
-        implements NCLDescriptorParam<T, P, Integer> {
+        extends NCLDescriptorParamPrototype<T, P, I, Integer> {
 
 
     /**
@@ -88,8 +85,39 @@ public class NCLIntegerDescriptorParam<T extends NCLIntegerDescriptorParam,
 
 
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public void setName(NCLAttributes name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        if(!name.equals(NCLAttributes.ZINDEX))
+            throw new IllegalArgumentException("This parameter type can not be used with this name.");
+
+        super.setName(name);
+    }
+
+
+    @Override
+    public void setValue(Integer value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        if(value < 0 || value > 255)
+            throw new XMLException("The relative value of the paramenter must be between 0 and 255");
+
+        super.setValue(value);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
+        setValue(new Integer(value));
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        return ""+ getValue().intValue();
     }
 
 

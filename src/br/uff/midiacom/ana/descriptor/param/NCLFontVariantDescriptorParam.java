@@ -39,31 +39,79 @@ package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLFontVariantDescriptorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents a descriptor parameter whose value is a value from the
+ * enumeration <i>NCLFontVariant</i>.
+ * 
+ * <br/>
+ * 
+ * This element is used to parameterize the presentation of the node associated
+ * to a descriptor. The descriptorParam may redefine the value of an attribute
+ * defined by a region element or define new attributes for the node presentation.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the descriptor parameter. This attribute is required.</li>
+ *  <li><i>value</i> - value of the descriptor parameter. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public class NCLFontVariantDescriptorParam<T extends NCLFontVariantDescriptorParam,
                                            P extends NCLElement,
                                            I extends NCLElementImpl>
-        extends NCLFontVariantDescriptorParamPrototype<T, P, I>
-        implements NCLDescriptorParam<T, P, NCLFontVariant> {
+        extends NCLDescriptorParamPrototype<T, P, I, NCLFontVariant> {
 
 
+    /**
+     * Descriptor parameter constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLFontVariantDescriptorParam() throws XMLException {
         super();
     }
 
 
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public void setName(NCLAttributes name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
+        super.setName(NCLAttributes.FONT_VARIANT);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
+        for(NCLFontVariant font : NCLFontVariant.values()){
+            if(value.equals(font.toString()))
+                setValue(font);
+        }
+
+        throw new XMLException("Could not find value: " + value);
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        return getValue().toString();
     }
 
 

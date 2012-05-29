@@ -44,35 +44,213 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents a simple rule. A rule represents a test of the value of
+ * a variable. This variable can be a system variable or defined by the document.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the simple rule element. This attribute is required.</li>
+ *  <li><i>var</i> - variable tested by the rule. The variable must be a property
+ *                   of media with type settings. This attribute is required.</li>
+ *  <li><i>comparator</i> - relates the variable to the value. This attribute is
+ *                          required.</li>
+ *  <li><i>value</i> - value to be tested by the rule. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ep> 
+ */
 public class NCLRule<T extends NCLTestRule,
                      P extends NCLElement,
                      I extends NCLElementImpl,
                      Ep extends VariableReference>
-        extends NCLRulePrototype<T, P, I, Ep>
+        extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLTestRule<T, P> {
 
+    protected Ep var;
+    protected NCLComparator comparator;
+    protected StringType value;
+    
+    protected ItemList<ReferenceType> references;
 
+
+    /**
+     * Simple rule constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLRule() throws XMLException {
         super();
+        references = new ItemList<ReferenceType>();
     }
-
+    
     
     public NCLRule(String id) throws XMLException {
         super();
+        references = new ItemList<ReferenceType>();
         setId(id);
     }
 
 
+    /**
+     * Sets the variable to be tested by the rule. This attribute is required
+     * and can not be set to <i>null</i>. This method receives an element that
+     * makes reference to that variable.
+     * 
+     * <br/>
+     * 
+     * The variable used by the rule is a global variable in the list defined
+     * by the document. The variable tested by the rule must be indicated by a
+     * property element child of a media element with type <i>settings</i>.
+     * 
+     * <br/>
+     * 
+     * Since a rule can be defined in a document without a body, the variable
+     * remains without a reference from a property element until the document
+     * that uses the rule defines a media node of type <i>settings</i>, whose
+     * property indicates this variable.
+     *
+     * @param var
+     *          element that makes reference to the variable to be tested.
+     * @throws XMLException 
+     *          if the variable is null or any error occur while creating the
+     *          reference to the variable.
+     */
+    public void setVar(Ep var) throws XMLException {
+        if(var == null)
+            throw new XMLException("Null variable");
+        
+        Ep aux = this.var;
+        
+        this.var = var;
+        this.var.setOwner((T) this);
+        this.var.setOwnerAtt(NCLElementAttributes.VAR);
+        
+        impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
+        if(aux != null)
+            aux.clean();
+    }
+
+
+    /**
+     * Returns the variable to be tested by the rule or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The variable tested by the rule must be indicated by a property element
+     * child of a media element with type <i>settings</i>. This method receives
+     * an element to make reference to that property.
+     *
+     * @return
+     *          element that makes reference to the variable to be tested.
+     */
+    public Ep getVar() {
+        return var;
+    }
+
+
+    /**
+     * Sets the relation between the variable to the value. This attribute is
+     * required and can not be set to <i>null</i>. The possible comparators to
+     * be used are defined in the enumeration <i>NCLComparator</i>.
+     *
+     * @param comparator
+     *          relation between the variable to the value from the enumeration
+     *          <i>NCLComparator</i>.
+     * @throws XMLException 
+     *          if the value representing the comparator is null.
+     */
+    public void setComparator(NCLComparator comparator) throws XMLException {
+        if(comparator == null)
+            throw new XMLException("Null comparator.");
+        
+        NCLComparator aux = this.comparator;
+        this.comparator = comparator;
+        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
+    }
+
+
+    /**
+     * Returns the relation between the variable to the value or <i>null</i> if
+     * the attribute is not defined. The possible comparators to be used are
+     * defined in the enumeration <i>NCLComparator</i>.
+     * 
+     * @return
+     *          elation between the variable to the value from the enumeration
+     *          <i>NCLComparator</i> or <i>null</i> if the comparator is not defined.
+     */
+    public NCLComparator getComparator() {
+        return comparator;
+    }
+
+
+    /**
+     * Sets the value to be tested by the rule. This attribute is required and
+     * can not be set to <i>null</i>.
+     *
+     * @param value
+     *          string representing the value to be tested by the rule.
+     * @throws XMLException 
+     *          if the string representing the value is null or empty.
+     */
+    public void setValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
+        StringType aux = this.value;
+        this.value = new StringType(value);
+        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+    }
+
+
+    /**
+     * Returns the value to be tested by the rule or <i>null</i> if no value is
+     * defined.
+     * 
+     * @return
+     *         string representing the value to be tested by the rule or
+     *          <i>null</i> if no value is defined.
+     */
+    public String getValue() {
+        if(value != null)
+            return value.getValue();
+        else
+            return null;
+    }
+    
+    
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+    public boolean addReference(ReferenceType reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(ReferenceType reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ItemList<ReferenceType> getReferences() {
+        return references;
     }
     
 

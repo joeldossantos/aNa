@@ -37,9 +37,17 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.xml.XMLIdentifiableElement;
 
+
+/**
+ * Interface that represents an NCL element with an id.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLIdentifiableElement<T extends NCLIdentifiableElement,
                                         P extends NCLElement>
-        extends NCLElement<T, P>, br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElement<T, P> {
+        extends XMLIdentifiableElement<T, P>, NCLElement<T, P> {
 
 }

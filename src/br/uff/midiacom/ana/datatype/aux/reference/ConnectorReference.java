@@ -37,10 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -51,9 +51,9 @@ import br.uff.midiacom.xml.XMLException;
  * @param <O>
  * @param <I> 
  */
-public class ConnectorReference<T extends NCLCausalConnectorPrototype,
+public class ConnectorReference<T extends NCLCausalConnector,
                                 O extends NCLElement,
-                                I extends NCLImportPrototype,
+                                I extends NCLImport,
                                 A extends NCLElementAttributes>
         extends ExternalReferenceType<O, T, I, A> {
 

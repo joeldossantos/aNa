@@ -39,11 +39,9 @@ package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLRelativeDescriptorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.RelativeType;
 import org.w3c.dom.Element;
@@ -73,8 +71,7 @@ import org.w3c.dom.Element;
 public class NCLRelativeDescriptorParam<T extends NCLRelativeDescriptorParam,
                                         P extends NCLElement,
                                         I extends NCLElementImpl>
-        extends NCLRelativeDescriptorParamPrototype<T, P, I>
-        implements NCLDescriptorParam<T, P, RelativeType> {
+        extends NCLDescriptorParamPrototype<T, P, I, RelativeType> {
 
 
     /**
@@ -89,8 +86,39 @@ public class NCLRelativeDescriptorParam<T extends NCLRelativeDescriptorParam,
 
 
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public void setName(NCLAttributes name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        if(!name.equals(NCLAttributes.TOP) && !name.equals(NCLAttributes.LEFT)
+                && !name.equals(NCLAttributes.BOTTOM) && !name.equals(NCLAttributes.RIGHT)
+                && !name.equals(NCLAttributes.WIDTH) && !name.equals(NCLAttributes.HEIGHT))
+            throw new XMLException("This parameter type can not be used with this name.");
+
+        super.setName(name);
+    }
+
+
+    @Override
+    public void setValue(RelativeType value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+
+        super.setValue(value);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
+        setValue(new RelativeType(value));
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        return getValue().parse();
     }
 
 

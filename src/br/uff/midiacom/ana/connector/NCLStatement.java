@@ -40,10 +40,17 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 
 
+/**
+ * Interface that represents a statement element. The statement can be an
+ * assessment statement or a compound statement.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLStatement<T extends NCLStatement,
                               P extends NCLElement,
                               Er extends NCLRole>
-        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLStatement<T, P>, NCLElement<T, P> {
+        extends NCLElement<T, P> {
 
 
     /**

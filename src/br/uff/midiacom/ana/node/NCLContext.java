@@ -51,7 +51,6 @@ import br.uff.midiacom.ana.datatype.aux.reference.ContextReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLContextPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -59,6 +58,51 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
+/**
+ * Class that represents the context node element.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the context element. This attribute is required.</li>
+ *  <li><i>refer</i> - reference to a context or body elements. This attribute
+ *                     is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>port</i> - element representing a context interface point. The context
+ *                    can have none or several port elements.</li>
+ *  <li><i>property</i> - element representing a property. The context can have
+ *                        none or several property elements.</li>
+ *  <li><i>media</i> - element representing a media object. The context can have
+ *                     none or several media elements.</li>
+ *  <li><i>context</i> - element representing a composition. The context can have
+ *                       none or several context elements.</li>
+ *  <li><i>switch</i> - element representing a content control composition. The
+ *                      context can have none or several switch elements.</li>
+ *  <li><i>link</i> - element representing a link among medias or compositions.
+ *                    The context can have none or several link elements.</li>
+ *  <li><i>meta</i> - elements defining meta data. The context can have none or
+ *                    several meta elements.</li>
+ *  <li><i>metadata</i> - elements defining a RDF tree. The context can have none
+ *                        or several metadata elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ept>
+ * @param <Epp>
+ * @param <En>
+ * @param <El>
+ * @param <Em>
+ * @param <Emt>
+ * @param <Rn> 
+ */
 public class NCLContext<T extends NCLContext,
                         P extends NCLElement,
                         I extends NCLElementImpl,
@@ -70,26 +114,127 @@ public class NCLContext<T extends NCLContext,
                         Em extends NCLMeta,
                         Emt extends NCLMetadata,
                         Rn extends ContextReference>
-        extends NCLContextPrototype<T, P, I, Ept, Epp, En, El, Em, Emt, Rn>
+        extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
-    
+
+    protected Rn refer;
     private String refer_id;
     
     
+    /**
+     * Context element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLContext() throws XMLException {
         super();
     }
-
-
+    
+    
     public NCLContext(String id) throws XMLException {
         super();
         setId(id);
     }
 
 
-    @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+    /**
+     * Sets the reference to a context or body elements. This attribute is
+     * optional. Set the reference to <i>null</i> to erase a reference already
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The referred element must be a context element that represents the same
+     * context defined in the body of the NCL document where this context is or
+     * in the body of an imported document. In the last case, the alias of the
+     * imported document must be indicated in the reference.
+     * 
+     * <br/>
+     * 
+     * The referred element must directly define its attributes and child nodes.
+     * It can not refer to another node.
+     * 
+     * <br/>
+     * 
+     * When a context element defines the refer attribute, all attributes and
+     * child nodes defined by the referred node are inherited. The attribute and
+     * child nodes defined by the context that makes the reference are ignored,
+     * except the id attribute.
+     * 
+     * <br/>
+     * 
+     * The referred element and the one that makes the reference must be
+     * considered the same, in relation to its data structure. That means that
+     * a node can be represented by more than one NCL element. Since nodes inside
+     * a composite node defines a set of nodes, a node can not be represented by
+     * more than one node inside a composition. That means that the id attribute
+     * of an NCL element representing a node is not only a unique identifier for
+     * the element, but also the only identifier corresponding to a node inside
+     * a composition.
+     * 
+     * @param refer
+     *          reference to a context or body elements or <i>null</i> to erase
+     *          a reference already defined.
+     * @throws XMLException 
+     *          if any error occur while creating the reference to the context
+     *          or body elements.
+     */
+    public void setRefer(Rn refer) throws XMLException {
+        Rn aux = this.refer;
+        
+        this.refer = refer;
+        if(this.refer != null){
+            this.refer.setOwner((T) this);
+            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        }
+        
+        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+        if(aux != null)
+            aux.clean();
+    }
+
+
+    /**
+     * Return the reference to a context or body elements or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * The referred element must be a context element that represents the same
+     * context defined in the body of the NCL document where this context is or
+     * in the body of an imported document. In the last case, the alias of the
+     * imported document must be indicated in the reference.
+     * 
+     * <br/>
+     * 
+     * The referred element must directly define its attributes and child nodes.
+     * It can not refer to another node.
+     * 
+     * <br/>
+     * 
+     * When a context element defines the refer attribute, all attributes and
+     * child nodes defined by the referred node are inherited. The attribute and
+     * child nodes defined by the context that makes the reference are ignored,
+     * except the id attribute.
+     * 
+     * <br/>
+     * 
+     * The referred element and the one that makes the reference must be
+     * considered the same, in relation to its data structure. That means that
+     * a node can be represented by more than one NCL element. Since nodes inside
+     * a composite node defines a set of nodes, a node can not be represented by
+     * more than one node inside a composition. That means that the id attribute
+     * of an NCL element representing a node is not only a unique identifier for
+     * the element, but also the only identifier corresponding to a node inside
+     * a composition.
+     * 
+     * @return 
+     *          reference to a context or body elements or <i>null</i> if the
+     *          attribute is not defined.
+     */
+    public Rn getRefer() {
+        return refer;
     }
     
     

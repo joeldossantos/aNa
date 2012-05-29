@@ -41,12 +41,22 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
+/**
+ * Interface that represents a node element of the NCL language. A node may
+ * represent a media object inside the document or a set of other nodes, being
+ * used to structure the document.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLNode<T extends NCLNode,
                          P extends NCLElement,
                          Ei extends NCLInterface>
-        extends br.uff.midiacom.ana.datatype.ncl.node.NCLNode<T, P>, NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
     
     /**

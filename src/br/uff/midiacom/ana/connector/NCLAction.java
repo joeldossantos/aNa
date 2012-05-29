@@ -38,15 +38,70 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
 import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
+import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Interface that represents an action element. The action can be a simple action
+ * or a compound action.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <Ep>
+ * @param <R> 
+ */
 public interface NCLAction<T extends NCLAction,
                            P extends NCLElement,
                            Ep extends NCLConnectorParam,
                            Er extends NCLRole,
                            R extends ConParamReference>
-        extends br.uff.midiacom.ana.datatype.ncl.connector.NCLAction<T, P, Ep, R>, NCLElement<T, P> {
+        extends NCLElement<T, P> {
+
+    
+    /**
+     * Sets the delay waited by the action. This attribute is optional. Set the
+     * delay to <i>null</i> to erase a delay already defined.
+     * 
+     * <br/>
+     * 
+     * The delay can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
+     * 
+     * @param delay
+     *          element representing the delay or <i>null</i> to erase a
+     *          delay already defined.
+     * @throws XMLException
+     *          if an error occur while creating the delay value.
+     */
+    public void setDelay(DoubleParamType<Ep, T, R> delay) throws XMLException;
+    
+    
+    /**
+     * Returns the delay waited by the action or <i>null</i> if the attribute is
+     * not defined.
+     * 
+     * <br/>
+     * 
+     * The delay can be set as a parameter, in which case its value is defined by
+     * the link that uses the connector where this action is.
+     * 
+     * <br/>
+     * 
+     * In case the attribute value is defined by a parameter, the parameter must
+     * be defined in the same connector where this attribute assessment it.
+     * 
+     * @return
+     *          element representing the delay or <i>null</i> if the attribute
+     *          is not defined.
+     */
+    public DoubleParamType<Ep, T, R> getDelay();
 
     
     /**

@@ -41,11 +41,20 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
+/**
+ * Interface that represents a layout descriptor. A layout descriptor can be a
+ * descriptor or a descriptor switch element.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor,
                                      P extends NCLElement>
-        extends br.uff.midiacom.ana.datatype.ncl.descriptor.NCLLayoutDescriptor<T, P>, NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
     
     /**

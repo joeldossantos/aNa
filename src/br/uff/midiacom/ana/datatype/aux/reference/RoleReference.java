@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.connector.NCLRole;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLRolePrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
@@ -51,7 +51,7 @@ import br.uff.midiacom.xml.datatype.reference.ReferenceType;
  * @param <O>
  * @param <I> 
  */
-public class RoleReference<T extends NCLRolePrototype,
+public class RoleReference<T extends NCLRole,
                            O extends NCLElement,
                            A extends NCLElementAttributes>
         extends ReferenceType<O, T, A> {

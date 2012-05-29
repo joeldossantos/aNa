@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.datatype.aux.reference;
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
+import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 
@@ -55,7 +55,7 @@ import br.uff.midiacom.xml.datatype.reference.ReferenceType;
  * @param <V> 
  */
 public class VariableReference<T extends NCLVariable,
-                               O extends NCLRulePrototype,
+                               O extends NCLRule,
                                V extends SysVarType>
         extends ReferenceType<O, T, NCLElementAttributes> {
 

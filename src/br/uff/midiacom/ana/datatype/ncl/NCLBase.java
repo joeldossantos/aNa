@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
+
 
 /**
  * Interface that represent a base of the NCL document head.

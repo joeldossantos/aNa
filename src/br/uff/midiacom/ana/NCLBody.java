@@ -39,7 +39,7 @@ package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.structure.NCLBodyPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -59,6 +59,49 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
+/**
+ * Class that represents the NCL document body element. The body is a special
+ * type of context node, representing the most external document context.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the document body element. This attribute is optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>port</i> - element representing a body interface point. The body can
+ *                    have none or several port elements.</li>
+ *  <li><i>property</i> - element representing a property. The body can have none
+ *                        or several property elements.</li>
+ *  <li><i>media</i> - element representing a media object. The body can have none
+ *                     or several media elements.</li>
+ *  <li><i>context</i> - element representing a composition. The body can have
+ *                       none or several context elements.</li>
+ *  <li><i>switch</i> - element representing a content control composition. The
+ *                      body can have none or several switch elements.</li>
+ *  <li><i>link</i> - element representing a link among medias or compositions.
+ *                    The body can have none or several link elements.</li>
+ *  <li><i>meta</i> - elements defining meta data. The body can have none or several
+ *                    meta elements.</li>
+ *  <li><i>metadata</i> - elements defining a RDF tree. The body can have none
+ *                        or several metadata elements.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ept>
+ * @param <Epp>
+ * @param <En>
+ * @param <El>
+ * @param <Em>
+ * @param <Emt> 
+ */
 public class NCLBody<T extends NCLBody,
                      P extends NCLElement,
                      I extends NCLElementImpl,
@@ -69,18 +112,18 @@ public class NCLBody<T extends NCLBody,
                      El extends NCLLink,
                      Em extends NCLMeta,
                      Emt extends NCLMetadata>
-        extends NCLBodyPrototype<T, P, I, Ept, Epp, En, El, Em, Emt>
+        extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
         implements NCLNode<En, P, Ei> {
 
     
+    /**
+     * Body element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLBody() throws XMLException {
         super();
-    }
-
-
-    @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
     }
     
     

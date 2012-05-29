@@ -37,6 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.xml.XMLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 

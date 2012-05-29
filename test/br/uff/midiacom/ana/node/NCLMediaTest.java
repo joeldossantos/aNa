@@ -47,8 +47,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.interfaces.NCLProperty;

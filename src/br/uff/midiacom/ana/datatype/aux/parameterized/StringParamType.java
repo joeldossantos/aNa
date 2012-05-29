@@ -37,18 +37,18 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.parameterized;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
+import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLCausalConnectorPrototype;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import br.uff.midiacom.xml.datatype.parameterized.ParameterizedValueType;
 
 
-public class StringParamType<P extends NCLConnectorParamPrototype,
+public class StringParamType<P extends NCLConnectorParam,
                              O extends NCLElement,
                              R extends ConParamReference>
         extends ParameterizedValueType<StringParamType, O, StringType, NCLElementAttributes, R> {
@@ -72,13 +72,13 @@ public class StringParamType<P extends NCLConnectorParamPrototype,
     @Override
     protected R createParam(String param, O owner) throws XMLException {
         NCLElement connector = (NCLElement) owner.getParent();
-        while(!(connector instanceof NCLCausalConnectorPrototype)){
+        while(!(connector instanceof NCLCausalConnector)){
             connector = (NCLElement) connector.getParent();
             if(connector == null)
                 throw new NCLParsingException("Could not find a parent connector");
         }
         
-        P par = (P) ((NCLCausalConnectorPrototype) connector).getConnectorParams().get(param);
+        P par = (P) ((NCLCausalConnector) connector).getConnectorParams().get(param);
         if(par == null)
             throw new NCLParsingException("Could not find a param in connector with name: " + param);
         

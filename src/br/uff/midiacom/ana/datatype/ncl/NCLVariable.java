@@ -37,8 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
-import br.uff.midiacom.ana.datatype.ncl.rule.NCLRulePrototype;
+import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.reference.ReferenceType;
@@ -58,7 +59,7 @@ import org.w3c.dom.Element;
  * @param <V> 
  */
 public class NCLVariable<T extends NCLVariable,
-                         P extends NCLRulePrototype,
+                         P extends NCLRule,
                          I extends NCLElementImpl,
                          V extends SysVarType>
         extends NCLElementPrototype<T, P, I>

@@ -38,11 +38,92 @@
 package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
+import br.uff.midiacom.xml.XMLException;
 
 
+/**
+ * Interface that represents a descriptor parameter. This element is used to
+ * parameterize the presentation of the node associated to a descriptor. The
+ * descriptorParam may redefine the value of an attribute defined by a region
+ * element or define new attributes for the node presentation.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the descriptor parameter. This attribute is required.</li>
+ *  <li><i>value</i> - value of the descriptor parameter. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <V> 
+ */
 public interface NCLDescriptorParam<T extends NCLDescriptorParam,
                                     P extends NCLElement,
                                     V>
-        extends br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLDescriptorParam<T, P, V>, NCLElement<T, P> {
+        extends NCLElement<T, P> {
 
+
+    /**
+     * Sets the name of the descriptor parameter. The element name represents
+     * an attribute of descriptor related node presentation. This attribute is
+     * required and can not be set to <i>null</i>. The possible parameter names
+     * to be used are defined in the enumeration <i>NCLAttributes</i>.
+     * 
+     * @param name 
+     *          parameter name from the enumeration <i>NCLAttributes</i>.
+     * @throws XMLException 
+     *          if the value representing the name is null.
+     */
+    public void setName(NCLAttributes name) throws XMLException;
+
+
+    /**
+     * Returns the name of the descriptor parameter or <i>null</i> if the
+     * attribute is not defined. The element name represents an attribute of
+     * descriptor related node presentation. The possible parameter names
+     * to be used are defined in the enumeration <i>NCLAttributes</i>.
+     * 
+     * @return
+     *          parameter name from the enumeration <i>NCLAttributes</i> or
+     *          <i>null</i> if the attribute is not defined.
+     */
+    public NCLAttributes getName();
+
+
+    /**
+     * Sets the value of the descriptor parameter. This attribute is required
+     * and can not be set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * Each parameter have its possible value types. See the reference
+     * (ABNT NBR 15606-2) to more information.
+     * 
+     * @param value 
+     *          value of the descriptor parameter. The type of the value will
+     *          depends on the parameter name.
+     * @throws XMLException 
+     *          if the value is null.
+     */
+    public void setValue(V value) throws XMLException;
+
+
+    /**
+     * Returns the value of the descriptor parameter or <i>null</i> if the
+     * attribute is not defined.
+     * 
+     * <br/>
+     * 
+     * Each parameter have its possible value types. See the reference
+     * (ABNT NBR 15606-2) to more information.
+     *
+     * @return
+     *          value of the descriptor parameter or <i>null</i> if the attribute
+     *          is not defined. The type of the value will depends on the
+     *          parameter name
+     */
+    public V getValue();
 }

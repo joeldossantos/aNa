@@ -39,32 +39,154 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportedDocumentBasePrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLBase;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
+/**
+ * Class that represents a base of imported documents.
+ * 
+ * <br/>
+ * 
+ * All bases defined in an imported document, as well as its body are imported.
+ * The bases defined in the imported document are treated as if they were imported
+ * by a base in the NCL document head. The body of the imported document is treated
+ * as a context element.
+ * 
+ * <br/>
+ * 
+ * The body of the imported document is not included in the NCL document body. The
+ * elements defined in the imported document body just become avaliable to be
+ * reused inside the NCL document that imports it.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>id</i> - id of the base of imported documents. This attribute is
+ *                  optional.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>importNCL</i> - element that imports an NCL document. The base must have
+ *                         at least one import element.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ei> 
+ */
 public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
                                      P extends NCLElement,
                                      I extends NCLElementImpl,
                                      Ei extends NCLImport>
-        extends NCLImportedDocumentBasePrototype<T, P, I, Ei>
-        implements NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLBase<T, P> {
+
+    protected ElementList<Ei, T> imports;
 
 
+    /**
+     * Base of imported documents constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLImportedDocumentBase() throws XMLException {
         super();
+        imports = new ElementList<Ei, T>();
     }
 
 
-    @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+    /**
+     * Adds an element that imports an NCL document to the base of imported
+     * documents. The base must have at least one import element.
+     * 
+     * @param importNCL
+     *          element that imports an NCL document.
+     * @return
+     *          true if the import element was added.
+     * @throws XMLException 
+     *          if the import element is null.
+     */
+    public boolean addImportNCL(Ei importNCL) throws XMLException {
+        if(imports.add(importNCL, (T) this)){
+            impl.notifyInserted(NCLElementSets.IMPORTS, importNCL);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Removes an element that imports an NCL document of the base of imported
+     * documents. The base must have at least one import element.
+     * 
+     * @param importNCL
+     *          element that imports an NCL document.
+     * @return
+     *          true if the import element was removed.
+     * @throws XMLException 
+     *          if the import element is null.
+     */
+    public boolean removeImportNCL(Ei importNCL) throws XMLException {
+        if(imports.remove(importNCL)){
+            impl.notifyRemoved(NCLElementSets.IMPORTS, importNCL);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Verifies if the base of imported documents has a specific element that
+     * imports an NCL document. The base must have at least one import element.
+     * 
+     * @param importNCL
+     *          element that imports an NCL document.
+     * @return
+     *          true if the base of imported documents has the import element.
+     * @throws XMLException 
+     *          if the import element is null.
+     */
+    public boolean hasImportNCL(Ei importNCL) throws XMLException {
+        return imports.contains(importNCL);
+    }
+
+
+    /**
+     * Verifies if the base of imported documents has at least one element that
+     * imports an NCL document. The base must have at least one import element.
+     * 
+     * @return 
+     *          true if the base of imported documents has at least import element.
+     */
+    public boolean hasImportNCL() {
+        return !imports.isEmpty();
+    }
+
+
+    /**
+     * Returns the list of elements that imports an NCL document. The base can
+     * have none or several import elements.
+     * 
+     * @return 
+     *          element list with all import elements.
+     */
+    public ElementList<Ei, T> getImportNCLs() {
+        return imports;
     }
 
 

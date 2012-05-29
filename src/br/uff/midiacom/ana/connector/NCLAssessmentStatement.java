@@ -39,17 +39,54 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLAssessmentStatementPrototype;
+import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import java.util.Iterator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
+/**
+ * Class that represents a assessment statement element. This element is used
+ * to compares to values. The values can be an attribute of a node or event or
+ * a value.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>comparator</i> - indicates the comparison made. This attribute is required.</li>
+ * </ul>
+ * 
+ * <br/>
+ * 
+ * This element has as children the elements:
+ * <ul>
+ *  <li><i>attributeAssessment</i> - element that represents the attribute whose
+ *                                   value will be compared. The assessment
+ *                                   statement can have one or two attribute
+ *                                   assessment elements.</li>
+ *  <li><i>valueAssessment</i> - element representing value to be compared. The
+ *                               assessment statement can have none or one value
+ *                               assessment element.</li>
+ * </ul>
+ * 
+ * Note that the assessment statement will compare either two attributes or an
+ * attribute with a value.
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I>
+ * @param <Ea>
+ * @param <Ev>
+ * @param <Es> 
+ */
 public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
                                     P extends NCLElement,
                                     I extends NCLElementImpl,
@@ -57,18 +94,227 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
                                     Ev extends NCLValueAssessment,
                                     Es extends NCLStatement,
                                     Er extends NCLRole>
-        extends NCLAssessmentStatementPrototype<T, P, I, Ea, Ev, Es>
+        extends NCLElementPrototype<Es, P, I>
         implements NCLStatement<Es, P, Er> {
 
+    protected NCLComparator comparator;
+    protected Ev valueAssessment;
+    protected ElementList<Ea, T> attributeAssessments;
 
+
+    /**
+     * Assessment statement element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLAssessmentStatement() throws XMLException {
         super();
+        attributeAssessments = new ElementList<Ea, T>();
     }
 
 
+    /**
+     * Sets the type of comparison to be made. This attribute is required an can
+     * not be set to <i>null</i>. The possible comparison values are defined in
+     * the enumeration <i>NCLComparator</i>.
+     * 
+     * @param comparator
+     *          element representing the type of comparison from the enumeration
+     *          <i>NCLComparator</i>.
+     * @throws XMLException 
+     *          if the element is null.
+     */
+    public void setComparator(NCLComparator comparator) throws XMLException {
+        if(comparator == null)
+            throw new XMLException("Null comparison.");
+        
+        NCLComparator aux = this.comparator;
+        this.comparator = comparator;
+        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
+    }
+    
+    
+    /**
+     * Returns the type of comparison to be made or <i>null</i> if the attribute
+     * is not defined. The possible comparison values are defined in the
+     * enumeration <i>NCLComparator</i>.
+     * 
+     * @return
+     *          element representing the type of comparison from the enumeration
+     *          <i>NCLComparator</i> or <i>null</i> if the attribute is not
+     *          defined.
+     */
+    public NCLComparator getComparator() {
+        return comparator;
+    }
+    
+    
+    /**
+     * Sets the element representing value to be compared. The assessment
+     * statement can have none or one value assessment element. Set the value
+     * assessment to <i>null</i> to erase a value assessment already defined.
+     * 
+     * @param value
+     *          element representing a value assessment or <i>null</i> to erase
+     *          a value already defined.
+     */
+    public void setValueAssessment(Ev value) {
+        //Removes the parent of the actual value
+        if(this.valueAssessment != null){
+            this.valueAssessment.setParent(null);
+            impl.notifyRemoved(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
+        }
+
+        this.valueAssessment = value;
+        //Sets this as the parent of the new value
+        if(this.valueAssessment != null){
+            this.valueAssessment.setParent(this);
+            impl.notifyInserted(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
+        }
+    }
+    
+    
+    /**
+     * Returns the element representing value to be compared or <i>null</i> if
+     * the value is not defined. The assessment statement can have none or one
+     * value assessment element.
+     * 
+     * @return
+     *          element representing a value assessment or <i>null</i> if the
+     *          value is not defined.
+     */
+    public Ev getValueAssessment() {
+        return valueAssessment;
+    }
+    
+    
+    /**
+     * Adds an element that represents the attribute whose value will be compared.
+     * The assessment statement can have one or two attribute assessment elements.
+     * 
+     * @param attribute
+     *          element representing an attribute assessment.
+     * @return
+     *          true if the element representing an attribute assessment was added.
+     * @throws XMLException 
+     *          if the element representing the attribute assessment is null or
+     *          the assessment statement already have two attribute assessments.
+     */
+    public boolean addAttributeAssessment(Ea attribute) throws XMLException {
+        if(attributeAssessments.size() == 2)
+            throw new XMLException("can't have more than two attributes");
+        
+        if(attributeAssessments.add(attribute, (T) this)){
+            impl.notifyInserted(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Removes an element that represents the attribute whose value will be compared.
+     * The assessment statement can have one or two attribute assessment elements.
+     * 
+     * @param attribute
+     *          element representing an attribute assessment.
+     * @return
+     *          true if the element representing an attribute assessment was removed.
+     * @throws XMLException 
+     *          if the element representing the attribute assessment is null.
+     */
+    public boolean removeAttributeAssessment(Ea attribute) throws XMLException {
+        if(attributeAssessments.remove(attribute)){
+            impl.notifyRemoved(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Verifies if the assessment statement has a specific element that represents
+     * the attribute whose value will be compared. The assessment statement can
+     * have one or two attribute assessment elements.
+     * 
+     * @param attribute
+     *          element representing an attribute assessment.
+     * @return
+     *          true if the assessment statement has the element representing an
+     *          attribute assessment.
+     * @throws XMLException 
+     *          if the element representing the attribute assessment is null.
+     */
+    public boolean hasAttributeAssessment(Ea attribute) throws XMLException {
+        return attributeAssessments.contains(attribute);
+    }
+    
+    
+    /**
+     * Verifies if the assessment statement has at least one element that represents
+     * the attribute whose value will be compared. The assessment statement can
+     * have one or two attribute assessment elements.
+     * 
+     * @return
+     *          true if the assessment statement has at least one attribute
+     *          assessment.
+     */
+    public boolean hasAttributeAssessment() {
+        return !attributeAssessments.isEmpty();
+    }
+
+
+    /**
+     * Returns the list of attribute assessments that an assessment statement have.
+     * The assessment statement can have one or two attribute assessment elements.
+     * 
+     * @return 
+     *          element list with all attribute assessments.
+     */
+    public ElementList<Ea, T> getAttributeAssessments() {
+        return attributeAssessments;
+    }
+    
+    
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public boolean compare(Es other) {
+        boolean comp = true;
+
+        String this_stat, other_stat;
+        NCLAssessmentStatement other_asses;
+
+        // Verifica se sao do mesmo tipo
+        if(!(other instanceof NCLAssessmentStatement))
+            return false;
+
+        other_asses = (NCLAssessmentStatement) other;
+        
+        // Compara pelo comparador
+        if(getComparator() == null) this_stat = ""; else this_stat = getComparator().toString();
+        if(other_asses.getComparator() == null) other_stat = ""; else other_stat = other_asses.getComparator().toString();
+        comp &= this_stat.equals(other_stat);
+
+        // Compara o número de attributeAssessment
+        comp &= attributeAssessments.size() == other_asses.getAttributeAssessments().size();
+
+        // Compara os attributeAssessment
+        Iterator it = other_asses.getAttributeAssessments().iterator();
+        for(NCLAttributeAssessment att : attributeAssessments){
+            if(!it.hasNext())
+                continue;
+            NCLAttributeAssessment other_att = (NCLAttributeAssessment) it.next();
+            comp &= att.compare(other_att);
+            if(comp)
+                break;
+        }
+
+        // Compara os valueAssessment
+        if(getValueAssessment() != null && other_asses.getValueAssessment() != null)
+            comp &= getValueAssessment().compare(other_asses.getValueAssessment());
+
+
+        return comp;
     }
     
     

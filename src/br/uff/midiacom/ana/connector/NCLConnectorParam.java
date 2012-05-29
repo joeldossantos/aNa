@@ -42,32 +42,163 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.connector.NCLConnectorParamPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents a connector parameter element. This element is used
+ * to define a parameterized value to be used in a connector.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the parameter. This attribute is required.</li>
+ *  <li><i>type</i> - type of the parameter. This attribute is optional.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public class NCLConnectorParam<T extends NCLConnectorParam,
                                P extends NCLElement,
                                I extends NCLElementImpl>
-        extends NCLConnectorParamPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
-        
+        extends NCLIdentifiableElementPrototype<T, P, I>
+        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
     
+    protected StringType type;
+    
+    protected ItemList<ReferenceType> references;
+    
+    
+    /**
+     * Parameter element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLConnectorParam() throws XMLException {
         super();
+        references = new ItemList<ReferenceType>();
     }
-
-
+    
+    
     public NCLConnectorParam(String name) throws XMLException {
         super();
+        references = new ItemList<ReferenceType>();
         setName(name);
+    }
+    
+    
+    @Deprecated
+    @Override
+    public void setId(String id) throws XMLException {
+        super.setId(id);
+    }
+    
+    
+    @Deprecated
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+    
+    
+    /**
+     * Sets the name of the parameter. This attribute is required and can not be
+     * set to <i>null</i>.
+     * 
+     * <br/>
+     * 
+     * The name of the parameter must be unique inside the connector.
+     * 
+     * @param name
+     *          string representing the name of the parameter.
+     * @throws XMLException 
+     *          if the name is null or empty.
+     */
+    public void setName(String name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
+        String aux = this.getName();
+        super.setId(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+    }
+    
+    
+    /**
+     * Returns the name of the parameter or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * <br/>
+     * 
+     * The name of the parameter must be unique inside the connector.
+     * 
+     * @return
+     *          string representing the name of the parameter or <i>null</i> if
+     *          the attribute is not defined.
+     */
+    public String getName() {
+        return super.getId();
+    }
+    
+    
+    /**
+     * Sets the type of the parameter. This attribute is optional. Set the type
+     * to <i>null</i> to erase a type already defined.
+     * 
+     * @param type
+     *          string representing the type of the parameter or <i>null</i> to
+     *          erase a type already defined.
+     * @throws XMLException 
+     *          if the string is empty.
+     */
+    public void setType(String type) throws XMLException {
+        StringType aux = this.type;
+        this.type = new StringType(type);
+        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
     }
 
 
+    /**
+     * Returns the type of the parameter or <i>null</i> if the attribute is not
+     * defined.
+     * 
+     * @return
+     *          string representing the type of the parameter or <i>null</i> if
+     *          the attribute is not defined.
+     */
+    public String getType() {
+        if(type == null)
+            return null;
+        else
+            return type.getValue();
+    }
+    
+    
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<T, P>(this);
+    public boolean addReference(ReferenceType reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(ReferenceType reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ItemList<ReferenceType> getReferences() {
+        return references;
     }
     
     

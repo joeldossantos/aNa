@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
@@ -58,7 +58,7 @@ import br.uff.midiacom.xml.datatype.reference.ReferredElement;
  */
 public abstract class ExternalReferenceType<O extends NCLElement,
                                     T extends ReferredElement,
-                                    I extends NCLImportPrototype,
+                                    I extends NCLImport,
                                     A extends NCLElementAttributes>
         extends br.uff.midiacom.xml.datatype.reference.ReferenceType<O, T, A> {
 

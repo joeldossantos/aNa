@@ -37,10 +37,56 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.datatype.ncl.NCLModificationListener;
+import br.uff.midiacom.xml.XMLElement;
+import br.uff.midiacom.xml.XMLException;
+import org.w3c.dom.Element;
 
 
+/**
+ * Interface that represents an NCL element.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLElement<T extends NCLElement,
                             P extends NCLElement>
-        extends br.uff.midiacom.ana.datatype.ncl.NCLElement<T, P> {
+        extends XMLElement<T, P> {
 
+    
+    /**
+     * Adds a modification listener to the NCL element. The modification listener
+     * will receive notifications as the NCL element is changed. The modification
+     * listener is optional, set it to <i>null</i> to erase the modification
+     * listener already defined.
+     *
+     * @param listener
+     *          element to receive notifications about the NCL element modification
+     *          or null to erase the modification listener already defined.
+     */
+    public void setModificationListener(NCLModificationListener listener);
+
+
+    /**
+     * Returns the modification listener of the NCL element or <i>null</i> if
+     * no modification listener is defined. The modification listener will
+     * receive notifications as the NCL element is changed.
+     *
+     * @return
+     *          element to receive notifications about the NCL element modification
+     *          or null if no modification listener is defined.
+     */
+    public NCLModificationListener getModificationListener();
+    
+    
+    /**
+     * Loads the NCL element from a DOM element. This method is used to load an
+     * NCL document from a file.
+     * 
+     * @param element
+     *          DOM element representing the XML element to be loaded
+     * @throws XMLException 
+     *          if any error occur while loading the NCL element.
+     */
+    public void load(Element element) throws XMLException;
 }

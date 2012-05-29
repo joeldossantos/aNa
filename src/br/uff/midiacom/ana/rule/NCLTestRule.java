@@ -40,11 +40,21 @@ package br.uff.midiacom.ana.rule;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
+/**
+ * Interface that represents a rule element of the NCL language. A rule
+ * represents a test of the value of a variable. This variable can be a system
+ * variable or defined by the document.
+ * 
+ * @param <T>
+ * @param <P> 
+ */
 public interface NCLTestRule<T extends NCLTestRule,
                              P extends NCLElement>
-        extends br.uff.midiacom.ana.datatype.ncl.rule.NCLTestRule<T, P>, NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
     
     /**

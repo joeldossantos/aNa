@@ -39,30 +39,123 @@ package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLPercentDescriptorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents a descriptor parameter whose value is a percent value.
+ * 
+ * <br/>
+ * 
+ * This element is used to parameterize the presentation of the node associated
+ * to a descriptor. The descriptorParam may redefine the value of an attribute
+ * defined by a region element or define new attributes for the node presentation.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the descriptor parameter. This attribute is required.</li>
+ *  <li><i>value</i> - value of the descriptor parameter. This attribute is required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public class NCLPercentDescriptorParam<T extends NCLPercentDescriptorParam,
                                        P extends NCLElement,
                                        I extends NCLElementImpl>
-        extends NCLPercentDescriptorParamPrototype<T, P, I>
-        implements NCLDescriptorParam<T, P, Double> {
+        extends NCLDescriptorParamPrototype<T, P, I, Double> {
+
+    private boolean relative;
 
 
+    /**
+     * Descriptor parameter constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLPercentDescriptorParam() throws XMLException {
         super();
+        relative = false;
     }
 
 
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public void setName(NCLAttributes name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        if(!name.equals(NCLAttributes.TRANSPARENCY) && !name.equals(NCLAttributes.SOUND_LEVEL)
+                && !name.equals(NCLAttributes.BALANCE_LEVEL) && !name.equals(NCLAttributes.TREBLE_LEVEL)
+                && !name.equals(NCLAttributes.BASS_LEVEL))
+            throw new XMLException("This parameter type can not be used with this name.");
+
+        super.setName(name);
+    }
+
+
+    @Override
+    public void setValue(Double value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        if(!relative && (value < 0 || value > 1))
+            throw new XMLException("The value of the paramenter must be between 0 and 1");
+        if(relative && (value < 0 || value > 100))
+            throw new XMLException("The relative value of the paramenter must be between 0 and 100");
+
+        super.setValue(value);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
+        int index = value.indexOf("%");
+        if(index > 0){
+            value = value.substring(0, index);
+            setRelative(true);
+        }
+
+        setValue(new Double(value));
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        if(relative)
+            return (getValue().toString())+"%";
+        else
+            return getValue().toString();
+    }
+
+
+    /**
+     * Determines if the value is a percent value.
+     * 
+     * @param relative 
+     *          true if the value is a percent value.
+     */
+    public void setRelative(boolean relative) {
+        this.relative = relative;
+    }
+
+
+    /**
+     * Verifies if the value is a percent value.
+     * 
+     * @return 
+     *          true if the value is a percent value.
+     */
+    public boolean getRelative() {
+        return relative;
     }
 
 

@@ -39,12 +39,10 @@ package br.uff.midiacom.ana.descriptor.param;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.aux.basic.TranspColorType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.ncl.descriptor.param.NCLTranspColorDescriptorParamPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -74,8 +72,7 @@ import org.w3c.dom.Element;
 public class NCLTranspColorDescriptorParam<T extends NCLTranspColorDescriptorParam,
                                            P extends NCLElement,
                                            I extends NCLElementImpl>
-        extends NCLTranspColorDescriptorParamPrototype<T, P, I>
-        implements NCLDescriptorParam<T, P, TranspColorType> {
+        extends NCLDescriptorParamPrototype<T, P, I, TranspColorType> {
 
 
     /**
@@ -90,8 +87,28 @@ public class NCLTranspColorDescriptorParam<T extends NCLTranspColorDescriptorPar
 
 
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public void setName(NCLAttributes name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        if(!name.equals(NCLAttributes.BACKGROUND))
+            throw new XMLException("This parameter type can not be used with this name.");
+
+        super.setName(name);
+    }
+
+
+    @Override
+    protected void setParamValue(String value) throws XMLException {
+        if(value == null)
+            throw new XMLException("Null value.");
+        
+        setValue(new TranspColorType(value));
+    }
+
+
+    @Override
+    protected String getParamValue() {
+        return getValue().toString();
     }
 
 

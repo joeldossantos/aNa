@@ -37,10 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.node.NCLNode;
-import br.uff.midiacom.ana.datatype.ncl.reuse.NCLImportPrototype;
+import br.uff.midiacom.ana.node.NCLNode;
+import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -53,7 +53,7 @@ import br.uff.midiacom.xml.XMLException;
  */
 public class MediaReference<T extends NCLNode,
                             O extends NCLElement,
-                            I extends NCLImportPrototype,
+                            I extends NCLImport,
                             A extends NCLElementAttributes>
         extends ExternalReferenceType<O, T, I, A> {
 

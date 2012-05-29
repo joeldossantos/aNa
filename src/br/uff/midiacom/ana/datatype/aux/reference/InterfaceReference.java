@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.interfaces.NCLInterface;
+import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 

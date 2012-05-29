@@ -39,29 +39,125 @@ package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.meta.NCLMetaPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
+/**
+ * Class that represents the meta element. This element is used to describe an
+ * NCL document.
+ * 
+ * <br/>
+ * 
+ * This element defines the attributes:
+ * <ul>
+ *  <li><i>name</i> - name of the metadata property. This attribute is required.</li>
+ *  <li><i>content</i> - value of the metadata property. This attribute is
+ *                     required.</li>
+ * </ul>
+ * 
+ * @param <T>
+ * @param <P>
+ * @param <I> 
+ */
 public class NCLMeta<T extends NCLMeta,
                      P extends NCLElement,
                      I extends NCLElementImpl>
-        extends NCLMetaPrototype<T, P, I>
+        extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
+    protected StringType name;
+    protected StringType mcontent;
 
+
+    /**
+     * Meta element constructor.
+     * 
+     * @throws XMLException 
+     *          if an error occur while creating the element.
+     */
     public NCLMeta() throws XMLException {
         super();
     }
 
 
+    /**
+     * Sets the name of the metadata property. This attribute is required and
+     * can not be set to <i>null</i>.
+     * 
+     * @param name
+     *          string representing the name of the metadata property.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
+    public void setName(String name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
+        StringType aux = this.name;
+        this.name = new StringType(name);
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+    }
+
+
+    /**
+     * Returns the name of the metadata property or <i>null</i> if the attribute is
+     * not defined.
+     *
+     * @return
+     *          string representing the name of the metadata property or null if
+     *          the attribute is not defined.
+     */
+    public String getName() {
+        if(name != null)
+            return name.getValue();
+        else
+            return null;
+    }
+
+
+    /**
+     * Sets the value of the metadata property. This attribute is required and
+     * can not be set to <i>null</i>.
+     * 
+     * @param content
+     *          string representing the name of the metadata property.
+     * @throws XMLException 
+     *          if the string is null or empty.
+     */
+    public void setContent(String content) throws XMLException {
+        if(content == null)
+            throw new XMLException("Null content.");
+        
+        StringType aux = this.mcontent;
+        this.mcontent = new StringType(content);
+        impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
+    }
+
+
+    /**
+     * Returns the value of the metadata property or <i>null</i> if the attribute
+     * is not defined.
+     *
+     * @return
+     *          string representing the value of the metadata property or null
+     *          if the attribute is not defined.
+     */
+    public String getContent() {
+        if(mcontent != null)
+            return mcontent.getValue();
+        else
+            return null;
+    }
+
+
     @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public boolean compare(T other) {
+        return getName().equals(other.getName());
     }
 
     
