@@ -35,88 +35,29 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.aux.basic;
+package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.xml.XMLException;
-
+import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 /**
- * This class represents a value that can be a positive integer or the String
- * "indefinite".
+ * Interface that represents an element that has a role attribute.
  */
-public class ByType {
-
-    private Integer value;
-    private String indefinite = "indefinite";
-
-
-    /**
-     * Creates the value as a integer number.
-     *
-     * @param value
-     *          a positive integer.
-     * @throws XMLException
-     *          if the integer is negative.
-     */
-    public ByType(int value) throws XMLException {
-        if(value < 0)
-            throw new XMLException("Negative value");
-
-        this.value = value;
-    }
-
-
-    /**
-     * Creates the value as a String.
-     *
-     * @param value
-     *          String representing a positive integer or the String "unbounded".
-     * @throws XMLException
-     *          if the String is null or empty.
-     */
-    public ByType(String value) throws XMLException {
-        if(value == null)
-            throw new XMLException("Null value String");
-        if("".equals(value.trim()))
-            throw new XMLException("Empty value String");
-
-        if(!value.equals(indefinite))
-            this.value = new Integer(value);
-    }
-
-
-    /**
-     * Return the value.
-     *
-     * @return
-     *          element representing a positive integer.
-     */
-    public Integer getValue() {
-        return value;
-    }
-
-
-    /**
-     * Check if the value is the String "indefinite".
-     *
-     * @return
-     *          true if the value is "indefinite".
-     */
-    public boolean isUnbounded() {
-        return value == null;
-    }
-
-
-    /**
-     * Returns the value.
-     *
-     * @return
-     *          String representing the value.
-     */
-    public String parse() {
-        if(value == null)
-            return indefinite;
-        else
-            return value.toString();
-    }
+public interface NCLRoleElement<Eb extends NCLBind>
+        extends NCLElement {
+    
+    
+    public Object getRole();
+    
+    
+    public boolean addReference(Eb reference) throws XMLException;
+    
+    
+    public boolean removeReference(Eb reference) throws XMLException;
+    
+    
+    public ElementList<Eb, NCLElement> getReferences();
 }

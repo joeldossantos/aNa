@@ -94,8 +94,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
                                 I extends NCLElementImpl,
                                 Ec extends NCLCondition,
                                 Ea extends NCLAction,
-                                Ep extends NCLConnectorParam,
-                                Er extends NCLRole>
+                                Ep extends NCLConnectorParam>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
 
@@ -559,14 +558,14 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      * @return 
      *          role or null if no role was found.
      */
-    public Er findRole(String name) {
-        Er result;
+    public NCLRoleElement findRole(String name) {
+        NCLRoleElement result;
         
-        result = (Er) getCondition().findRole(name);
+        result = (NCLRoleElement) getCondition().findRole(name);
         if(result != null)
             return result;
         
-        result = (Er) getAction().findRole(name);
+        result = (NCLRoleElement) getAction().findRole(name);
         if(result != null)
             return result;
         

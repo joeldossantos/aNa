@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
@@ -69,13 +70,14 @@ import org.w3c.dom.Element;
  */
 public class NCLConnectorParam<T extends NCLConnectorParam,
                                P extends NCLElement,
-                               I extends NCLElementImpl>
+                               I extends NCLElementImpl,
+                               Ep extends ParamElement>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+        implements NCLIdentifiableElement<T, P> {
     
     protected StringType type;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<Ep, NCLElement> references;
     
     
     /**
@@ -86,13 +88,13 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
      */
     public NCLConnectorParam() throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<Ep, NCLElement>();
     }
     
     
     public NCLConnectorParam(String name) throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<Ep, NCLElement>();
         setName(name);
     }
     
@@ -184,24 +186,6 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
     }
     
     
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
-    
-    
     public String parse(int ident) {
         String space, content;
 
@@ -285,5 +269,20 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
         att_name = NCLElementAttributes.TYPE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setType(att_var);
+    }
+    
+    
+    public boolean addReference(Ep reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    public boolean removeReference(Ep reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    public ElementList getReferences() {
+        return references;
     }
 }

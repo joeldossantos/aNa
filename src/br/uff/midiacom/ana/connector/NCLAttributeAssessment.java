@@ -40,14 +40,14 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
 import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.datatype.enums.NCLKey;
+import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -78,17 +78,19 @@ import org.w3c.dom.Element;
 public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
                                     P extends NCLElement,
                                     I extends NCLElementImpl,
-                                    Er extends NCLRole,
                                     Ep extends NCLConnectorParam,
-                                    R extends ConParamReference>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+                                    R extends ConParamReference,
+                                    Eb extends NCLBind>
+        extends ParamElement<T, P, I>
+        implements NCLElement<T, P>, NCLRoleElement<Eb> {
 
-    protected Er role;
+    protected String role;
     protected NCLEventType eventType;
-    protected KeyParamType<Ep, T, R> key;
+    protected Object key;
     protected NCLAttributeType attributeType;
-    protected IntegerParamType<Ep, T, R> offset;
+    protected Object offset;
+    
+    protected ElementList<Eb, NCLElement> references;
     
 
     /**
@@ -111,24 +113,19 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * The role must be unique inside the connector.
      * 
      * @param role
-     *          element representing the role name.
+     *          string representing the role name.
      * @throws XMLException
-     *          if the role is null.
+     *          if the role is null or empty.
      */
-    public void setRole(Er role) throws XMLException {
+    public void setRole(String role) throws XMLException {
         if(role == null)
             throw new XMLException("Null role.");
+        if("".equals(role.trim()))
+            throw new XMLException("Empty role String");
         
-        //Removes the parent of the actual role
-        if(this.role != null)
-            this.role.setParent(null);
-
-        Er aux = this.role;
+        String aux = this.role;
         this.role = role;
         impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
-        
-        //Set this as the parent of the new role
-        this.role.setParent(this);
     }
     
     
@@ -141,10 +138,11 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * The role must be unique inside the connector.
      * 
      * @return
-     *          element representing the role name or <i>null</i> if the
+     *          string representing the role name or <i>null</i> if the
      *          attribute is not defined.
      */
-    public Er getRole() {
+    @Override
+    public String getRole() {
         return role;
     }
     
@@ -201,21 +199,46 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * be defined in the same connector where this attribute assessment it.
      * 
      * @param key
-     *          element representing the key pressed or <i>null</i> to erase a
+     *          element from the enumeration <i>NCLKey</i>, string or connector
+     *          parameter representing the key pressed or <i>null</i> to erase a
      *          key already defined.
      * @throws XMLException
      *          if an error occur while creating the key value.
      */
-    public void setKey(KeyParamType<Ep, T, R> key) throws XMLException {
-        KeyParamType aux = this.key;
+    public void setKey(Object key) throws XMLException {
+        Object aux = this.key;
         
-        this.key = key;
-        if(this.key != null)
-            this.key.setOwner((T) this, NCLElementAttributes.KEY);
+        if(key == null){
+            this.key = key;
+            impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+            
+            if(aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+            return;
+        }
+        
+        if(key instanceof String){
+            String value = (String) key;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty key String");
+            
+            if(!value.contains("$"))
+                this.key = NCLKey.getEnumType(value);
+            else{
+                this.key = findConnectorParam(value.substring(1));
+                ((Ep) this.key).addReference(this);
+            }
+        }
+        else if(key instanceof NCLKey)
+            this.key = key;
+        else if(key instanceof NCLConnectorParam){
+            this.key = key;
+            ((Ep) this.key).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong key type.");
         
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
-        if(aux != null)
-            aux.removeOwner();
     }
     
     
@@ -234,10 +257,11 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * be defined in the same connector where this attribute assessment it.
      * 
      * @return
-     *          element representing the key pressed or <i>null</i> if the
+     *          element from the enumeration <i>NCLKey</i>, string or connector
+     *          parameter representing the key pressed or <i>null</i> if the
      *          attribute is not defined.
      */
-    public KeyParamType<Ep, T, R> getKey() {
+    public Object getKey() {
         return key;
     }
     
@@ -288,21 +312,45 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * be defined in the same connector where this attribute assessment it.
      * 
      * @param offset
-     *          element representing the offset or <i>null</i> to erase an
-     *          offset already defined.
+     *          string, integer or connector parameter representing the offset
+     *          or <i>null</i> to erase an offset already defined.
      * @throws XMLException
      *          if an error occur while creating the offset value.
      */
-    public void setOffset(IntegerParamType<Ep, T, R> offset) throws XMLException {
-        IntegerParamType aux = this.offset;
+    public void setOffset(Object offset) throws XMLException {
+        Object aux = this.offset;
         
-        this.offset = offset;
-        if(this.offset != null)
-            this.offset.setOwner((T) this, NCLElementAttributes.OFFSET);
+        if(offset == null){
+            this.offset = offset;
+            impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
+            
+            if(aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+            return;
+        }
+        
+        if(offset instanceof String){
+            String value = (String) offset;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty key String");
+            
+            if(!value.contains("$"))
+                this.offset = new Integer(value);
+            else{
+                this.offset = findConnectorParam(value.substring(1));
+                ((Ep) this.offset).addReference(this);
+            }
+        }
+        else if(offset instanceof Integer)
+            this.offset = offset;
+        else if (offset instanceof NCLConnectorParam){
+            this.offset = offset;
+            ((Ep) this.offset).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong repeat type.");
         
         impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
-        if(aux != null)
-            aux.removeOwner();
     }
     
     
@@ -321,10 +369,10 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * be defined in the same connector where this attribute assessment it.
      * 
      * @return
-     *          element representing the offset or <i>null</i> if the attribute
-     *          is not defined.
+     *          string, integer or connector parameter representing the offset
+     *          or <i>null</i> if the attribute is not defined.
      */
-    public IntegerParamType<Ep, T, R> getOffset() {
+    public Object getOffset() {
         return offset;
     }
 
@@ -335,8 +383,8 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         String this_att, other_att;
 
         // Compara pelo role
-        if(getRole() == null) this_att = ""; else this_att = getRole().getName();
-        if(other.getRole() == null) other_att = ""; else other_att = other.getRole().getName();
+        if(getRole() == null) this_att = ""; else this_att = getRole().toString();
+        if(other.getRole() == null) other_att = ""; else other_att = other.getRole().toString();
         comp &= this_att.equals(other_att);
 
         // Compara pelo tipo do evento
@@ -350,13 +398,13 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         comp &= this_att.equals(other_att);
 
         // Compara pelo offset
-        if(getOffset() == null) this_att = ""; else this_att = getOffset().parse();
-        if(other.getOffset() == null) other_att = ""; else other_att = other.getOffset().parse();
+        if(getOffset() == null) this_att = ""; else this_att = getOffset().toString();
+        if(other.getOffset() == null) other_att = ""; else other_att = other.getOffset().toString();
         comp &= this_att.equals(other_att);
 
         // Compara pela tecla
-        if(getKey() == null) this_att = ""; else this_att = getKey().parse();
-        if(other.getKey() == null) other_att = ""; else other_att = other.getKey().parse();
+        if(getKey() == null) this_att = ""; else this_att = getKey().toString();
+        if(other.getKey() == null) other_att = ""; else other_att = other.getKey().toString();
         comp &= this_att.equals(other_att);
 
 
@@ -411,9 +459,9 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     
     
     protected String parseRole() {
-        Er aux = getRole();
+        String aux = getRole();
         if(aux != null)
-            return " role='" + aux.getName() + "'";
+            return " role='" + aux + "'";
         else
             return "";
     }
@@ -425,7 +473,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRole(createRole(att_var));
+            setRole(att_var);
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
@@ -453,11 +501,14 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     
     
     protected String parseKey() {
-        KeyParamType aux = getKey();
-        if(aux != null)
-            return " key='" + aux.parse() + "'";
-        else
+        Object aux = getKey();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLConnectorParam)
+            return " key='$" + aux.toString() + "'";
+        else
+            return " key='" + aux.toString() + "'";
     }
     
     
@@ -467,7 +518,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         // set the key (optional)
         att_name = NCLElementAttributes.KEY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setKey(new KeyParamType(att_var));
+            setKey(att_var);
     }
     
     
@@ -491,11 +542,14 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     
     
     protected String parseOffset() {
-        IntegerParamType aux = getOffset();
-        if(aux != null)
-            return " offset='" + aux.parse() + "'";
-        else
+        Object aux = getOffset();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLConnectorParam)
+            return " offset='$" + aux.toString() + "'";
+        else
+            return " offset='" + aux.toString() + "'";
     }
     
     
@@ -505,26 +559,32 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         // set the offset (optional)
         att_name = NCLElementAttributes.OFFSET.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setOffset(new IntegerParamType(att_var));
+            setOffset(att_var);
     }
     
     
-    public Er findRole(String name) {
-        if(role.getName().equals(name))
-            return role;
+    public NCLRoleElement findRole(String name) {
+        if(role.toString().equals(name))
+            return this;
         else
             return null;
     }
-
-
-    /**
-     * Function to create a connector <i>role</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a connector <i>role</i>.
-     */
-    protected Er createRole(String name) throws XMLException {
-        return (Er) new NCLRole(name);
+    
+    
+    @Override
+    public boolean addReference(Eb reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(Eb reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 }

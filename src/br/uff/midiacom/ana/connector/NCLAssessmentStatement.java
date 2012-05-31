@@ -41,9 +41,9 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
+import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -91,14 +91,13 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
                                     P extends NCLElement,
                                     I extends NCLElementImpl,
                                     Ea extends NCLAttributeAssessment,
-                                    Ev extends NCLValueAssessment,
-                                    Es extends NCLStatement,
-                                    Er extends NCLRole>
-        extends NCLElementPrototype<Es, P, I>
-        implements NCLStatement<Es, P, Er> {
+                                    Ep extends NCLConnectorParam,
+                                    Es extends NCLStatement>
+        extends ParamElement<Es, P, I>
+        implements NCLStatement<Es, P> {
 
     protected NCLComparator comparator;
-    protected Ev valueAssessment;
+    protected Object valueAssessment;
     protected ElementList<Ea, T> attributeAssessments;
 
 
@@ -156,22 +155,47 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      * assessment to <i>null</i> to erase a value assessment already defined.
      * 
      * @param value
-     *          element representing a value assessment or <i>null</i> to erase
-     *          a value already defined.
+     *          string, element from the enumeration <i>NCLDefaultValueAssessment</i>
+     *          or connector parameter representing a value assessment or <i>null</i>
+     *          to erase a value already defined.
      */
-    public void setValueAssessment(Ev value) {
-        //Removes the parent of the actual value
-        if(this.valueAssessment != null){
-            this.valueAssessment.setParent(null);
-            impl.notifyRemoved(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
+    public void setValueAssessment(Object valueAssessment) throws XMLException {
+        Object aux = this.valueAssessment;
+        
+        if(valueAssessment == null){
+            this.valueAssessment = valueAssessment;
+            impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
+            
+            if(valueAssessment instanceof NCLCausalConnector)
+                ((Ep) aux).removeReference(this);
+            return;
         }
-
-        this.valueAssessment = value;
-        //Sets this as the parent of the new value
-        if(this.valueAssessment != null){
-            this.valueAssessment.setParent(this);
-            impl.notifyInserted(NCLElementSets.VALUEASSESSMENT, this.valueAssessment);
+        
+        if(valueAssessment instanceof String){
+            String value = (String) valueAssessment;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty valueAssessment String");
+            
+            if(!value.contains("$")){
+                this.valueAssessment = NCLDefaultValueAssessment.getEnumType(value);
+                if(this.valueAssessment == null)
+                    this.valueAssessment = valueAssessment;
+            }
+            else{
+                this.valueAssessment = findConnectorParam(value.substring(1));
+                ((Ep) this.valueAssessment).addReference(this);
+            }
         }
+        else if(valueAssessment instanceof NCLDefaultValueAssessment)
+            this.valueAssessment = valueAssessment;
+        else if(valueAssessment instanceof NCLConnectorParam){
+            this.valueAssessment = valueAssessment;
+            ((Ep) this.valueAssessment).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong repeat type.");
+        
+        impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
     }
     
     
@@ -184,7 +208,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      *          element representing a value assessment or <i>null</i> if the
      *          value is not defined.
      */
-    public Ev getValueAssessment() {
+    public Object getValueAssessment() {
         return valueAssessment;
     }
     
@@ -202,6 +226,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      *          the assessment statement already have two attribute assessments.
      */
     public boolean addAttributeAssessment(Ea attribute) throws XMLException {
+        if(valueAssessment != null && attributeAssessments.size() == 1)
+            throw new XMLException("can't have more than one attribute");
         if(attributeAssessments.size() == 2)
             throw new XMLException("can't have more than two attributes");
         
@@ -311,7 +337,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
 
         // Compara os valueAssessment
         if(getValueAssessment() != null && other_asses.getValueAssessment() != null)
-            comp &= getValueAssessment().compare(other_asses.getValueAssessment());
+            comp &= getValueAssessment().equals(other_asses.getValueAssessment());//@todo
 
 
         return comp;
@@ -434,29 +460,54 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
     
     
     protected String parseValueAssessment(int ident) {
-        Ev aux = getValueAssessment();
+        String space, content;
+
+        if(ident < 0)
+            ident = 0;
+        
+        // Element indentation
+        space = "";
+        for(int i = 0; i < ident; i++)
+            space += "\t";
+
+        content = space + "<valueAssessment";
+        Object aux = getValueAssessment();
         if(aux != null)
-            return aux.parse(ident);
+            content += " value='" + aux.toString() + "'";
         else
-            return "";
+            content += "";
+        content += "/>\n";
+
+        return content;
     }
     
     
     protected void loadValueAssessment(Element element) throws XMLException {
         //create the valueAssessment
         if(element.getTagName().equals(NCLElementAttributes.VALUEASSESSMENT.toString())){
-            Ev inst = createValueAssessment();
-            setValueAssessment(inst);
-            inst.load(element);
+            String att_name, att_var;
+
+            try{
+                // set the value (required)
+                att_name = NCLElementAttributes.VALUE.toString();
+                if(!(att_var = element.getAttribute(att_name)).isEmpty())
+                    setValueAssessment(att_var);
+                else
+                    throw new NCLParsingException("Could not find " + att_name + " attribute.");
+            }
+            catch(XMLException ex){
+                throw new NCLParsingException("ValueAssessment:\n" + ex.getMessage());
+            }
         }
     }
     
     
-    public Er findRole(String name) {
-        Er result;
+    @Override
+    public NCLRoleElement findRole(String name) {
+        NCLRoleElement result;
         
         for(Ea attribute : attributeAssessments){
-            result = (Er) attribute.findRole(name);
+            result = attribute.findRole(name);
             if(result != null)
                 return result;
         }
@@ -474,17 +525,5 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      */
     protected Ea createAttributeAssessment() throws XMLException {
         return (Ea) new NCLAttributeAssessment();
-    }
-
-
-    /**
-     * Function to create the child element <i>valueAssessment</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing the child <i>valueAssessment</i>.
-     */
-    protected Ev createValueAssessment() throws XMLException {
-        return (Ev) new NCLValueAssessment();
     }
 }

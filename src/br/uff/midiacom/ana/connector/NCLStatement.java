@@ -48,8 +48,7 @@ import br.uff.midiacom.ana.NCLElement;
  * @param <P> 
  */
 public interface NCLStatement<T extends NCLStatement,
-                              P extends NCLElement,
-                              Er extends NCLRole>
+                              P extends NCLElement>
         extends NCLElement<T, P> {
 
 
@@ -61,5 +60,5 @@ public interface NCLStatement<T extends NCLStatement,
      * @return 
      *          role or null if no role was found.
      */
-    public Er findRole(String name);
+    public NCLRoleElement findRole(String name);
 }

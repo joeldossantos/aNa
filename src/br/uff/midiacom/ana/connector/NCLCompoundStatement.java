@@ -86,10 +86,9 @@ import org.w3c.dom.NodeList;
 public class NCLCompoundStatement<T extends NCLCompoundStatement,
                                   P extends NCLElement,
                                   I extends NCLElementImpl,
-                                  Es extends NCLStatement,
-                                  Er extends NCLRole>
+                                  Es extends NCLStatement>
         extends NCLElementPrototype<Es, P, I>
-        implements NCLStatement<Es, P, Er> {
+        implements NCLStatement<Es, P> {
 
     protected NCLOperator operator;
     protected Boolean isNegated;
@@ -472,11 +471,12 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
     }
     
     
-    public Er findRole(String name) {
-        Er result;
+    @Override
+    public NCLRoleElement findRole(String name) {
+        NCLRoleElement result;
         
         for(Es statement : statements){
-            result = (Er) statement.findRole(name);
+            result =  statement.findRole(name);
             if(result != null)
                 return result;
         }

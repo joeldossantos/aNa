@@ -40,16 +40,16 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
 import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
+import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.datatype.enums.NCLKey;
+import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.number.MaxType;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -83,20 +83,22 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
                                 P extends NCLElement,
                                 I extends NCLElementImpl,
                                 Ec extends NCLCondition,
-                                Er extends NCLRole,
                                 Ep extends NCLConnectorParam,
-                                R extends ConParamReference>
-        extends NCLElementPrototype<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep, Er, R> {
+                                R extends ConParamReference,
+                                Eb extends NCLBind>
+        extends ParamElement<Ec, P, I>
+        implements NCLCondition<Ec, P, Ep, R>, NCLRoleElement<Eb> {
 
-    protected KeyParamType<Ep, Ec, R> key;
+    protected Object key;
     protected Integer min;
-    protected MaxType max;
+    protected Object max;
     protected NCLConditionOperator qualifier;
     protected NCLEventType eventType;
     protected NCLEventTransition transition;
-    protected Er role;
-    protected DoubleParamType<Ep, Ec, R> delay;
+    protected Object role;
+    protected Object delay;
+    
+    protected ElementList<Eb, NCLElement> references;
     
 
     /**
@@ -118,25 +120,46 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * 
      * The role must be unique inside the connector.
      * 
+     * <br/>
+     * 
+     * The role may be set as a string value or a value from the
+     * <i>NCLDefaultConditionRole</i> enumeration.
+     * 
      * @param role
-     *          element representing the role name.
+     *          string or a value from the enumeration <i>NCLDefaultConditionRole</i>
+     *          representing the role name.
      * @throws XMLException
-     *          if the role is null.
+     *          if the role is null or of the wrong type.
      */
-    public void setRole(Er role) throws XMLException {
+    public void setRole(Object role) throws XMLException {
         if(role == null)
             throw new XMLException("Null role.");
         
-        //Removes the parent of the actual role
-        if(this.role != null)
-            this.role.setParent(null);
-
-        Er aux = this.role;
-        this.role = role;
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        Object aux = this.role;
         
-        //Set this as the parent of the new role
-        this.role.setParent(this);
+        if(role instanceof String){
+            String name = (String) role;
+            if("".equals(name.trim()))
+                throw new XMLException("Empty role String");
+            
+            for(NCLDefaultConditionRole drole : NCLDefaultConditionRole.values()){
+                if(name.equals(drole.toString())){
+                    this.role = drole;
+                    impl.notifyAltered(NCLElementAttributes.ROLE, aux, drole);
+                    return;
+                }
+            }
+            
+            this.role = role;
+            impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        }
+        else if(role instanceof NCLDefaultConditionRole){
+            this.role = role;
+            impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        }
+        else{
+            throw new XMLException("Wrong role type.");
+        }
     }
 
 
@@ -148,11 +171,18 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * 
      * The role must be unique inside the connector.
      * 
+     * <br/>
+     * 
+     * The role may be set as a string value or a value from the
+     * <i>NCLDefaultConditionRole</i> enumeration.
+     * 
      * @return
-     *          element representing the role name or <i>null</i> if the
-     *          attribute is not defined.
+     *          string or a value from the enumeration <i>NCLDefaultConditionRole</i>
+     *          representing the role name or <i>null</i> if the attribute is
+     *          not defined.
      */
-    public Er getRole() {
+    @Override
+    public Object getRole() {
         return role;
     }
 
@@ -209,12 +239,41 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * The default maximum value is <i>1</i>.
      *
      * @param max
-     *          element representing the maximum cardinality value or <i>null</i>
-     *          to erase a minimum already defined.
+     *          integer representing the maximum cardinality value, the string
+     *          "unbounded" or <i>null</i> to erase a maximum already defined.
      */
-    public void setMax(MaxType max) {
-        MaxType aux = this.max;
-        this.max = max;
+    public void setMax(Object max) throws XMLException {
+        Object aux = this.max;
+        
+        if(max == null){
+            this.max = max;
+            impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+            return;
+        }
+        
+        // test if is an integer
+        if(max instanceof Integer){
+            if(((Integer) max) < 0)
+                throw new XMLException("Negative value");
+
+            this.max = max;
+        }
+        // test if is an string
+        else if(max instanceof String){
+            String value = (String) max;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty value String");
+
+            if(!value.equals("unbounded"))
+                this.max = new Integer(value);
+            else
+                this.max = max;
+        }
+        // type not valid
+        else
+            throw new XMLException("Wrong max type.");
+
+        // notify the modification
         impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
     }
 
@@ -228,10 +287,10 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * The default maximum value is <i>1</i>.
      *
      * @return
-     *          element representing the maximum cardinality value or <i>null</i>
-     *          if the attribute is not defined.
+     *          integer representing the maximum cardinality value, the string
+     *          "unbounded" or <i>null</i> if the attribute is not defined.
      */
-    public MaxType getMax() {
+    public Object getMax() {
         return max;
     }
 
@@ -315,21 +374,46 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * be defined in the same connector where this simple condition it.
      * 
      * @param key
-     *          element representing the key pressed or <i>null</i> to erase a
+     *          element from the enumeration <i>NCLKey</i>, string or connector
+     *          parameter representing the key pressed or <i>null</i> to erase a
      *          key already defined.
      * @throws XMLException
      *          if an error occur while creating the key value.
      */
-    public void setKey(KeyParamType<Ep, Ec, R> key) throws XMLException {
-        KeyParamType aux = this.key;
+    public void setKey(Object key) throws XMLException {
+        Object aux = this.key;
         
-        this.key = key;
-        if(this.key != null)
-            this.key.setOwner((Ec) this, NCLElementAttributes.KEY);
+        if(key == null){
+            this.key = key;
+            impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+            
+            if(aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+            return;
+        }
+        
+        if(key instanceof String){
+            String value = (String) key;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty key String");
+            
+            if(!value.contains("$"))
+                this.key = NCLKey.getEnumType(value);
+            else{
+                this.key = findConnectorParam(value.substring(1));
+                ((Ep) this.key).addReference(this);
+            }
+        }
+        else if(key instanceof NCLKey)
+            this.key = key;
+        else if(key instanceof NCLConnectorParam){
+            this.key = key;
+            ((Ep) this.key).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong key type.");
         
         impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
-        if(aux != null)
-            aux.removeOwner();
     }
 
 
@@ -348,10 +432,11 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * be defined in the same connector where this simple condition it.
      * 
      * @return
-     *          element representing the key pressed or <i>null</i> if the
+     *          element from the enumeration <i>NCLKey</i>, string or connector
+     *          parameter representing the key pressed or <i>null</i> if the
      *          attribute is not defined.
      */
-    public KeyParamType<Ep, Ec, R> getKey() {
+    public Object getKey() {
         return key;
     }
 
@@ -433,20 +518,45 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
 
 
     @Override
-    public void setDelay(DoubleParamType<Ep, Ec, R> delay) throws XMLException {
-        DoubleParamType aux = this.delay;
+    public void setDelay(Object delay) throws XMLException {
+        Object aux = this.delay;
         
-        this.delay = delay;
-        this.delay.setOwner((Ec) this, NCLElementAttributes.DELAY);
+        if(delay == null){
+            this.delay = delay;
+            impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+            
+            if(aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+            return;
+        }
+        
+        if(delay instanceof String){
+            String value = (String) delay;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty delay String");
+            
+            if(!value.contains("$"))
+                this.delay = new Double(value);
+            else{
+                this.delay = findConnectorParam(value.substring(1));
+                ((Ep) this.delay).addReference(this);
+            }
+        }
+        else if(delay instanceof Double)
+            this.delay = delay;
+        else if(delay instanceof NCLConnectorParam){
+            this.delay = delay;
+            ((Ep) this.delay).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong delay type.");
         
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
-        if(aux != null)
-            aux.removeOwner();
     }
 
 
     @Override
-    public DoubleParamType<Ep, Ec, R> getDelay() {
+    public Object getDelay() {
         return delay;
     }
 
@@ -465,8 +575,8 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
          other_simp = (NCLSimpleCondition) other;
 
         // Compara pelo role
-        if(getRole() == null) this_cond = ""; else this_cond = getRole().getName();
-        if(other_simp.getRole() == null) other_cond = ""; else other_cond = other_simp.getRole().getName();
+        if(getRole() == null) this_cond = ""; else this_cond = getRole().toString();
+        if(other_simp.getRole() == null) other_cond = ""; else other_cond = other_simp.getRole().toString();
         comp &= this_cond.equals(other_cond);
 
         // Compara pelo número mínimo
@@ -477,13 +587,13 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         comp &= this_min == other_min;
 
         // Compara pelo número máximo
-        if(getMax() == null) this_cond = ""; else this_cond = getMax().parse();
-        if(other_simp.getMax() == null) other_cond = ""; else other_cond = other_simp.getMax().parse();
+        if(getMax() == null) this_cond = ""; else this_cond = getMax().toString();
+        if(other_simp.getMax() == null) other_cond = ""; else other_cond = other_simp.getMax().toString();
         comp &= this_cond.equals(other_cond);
 
         // Compara pelo delay
-        if(getDelay() == null) this_cond = ""; else this_cond = getDelay().parse();
-        if(other_simp.getDelay() == null) other_cond = ""; else other_cond = other_simp.getDelay().parse();
+        if(getDelay() == null) this_cond = ""; else this_cond = getDelay().toString();
+        if(other_simp.getDelay() == null) other_cond = ""; else other_cond = other_simp.getDelay().toString();
         comp &= this_cond.equals(other_cond);
 
         // Compara pelo qualifier
@@ -492,8 +602,8 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         comp &= this_cond.equals(other_cond);
 
         // Compara pela tecla
-        if(getKey() == null) this_cond = ""; else this_cond = getKey().parse();
-        if(other_simp.getKey() == null) other_cond = ""; else other_cond = other_simp.getKey().parse();
+        if(getKey() == null) this_cond = ""; else this_cond = getKey().toString();
+        if(other_simp.getKey() == null) other_cond = ""; else other_cond = other_simp.getKey().toString();
         comp &= this_cond.equals(other_cond);
 
         // Compara pelo tipo do evento
@@ -564,9 +674,9 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     
     
     protected String parseRole() {
-        Er aux = getRole();
+        Object aux = getRole();
         if(aux != null)
-            return " role='" + aux.getName() + "'";
+            return " role='" + aux.toString() + "'";
         else
             return "";
     }
@@ -578,18 +688,21 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRole(createRole(att_var));
+            setRole(att_var);
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
     protected String parseKey() {
-        KeyParamType aux = getKey();
-        if(aux != null)
-            return " key='" + aux.parse() + "'";
-        else
+        Object aux = getKey();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLConnectorParam)
+            return " key='$" + aux.toString() + "'";
+        else
+            return " key='" + aux.toString() + "'";
     }
     
     
@@ -599,22 +712,19 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         // set the key (optional)
         att_name = NCLElementAttributes.KEY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setKey(new KeyParamType(att_var));
+            setKey(att_var);
     }
     
     
     protected String parseDelay() {
-        DoubleParamType aux = getDelay();
+        Object aux = getDelay();
         if(aux == null)
             return "";
         
-        String content = " delay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
+        if(aux instanceof NCLConnectorParam)
+            return " delay='$" + aux.toString() + "'";
         else
-            content += "'";
-        
-        return content;
+            return " delay='" + aux.toString() + "s'";
     }
     
     
@@ -624,7 +734,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType(att_var));
+            setDelay(att_var);
     }
     
     
@@ -653,9 +763,9 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     
     
     protected String parseMax() {
-        MaxType aux = getMax();
+        Object aux = getMax();
         if(aux != null)
-            return " max='" + aux.parse() + "'";
+            return " max='" + aux.toString() + "'";
         else
             return "";
     }
@@ -667,7 +777,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         // set the max (optional)
         att_name = NCLElementAttributes.MAX.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setMax(new MaxType(att_var));
+            setMax(att_var);
     }
     
     
@@ -728,22 +838,28 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
     
     
-    public Er findRole(String name) {
-        if(role.getName().equals(name))
-            return role;
+    public NCLRoleElement findRole(String name) {
+        if(role.toString().equals(name))
+            return this;
         else
             return null;
     }
-
-
-    /**
-     * Function to create a connector <i>role</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a connector <i>role</i>.
-     */
-    protected Er createRole(String name) throws XMLException {
-        return (Er) new NCLRole(name);
+    
+    
+    @Override
+    public boolean addReference(Eb reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(Eb reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 }

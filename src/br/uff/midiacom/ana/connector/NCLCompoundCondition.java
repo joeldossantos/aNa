@@ -40,12 +40,10 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
 import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.util.Iterator;
@@ -99,13 +97,12 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
                                   Ec extends NCLCondition,
                                   Es extends NCLStatement,
                                   Ep extends NCLConnectorParam,
-                                  Er extends NCLRole,
                                   R extends ConParamReference>
-        extends NCLElementPrototype<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep, Er, R> {
+        extends ParamElement<Ec, P, I>
+        implements NCLCondition<Ec, P, Ep, R> {
     
     protected NCLConditionOperator operator;
-    protected DoubleParamType<Ep, Ec, R> delay;
+    protected Object delay;
     protected ElementList<Ec, T> conditions;
     protected ElementList<Es, T> statements;
     
@@ -344,20 +341,45 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
 
 
     @Override
-    public void setDelay(DoubleParamType<Ep, Ec, R> delay) throws XMLException {
-        DoubleParamType aux = this.delay;
+    public void setDelay(Object delay) throws XMLException {
+        Object aux = this.delay;
         
-        this.delay = delay;
-        this.delay.setOwner((Ec) this, NCLElementAttributes.DELAY);
+        if(delay == null){
+            this.delay = delay;
+            impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+            
+            if(aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+            return;
+        }
+        
+        if(delay instanceof String){
+            String value = (String) delay;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty delay String");
+            
+            if(!value.contains("$"))
+                this.delay = new Double(value);
+            else{
+                this.delay = findConnectorParam(value.substring(1));
+                ((Ep) this.delay).addReference(this);
+            }
+        }
+        else if(delay instanceof Double)
+            this.delay = delay;
+        else if(delay instanceof NCLConnectorParam){
+            this.delay = delay;
+            ((Ep) this.delay).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong delay type.");
         
         impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
-        if(aux != null)
-            aux.removeOwner();
     }
 
 
     @Override
-    public DoubleParamType<Ep, Ec, R> getDelay() {
+    public Object getDelay() {
         return delay;
     }
     
@@ -381,8 +403,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         comp &= this_cond.equals(other_cond);
 
         // Compara pelo delay
-        if(getDelay() == null) this_cond = ""; else this_cond = getDelay().parse();
-        if(other_comp.getDelay() == null) other_cond = ""; else other_cond = other_comp.getDelay().parse();
+        if(getDelay() == null) this_cond = ""; else this_cond = getDelay().toString();
+        if(other_comp.getDelay() == null) other_cond = ""; else other_cond = other_comp.getDelay().toString();
         comp &= this_cond.equals(other_cond);
 
         // Compara o número de condicoes
@@ -515,17 +537,14 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
     
     
     protected String parseDelay() {
-        DoubleParamType aux = getDelay();
+        Object aux = getDelay();
         if(aux == null)
             return "";
         
-        String content = " delay='" + aux.parse();
-        if(aux.getValue() != null)
-            content += "s'";
+        if(aux instanceof NCLConnectorParam)
+            return " delay='$" + aux.toString() + "'";
         else
-            content += "'";
-        
-        return content;
+            return " delay='" + aux.toString() + "s'";
     }
     
     
@@ -535,7 +554,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         // set the delay (optional)
         att_name = NCLElementAttributes.DELAY.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDelay(new DoubleParamType(att_var));
+            setDelay(att_var);
     }
 
 
@@ -603,17 +622,18 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
     }
     
     
-    public Er findRole(String name) {
-        Er result;
+    @Override
+    public NCLRoleElement findRole(String name) {
+        NCLRoleElement result;
         
         for(Ec condition : conditions){
-            result = (Er) condition.findRole(name);
+            result = condition.findRole(name);
             if(result != null)
                 return result;
         }
         
         for(Es statement : statements){
-            result = (Er) statement.findRole(name);
+            result = statement.findRole(name);
             if(result != null)
                 return result;
         }

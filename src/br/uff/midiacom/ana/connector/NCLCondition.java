@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
 import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.xml.XMLException;
 
@@ -55,7 +54,6 @@ import br.uff.midiacom.xml.XMLException;
 public interface NCLCondition<T extends NCLCondition,
                               P extends NCLElement,
                               Ep extends NCLConnectorParam,
-                              Er extends NCLRole,
                               R extends ConParamReference>
         extends NCLElement<T, P> {
 
@@ -75,12 +73,12 @@ public interface NCLCondition<T extends NCLCondition,
      * be defined in the same connector where this attribute assessment it.
      * 
      * @param delay
-     *          element representing the delay or <i>null</i> to erase a
-     *          delay already defined.
+     *          double, string or connector parameter representing the delay or
+     *          <i>null</i> to erase a delay already defined.
      * @throws XMLException
      *          if an error occur while creating the delay value.
      */
-    public void setDelay(DoubleParamType<Ep, T, R> delay) throws XMLException;
+    public void setDelay(Object delay) throws XMLException;
 
 
     /**
@@ -98,10 +96,10 @@ public interface NCLCondition<T extends NCLCondition,
      * be defined in the same connector where this attribute assessment it.
      * 
      * @return
-     *          element representing the delay or <i>null</i> if the attribute
-     *          is not defined.
+     *          double, string or connector parameter representing the delay or
+     *          <i>null</i> if the attribute is not defined.
      */
-    public DoubleParamType<Ep, T, R> getDelay();
+    public Object getDelay();
 
     
     /**
@@ -112,5 +110,5 @@ public interface NCLCondition<T extends NCLCondition,
      * @return 
      *          role or null if no role was found.
      */
-    public Er findRole(String name);
+    public NCLRoleElement findRole(String name);
 }
