@@ -45,12 +45,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.number.RelativeType;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -115,19 +111,19 @@ public class NCLRegion<T extends NCLRegion,
                        P extends NCLElement,
                        I extends NCLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+        implements NCLIdentifiableElement<T, P> {
 
-    protected StringType title;
-    protected RelativeType left;
-    protected RelativeType right;
-    protected RelativeType top;
-    protected RelativeType bottom;
-    protected RelativeType height;
-    protected RelativeType width;
+    protected String title;
+    protected Object left;
+    protected Object right;
+    protected Object top;
+    protected Object bottom;
+    protected Object height;
+    protected Object width;
     protected Integer zIndex;
     protected IdentifiableElementList<T, T> regions;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P, NCLElement> references;
 
 
     /**
@@ -139,14 +135,14 @@ public class NCLRegion<T extends NCLRegion,
     public NCLRegion() throws XMLException {
         super();
         regions = new IdentifiableElementList<T, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P, NCLElement>();
     }
     
     
     public NCLRegion(String id) throws XMLException {
         super();
         regions = new IdentifiableElementList<T, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P, NCLElement>();
         setId(id);
     }
 
@@ -162,8 +158,11 @@ public class NCLRegion<T extends NCLRegion,
      *          if the string is empty.
      */
     public void setTitle(String title) throws XMLException {
-        StringType aux = this.title;
-        this.title = new StringType(title);
+        if(title != null && "".equals(title.trim()))
+            throw new XMLException("Empty title string");
+        
+        String aux = this.title;
+        this.title = title;
         impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
     }
 
@@ -177,10 +176,7 @@ public class NCLRegion<T extends NCLRegion,
      *          attribute is not defined.
      */
     public String getTitle() {
-        if(title != null)
-            return title.getValue();
-        else
-            return null;
+        return title;
     }
 
 
@@ -203,12 +199,40 @@ public class NCLRegion<T extends NCLRegion,
      * precedence over the attribute right.
      * 
      * @param left 
-     *          region left location regarding its parent or <i>null</i> to
-     *          erase a location already defined.
+     *          integer representing an absolute and double representing a relative
+     *          region left location or <i>null</i> to erase a location already defined.
      */
-    public void setLeft(RelativeType left) {
-        RelativeType aux = this.left;
-        this.left = left;
+    public void setLeft(Object left) throws XMLException {
+        Object aux = this.left;
+        
+        if(left == null){
+            this.left = left;
+            impl.notifyAltered(NCLElementAttributes.LEFT, aux, left);
+            return;
+        }
+        
+        if(left instanceof String){
+            String value = (String) left;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty left String");
+
+            boolean relative = false;
+            int index = value.indexOf("%");
+            if(index > 0){
+                value = value.substring(0, index);
+                relative = true;
+            }
+
+            if(relative)
+                this.left = new Double(value);
+            else
+                this.left = new Integer(value);
+        }
+        else if(left instanceof Integer || left instanceof Double)
+            this.left = left;
+        else
+            throw new XMLException("Wrong left type.");
+        
         impl.notifyAltered(NCLElementAttributes.LEFT, aux, left);
     }
 
@@ -231,10 +255,10 @@ public class NCLRegion<T extends NCLRegion,
      * precedence over the attribute right.
      * 
      * @return 
-     *          region left location regarding its parent or <i>null</i> if the
-     *          attribute is not defined.
+     *          integer representing an absolute and double representing a relative
+     *          region left location or <i>null</i> if the attribute is not defined.
      */
-    public RelativeType getLeft() {
+    public Object getLeft() {
         return left;
     }
 
@@ -258,12 +282,40 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute right.
      * 
      * @param right 
-     *          region right location regarding its parent or <i>null</i> to
-     *          erase a location already defined.
+     *          integer representing an absolute and double representing a relative
+     *          region right location or <i>null</i> to erase a location already defined.
      */
-    public void setRight(RelativeType right) {
-        RelativeType aux = this.right;
-        this.right = right;
+    public void setRight(Object right) throws XMLException {
+        Object aux = this.right;
+        
+        if(right == null){
+            this.right = right;
+            impl.notifyAltered(NCLElementAttributes.RIGHT, aux, right);
+            return;
+        }
+        
+        if(right instanceof String){
+            String value = (String) right;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty right String");
+
+            boolean relative = false;
+            int index = value.indexOf("%");
+            if(index > 0){
+                value = value.substring(0, index);
+                relative = true;
+            }
+
+            if(relative)
+                this.right = new Double(value);
+            else
+                this.right = new Integer(value);
+        }
+        else if(right instanceof Integer || right instanceof Double)
+            this.right = right;
+        else
+            throw new XMLException("Wrong right type.");
+        
         impl.notifyAltered(NCLElementAttributes.RIGHT, aux, right);
     }
 
@@ -286,10 +338,10 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute right.
      * 
      * @return 
-     *          region right location regarding its parent or <i>null</i> if the
-     *          attribute is not defined.
+     *          integer representing an absolute and double representing a relative
+     *          region right location or <i>null</i> if the attribute is not defined.
      */
-    public RelativeType getRight() {
+    public Object getRight() {
         return right;
     }
 
@@ -313,12 +365,40 @@ public class NCLRegion<T extends NCLRegion,
      * precedence over the attribute bottom.
      * 
      * @param top 
-     *          region superior location regarding its parent or <i>null</i> to
-     *          erase a location already defined.
+     *          integer representing an absolute and double representing a relative
+     *          region top location or <i>null</i> to erase a location already defined.
      */
-    public void setTop(RelativeType top) {
-        RelativeType aux = this.top;
-        this.top = top;
+    public void setTop(Object top) throws XMLException {
+        Object aux = this.top;
+        
+        if(top == null){
+            this.top = top;
+            impl.notifyAltered(NCLElementAttributes.TOP, aux, top);
+            return;
+        }
+        
+        if(top instanceof String){
+            String value = (String) top;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty top String");
+
+            boolean relative = false;
+            int index = value.indexOf("%");
+            if(index > 0){
+                value = value.substring(0, index);
+                relative = true;
+            }
+
+            if(relative)
+                this.top = new Double(value);
+            else
+                this.top = new Integer(value);
+        }
+        else if(top instanceof Integer || top instanceof Double)
+            this.top = top;
+        else
+            throw new XMLException("Wrong top type.");
+        
         impl.notifyAltered(NCLElementAttributes.TOP, aux, top);
     }
 
@@ -341,10 +421,10 @@ public class NCLRegion<T extends NCLRegion,
      * precedence over the attribute bottom.
      * 
      * @return 
-     *          region superior location regarding its parent or <i>null</i> if
-     *          the attribute is not defined.
+     *          integer representing an absolute and double representing a relative
+     *          region top location or <i>null</i> if the attribute is not defined.
      */
-    public RelativeType getTop() {
+    public Object getTop() {
         return top;
     }
 
@@ -367,13 +447,41 @@ public class NCLRegion<T extends NCLRegion,
      * height and bottom are defined, the values of the top and heigh attributes
      * have precedence over the attribute bottom.
      * 
-     * @param top 
-     *          region inferior location regarding its parent or <i>null</i> to
-     *          erase a location already defined.
+     * @param bottom 
+     *          integer representing an absolute and double representing a relative
+     *          region bottom location or <i>null</i> to erase a location already defined.
      */
-    public void setBottom(RelativeType bottom) {
-        RelativeType aux = this.bottom;
-        this.bottom = bottom;
+    public void setBottom(Object bottom) throws XMLException {
+        Object aux = this.bottom;
+        
+        if(bottom == null){
+            this.bottom = bottom;
+            impl.notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
+            return;
+        }
+        
+        if(bottom instanceof String){
+            String value = (String) bottom;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty bottom String");
+
+            boolean relative = false;
+            int index = value.indexOf("%");
+            if(index > 0){
+                value = value.substring(0, index);
+                relative = true;
+            }
+
+            if(relative)
+                this.bottom = new Double(value);
+            else
+                this.bottom = new Integer(value);
+        }
+        else if(bottom instanceof Integer || bottom instanceof Double)
+            this.bottom = bottom;
+        else
+            throw new XMLException("Wrong bottom type.");
+        
         impl.notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
     }
 
@@ -396,10 +504,10 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute bottom.
      * 
      * @return 
-     *          region inferior location regarding its parent or <i>null</i> if
-     *          the attribute is not defined.
+     *          integer representing an absolute and double representing a relative
+     *          region bottom location or <i>null</i> if the attribute is not defined.
      */
-    public RelativeType getBottom() {
+    public Object getBottom() {
         return bottom;
     }
 
@@ -422,11 +530,40 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute bottom.
      * 
      * @param height 
+     *          integer representing an absolute and double representing a relative
      *          region height or <i>null</i> to erase a height already defined.
      */
-    public void setHeight(RelativeType height) {
-        RelativeType aux = this.height;
-        this.height = height;
+    public void setHeight(Object height) throws XMLException {
+        Object aux = this.height;
+        
+        if(height == null){
+            this.height = height;
+            impl.notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
+            return;
+        }
+        
+        if(height instanceof String){
+            String value = (String) height;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty bottom String");
+
+            boolean relative = false;
+            int index = value.indexOf("%");
+            if(index > 0){
+                value = value.substring(0, index);
+                relative = true;
+            }
+
+            if(relative)
+                this.height = new Double(value);
+            else
+                this.height = new Integer(value);
+        }
+        else if(height instanceof Integer || height instanceof Double)
+            this.height = height;
+        else
+            throw new XMLException("Wrong bottom type.");
+        
         impl.notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
     }
 
@@ -449,9 +586,10 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute bottom.
      * 
      * @return 
+     *          integer representing an absolute and double representing a relative
      *          region height or <i>null</i> if the attribute is not defined.
      */
-    public RelativeType getHeight() {
+    public Object getHeight() {
         return height;
     }
 
@@ -474,11 +612,40 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute right.
      * 
      * @param width 
+     *          integer representing an absolute and double representing a relative
      *          region width or <i>null</i> to erase a width already defined.
      */
-    public void setWidth(RelativeType width) {
-        RelativeType aux = this.width;
-        this.width = width;
+    public void setWidth(Object width) throws XMLException {
+        Object aux = this.width;
+        
+        if(width == null){
+            this.width = width;
+            impl.notifyAltered(NCLElementAttributes.WIDTH, aux, width);
+            return;
+        }
+        
+        if(width instanceof String){
+            String value = (String) width;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty bottom String");
+
+            boolean relative = false;
+            int index = value.indexOf("%");
+            if(index > 0){
+                value = value.substring(0, index);
+                relative = true;
+            }
+
+            if(relative)
+                this.width = new Double(value);
+            else
+                this.width = new Integer(value);
+        }
+        else if(width instanceof Integer || width instanceof Double)
+            this.width = width;
+        else
+            throw new XMLException("Wrong bottom type.");
+        
         impl.notifyAltered(NCLElementAttributes.WIDTH, aux, width);
     }
 
@@ -501,9 +668,10 @@ public class NCLRegion<T extends NCLRegion,
      * have precedence over the attribute right.
      * 
      * @return 
+     *          integer representing an absolute and double representing a relative
      *          region width or <i>null</i> if the attribute is not defined.
      */
-    public RelativeType getWidth() {
+    public Object getWidth() {
         return width;
     }
 
@@ -681,24 +849,6 @@ public class NCLRegion<T extends NCLRegion,
         return regions;
     }
     
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
-    
 
     public String parse(int ident) {
         String space, content;
@@ -813,11 +963,15 @@ public class NCLRegion<T extends NCLRegion,
     
     
     protected String parseLeft() {
-        RelativeType aux = getLeft();
-        if(aux != null)
-            return " left='" + aux.parse() + "'";
-        else
+        Object aux = getLeft();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof Integer)
+            return " left='" + aux.toString() + "'";
+        else
+            return " left='" + aux.toString() + "%'";
+            
     }
     
     
@@ -827,16 +981,19 @@ public class NCLRegion<T extends NCLRegion,
         // set the left (optional)
         att_name = NCLElementAttributes.LEFT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setLeft(new RelativeType(att_var));
+            setLeft(att_var);
     }
     
     
     protected String parseRight() {
-        RelativeType aux = getRight();
-        if(aux != null)
-            return " right='" + aux.parse() + "'";
-        else
+        Object aux = getRight();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof Integer)
+            return " right='" + aux.toString() + "'";
+        else
+            return " right='" + aux.toString() + "%'";
     }
     
     
@@ -846,16 +1003,19 @@ public class NCLRegion<T extends NCLRegion,
         // set the right (optional)
         att_name = NCLElementAttributes.RIGHT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setRight(new RelativeType(att_var));
+            setRight(att_var);
     }
     
     
     protected String parseTop() {
-        RelativeType aux = getTop();
-        if(aux != null)
-            return " top='" + aux.parse() + "'";
-        else
+        Object aux = getTop();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof Integer)
+            return " top='" + aux.toString() + "'";
+        else
+            return " top='" + aux.toString() + "%'";
     }
     
     
@@ -865,16 +1025,19 @@ public class NCLRegion<T extends NCLRegion,
         // set the top (optional)
         att_name = NCLElementAttributes.TOP.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setTop(new RelativeType(att_var));
+            setTop(att_var);
     }
     
     
     protected String parseBottom() {
-        RelativeType aux = getBottom();
-        if(aux != null)
-            return " bottom='" + aux.parse() + "'";
-        else
+        Object aux = getBottom();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof Integer)
+            return " bottom='" + aux.toString() + "'";
+        else
+            return " bottom='" + aux.toString() + "%'";
     }
     
     
@@ -884,16 +1047,19 @@ public class NCLRegion<T extends NCLRegion,
         // set the bottom (optional)
         att_name = NCLElementAttributes.BOTTOM.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setBottom(new RelativeType(att_var));
+            setBottom(att_var);
     }
     
     
     protected String parseHeight() {
-        RelativeType aux = getHeight();
-        if(aux != null)
-            return " height='" + aux.parse() + "'";
-        else
+        Object aux = getHeight();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof Integer)
+            return " height='" + aux.toString() + "'";
+        else
+            return " height='" + aux.toString() + "%'";
     }
     
     
@@ -903,16 +1069,19 @@ public class NCLRegion<T extends NCLRegion,
         // set the height (optional)
         att_name = NCLElementAttributes.HEIGHT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setHeight(new RelativeType(att_var));
+            setHeight(att_var);
     }
     
     
     protected String parseWidth() {
-        RelativeType aux = getWidth();
-        if(aux != null)
-            return " width='" + aux.parse() + "'";
-        else
+        Object aux = getWidth();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof Integer)
+            return " width='" + aux.toString() + "'";
+        else
+            return " width='" + aux.toString() + "%'";
     }
     
     
@@ -922,7 +1091,7 @@ public class NCLRegion<T extends NCLRegion,
         // set the width (optional)
         att_name = NCLElementAttributes.WIDTH.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setWidth(new RelativeType(att_var));
+            setWidth(att_var);
     }
     
     
@@ -1021,6 +1190,21 @@ public class NCLRegion<T extends NCLRegion,
         }
         
         return null;
+    }
+    
+    
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    public ElementList<P, NCLElement> getReferences() {
+        return references;
     }
 
 
