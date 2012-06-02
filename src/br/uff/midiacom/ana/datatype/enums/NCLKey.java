@@ -116,12 +116,12 @@ public enum NCLKey {
         this.name = name;
     }
     
-    public static NCLKey getEnumType(String name) throws NCLParsingException{
+    public static NCLKey getEnumType(String name) {
         for(NCLKey opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
     
     @Override

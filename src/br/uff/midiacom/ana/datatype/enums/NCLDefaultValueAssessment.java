@@ -56,12 +56,12 @@ public enum NCLDefaultValueAssessment {
         this.name = name;
     }
     
-    public static NCLDefaultValueAssessment getEnumType(String name) throws NCLParsingException{
+    public static NCLDefaultValueAssessment getEnumType(String name) {
         for(NCLDefaultValueAssessment opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
     
     @Override

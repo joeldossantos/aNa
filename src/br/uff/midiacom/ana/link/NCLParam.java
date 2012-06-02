@@ -40,8 +40,10 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLKey;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
@@ -75,6 +77,7 @@ public abstract class NCLParam<T extends NCLParam,
 
     protected Ec name;
     protected Object value;
+    protected boolean isSec;
     
     
     /**
@@ -151,12 +154,51 @@ public abstract class NCLParam<T extends NCLParam,
         
         Object aux = this.value;
         
-        if(value instanceof String){
-            
-        }
+        if(value instanceof String)
+            value = convertValue((String) value);
         
         this.value = value;
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+    }
+    
+    
+    protected Object convertValue(String value) {
+        Object var;
+        
+        String aux = value.substring(value.length() - 1);
+        if(aux.equals("s")){
+            aux = value.substring(0, value.length() - 1);
+        
+            try{
+                var = new Integer(aux);
+                isSec = true;
+                return var;
+            }catch(Exception e){}
+
+            try{
+                var = new Double(aux);
+                isSec = true;
+                return var;
+            }catch(Exception e){}
+        }
+        
+        try{
+            return new Integer(value);
+        }catch(Exception e){}
+
+        try{
+            return new Double(value);
+        }catch(Exception e){}
+
+        var = NCLKey.getEnumType(value);
+        if(var != null)
+            return var;
+
+        var = NCLDefaultValueAssessment.getEnumType(value);
+        if(var != null)
+            return var;
+        
+        return value;
     }
     
     
