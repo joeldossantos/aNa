@@ -46,10 +46,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -101,9 +99,9 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
 
     protected IdentifiableElementList<Edd, T> descriptors;
     protected ElementList<Eb, T> binds;
-    protected Ed defaultDescriptor;
+    protected Edd defaultDescriptor;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P, P> references;
 
 
     /**
@@ -116,7 +114,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         super();
         descriptors = new IdentifiableElementList<Edd, T>();
         binds = new ElementList<Eb, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
@@ -124,7 +122,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         super();
         descriptors = new IdentifiableElementList<Edd, T>();
         binds = new ElementList<Eb, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setId(id);
     }
 
@@ -343,18 +341,17 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      *          if any error occur while creating the reference to the descriptor
      *          switch component descriptor.
      */
-    public void setDefaultDescriptor(Ed defaultDescriptor) throws XMLException {
+    public void setDefaultDescriptor(Edd defaultDescriptor) throws XMLException {
         if(this.defaultDescriptor != null){
-            impl.notifyRemoved(NCLElementSets.DEFAULTDESCRIPTOR, (El) this.defaultDescriptor.getTarget());
-            this.defaultDescriptor.clean();
+            impl.notifyRemoved(NCLElementSets.DEFAULTDESCRIPTOR, this.defaultDescriptor);
+            this.defaultDescriptor.removeReference(this);
         }
         
         this.defaultDescriptor = defaultDescriptor;
         
         if(this.defaultDescriptor != null){
-            this.defaultDescriptor.setOwner((T) this);
-            this.defaultDescriptor.setOwnerAtt(NCLElementAttributes.DEFAULTDESCRIPTOR);
-            impl.notifyInserted(NCLElementSets.DEFAULTDESCRIPTOR, (El) this.defaultDescriptor.getTarget());
+            this.defaultDescriptor.addReference(this);
+            impl.notifyInserted(NCLElementSets.DEFAULTDESCRIPTOR, this.defaultDescriptor);
         }
     }
 
@@ -368,29 +365,12 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      *          element representing a reference to a descriptor switch component
      *          descriptor or <i>null</i> if the attribute is not defined.
      */
-    public Ed getDefaultDescriptor() {
+    public Edd getDefaultDescriptor() {
         return defaultDescriptor;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -415,6 +395,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -522,7 +503,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     
     
     protected String parseDefaultDescriptor(int ident) {
-        Ed aux = getDefaultDescriptor();
+        Edd aux = getDefaultDescriptor();
         if(aux == null)
             return "";
         
@@ -533,7 +514,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         for(int i = 0; i < ident; i++)
             space += "\t";
         
-        return space + "<defaultDescriptor descriptor='" + aux.parse() + "'/>\n";
+        return space + "<defaultDescriptor descriptor='" + aux.getId() + "'/>\n";
     }
     
     
@@ -544,7 +525,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         if(element.getTagName().equals(NCLElementAttributes.DEFAULTDESCRIPTOR.toString())){
             att_name = NCLElementAttributes.DESCRIPTOR.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDefaultDescriptor(createDescriptorRef(descriptors.get(att_var)));
+                setDefaultDescriptor(descriptors.get(att_var));
         }
     }
     
@@ -580,6 +561,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     }
     
     
+    @Override
     public El findDescriptor(String id) throws XMLException {
         El result;
         
@@ -596,7 +578,8 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
     }
     
     
-    public El findDescriptor(FocusIndexType focusIndex) throws XMLException {
+    @Override
+    public El findDescriptor(Object focusIndex) throws XMLException {
         El result;
         
         for(Edd desc : descriptors){
@@ -606,6 +589,24 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
         }
         
         return null;
+    }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList<P, P> getReferences() {
+        return references;
     }
 
 
@@ -630,17 +631,5 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      */
     protected Edd createDescriptor() throws XMLException {
         return (Edd) new NCLDescriptor();
-    }
-
-
-    /**
-     * Function to create a reference to a descriptor.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a descriptor.
-     */
-    protected Ed createDescriptorRef(Edd ref) throws XMLException {
-        return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }

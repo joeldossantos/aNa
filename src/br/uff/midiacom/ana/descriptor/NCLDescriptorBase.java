@@ -41,7 +41,6 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -337,6 +336,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -365,6 +365,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -542,7 +543,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public El findDescriptor(FocusIndexType focusIndex) throws XMLException {
+    public El findDescriptor(Object focusIndex) throws XMLException {
         El result;
         
         for(El desc : descriptors){
@@ -589,7 +590,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
     }
     
     
-    protected NCLDescriptor findDescriptorReference(NCLDoc doc, FocusIndexType focusIndex) throws XMLException {
+    protected NCLDescriptor findDescriptorReference(NCLDoc doc, Object focusIndex) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)

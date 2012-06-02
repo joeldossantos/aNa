@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.descriptor.param.NCLDescriptorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
@@ -49,31 +48,15 @@ import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
 import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.descriptor.param.NCLBooleanDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLColorDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLDoubleDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLFitDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLFontVariantDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLFontWeightDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLIntegerDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLPercentDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLPlayerLifeDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLRelativeDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLScrollDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLStringDescriptorParam;
-import br.uff.midiacom.ana.descriptor.param.NCLTranspColorDescriptorParam;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -160,7 +143,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
     protected Ed moveRight;
     protected Ed moveUp;
     protected Ed moveDown;
-    protected FocusIndexType focusIndex;
+    protected Object focusIndex;
     protected NCLColor focusBorderColor;
     protected Integer focusBorderWidth;
     protected PercentageType focusBorderTransparency;
@@ -172,7 +155,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
     protected Er region;
     protected ElementList<Ep, T> params;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P, P> references;
 
 
     /**
@@ -184,14 +167,14 @@ public class NCLDescriptor<T extends NCLDescriptor,
     public NCLDescriptor() throws XMLException {
         super();
         params = new ElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P, P>();
     }
     
     
     public NCLDescriptor(String id) throws XMLException {
         super();
         params = new ElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P, P>();
         setId(id);
     }
 
@@ -518,14 +501,36 @@ public class NCLDescriptor<T extends NCLDescriptor,
      * smaller value of focus index will receive the focus.
      * 
      * @param focusIndex 
-     *          element representing the focus index of the descriptor or
-     *          <i>null</i> to erase a focus index already defined.
+     *          string or integer representing the focus index of the descriptor
+     *          or <i>null</i> to erase a focus index already defined.
      *          
      */
-    public void setFocusIndex(FocusIndexType focusIndex) {
-        FocusIndexType aux = this.focusIndex;
-        this.focusIndex = focusIndex;
-        impl.notifyAltered(NCLElementAttributes.FOCUSINDEX, aux, focusIndex);
+    public void setFocusIndex(Object focusIndex) throws XMLException {
+        Object aux = this.focusIndex;
+        
+        if(focusIndex == null){
+            this.focusIndex = focusIndex;
+            impl.notifyAltered(NCLElementAttributes.FOCUSINDEX, aux, focusIndex);
+            return;
+        }
+        
+        if(focusIndex instanceof String){
+            String value = (String) focusIndex;
+            
+            if("".equals(value.trim()))
+                throw new XMLException("Empty focus index String");
+            
+            try{
+                this.focusIndex = new Integer(value);
+                
+            }catch(Exception e){
+                this.focusIndex = focusIndex;
+            }
+        }
+        else if(focusIndex instanceof Integer)
+            this.focusIndex = focusIndex;
+        
+        impl.notifyAltered(NCLElementAttributes.FOCUSINDEX, aux, this.focusIndex);
     }
 
 
@@ -539,10 +544,10 @@ public class NCLDescriptor<T extends NCLDescriptor,
      * smaller value of focus index will receive the focus.
      * 
      * @return 
-     *          element representing the focus index of the descriptor or
-     *          <i>null</i> if the attribute is not defined.
+     *          string or integer representing the focus index of the descriptor
+     *          or <i>null</i> if the attribute is not defined.
      */
-    public FocusIndexType getFocusIndex() {
+    public Object getFocusIndex() {
         return focusIndex;
     }
 
@@ -994,26 +999,9 @@ public class NCLDescriptor<T extends NCLDescriptor,
     public ElementList<Ep, T> getDescriptorParams() {
         return params;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -1044,6 +1032,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -1321,9 +1310,9 @@ public class NCLDescriptor<T extends NCLDescriptor,
     
     
     protected String parseFocusIndex() {
-        FocusIndexType aux = getFocusIndex();
+        Object aux = getFocusIndex();
         if(aux != null)
-            return " focusIndex='" + aux.parse() + "'";
+            return " focusIndex='" + aux.toString() + "'";
         else
             return "";
     }
@@ -1520,13 +1509,14 @@ public class NCLDescriptor<T extends NCLDescriptor,
         nl = element.getElementsByTagName(ch_name);
         for(int i=0; i < nl.getLength(); i++){
             Element el = (Element) nl.item(i);
-            Ep inst = createParamByType(el);
+            Ep inst = createDescriptorParam();
             addDescriptorParam(inst);
             inst.load(el);
         }
     }
     
     
+    @Override
     public El findDescriptor(String id) throws XMLException {
         if(getId().equals(id))
             return (El) this;
@@ -1535,90 +1525,18 @@ public class NCLDescriptor<T extends NCLDescriptor,
     }
     
     
-    public El findDescriptor(FocusIndexType focusIndex) throws XMLException {
-        if(this.focusIndex != null && this.focusIndex.parse().equals(focusIndex.parse()))
+    @Override
+    public El findDescriptor(Object focusIndex) throws XMLException {
+        if(this.focusIndex != null && this.focusIndex.toString().equals(focusIndex.toString()))
             return (El) this;
         else
             return null;
     }
-
-
-    private Ep createParamByType(Element element) throws XMLException {
-        String att_name, att_var;
-        NCLAttributes att = NCLAttributes.DEFAULT;
-        
-        att_name = NCLElementAttributes.NAME.toString();
-        if((att_var = element.getAttribute(att_name)).isEmpty())
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-        
-        for(NCLAttributes a : NCLAttributes.values()){
-            if(a.toString().equals(att_var))
-                att = a;
-        }
-
-        switch(att){
-            case TOP:
-                return createRelativeDescriptorParam();
-            case LEFT:
-                return createRelativeDescriptorParam();
-            case BOTTOM:
-                return createRelativeDescriptorParam();
-            case RIGHT:
-                return createRelativeDescriptorParam();
-            case WIDTH:
-                return createRelativeDescriptorParam();
-            case HEIGHT:
-                return createRelativeDescriptorParam();
-            case LOCATION:
-                return createStringDescriptorParam();
-            case SIZE:
-                return createStringDescriptorParam();
-            case BOUNDS:
-                return createStringDescriptorParam();
-            case BACKGROUND:
-                return createTranspColorDescriptorParam();
-            case VISIBLE:
-                return createBooleanDescriptorParam();
-            case TRANSPARENCY:
-                return createPercentDescriptorParam();
-            case FIT:
-                return createFitDescriptorParam();
-            case SCROLL:
-                return createScrollDescriptorParam();
-            case STYLE:
-                return createStringDescriptorParam();
-            case SOUND_LEVEL:
-                return createPercentDescriptorParam();
-            case BALANCE_LEVEL:
-                return createPercentDescriptorParam();
-            case TREBLE_LEVEL:
-                return createPercentDescriptorParam();
-            case BASS_LEVEL:
-                return createPercentDescriptorParam();
-            case ZINDEX:
-                return createIntegerDescriptorParam();
-            case FONT_FAMILY:
-                return createStringDescriptorParam();
-            case FONT_SIZE:
-                return createDoubleDescriptorParam();
-            case FONT_VARIANT:
-                return createFontVariantDescriptorParam();
-            case FONT_WEIGHT:
-                return createFontWeightDescriptorParam();
-            case FONT_COLOR:
-                return createColorDescriptorParam();
-            case REUSE_PLAYER:
-                return createBooleanDescriptorParam();
-            case PLAYER_LIFE:
-                return createPlayerLifeDescriptorParam();
-            default:
-                return createStringDescriptorParam();
-        }
-    }
     
     
+    @Override
     public void fixReference() throws NCLParsingException {
-        FocusIndexType aux;
+        Object aux;
         NCLElement base = getParent();
 
         while(!(base instanceof NCLDescriptorBase)){
@@ -1664,6 +1582,24 @@ public class NCLDescriptor<T extends NCLDescriptor,
         }
     }
     
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList<P, P> getReferences() {
+        return references;
+    }
+    
 
     /**
      * Function to create the child element <i>descriptorParam</i>.
@@ -1672,68 +1608,8 @@ public class NCLDescriptor<T extends NCLDescriptor,
      * @return
      *          element representing the child <i>descriptorParam</i>.
      */
-    protected Ep createStringDescriptorParam() throws XMLException {
-        return (Ep) new NCLStringDescriptorParam();
-    }
-
-
-    protected Ep createDoubleDescriptorParam() throws XMLException {
-        return (Ep) new NCLDoubleDescriptorParam();
-    }
-
-
-    protected Ep createBooleanDescriptorParam() throws XMLException {
-        return (Ep) new NCLBooleanDescriptorParam();
-    }
-
-
-    protected Ep createColorDescriptorParam() throws XMLException {
-        return (Ep) new NCLColorDescriptorParam();
-    }
-
-
-    protected Ep createPercentDescriptorParam() throws XMLException {
-        return (Ep) new NCLPercentDescriptorParam();
-    }
-
-
-    protected Ep createFitDescriptorParam() throws XMLException {
-        return (Ep) new NCLFitDescriptorParam();
-    }
-
-
-    protected Ep createScrollDescriptorParam() throws XMLException {
-        return (Ep) new NCLScrollDescriptorParam();
-    }
-
-
-    protected Ep createFontVariantDescriptorParam() throws XMLException {
-        return (Ep) new NCLFontVariantDescriptorParam();
-    }
-
-
-    protected Ep createFontWeightDescriptorParam() throws XMLException {
-        return (Ep) new NCLFontWeightDescriptorParam();
-    }
-
-
-    protected Ep createPlayerLifeDescriptorParam() throws XMLException {
-        return (Ep) new NCLPlayerLifeDescriptorParam();
-    }
-
-
-    protected Ep createRelativeDescriptorParam() throws XMLException {
-        return (Ep) new NCLRelativeDescriptorParam();
-    }
-
-
-    protected Ep createTranspColorDescriptorParam() throws XMLException {
-        return (Ep) new NCLTranspColorDescriptorParam();
-    }
-
-
-    protected Ep createIntegerDescriptorParam() throws XMLException {
-        return (Ep) new NCLIntegerDescriptorParam();
+    protected Ep createDescriptorParam() throws XMLException {
+        return (Ep) new NCLDescriptorParam();
     }
 
 
