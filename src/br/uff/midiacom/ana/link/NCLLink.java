@@ -46,7 +46,6 @@ import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
@@ -90,7 +89,7 @@ import org.w3c.dom.NodeList;
 public class NCLLink<T extends NCLLink,
                      P extends NCLElement,
                      I extends NCLElementImpl,
-                     Ep extends NCLParam,
+                     Ep extends NCLLinkParam,
                      Eb extends NCLBind,
                      Ec extends ConnectorReference>
         extends NCLIdentifiableElementPrototype<T, P, I>
@@ -380,6 +379,7 @@ public class NCLLink<T extends NCLLink,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -407,6 +407,7 @@ public class NCLLink<T extends NCLLink,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -562,7 +563,7 @@ public class NCLLink<T extends NCLLink,
      *          element representing the child <i>linkParam</i>.
      */
     protected Ep createLinkParam() throws XMLException {
-        return (Ep) new NCLParam(NCLParamInstance.LINKPARAM);
+        return (Ep) new NCLLinkParam();
     }
 
 

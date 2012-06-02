@@ -44,10 +44,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
@@ -71,7 +68,7 @@ import org.w3c.dom.Element;
 public class NCLConnectorParam<T extends NCLConnectorParam,
                                P extends NCLElement,
                                I extends NCLElementImpl,
-                               Ep extends ParamElement>
+                               Ep extends NCLElement>
         extends NCLIdentifiableElementPrototype<T, P, I>
         implements NCLIdentifiableElement<T, P> {
     

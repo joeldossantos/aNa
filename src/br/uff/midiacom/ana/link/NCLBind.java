@@ -47,10 +47,8 @@ import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
-import br.uff.midiacom.ana.datatype.aux.reference.RoleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
@@ -99,11 +97,11 @@ import org.w3c.dom.NodeList;
 public class NCLBind<T extends NCLBind,
                      P extends NCLElement,
                      I extends NCLElementImpl,
-                     Er extends RoleReference,
+                     Er extends NCLRoleElement,
                      En extends NodeReference,
                      Ei extends InterfaceReference,
                      Ed extends DescriptorReference,
-                     Ep extends NCLParam>
+                     Ep extends NCLBindParam>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>{
 
@@ -148,12 +146,11 @@ public class NCLBind<T extends NCLBind,
         Er aux = this.role;
         
         this.role = role;
-        this.role.setOwner((T) this);
-        this.role.setOwnerAtt(NCLElementAttributes.ROLE);
+        this.role.addReference(this);
         
         impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
         if(aux != null)
-            aux.clean();
+            aux.removeReference(this);
     }
     
     
@@ -426,8 +423,8 @@ public class NCLBind<T extends NCLBind,
         String this_bind, other_bind;
 
         // Compara pelo role
-        if(getRole() == null) this_bind = ""; else this_bind = ((NCLRole) getRole().getTarget()).getName();
-        if(other.getRole() == null) other_bind = ""; else other_bind = ((NCLRole) other.getRole().getTarget()).getName();
+        if(getRole() == null) this_bind = ""; else this_bind = getRole().getRole().toString();
+        if(other.getRole() == null) other_bind = ""; else other_bind = other.getRole().getRole().toString();
         comp &= this_bind.equals(other_bind);
 
         // Compara pelo componente
@@ -461,6 +458,7 @@ public class NCLBind<T extends NCLBind,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -492,6 +490,7 @@ public class NCLBind<T extends NCLBind,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadRole(element);
@@ -502,7 +501,7 @@ public class NCLBind<T extends NCLBind,
         catch(XMLException ex){
             String aux = null;
             if(role != null)
-                aux = role.parse();
+                aux = role.getRole().toString();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -517,7 +516,7 @@ public class NCLBind<T extends NCLBind,
         catch(XMLException ex){
             String aux = null;
             if(role != null)
-                aux = role.parse();
+                aux = role.getRole().toString();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -552,7 +551,7 @@ public class NCLBind<T extends NCLBind,
     protected String parseRole() {
         Er aux = getRole();
         if(aux != null)
-            return " role='" + aux.parse() + "'";
+            return " role='" + aux.getRole().toString() + "'";
         else
             return "";
     }
@@ -572,10 +571,10 @@ public class NCLBind<T extends NCLBind,
             if(conn == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            NCLRole rol = (NCLRole) conn.findRole(att_var);
+            Er rol = (Er) conn.findRole(att_var);
             if(rol == null)
                 throw new NCLParsingException("Could not find element " + att_var);
-            setRole(createRoleRef(rol));
+            setRole(rol);
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -696,19 +695,7 @@ public class NCLBind<T extends NCLBind,
      *          element representing the child <i>bindParam</i>.
      */
     protected Ep createBindParam() throws XMLException {
-        return (Ep) new NCLParam(NCLParamInstance.BINDPARAM);
-    }
-
-
-    /**
-     * Function to create a reference to element <i>role</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to element <i>role</i>.
-     */
-    protected Er createRoleRef(NCLRole ref) throws XMLException {
-        return (Er) new RoleReference(ref, NCLElementAttributes.NAME);
+        return (Ep) new NCLBindParam();
     }
 
 

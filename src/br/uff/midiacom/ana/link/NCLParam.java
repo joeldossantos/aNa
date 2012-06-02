@@ -40,14 +40,10 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.connector.NCLCausalConnector;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
 
@@ -70,33 +66,25 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <Ec> 
  */
-public class NCLParam<T extends NCLParam,
-                      P extends NCLElement,
-                      I extends NCLElementImpl,
-                      Ec extends ConParamReference>
+public abstract class NCLParam<T extends NCLParam,
+                               P extends NCLElement,
+                               I extends NCLElementImpl,
+                               Ec extends NCLConnectorParam>
         extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P>{
+        implements NCLElement<T, P> {
 
     protected Ec name;
-    protected StringType value;
-    protected NCLParamInstance paramType;
+    protected Object value;
     
     
     /**
      * Parameter element constructor.
      * 
-     * @param paramType
-     *          type of the parameter from the enumeration <i>NCLParamInstance</i>.
-     *          The parameter type can be <i>link</i> or <i>bind</i>.
      * @throws XMLException 
-     *          if the type is null or an error occur while creating the element.
+     *          if an error occur while creating the element.
      */
-    public NCLParam(NCLParamInstance paramType) throws XMLException {
+    public NCLParam() throws XMLException {
         super();
-        if(paramType == null)
-            throw new XMLException("Null type");
-
-        this.paramType = paramType;
     }
     
     
@@ -122,12 +110,11 @@ public class NCLParam<T extends NCLParam,
         Ec aux = this.name;
         
         this.name = connectorParam;
-        this.name.setOwner((T) this);
-        this.name.setOwnerAtt(NCLElementAttributes.NAME);
+        this.name.addReference(this);
         
         impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
         if(aux != null)
-            aux.clean();
+            aux.removeReference(this);
     }
     
     
@@ -158,12 +145,17 @@ public class NCLParam<T extends NCLParam,
      * @throws XMLException 
      *          if the string is null or empty.
      */
-    public void setValue(String value)  throws XMLException {
+    public void setValue(Object value)  throws XMLException {
         if(value == null)
             throw new XMLException("Null value.");
         
-        StringType aux = this.value;
-        this.value = new StringType(value);
+        Object aux = this.value;
+        
+        if(value instanceof String){
+            
+        }
+        
+        this.value = value;
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
@@ -178,25 +170,9 @@ public class NCLParam<T extends NCLParam,
      */
     public String getValue() {
         if(value != null)
-            return value.getValue();
+            return value.toString();
         else
             return null;
-    }
-
-
-    /**
-     * Returns the type of the parameter element. The possible types are defined
-     * in the enumeration <i>NCLParamInstance</i>.
-     * 
-     * <br/>
-     * 
-     * The parameter type can be <i>link</i> or <i>bind</i>.
-     * 
-     * @return 
-     *          type of the parameter from the enumeration <i>NCLParamInstance</i>.
-     */
-    public NCLParamInstance getType() {
-        return paramType;
     }
     
     
@@ -207,8 +183,9 @@ public class NCLParam<T extends NCLParam,
         
         return getName().equals(other.getName());
     }
-    
-    
+
+
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -222,7 +199,7 @@ public class NCLParam<T extends NCLParam,
         
         
         // param element and attributes declaration
-        content = space + "<" + paramType.toString();
+        content = space + "<" + getType();
         content += parseAttributes();
         content += "/>\n";
         
@@ -230,6 +207,7 @@ public class NCLParam<T extends NCLParam,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadName(element);
@@ -238,13 +216,13 @@ public class NCLParam<T extends NCLParam,
         catch(XMLException ex){
             String aux = null;
             if(name != null)
-               aux = name.parse();
+               aux = name.getName();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
                 aux = "";
             
-            throw new NCLParsingException(paramType.toString() + aux +":\n" + ex.getMessage());
+            throw new NCLParsingException(getType() + aux +":\n" + ex.getMessage());
         }
     }
     
@@ -262,34 +240,13 @@ public class NCLParam<T extends NCLParam,
     protected String parseName() {
         Ec aux = getName();
         if(aux != null)
-            return " name='" + aux.parse() + "'";
+            return " name='" + aux.getName() + "'";
         else
             return "";
     }
     
     
-    protected void loadName(Element element) throws XMLException {
-        String att_name, att_var;
-        
-        // set the name (required)
-        att_name = NCLElementAttributes.NAME.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            if(paramType.equals(NCLParamInstance.BINDPARAM) && (aux = (P) aux.getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-
-            NCLConnectorParam par = (NCLConnectorParam) ((NCLCausalConnector) ((NCLLink) aux).getXconnector().getTarget())
-                    .getConnectorParams().get(att_var);
-            if(par == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-
-            setName(createParamRef(par));
-        }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-    }
+    protected abstract void loadName(Element element) throws XMLException;
     
     
     protected String parseValue() {
@@ -311,16 +268,7 @@ public class NCLParam<T extends NCLParam,
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
-
-
-    /**
-     * Function to create a reference to element <i>connectorParam</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to element <i>connectorParam</i>.
-     */
-    protected Ec createParamRef(NCLConnectorParam ref) throws XMLException {
-        return (Ec) new ConParamReference(ref, NCLElementAttributes.NAME);
-    }
+    
+    
+    protected abstract String getType();
 }
