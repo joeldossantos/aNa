@@ -40,14 +40,20 @@ package br.uff.midiacom.ana.interfaces;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
+import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLFit;
+import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
+import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
+import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
+import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
+import br.uff.midiacom.ana.datatype.enums.NCLScroll;
 import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -78,11 +84,10 @@ public class NCLProperty<T extends NCLProperty,
         extends NCLElementPrototype<Ei, P, I>
         implements NCLInterface<Ei, P> {
 
-    protected Ea attName;
-    protected Ep varName;
-    protected StringType value;
+    protected Object name;
+    protected Object value;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
     
     
     /**
@@ -93,19 +98,20 @@ public class NCLProperty<T extends NCLProperty,
      */
     public NCLProperty() throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
-    public NCLProperty(Ea name) throws XMLException {
+    public NCLProperty(Object name) throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setName(name);
     }
     
     
+    @Override
     public String getId() {
-        return getName();
+        return getName().toString();
     }
     
     
@@ -125,63 +131,45 @@ public class NCLProperty<T extends NCLProperty,
      * list defined by the document.
      * 
      * @param name
-     *          element representing the name of the property element as a node
-     *          attribute.
+     *          string, element from the enumeration <i>NCLNodeAttributes</i> or
+     *          global variable representing the name of the property element.
      * @throws XMLException 
      *          if the name is null.
      */
-    public void setName(Ea name) throws XMLException {
+    public void setName(Object name) throws XMLException {
         if(name == null)
             throw new XMLException("Null name.");
         
-        Ea aux = this.attName;
-        this.attName = name;
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        Object aux;
         
+        if(name instanceof String){
+            String var = (String) name;
+            
+            if((aux = NCLNodeAttributes.getEnumType(var)) != null)
+                name = aux;
+            
+            //@todo: buscar no doc as globais
+            
+            aux = this.name;
+            this.name = name;
+        }
+        else if(name instanceof NCLNodeAttributes){
+            aux = this.name;
+            this.name = name;
+        }
+        else if(name instanceof NCLVariable){
+            aux = this.name;
+            this.name = name;
+//            ((NCLVariable) name).addReference(this);
+        }
+        else
+            throw new XMLException("Wrong name type.");
+        
+        
+        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
         //Erase the name as a variable
-        if(varName != null)
-            varName.clean();
-        varName = null;
-    }
-
-
-    /**
-     * Sets the name of the property element. This attribute is required and can
-     * not be set to <i>null</i>.
-     * 
-     * <br/>
-     * 
-     * A property element may represent an attribute or group of attributes of
-     * a node element.
-     * 
-     * <br/>
-     * 
-     * If the property element is a child of a media element with type
-     * <i>settings</i>, than it indicates the use of a global variable in the
-     * list defined by the document.
-     *
-     * @param name
-     *          element that makes reference a variable defined in the document.
-     * @throws XMLException 
-     *          if the variable is null or any error occur while creating the
-     *          reference to the variable.
-     */
-    public void setName(Ep name) throws XMLException {
-        if(name == null)
-            throw new XMLException("Null name");
-        
-        Ep aux = this.varName;
-        
-        this.varName = name;
-        this.varName.setOwner((T) this);
-        this.varName.setOwnerAtt(NCLElementAttributes.NAME);
-        
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
-        if(aux != null)
-            aux.clean();
-        
-        //Erase the name as a attribute
-        attName = null;
+        if(aux != null && aux instanceof NCLVariable)
+            ;//((NCLVariable) name).removeReference(this);
     }
     
     
@@ -201,66 +189,12 @@ public class NCLProperty<T extends NCLProperty,
      * list defined by the document.
      * 
      * @return
-     *          string representing the name of property element or <i>null</i>
-     *          if the attribute is not defined.
+     *          string, element from the enumeration <i>NCLNodeAttributes</i> or
+     *          global variable representing the name of the property element or
+     *          <i>null</i> if the attribute is not defined.
      */
-    public String getName() {
-        if(varName != null)
-            return varName.parse();
-        if(attName != null)
-            return attName.getName();
-        else
-            return null;
-    }
-    
-    
-    /**
-     * Return the name of the property element as a node attribute or group of
-     * attributes.
-     * 
-     * <br/>
-     * 
-     * A property element may represent an attribute or group of attributes of
-     * a node element.
-     * 
-     * <br/>
-     * 
-     * If the property element is a child of a media element with type
-     * <i>settings</i>, than it indicates the use of a global variable in the
-     * list defined by the document.
-     * 
-     * @return
-     *          element representing the name of the property element as a node
-     *          attribute or <i>null</i> if the property name is not a node
-     *          attribute or group of attributes or is not defined.
-     */
-    public Ea getAttributeName() {
-        return attName;
-    }
-    
-    
-    /**
-     * Return the name of the property element as a global variable.
-     * 
-     * <br/>
-     * 
-     * A property element may represent an attribute or group of attributes of
-     * a node element. The possible values of the node attribute or group of
-     * attributes are defined in the enumeration <i>NCLNodeAttributes</i>.
-     * 
-     * <br/>
-     * 
-     * If the property element is a child of a media element with type
-     * <i>settings</i>, than it indicates the use of a global variable in the
-     * list defined by the document.
-     * 
-     * @return
-     *          element that makes reference a variable defined in the document
-     *          or <i>null</i> if the property name is not a global variable or
-     *          is not defined.
-     */
-    public Ep getVariableName() {
-        return varName;
+    public Object getName() {
+        return name;
     }
     
     
@@ -269,18 +203,17 @@ public class NCLProperty<T extends NCLProperty,
      * the value to <i>null</i> to erase a value already defined.
      * 
      * @param value
-     *          string representing the initial value of the property element.
+     *          initial value of the property element.
      * @throws XMLException 
      *          if the string is empty.
      */
-    public void setValue(String value) throws XMLException {
-        StringType aux = this.value;
+    public void setValue(Object value) throws XMLException {
+        Object aux = this.value;
         
-        if(value != null)
-            this.value = new StringType(value);
-        else
-            this.value= null;
+        if(value instanceof String)
+            value = convertValue((String) value);
         
+        this.value = value;
         impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
@@ -293,42 +226,65 @@ public class NCLProperty<T extends NCLProperty,
      *          string representing the initial value of the property or
      *          <i>null</i> if the attribute is not defined.
      */
-    public String getValue() {
-        if(value != null)
-            return value.getValue();
-        else
-            return null;
+    public Object getValue() {
+        return value;
     }
     
     
+    protected Object convertValue(String value) throws XMLException {
+        if(value != null && "".equals(value.trim()))
+            throw new XMLException("Empty value String");
+        
+        Object aux;
+        
+        if(value.equals("true"))
+            return true;
+        
+        if(value.equals("false"))
+            return false;
+        
+        try{
+            return new Integer(value);
+        }catch(Exception e){}
+
+        try{
+            return new Double(value);
+        }catch(Exception e){}
+        
+        if((aux = NCLColor.getEnumType(value)) != null)
+            return aux;
+        
+        if((aux = NCLFit.getEnumType(value)) != null)
+            return aux;
+        
+        if((aux = NCLFontVariant.getEnumType(value)) != null)
+            return aux;
+        
+        if((aux = NCLFontWeight.getEnumType(value)) != null)
+            return aux;
+        
+        if((aux = NCLPlayerLife.getEnumType(value)) != null)
+            return aux;
+        
+        if((aux = NCLScroll.getEnumType(value)) != null)
+            return aux;
+        
+        return value;
+    }
+    
+    
+    @Override
     public boolean compare(Ei other) {
         if(other == null)
             return false;
         if(!(other instanceof NCLProperty))
             return false;
         
-        return getName().compareTo(other.getId()) == 0;
+        return getName().equals(((NCLProperty) other).getName());
     }
     
     
     @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
-    
-    
     public String parse(int ident) {
         String space, content;
 
@@ -350,6 +306,7 @@ public class NCLProperty<T extends NCLProperty,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadName(element);
@@ -378,9 +335,9 @@ public class NCLProperty<T extends NCLProperty,
     
     
     protected String parseName() {
-        String aux = getName();
+        Object aux = getName();
         if(aux != null)
-            return " name='" + aux + "'";
+            return " name='" + aux.toString() + "'";
         else
             return "";
     }
@@ -392,16 +349,16 @@ public class NCLProperty<T extends NCLProperty,
         // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setName(createName(att_var));
+            setName(att_var);
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
     
     
     protected String parseValue() {
-        String aux = getValue();
+        Object aux = getValue();
         if(aux != null)
-            return " value='" + aux + "'";
+            return " value='" + aux.toString() + "'";
         else
             return "";
     }
@@ -417,7 +374,20 @@ public class NCLProperty<T extends NCLProperty,
     }
     
     
-    public Ea createName(String name) throws XMLException {
-        return (Ea) new NCLAttribute(name);
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList<P,P> getReferences() {
+        return references;
     }
 }

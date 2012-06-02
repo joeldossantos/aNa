@@ -44,9 +44,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -93,7 +91,7 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
 
     protected ElementList<Em, T> mappings;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
 
 
     /**
@@ -105,14 +103,14 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
     public NCLSwitchPort() throws XMLException {
         super();
         mappings = new ElementList<Em, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
     public NCLSwitchPort(String id) throws XMLException {
         super();
         mappings = new ElementList<Em, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setId(id);
     }
 
@@ -197,26 +195,9 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
     public ElementList<Em, T> getMappings() {
         return mappings;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -242,6 +223,7 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -335,6 +317,24 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
             addMapping(inst);
             inst.load(el);
         }
+    }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList<P,P> getReferences() {
+        return references;
     }
 
 

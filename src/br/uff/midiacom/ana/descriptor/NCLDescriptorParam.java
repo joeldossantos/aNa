@@ -200,6 +200,30 @@ public class NCLDescriptorParam<T extends NCLDescriptorParam,
     public Object getValue() {
         return value;
     }
+    
+    
+    /**
+     * Determines if the value of the descriptor parameter has a percent sign.
+     * If it does, than the value type must be Double.
+     * 
+     * @param percentSign 
+     *          boolean determining if the value has a percent sign.
+     */
+    public void setPercentSign(Boolean percentSign) {
+        this.percentSign = percentSign;
+    }
+    
+    
+    /**
+     * Verifies if the value of the descriptor parameter has a percent sign.
+     * If it does, than the value type must be Double.
+     * 
+     * @return
+     *          boolean determining if the value has a percent sign.
+     */
+    public Boolean getPercentSign() {
+        return percentSign;
+    }
 
 
     @Override
@@ -346,7 +370,10 @@ public class NCLDescriptorParam<T extends NCLDescriptorParam,
     }
     
     
-    protected Object convertValue(String value) {
+    protected Object convertValue(String value) throws XMLException {
+        if(value != null && "".equals(value.trim()))
+            throw new XMLException("Empty value String");
+        
         Object aux;
         
         if(value.equals("true"))

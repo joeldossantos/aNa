@@ -45,9 +45,8 @@ import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
@@ -96,7 +95,7 @@ public class NCLArea<T extends NCLArea,
     protected SampleType last;
     protected StringType label;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
     
     
     /**
@@ -107,13 +106,13 @@ public class NCLArea<T extends NCLArea,
      */
     public NCLArea() throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
     public NCLArea(String id) throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setId(id);
     }
 
@@ -588,23 +587,6 @@ public class NCLArea<T extends NCLArea,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
-    
-    
     public String parse(int ident) {
         String space, content;
 
@@ -625,6 +607,7 @@ public class NCLArea<T extends NCLArea,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -841,5 +824,23 @@ public class NCLArea<T extends NCLArea,
         att_name = NCLElementAttributes.LABEL.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setLabel(att_var);
+    }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList<P,P> getReferences() {
+        return references;
     }
 }

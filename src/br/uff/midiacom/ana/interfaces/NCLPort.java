@@ -47,8 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -93,7 +92,7 @@ public class NCLPort<T extends NCLPort,
     protected En component;
     protected Ei interfac;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
 
 
     /**
@@ -104,13 +103,13 @@ public class NCLPort<T extends NCLPort,
      */
     public NCLPort() throws XMLException{
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
     public NCLPort(String id) throws XMLException{
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setId(id);
     }
 
@@ -217,23 +216,6 @@ public class NCLPort<T extends NCLPort,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
-    
-    
     public String parse(int ident) {
         String space, content;
 
@@ -255,6 +237,7 @@ public class NCLPort<T extends NCLPort,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -362,6 +345,24 @@ public class NCLPort<T extends NCLPort,
 
             setInterface(createInterfaceRef(refEl));
         }
+    }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList<P,P> getReferences() {
+        return references;
     }
 
 

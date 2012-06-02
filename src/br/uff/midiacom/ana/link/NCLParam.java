@@ -162,7 +162,10 @@ public abstract class NCLParam<T extends NCLParam,
     }
     
     
-    protected Object convertValue(String value) {
+    protected Object convertValue(String value) throws XMLException {
+        if(value != null && "".equals(value.trim()))
+            throw new XMLException("Empty value String");
+        
         Object var;
         
         String aux = value.substring(value.length() - 1);

@@ -79,12 +79,12 @@ public enum NCLNodeAttributes {
         this.name = name;
     }
 
-    public static NCLNodeAttributes getEnumType(String name) throws NCLParsingException{
+    public static NCLNodeAttributes getEnumType(String name) {
         for(NCLNodeAttributes opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override
