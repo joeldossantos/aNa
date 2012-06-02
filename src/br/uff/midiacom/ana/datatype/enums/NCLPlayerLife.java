@@ -54,12 +54,12 @@ public enum NCLPlayerLife {
         this.name = name;
     }
 
-    public static NCLPlayerLife getEnumType(String name) throws NCLParsingException{
+    public static NCLPlayerLife getEnumType(String name) {
         for(NCLPlayerLife opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

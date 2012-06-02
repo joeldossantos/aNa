@@ -54,12 +54,12 @@ public enum NCLFontWeight {
         this.name = name;
     }
 
-    public static NCLFontWeight getEnumType(String name) throws NCLParsingException{
+    public static NCLFontWeight getEnumType(String name) {
         for(NCLFontWeight opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

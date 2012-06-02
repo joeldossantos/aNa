@@ -57,12 +57,12 @@ public enum NCLFit {
         this.name = name;
     }
 
-    public static NCLFit getEnumType(String name) throws NCLParsingException{
+    public static NCLFit getEnumType(String name) {
         for(NCLFit opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

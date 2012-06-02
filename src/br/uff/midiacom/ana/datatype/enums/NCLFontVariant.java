@@ -54,12 +54,12 @@ public enum NCLFontVariant {
         this.name = name;
     }
 
-    public static NCLFontVariant getEnumType(String name) throws NCLParsingException{
+    public static NCLFontVariant getEnumType(String name) {
         for(NCLFontVariant opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

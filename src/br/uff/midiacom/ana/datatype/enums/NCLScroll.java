@@ -57,12 +57,12 @@ public enum NCLScroll {
         this.name = name;
     }
 
-    public static NCLScroll getEnumType(String name) throws NCLParsingException{
+    public static NCLScroll getEnumType(String name) {
         for(NCLScroll opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

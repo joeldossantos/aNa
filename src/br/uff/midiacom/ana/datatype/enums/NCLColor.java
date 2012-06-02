@@ -70,12 +70,12 @@ public enum NCLColor {
         this.name = name;
     }
 
-    public static NCLColor getEnumType(String name) throws NCLParsingException{
+    public static NCLColor getEnumType(String name) {
         for(NCLColor opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override
