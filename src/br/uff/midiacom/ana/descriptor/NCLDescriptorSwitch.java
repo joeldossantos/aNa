@@ -39,12 +39,13 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
@@ -93,7 +94,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
                                  El extends NCLLayoutDescriptor,
                                  Edd extends NCLDescriptor,
                                  Ed extends DescriptorReference,
-                                 Eb extends NCLDescriptorBindRule>
+                                 Eb extends NCLBindRule<NCLBindRule, P, I, Edd, RuleReference>>
         extends NCLIdentifiableElementPrototype<El, P, I>
         implements NCLLayoutDescriptor<El, P> {
 
@@ -618,7 +619,7 @@ public class NCLDescriptorSwitch<T extends NCLDescriptorSwitch,
      *          element representing the child <i>bindRule</i>.
      */
     protected Eb createBindRule() throws XMLException {
-        return (Eb) new NCLDescriptorBindRule();
+        return (Eb) new NCLBindRule<NCLBindRule, P, I, Edd, RuleReference>();
     }
 
 

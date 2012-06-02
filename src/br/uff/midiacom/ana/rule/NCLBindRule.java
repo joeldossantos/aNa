@@ -35,33 +35,34 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.node;
+package br.uff.midiacom.ana.rule;
 
+import br.uff.midiacom.ana.descriptor.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.rule.NCLRuleBase;
-import br.uff.midiacom.ana.rule.NCLTestRule;
+import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
 
 /**
- * Class that represents the bindRule element used inside a switch node element.
+ * Class that represents the bindRule element used inside a switch or descriptor
+ * switch element.
  * 
  * <br/>
  * 
  * This element defines the attributes:
  * <ul>
- *  <li><i>constituent</i> - switch element component node to be related to a rule.
+ *  <li><i>constituent</i> - switch element component to be related to a rule.
  *                           This attribute is required.</li>
- *  <li><i>rule</i> - rule tested when presenting the node indicated in the
- *                    constituent attribute. This attribute is required.</li>
+ *  <li><i>rule</i> - rule tested when selecting the descriptor to be used. This
+ *                    attribute is required.</li>
  * </ul>
  * 
  * @param <T>
@@ -70,15 +71,15 @@ import org.w3c.dom.Element;
  * @param <En>
  * @param <Er> 
  */
-public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
-                               P extends NCLElement,
-                               I extends NCLElementImpl,
-                               En extends NodeReference,
-                               Er extends RuleReference>
+public class NCLBindRule<T extends NCLBindRule,
+                         P extends NCLElement,
+                         I extends NCLElementImpl,
+                         Ec extends NCLIdentifiableElement,
+                         Er extends RuleReference>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
-    protected En constituent;
+    protected Ec constituent;
     protected Er rule;
 
 
@@ -88,57 +89,56 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLSwitchBindRule() throws XMLException {
+    public NCLBindRule() throws XMLException {
         super();
     }
 
-    
+
     /**
-     * Sets the switch element component node to be related to a rule. This
-     * attribute is required and can not be set to <i>null</i>.
+     * Sets the switch element component to be related to a rule. This attribute
+     * is required and can not be set to <i>null</i>.
      * 
      * <br/>
      * 
-     * The referred node must be a node internal to the switch element parent
-     * of this bindRule element.
+     * The referred component must be a node internal to the switch element
+     * parent of this bindRule element.
      * 
      * @param constituent
-     *          element that makes reference to the node that will be related to
-     *          a rule.
+     *          element that makes reference to the component that will be
+     *          related to a rule.
      * @throws XMLException 
      *          if the constituent is null or any error occur while creating the
-     *          reference to the node.
+     *          reference to the descriptor.
      */
-    public void setConstituent(En constituent) throws XMLException {
+    public void setConstituent(Ec constituent) throws XMLException {
         if(constituent == null)
             throw new XMLException("Null constituent.");
         
-        En aux = this.constituent;
+        Ec aux = this.constituent;
         
         this.constituent = constituent;
-        this.constituent.setOwner((T) this);
-        this.constituent.setOwnerAtt(NCLElementAttributes.CONSTITUENT);
+//        this.constituent.addReference(this);
         
         impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
-        if(aux != null)
-            aux.clean();
+//        if(aux != null)
+//            aux.removeReference(this);
     }
 
 
     /**
-     * Returns the switch element component node to be related to a rule or
+     * Returns the switch element component descriptor to be related to a rule or
      * <i>null</i> if the attribute is not defined.
      * 
      * <br/>
      * 
-     * The referred node must be a node internal to the switch element parent
+     * The referred descriptor must be a node internal to the switch element parent
      * of this bindRule element.
      * 
      * @return 
-     *          element that makes reference to the node that will be related to
-     *          a rule or <i>null</i> if the attribute is not defined.
+     *          element that makes reference to the descriptor that will be
+     *          related to a rule or <i>null</i> if the attribute is not defined.
      */
-    public En getConstituent() {
+    public Ec getConstituent() {
         return constituent;
     }
 
@@ -201,24 +201,21 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
 
     @Override
     public boolean compare(T other) {
-        boolean comp = true;
-        
-        String this_sb, other_sb;
+        boolean comp = false;
 
         // Compara pela regra
-        if(getRule() == null) this_sb = ""; else this_sb = ((NCLTestRule) getRule().getTarget()).getId();
-        if(other.getRule() == null) other_sb = ""; else other_sb = ((NCLTestRule) other.getRule().getTarget()).getId();
-        comp &= this_sb.equals(other_sb);
+        if(getRule() != null)
+            comp |= ((NCLTestRule) getRule().getTarget()).compare((NCLTestRule) other.getRule().getTarget());
 
         // Compara pelo constituent
-        if(getConstituent() == null) this_sb = ""; else this_sb = ((NCLNode) getConstituent().getTarget()).getId();
-        if(other.getConstituent() == null) other_sb = ""; else other_sb = ((NCLNode) other.getConstituent().getTarget()).getId();
-        comp &= this_sb.equals(other_sb);
+        if(getConstituent() != null)
+            comp |= getConstituent().compare(other.getConstituent());
 
         return comp;
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -239,9 +236,8 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-
         try{
             loadConstituent(element);
             loadRule(element);
@@ -286,9 +282,9 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
     
     
     protected String parseConstituent() {
-        En aux = getConstituent();
+        Ec aux = getConstituent();
         if(aux != null)
-            return " constituent='" + aux.parse() + "'";
+            return " constituent='" + aux.getId() + "'";
         else
             return "";
     }
@@ -304,26 +300,19 @@ public class NCLSwitchBindRule<T extends NCLSwitchBindRule,
             if((aux = (P) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            NCLNode refEl = (NCLNode) ((NCLNode) aux).findNode(att_var);
-            if(refEl == null)
+            Ec comp = null;
+            if(comp instanceof NCLDescriptor)
+                comp = (Ec) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
+            else if(comp instanceof NCLNode)
+                comp = (Ec) ((NCLNode) aux).findNode(att_var);
+            
+            if(comp == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            setConstituent(createNodeRef(refEl));
+            setConstituent(comp);
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
-    }
-
-
-    /**
-     * Function to create a reference to a node.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a node.
-     */
-    protected En createNodeRef(NCLNode ref) throws XMLException {
-        return (En) new NodeReference(ref, NCLElementAttributes.ID);
     }
 
 

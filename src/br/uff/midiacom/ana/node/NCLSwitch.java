@@ -45,17 +45,18 @@ import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.aux.reference.SwitchReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
+import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -107,7 +108,7 @@ public class NCLSwitch<T extends NCLSwitch,
                        En extends NCLNode,
                        Ei extends NCLInterface,
                        Ep extends NCLSwitchPort,
-                       Eb extends NCLSwitchBindRule,
+                       Eb extends NCLBindRule<NCLBindRule, P, I, En, RuleReference>,
                        Rn extends SwitchReference,
                        Ri extends NodeReference>
         extends NCLIdentifiableElementPrototype<En, P, I>
@@ -629,6 +630,7 @@ public class NCLSwitch<T extends NCLSwitch,
     }
 
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -657,6 +659,7 @@ public class NCLSwitch<T extends NCLSwitch,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -904,6 +907,7 @@ public class NCLSwitch<T extends NCLSwitch,
     }
     
     
+    @Override
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
@@ -928,6 +932,7 @@ public class NCLSwitch<T extends NCLSwitch,
     }
     
     
+    @Override
     public En findNode(String id) throws XMLException {
         En result;
         
@@ -949,6 +954,7 @@ public class NCLSwitch<T extends NCLSwitch,
     }
     
     
+    @Override
     public void fixReference() throws NCLParsingException {
         String aux;
         
@@ -979,7 +985,7 @@ public class NCLSwitch<T extends NCLSwitch,
      *          element representing the child <i>bindRule</i>.
      */
     protected Eb createBindRule() throws XMLException {
-        return (Eb) new NCLSwitchBindRule();
+        return (Eb) new NCLBindRule<NCLBindRule, P, I, En, RuleReference>();
     }
 
 
