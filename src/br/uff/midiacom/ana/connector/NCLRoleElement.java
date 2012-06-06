@@ -40,14 +40,12 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 /**
  * Interface that represents an element that has a role attribute.
  */
-public interface NCLRoleElement<Eb extends NCLBind>
-        extends NCLElement {
+public interface NCLRoleElement<Eb extends NCLBind> {
     
     
     public Object getRole();
