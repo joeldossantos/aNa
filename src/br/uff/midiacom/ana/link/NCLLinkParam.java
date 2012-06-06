@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.xml.XMLException;
@@ -90,6 +91,7 @@ public class NCLLinkParam<T extends NCLParam,
     }
     
     
+    @Override
     protected void loadName(Element element) throws XMLException {
         String att_name, att_var;
         
@@ -100,8 +102,11 @@ public class NCLLinkParam<T extends NCLParam,
             if((aux = (P) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            Ec par = (Ec) ((NCLCausalConnector) ((NCLLink) aux).getXconnector().getTarget())
-                    .getConnectorParams().get(att_var);
+            Object con = ((NCLLink) aux).getXconnector();
+            if(con instanceof ExternalReferenceType)
+                con = ((ExternalReferenceType) con).getTarget();
+            
+            Ec par = (Ec) ((NCLCausalConnector) con).getConnectorParams().get(att_var);
             if(par == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 

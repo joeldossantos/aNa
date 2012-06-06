@@ -44,9 +44,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
@@ -98,9 +96,9 @@ public class NCLBind<T extends NCLBind,
                      P extends NCLElement,
                      I extends NCLElementImpl,
                      Er extends NCLRoleElement,
-                     En extends NodeReference,
-                     Ei extends InterfaceReference,
-                     Ed extends DescriptorReference,
+                     En extends NCLNode,
+                     Ei extends NCLInterface,
+                     Ed extends NCLLayoutDescriptor,
                      Ep extends NCLBindParam>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>{
@@ -108,7 +106,7 @@ public class NCLBind<T extends NCLBind,
     protected Er role;
     protected En component;
     protected Ei interfac;
-    protected Ed descriptor;
+    protected Object descriptor;
     protected ElementList<Ep, T> bindParams;
     
 
@@ -194,12 +192,11 @@ public class NCLBind<T extends NCLBind,
         En aux = this.component;
         
         this.component = component;
-        this.component.setOwner((T) this);
-        this.component.setOwnerAtt(NCLElementAttributes.COMPONENT);
+        this.component.addReference(this);
         
         impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
         if(aux != null)
-            aux.clean();
+            aux.removeReference(this);
     }
     
     
@@ -243,13 +240,12 @@ public class NCLBind<T extends NCLBind,
         
         this.interfac = interfac;
         if(this.interfac != null){
-            this.interfac.setOwner((T) this);
-            this.interfac.setOwnerAtt(NCLElementAttributes.INTERFACE);
+            this.interfac.addReference(this);
         }
         
         impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
         if(aux != null)
-            aux.clean();
+            aux.removeReference(this);
     }
     
     
@@ -287,23 +283,36 @@ public class NCLBind<T extends NCLBind,
      * be indicated in the reference.
      * 
      * @param descriptor
-     *          element representing a reference to a descriptor element or
-     *          <i>null</i> to erase a descriptor already defined.
+     *          element representing a descriptor or a reference to a descriptor
+     *          or <i>null</i> to erase a descriptor already defined.
      * @throws XMLException 
      *          if any error occur while creating the reference to the descriptor.
      */
-    public void setDescriptor(Ed descriptor) throws XMLException {
-        Ed aux = this.descriptor;
+    public void setDescriptor(Object descriptor) throws XMLException {
+        Object aux = this.descriptor;
         
-        this.descriptor = descriptor;
-        if(this.descriptor != null){
-            this.descriptor.setOwner((T) this);
-            this.descriptor.setOwnerAtt(NCLElementAttributes.DESCRIPTOR);
+        if(descriptor instanceof NCLLayoutDescriptor){
+            this.descriptor = descriptor;
+            ((Ed) descriptor).addReference(this);
+            
+        }
+        else if(descriptor instanceof ExternalReferenceType){
+            this.descriptor = descriptor;
+            ((ExternalReferenceType) descriptor).getTarget().addReference(this);
+            ((ExternalReferenceType) descriptor).getAlias().addReference(this);
         }
         
+        this.descriptor = descriptor;
         impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
-        if(aux != null)
-            aux.clean();
+        
+        if(aux != null){
+            if(aux instanceof NCLLayoutDescriptor)
+                ((Ed) descriptor).removeReference(this);
+            else{
+                ((ExternalReferenceType) descriptor).getTarget().removeReference(this);
+                ((ExternalReferenceType) descriptor).getAlias().removeReference(this);
+            }
+        }
     }
     
     
@@ -320,10 +329,10 @@ public class NCLBind<T extends NCLBind,
      * be indicated in the reference.
      * 
      * @return 
-     *          element representing a reference to a descriptor element or
-     *          <i>null</i> if the attribute is not defined.
+     *          element representing a descriptor or a reference to a descriptor
+     *          or <i>null</i> if the attribute is not defined.
      */
-    public Ed getDescriptor() {
+    public Object getDescriptor() {
         return descriptor;
     }
     
@@ -436,8 +445,14 @@ public class NCLBind<T extends NCLBind,
             comp &= getInterface().compare(other.getInterface());
 
         // Compara pelo descritor
-        if(getDescriptor() != null && other.getDescriptor() != null)
-            comp &= getDescriptor().compare(other.getDescriptor());
+        Object aux = getDescriptor();
+        Object oaux = other.getDescriptor();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLLayoutDescriptor && oaux instanceof NCLLayoutDescriptor)
+                comp &= ((Ed) aux).compare((Ed) oaux);
+            else
+                comp &= ((Ed) ((ExternalReferenceType) aux).getTarget()).compare((Ed) oaux);
+        }
 
         // Compara o número de parâmetros
         comp &= bindParams.size() == other.getBindParams().size();
@@ -567,11 +582,13 @@ public class NCLBind<T extends NCLBind,
             if((aux = (P) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            NCLCausalConnector conn = (NCLCausalConnector) ((NCLLink) aux).getXconnector().getTarget();
+            Object conn = ((NCLLink) aux).getXconnector();
+            if(conn instanceof ExternalReferenceType)
+                conn = ((ExternalReferenceType) conn).getTarget();
             if(conn == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            Er rol = (Er) conn.findRole(att_var);
+            Er rol = (Er) ((NCLCausalConnector) conn).findRole(att_var);
             if(rol == null)
                 throw new NCLParsingException("Could not find element " + att_var);
             setRole(rol);
@@ -584,7 +601,7 @@ public class NCLBind<T extends NCLBind,
     protected String parseComponent() {
         En aux = getComponent();
         if(aux != null)
-            return " component='" + aux.parse() + "'";
+            return " component='" + aux.getId() + "'";
         else
             return "";
     }
@@ -600,15 +617,15 @@ public class NCLBind<T extends NCLBind,
             if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            NCLNode refEl;
+            En refEl;
             if(aux instanceof NCLBody)
-                refEl = (NCLNode) ((NCLBody) aux).findNode(att_var);
+                refEl = (En) ((NCLBody) aux).findNode(att_var);
             else
-                refEl = (NCLNode) ((NCLNode) aux).findNode(att_var);
+                refEl = (En) ((NCLNode) aux).findNode(att_var);
             if(refEl == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            setComponent(createNodeRef(refEl));
+            setComponent(refEl);
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -618,7 +635,7 @@ public class NCLBind<T extends NCLBind,
     protected String parseInterface() {
         Ei aux = getInterface();
         if(aux != null)
-            return " interface='" + aux.parse() + "'";
+            return " interface='" + aux.getId() + "'";
         else
             return "";
     }
@@ -630,21 +647,24 @@ public class NCLBind<T extends NCLBind,
         // set the interface (optional)
         att_name = NCLElementAttributes.INTERFACE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            NCLInterface refEl = (NCLInterface) ((NCLNode) getComponent().getTarget()).findInterface(att_var);
+            Ei refEl = (Ei) getComponent().findInterface(att_var);
             if(refEl == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
-            setInterface(createInterfaceRef(refEl));
+            setInterface(refEl);
         }
     }
     
     
     protected String parseDescriptor() {
-        Ed aux = getDescriptor();
-        if(aux != null)
-            return " descriptor='" + aux.parse() + "'";
-        else
+        Object aux = getDescriptor();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLLayoutDescriptor)
+            return " descriptor='" + ((Ed) aux).getId() + "'";
+        else
+            return " descriptor='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     
@@ -696,41 +716,5 @@ public class NCLBind<T extends NCLBind,
      */
     protected Ep createBindParam() throws XMLException {
         return (Ep) new NCLBindParam();
-    }
-
-
-    /**
-     * Function to create a reference to a node.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a node.
-     */
-    protected En createNodeRef(NCLNode ref) throws XMLException {
-        return (En) new NodeReference(ref, NCLElementAttributes.ID);
-    }
-
-
-    /**
-     * Function to create a reference to a interface.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a interface.
-     */
-    protected Ei createInterfaceRef(NCLInterface ref) throws XMLException {
-        return (Ei) new InterfaceReference(ref, NCLElementAttributes.ID);
-    }
-
-
-    /**
-     * Function to create a reference to a descriptor.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a descriptor.
-     */
-    protected Ed createDescriptorRef(NCLLayoutDescriptor ref) throws XMLException {
-        return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }

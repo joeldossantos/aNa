@@ -45,9 +45,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -86,14 +85,15 @@ import org.w3c.dom.NodeList;
  */
 public class NCLCompositeRule<T extends NCLTestRule,
                               P extends NCLElement,
-                              I extends NCLElementImpl>
+                              I extends NCLElementImpl,
+                              Eb extends NCLBindRule>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLTestRule<T, P> {
+        implements NCLTestRule<T, P, Eb> {
 
     protected NCLOperator operator;
     protected IdentifiableElementList<T, T> rules;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<Eb,P> references;
 
 
     /**
@@ -105,14 +105,14 @@ public class NCLCompositeRule<T extends NCLTestRule,
     public NCLCompositeRule() throws XMLException {
         super();
         rules = new IdentifiableElementList<T, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<Eb,P>();
     }
     
     
     public NCLCompositeRule(String id) throws XMLException {
         super();
         rules = new IdentifiableElementList<T, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<Eb,P>();
         setId(id);
     }
 
@@ -276,26 +276,9 @@ public class NCLCompositeRule<T extends NCLTestRule,
     public IdentifiableElementList<T, T> getRules() {
         return rules;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -321,6 +304,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -456,6 +440,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
     }
     
     
+    @Override
     public T findRule(String id) throws XMLException {
         T result;
         
@@ -469,6 +454,24 @@ public class NCLCompositeRule<T extends NCLTestRule,
         }
         
         return null;
+    }
+    
+    
+    @Override
+    public boolean addReference(Eb reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(Eb reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 
 

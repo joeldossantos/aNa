@@ -39,10 +39,9 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
 /**
@@ -56,7 +55,7 @@ import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 public interface NCLNode<T extends NCLNode,
                          P extends NCLElement,
                          Ei extends NCLInterface>
-        extends NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+        extends NCLIdentifiableElement<T, P>, ReferredElement<P> {
 
     
     /**

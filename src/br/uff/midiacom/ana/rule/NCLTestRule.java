@@ -39,9 +39,8 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
 /**
@@ -53,8 +52,9 @@ import br.uff.midiacom.xml.datatype.reference.ReferredElement;
  * @param <P> 
  */
 public interface NCLTestRule<T extends NCLTestRule,
-                             P extends NCLElement>
-        extends NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+                             P extends NCLElement,
+                             Eb extends NCLBindRule>
+        extends NCLIdentifiableElement<T, P>, ReferredElement<Eb> {
 
     
     /**

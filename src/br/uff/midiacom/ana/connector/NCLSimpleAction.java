@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -90,10 +89,9 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
                              I extends NCLElementImpl,
                              Ea extends NCLAction,
                              Ep extends NCLConnectorParam,
-                             R extends ConParamReference,
                              Eb extends NCLBind>
         extends ParamElement<Ea, P, I>
-        implements NCLAction<Ea, P, Ep, R>, NCLRoleElement<Eb> {
+        implements NCLAction<Ea, P, Ep>, NCLRoleElement<Eb> {
 
     protected Object value;
     protected Integer min;

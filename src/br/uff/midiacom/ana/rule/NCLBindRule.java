@@ -42,8 +42,9 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
@@ -75,12 +76,12 @@ public class NCLBindRule<T extends NCLBindRule,
                          P extends NCLElement,
                          I extends NCLElementImpl,
                          Ec extends NCLIdentifiableElement,
-                         Er extends RuleReference>
+                         Er extends NCLTestRule>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P> {
 
     protected Ec constituent;
-    protected Er rule;
+    protected Object rule;
 
 
     /**
@@ -117,11 +118,11 @@ public class NCLBindRule<T extends NCLBindRule,
         Ec aux = this.constituent;
         
         this.constituent = constituent;
-//        this.constituent.addReference(this);
+        ((ReferredElement) this.constituent).addReference(this);
         
         impl.notifyAltered(NCLElementAttributes.CONSTITUENT, aux, constituent);
-//        if(aux != null)
-//            aux.removeReference(this);
+        if(aux != null)
+            ((ReferredElement) aux).removeReference(this);
     }
 
 
@@ -162,19 +163,30 @@ public class NCLBindRule<T extends NCLBindRule,
      *          reference to the rule.
      *          
      */
-    public void setRule(Er rule) throws XMLException {
+    public void setRule(Object rule) throws XMLException {
         if(rule == null)
             throw new XMLException("Null rule.");
         
-        Er aux = this.rule;
+        Object aux = this.rule;
+        
+        if(rule instanceof NCLTestRule)
+            ((Er) rule).addReference(this);
+        else if(rule instanceof ExternalReferenceType){
+            ((ExternalReferenceType) rule).getTarget().addReference(this);
+            ((ExternalReferenceType) rule).getAlias().addReference(this);
+        }
         
         this.rule = rule;
-        this.rule.setOwner((T) this);
-        this.rule.setOwnerAtt(NCLElementAttributes.RULE);
-        
         impl.notifyAltered(NCLElementAttributes.RULE, aux, rule);
-        if(aux != null)
-            aux.clean();
+        
+        if(aux != null){
+            if(aux instanceof NCLTestRule)
+                ((Er) aux).removeReference(this);
+            else{
+                ((ExternalReferenceType) aux).getTarget().removeReference(this);
+                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+            }
+        }
     }
 
 
@@ -194,7 +206,7 @@ public class NCLBindRule<T extends NCLBindRule,
      *          element representing a reference to a rule element or <i>null</i>
      *          if the attribute is not defined.
      */
-    public Er getRule() {
+    public Object getRule() {
         return rule;
     }
 
@@ -204,8 +216,14 @@ public class NCLBindRule<T extends NCLBindRule,
         boolean comp = false;
 
         // Compara pela regra
-        if(getRule() != null)
-            comp |= ((NCLTestRule) getRule().getTarget()).compare((NCLTestRule) other.getRule().getTarget());
+        Object aux = getRule();
+        Object oaux = other.getRule();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLTestRule && oaux instanceof NCLTestRule)
+                comp |= ((Er) aux).compare((Er) oaux);
+            else if(aux instanceof ExternalReferenceType && oaux instanceof ExternalReferenceType)
+                comp |= ((Er) ((ExternalReferenceType) aux).getTarget()).compare((Er) ((ExternalReferenceType) oaux).getTarget());
+        }
 
         // Compara pelo constituent
         if(getConstituent() != null)
@@ -259,11 +277,14 @@ public class NCLBindRule<T extends NCLBindRule,
     
     
     protected String parseRule() {
-        Er aux = getRule();
-        if(aux != null)
-            return " rule='" + aux.parse() + "'";
-        else
+        Object aux = getRule();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLTestRule)
+            return " rule='" + ((Er) aux).getId() + "'";
+        else
+            return " rule='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     
@@ -274,7 +295,7 @@ public class NCLBindRule<T extends NCLBindRule,
         att_name = NCLElementAttributes.RULE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLTestRule rul = (NCLTestRule) ((NCLRuleBase) ((NCLHead) impl.getDoc().getHead()).getRuleBase()).findRule(att_var);
-            setRule(createRuleRef(rul));
+            setRule(rul);
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
@@ -313,17 +334,5 @@ public class NCLBindRule<T extends NCLBindRule,
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
-    }
-
-
-    /**
-     * Function to create a reference to a rule.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a rule.
-     */
-    protected Er createRuleRef(NCLTestRule ref) throws XMLException {
-        return (Er) new RuleReference(ref, NCLElementAttributes.ID);
     }
 }

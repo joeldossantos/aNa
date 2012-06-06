@@ -37,83 +37,62 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.aux.reference;
 
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
 /**
  * This class represents a reference inside an NCL document or in an imported
  * document.
  *
- * @param <O>
- *          the type of the reference owner element.
  * @param <T>
  *          the type of the referred (target) element.
  * @param <I>
  *          the type of the element representing the external base where the
  *          referred element is.
  */
-public abstract class ExternalReferenceType<O extends NCLElement,
-                                    T extends ReferredElement,
-                                    I extends NCLImport,
-                                    A extends NCLElementAttributes>
-        extends br.uff.midiacom.xml.datatype.reference.ReferenceType<O, T, A> {
+public class ExternalReferenceType<T extends ReferredElement,
+                                    I extends NCLImport> {
 
+    protected T target;
     protected I alias;
     
-
-    /**
-     * Reference constructor. Creates a reference to an element without presenting
-     * any reference to where the element is.
-     *
-     * @param target
-     *          referred element.
-     * @param targetAtt
-     *          referred element attribute.
-     * @throws XMLException
-     *          if one of the parameters is null.
-     */
-    public ExternalReferenceType(T target, A targetAtt) throws XMLException {
-        setTarget(target);
-        setTargetAtt(targetAtt);
-    }
-
-
+    
     /**
      * Reference constructor. Creates a reference to an element also indicating
      * where the element is.
+     * 
+     * <br/>
+     * 
+     * The target and alias element can not be null.
      *
      * @param alias
      *          element representing the element location.
      * @param target
      *          referred element.
-     * @param targetAtt
-     *          referred element attribute.
      * @throws XMLException
      *          if one of the parameters is null.
      */
-    public ExternalReferenceType(I alias, T target, A targetAtt) throws XMLException {
-        setTarget(target);
-        setTargetAtt(targetAtt);
-        setAlias(alias);
-    }
-
-
-    /**
-     * Set the reference alias. The alias is null if the referred element is in
-     * the same document.
-     * 
-     * @param alias
-     *          element representing the element location.
-     */
-    private void setAlias(I alias) throws XMLException {
-        this.alias = alias;
+    public ExternalReferenceType(I alias, T target) throws XMLException {
+        if(target == null)
+            throw new XMLException("Null target element.");
+        if(alias == null)
+            throw new XMLException("Null alias element.");
         
-        if(alias != null)
-            alias.addReference(this);
+        this.target = target;
+        this.alias = alias;
+    }
+    
+    
+    /**
+     * Get the reference target element.
+     * 
+     * @return
+     *          referred element.
+     */
+    public T getTarget() {
+        return target;
     }
     
     
@@ -127,15 +106,6 @@ public abstract class ExternalReferenceType<O extends NCLElement,
     public I getAlias() {
         return alias;
     }
-    
-    
-    @Override
-    public void clean() throws XMLException {
-        super.clean();
-        
-        if(alias != null)
-            alias.removeReference(this);
-    }
 
 
     /**
@@ -147,22 +117,12 @@ public abstract class ExternalReferenceType<O extends NCLElement,
     public String parse() {
         String content = "";
         
-        if(alias != null){
-            content += alias.getAlias();
-            content += "#";
-        }
+        content += alias.getAlias();
+        content += "#";
         
-        content += parseIdent();
+        if(target instanceof NCLIdentifiableElement)
+            content += ((NCLIdentifiableElement) target).getId();
         
         return content;
     }
-    
-    
-    /**
-     * Returns the string that represents the element referred attribute.
-     * 
-     * @return 
-     *          string representing the element referred attribute.
-     */
-    protected abstract String parseIdent();
 }

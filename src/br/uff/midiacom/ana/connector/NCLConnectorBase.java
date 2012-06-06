@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -318,6 +318,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -346,6 +347,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
@@ -467,15 +469,16 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      * @param focusIndex
      *          focusIndex of the descriptor to be found.
      * @return 
-     *          descriptor or null if no descriptor was found.
+     *          connector, reference to the connector or null if no connector
+     *          was found.
      */
-    public ConnectorReference findConnector(String id) throws XMLException {
+    public Object findConnector(String id) throws XMLException {
         Ec result;
         
         if(!id.contains("#")){
             result = getCausalConnectors().get(id);
             if(result != null)
-                return new ConnectorReference(result, NCLElementAttributes.ID);
+                return result;
         }
         else{
             int index = id.indexOf("#");
@@ -485,8 +488,11 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    ConnectorReference ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
-                    return new ConnectorReference(imp, (Ec) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                    Object ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
+                    if(ref instanceof NCLCausalConnector)
+                        return createExternalRef(imp, (Ec) ref);
+                    else
+                        return createExternalRef(imp, (Ec) ((ExternalReferenceType) ref).getTarget());
                 }
             }
         }
@@ -517,5 +523,17 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      */
     protected Ec createCausalConnector() throws XMLException {
         return (Ec) new NCLCausalConnector();
+    }
+
+
+    /**
+     * Function to create a reference to a connector.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a connector.
+     */
+    protected ExternalReferenceType createExternalRef(Ei imp, Ec ref) throws XMLException {
+        return new ExternalReferenceType(imp, ref);
     }
 }

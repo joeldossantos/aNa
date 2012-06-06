@@ -40,15 +40,15 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -94,15 +94,16 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
                                 I extends NCLElementImpl,
                                 Ec extends NCLCondition,
                                 Ea extends NCLAction,
-                                Ep extends NCLConnectorParam>
+                                Ep extends NCLConnectorParam,
+                                El extends NCLLink>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<El> {
 
     protected Ec condition;
     protected Ea action;
     protected IdentifiableElementList<Ep, T> conn_params;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<El, NCLElement> references;
 
 
     /**
@@ -114,14 +115,14 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
     public NCLCausalConnector() throws XMLException {
         super();
         conn_params = new IdentifiableElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<El, NCLElement>();
     }
     
     
     public NCLCausalConnector(String id) throws XMLException {
         super();
         conn_params = new IdentifiableElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<El, NCLElement>();
         setId(id);
     }
     
@@ -334,24 +335,6 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      */
     public IdentifiableElementList<Ep, T> getConnectorParams() {
         return conn_params;
-    }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
     }
 
     
@@ -630,5 +613,23 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      */
     protected Ea createCompoundAction() throws XMLException {
         return (Ea) new NCLCompoundAction();
+    }
+    
+    
+    @Override
+    public boolean addReference(El reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(El reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 }

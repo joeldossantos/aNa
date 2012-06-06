@@ -39,11 +39,7 @@ package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
-import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
-import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
-import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
@@ -66,8 +62,8 @@ public class NCLReferenceManager {
     }
     
     
-    public RegionReference findRegionReference(NCLDoc doc, String id) throws XMLException {
-        RegionReference result = null;
+    public Object findRegionReference(NCLDoc doc, String id) throws XMLException {
+        Object result = null;
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -91,7 +87,7 @@ public class NCLReferenceManager {
     }
     
     
-    public DescriptorReference findDescriptorReference(NCLDoc doc, String id) throws XMLException {
+    public Object findDescriptorReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -101,7 +97,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document descriptorBase element");
 
-        DescriptorReference result = base.findDescriptor(id);
+        Object result = base.findDescriptor(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find descriptor in descriptorBase with id: " + id);
@@ -110,7 +106,7 @@ public class NCLReferenceManager {
     }
 
 
-    public TransitionReference findTransitionReference(NCLDoc doc, String id) throws XMLException {
+    public Object findTransitionReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -120,7 +116,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document transitionBase element");
 
-        TransitionReference result = base.findTransition(id);
+        Object result = base.findTransition(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find transition in transitionBase with id: " + id);
@@ -129,7 +125,7 @@ public class NCLReferenceManager {
     }
 
 
-    public ConnectorReference findConnectorReference(NCLDoc doc, String id) throws XMLException {
+    public Object findConnectorReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -139,7 +135,7 @@ public class NCLReferenceManager {
         if(base == null)
             throw new NCLParsingException("Could not find document connectorBase element");
 
-        ConnectorReference result = base.findConnector(id);
+        Object result = base.findConnector(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find connector in connectorBase with id: " + id);

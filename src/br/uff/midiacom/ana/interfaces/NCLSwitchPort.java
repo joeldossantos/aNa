@@ -333,7 +333,7 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
     
     
     @Override
-    public ElementList<P,P> getReferences() {
+    public ElementList getReferences() {
         return references;
     }
 

@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
-import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import java.io.File;
 import java.io.IOException;
@@ -412,6 +412,7 @@ public class NCLDoc<T extends NCLDoc,
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -443,6 +444,7 @@ public class NCLDoc<T extends NCLDoc,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -644,13 +646,14 @@ public class NCLDoc<T extends NCLDoc,
     
     
     protected void mergeVariables(Ev new_var, Ev old_var) throws XMLException {
-        ItemList<VariableReference> old_refs = old_var.getReferences();
+        ElementList<P,P> old_refs = old_var.getReferences();
         
-        for(VariableReference ref : old_refs){
-            ref.setTarget(new_var);
+        for(P ref : old_refs){
+            if(ref instanceof NCLProperty)
+                ((NCLProperty) ref).setName(new_var);
+            else if(ref instanceof NCLRule)
+                ((NCLRule) ref).setVar(new_var);
         }
-        
-        old_refs.clear();
     }
 
 

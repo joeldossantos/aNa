@@ -39,7 +39,6 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -79,7 +78,6 @@ public class NCLProperty<T extends NCLProperty,
                          P extends NCLElement,
                          I extends NCLElementImpl,
                          Ei extends NCLInterface,
-                         Ep extends VariableReference,
                          Ea extends NCLAttribute>
         extends NCLElementPrototype<Ei, P, I>
         implements NCLInterface<Ei, P> {
@@ -160,7 +158,7 @@ public class NCLProperty<T extends NCLProperty,
         else if(name instanceof NCLVariable){
             aux = this.name;
             this.name = name;
-//            ((NCLVariable) name).addReference(this);
+            ((NCLVariable) name).addReference(this);
         }
         else
             throw new XMLException("Wrong name type.");
@@ -169,7 +167,7 @@ public class NCLProperty<T extends NCLProperty,
         impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
         //Erase the name as a variable
         if(aux != null && aux instanceof NCLVariable)
-            ;//((NCLVariable) name).removeReference(this);
+            ((NCLVariable) name).removeReference(this);
     }
     
     
@@ -387,7 +385,7 @@ public class NCLProperty<T extends NCLProperty,
     
     
     @Override
-    public ElementList<P,P> getReferences() {
+    public ElementList getReferences() {
         return references;
     }
 }

@@ -43,20 +43,17 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
-import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
-import br.uff.midiacom.ana.datatype.aux.reference.SwitchReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.rule.NCLBindRule;
+import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -108,19 +105,18 @@ public class NCLSwitch<T extends NCLSwitch,
                        En extends NCLNode,
                        Ei extends NCLInterface,
                        Ep extends NCLSwitchPort,
-                       Eb extends NCLBindRule<NCLBindRule, P, I, En, RuleReference>,
-                       Rn extends SwitchReference,
-                       Ri extends NodeReference>
+                       Eb extends NCLBindRule<NCLBindRule, P, I, En, Er>,
+                       Er extends NCLRule>
         extends NCLIdentifiableElementPrototype<En, P, I>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
 
-    protected Rn refer;
-    protected Ri defaultComponent;
+    protected Object refer;
+    protected En defaultComponent;
     protected IdentifiableElementList<Ep, T> ports;
     protected ElementList<Eb, T> binds;
     protected IdentifiableElementList<En, T> nodes;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
 
 
     /**
@@ -134,7 +130,7 @@ public class NCLSwitch<T extends NCLSwitch,
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
         nodes = new IdentifiableElementList<En, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
@@ -143,7 +139,7 @@ public class NCLSwitch<T extends NCLSwitch,
         ports = new IdentifiableElementList<Ep, T>();
         binds = new ElementList<Eb, T>();
         nodes = new IdentifiableElementList<En, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setId(id);
     }
 
@@ -183,24 +179,33 @@ public class NCLSwitch<T extends NCLSwitch,
      * a composition.
      * 
      * @param refer
-     *          reference to a switch element or <i>null</i> to erase a reference
-     *          already defined.
+     *          element representing a switch, a reference to a switch element
+     *          or <i>null</i> to erase a reference already defined.
      * @throws XMLException 
      *          if any error occur while creating the reference to the switch
      *          element.
      */
-    public void setRefer(Rn refer) throws XMLException {
-        Rn aux = this.refer;
+    public void setRefer(Object refer) throws XMLException {
+        Object aux = this.refer;
         
-        this.refer = refer;
-        if(this.refer != null){
-            this.refer.setOwner((T) this);
-            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        if(refer instanceof NCLSwitch)
+            ((T) refer).addReference(this);
+        else if(refer instanceof ExternalReferenceType){
+            ((ExternalReferenceType) refer).getTarget().addReference(this);
+            ((ExternalReferenceType) refer).getAlias().addReference(this);
         }
         
+        this.refer = refer;
         impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
-        if(aux != null)
-            aux.clean();
+        
+        if(aux != null){
+            if(aux instanceof NCLSwitch)
+                ((T) aux).removeReference(this);
+            else{
+                ((ExternalReferenceType) aux).getTarget().removeReference(this);
+                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+            }
+        }
     }
 
 
@@ -239,10 +244,10 @@ public class NCLSwitch<T extends NCLSwitch,
      * a composition.
      * 
      * @return 
-     *          reference to a switch element or <i>null</i> if the attribute is
-     *          not defined.
+     *          element representing a switch, a reference to a switch element
+     *          or <i>null</i> if the attribute is not defined.
      */
-    public Rn getRefer() {
+    public Object getRefer() {
         return refer;
     }
 
@@ -378,18 +383,17 @@ public class NCLSwitch<T extends NCLSwitch,
      *          if any error occur while creating the reference to the switch
      *          component.
      */
-    public void setDefaultComponent(Ri defaultComponent) throws XMLException {
+    public void setDefaultComponent(En defaultComponent) throws XMLException {
         if(this.defaultComponent != null){
-            impl.notifyRemoved(NCLElementSets.DEFAULTCOMPONENT, (En) this.defaultComponent.getTarget());
-            this.defaultComponent.clean();
+            impl.notifyRemoved(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
+            this.defaultComponent.removeReference(this);
         }
         
         this.defaultComponent = defaultComponent;
         
         if(this.defaultComponent != null){
-            this.defaultComponent.setOwner((T) this);
-            this.defaultComponent.setOwnerAtt(NCLElementAttributes.DEFAULTCOMPONENT);
-            impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, (En) this.defaultComponent.getTarget());
+            this.defaultComponent.addReference(this);
+            impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
         }
     }
 
@@ -402,7 +406,7 @@ public class NCLSwitch<T extends NCLSwitch,
      *          element representing a reference to a switch component node or
      *          <i>null</i> if the attribute is not defined.
      */
-    public Ri getDefaultComponent() {
+    public En getDefaultComponent() {
         return defaultComponent;
     }
 
@@ -610,24 +614,6 @@ public class NCLSwitch<T extends NCLSwitch,
     public IdentifiableElementList<En, T> getNodes() {
         return nodes;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
     
     @Override
@@ -772,11 +758,14 @@ public class NCLSwitch<T extends NCLSwitch,
     
     
     protected String parseRefer() {
-        Rn aux = getRefer();
-        if(aux != null)
-            return " refer='" + aux.parse() + "'";
-        else
+        Object aux = getRefer();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLSwitch)
+            return " refer='" + ((T) aux).getId() + "'";
+        else
+            return " refer='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     
@@ -787,7 +776,7 @@ public class NCLSwitch<T extends NCLSwitch,
         att_name = NCLElementAttributes.REFER.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             En ref = (En) new NCLSwitch(att_var);
-            setRefer(createSwitchRef(ref));
+            setRefer(ref);
             NCLReferenceManager.getInstance().waitReference(this);
         }
     }
@@ -838,7 +827,7 @@ public class NCLSwitch<T extends NCLSwitch,
     
     
     protected String parseDefaultComponent(int ident) {
-        Ri aux = getDefaultComponent();
+        En aux = getDefaultComponent();
         if(aux == null)
             return "";
         
@@ -849,7 +838,7 @@ public class NCLSwitch<T extends NCLSwitch,
         for(int i = 0; i < ident; i++)
             space += "\t";
         
-        return space + "<defaultComponent component='" + aux.parse() + "'/>\n";
+        return space + "<defaultComponent component='" + aux.getId() + "'/>\n";
     }
     
     
@@ -860,7 +849,7 @@ public class NCLSwitch<T extends NCLSwitch,
         if(element.getTagName().equals(NCLElementAttributes.DEFAULTCOMPONENT.toString())){
             att_name = NCLElementAttributes.COMPONENT.toString();
             if(!(att_var = element.getAttribute(att_name)).isEmpty())
-                setDefaultComponent(createNodeRef(nodes.get(att_var)));
+                setDefaultComponent(nodes.get(att_var));
         }
     }
     
@@ -912,9 +901,13 @@ public class NCLSwitch<T extends NCLSwitch,
         Ei result;
         
         // if reuses another switch search in it
-        Rn aux;
-        if((aux = getRefer()) != null)
-            return (Ei) ((T) aux.getTarget()).findInterface(id);
+        Object aux;
+        if((aux = getRefer()) != null){
+            if(aux instanceof NCLSwitch)
+                return (Ei) ((T) aux).findInterface(id);
+            else
+                return (Ei) ((T) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
+        }
         
         // search as a switchPort
         result = (Ei) ports.get(id);
@@ -940,9 +933,13 @@ public class NCLSwitch<T extends NCLSwitch,
             return (En) this;
         
         // if reuses another switch search in it
-        Rn aux;
-        if((aux = getRefer()) != null)
-            return (En) ((T) aux.getTarget()).findNode(id);
+        Object aux;
+        if((aux = getRefer()) != null){
+            if(aux instanceof NCLSwitch)
+                return (En) ((T) aux).findNode(id);
+            else
+                return (En) ((T) ((ExternalReferenceType) aux).getTarget()).findNode(id);
+        }
         
         for(En node : nodes){
             result = (En) node.findNode(id);
@@ -960,9 +957,9 @@ public class NCLSwitch<T extends NCLSwitch,
         
         try{
             // set the refer (optional)
-            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+            if((aux = ((En) getRefer()).getId()) != null){
                 En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
-                setRefer(createSwitchRef(ref));
+                setRefer(ref);
             }
         }
         catch(XMLException ex){
@@ -975,6 +972,24 @@ public class NCLSwitch<T extends NCLSwitch,
             throw new NCLParsingException("Switch" + aux + ". Fixing reference:\n" + ex.getMessage());
         }
     }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
+    }
 
 
     /**
@@ -985,7 +1000,7 @@ public class NCLSwitch<T extends NCLSwitch,
      *          element representing the child <i>bindRule</i>.
      */
     protected Eb createBindRule() throws XMLException {
-        return (Eb) new NCLBindRule<NCLBindRule, P, I, En, RuleReference>();
+        return (Eb) new NCLBindRule<NCLBindRule, P, I, En, Er>();
     }
 
 
@@ -1034,29 +1049,5 @@ public class NCLSwitch<T extends NCLSwitch,
      */
     protected En createSwitch() throws XMLException {
         return (En) new NCLSwitch();
-    }
-
-
-    /**
-     * Function to create a reference to a switch.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a switch.
-     */
-    protected Rn createSwitchRef(En ref) throws XMLException {
-        return (Rn) new SwitchReference(ref, NCLElementAttributes.ID);
-    }
-
-
-    /**
-     * Function to create a reference to a node.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a node.
-     */
-    protected Ri createNodeRef(En ref) throws XMLException {
-        return (Ri) new NodeReference(ref, NCLElementAttributes.ID);
     }
 }

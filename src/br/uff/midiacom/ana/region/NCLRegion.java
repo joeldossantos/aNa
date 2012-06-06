@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -111,7 +112,7 @@ public class NCLRegion<T extends NCLRegion,
                        P extends NCLElement,
                        I extends NCLElementImpl>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<P> {
 
     protected String title;
     protected Object left;
@@ -850,6 +851,7 @@ public class NCLRegion<T extends NCLRegion,
     }
     
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -878,6 +880,7 @@ public class NCLRegion<T extends NCLRegion,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -1193,16 +1196,19 @@ public class NCLRegion<T extends NCLRegion,
     }
     
     
+    @Override
     public boolean addReference(P reference) throws XMLException {
         return references.add(reference, null);
     }
     
     
+    @Override
     public boolean removeReference(P reference) throws XMLException {
         return references.remove(reference);
     }
     
     
+    @Override
     public ElementList<P, NCLElement> getReferences() {
         return references;
     }

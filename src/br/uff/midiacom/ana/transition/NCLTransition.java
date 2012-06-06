@@ -43,16 +43,16 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.aux.basic.BlendColorType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -87,9 +87,10 @@ import org.w3c.dom.Element;
  */
 public class NCLTransition<T extends NCLTransition,
                            P extends NCLElement,
-                           I extends NCLElementImpl>
+                           I extends NCLElementImpl,
+                           Ed extends NCLDescriptor>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<Ed> {
 
     protected NCLTransitionType type;
     protected NCLTransitionSubtype subtype;
@@ -103,7 +104,7 @@ public class NCLTransition<T extends NCLTransition,
     protected Integer borderWidth;
     protected BlendColorType borderColor;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<Ed, NCLElement> references;
 
 
     /**
@@ -114,13 +115,13 @@ public class NCLTransition<T extends NCLTransition,
      */
     public NCLTransition() throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<Ed, NCLElement>();
     }
     
     
     public NCLTransition(String id) throws XMLException {
         super();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<Ed, NCLElement>();
         setId(id);
     }
 
@@ -627,26 +628,9 @@ public class NCLTransition<T extends NCLTransition,
     public BlendColorType getBorderColor() {
         return borderColor;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
     
+    @Override
     public String parse(int ident) {
         String space, content;
         Object aux;
@@ -669,6 +653,7 @@ public class NCLTransition<T extends NCLTransition,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);
@@ -971,5 +956,23 @@ public class NCLTransition<T extends NCLTransition,
         att_name = NCLElementAttributes.BORDERCOLOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
             setBorderColor(new BlendColorType(att_var));
+    }
+    
+    
+    @Override
+    public boolean addReference(Ed reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(Ed reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 }

@@ -37,13 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.ncl;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import org.w3c.dom.Element;
 
@@ -63,12 +63,12 @@ public class NCLVariable<T extends NCLVariable,
                          I extends NCLElementImpl,
                          V extends SysVarType>
         extends NCLElementPrototype<T, P, I>
-        implements ReferredElement<ReferenceType> {
+        implements ReferredElement<NCLElement> {
 
     protected V Rname;
     protected StringType Sname;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<NCLElement,NCLElement> references;
     
     
     /**
@@ -83,7 +83,7 @@ public class NCLVariable<T extends NCLVariable,
     public NCLVariable(V name) throws XMLException {
         super();
         setName(name);
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<NCLElement,NCLElement>();
     }
     
     
@@ -98,7 +98,7 @@ public class NCLVariable<T extends NCLVariable,
     public NCLVariable(String name) throws XMLException {
         super();
         setName(name);
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<NCLElement,NCLElement>();
     }
     
     
@@ -166,11 +166,13 @@ public class NCLVariable<T extends NCLVariable,
     }
     
     
+    @Override
     public String parse(int ident) {
         return getName();
     }
     
     
+    @Override
     public boolean compare(T other) {
         if(other == null)
             return false;
@@ -180,19 +182,19 @@ public class NCLVariable<T extends NCLVariable,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
+    public boolean addReference(NCLElement reference) throws XMLException {
+        return references.add(reference, null);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
+    public boolean removeReference(NCLElement reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public ItemList<ReferenceType> getReferences() {
+    public ElementList<NCLElement,NCLElement> getReferences() {
         return references;
     }
     

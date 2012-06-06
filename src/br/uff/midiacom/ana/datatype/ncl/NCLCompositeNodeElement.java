@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.datatype.ncl;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -48,11 +49,8 @@ import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
 
 
 /**
@@ -107,7 +105,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
                                               Em extends NCLMeta,
                                               Emt extends NCLMetadata>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<ReferenceType> {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<P> {
 
     protected IdentifiableElementList<Ept, T> ports;
     protected IdentifiableElementList<Epp, T> properties;
@@ -116,7 +114,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
     protected ElementList<Em, T> metas;
     protected ElementList<Emt, T> metadatas;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
 
 
     /**
@@ -133,7 +131,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
         links = new IdentifiableElementList<El, T>();
         metas = new ElementList<Em, T>();
         metadatas = new ElementList<Emt, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
 
 
@@ -772,22 +770,22 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
     public ElementList<Emt, T> getMetadatas() {
         return metadatas;
     }
-
+    
     
     @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
     }
     
     
     @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
+    public boolean removeReference(P reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public ItemList<ReferenceType> getReferences() {
+    public ElementList getReferences() {
         return references;
     }
 }

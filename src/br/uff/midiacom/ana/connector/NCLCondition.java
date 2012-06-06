@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.xml.XMLException;
 
 
@@ -53,8 +52,7 @@ import br.uff.midiacom.xml.XMLException;
  */
 public interface NCLCondition<T extends NCLCondition,
                               P extends NCLElement,
-                              Ep extends NCLConnectorParam,
-                              R extends ConParamReference>
+                              Ep extends NCLConnectorParam>
         extends NCLElement<T, P> {
 
 

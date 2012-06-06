@@ -43,7 +43,7 @@ import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
-import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -91,11 +91,11 @@ public class NCLLink<T extends NCLLink,
                      I extends NCLElementImpl,
                      Ep extends NCLLinkParam,
                      Eb extends NCLBind,
-                     Ec extends ConnectorReference>
+                     Ec extends NCLCausalConnector>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>{
+        implements NCLIdentifiableElement<T, P> {
 
-    protected Ec xconnector;
+    protected Object xconnector;
     protected ElementList<Ep, T> linkParams;
     protected ElementList<Eb, T> binds;
     
@@ -126,24 +126,40 @@ public class NCLLink<T extends NCLLink,
      * be indicated in the reference.
      * 
      * @param xconnector
-     *          element representing a reference to a connector element.
+     *          element representing a connector or a reference to a connector
+     *          element.
      * @throws XMLException 
      *          if the connector is null or any error occur while creating the
      *          reference to the connector.
      */
-    public void setXconnector(Ec xconnector) throws XMLException {
+    public void setXconnector(Object xconnector) throws XMLException {
         if(xconnector == null)
             throw new XMLException("Null connector.");
         
-        Ec aux = this.xconnector;
+        Object aux = this.xconnector;
+        
+        if(xconnector instanceof NCLCausalConnector){
+            this.xconnector = xconnector;
+            ((Ec) xconnector).addReference(this);
+            
+        }
+        else if(xconnector instanceof ExternalReferenceType){
+            this.xconnector = xconnector;
+            ((ExternalReferenceType) xconnector).getTarget().addReference(this);
+            ((ExternalReferenceType) xconnector).getAlias().addReference(this);
+        }
         
         this.xconnector = xconnector;
-        this.xconnector.setOwner((T) this);
-        this.xconnector.setOwnerAtt(NCLElementAttributes.XCONNECTOR);
+        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, xconnector);
         
-        impl.notifyAltered(NCLElementAttributes.XCONNECTOR, aux, xconnector);
-        if(aux != null)
-            aux.clean();
+        if(aux != null){
+            if(aux instanceof NCLCausalConnector)
+                ((Ec) xconnector).removeReference(this);
+            else{
+                ((ExternalReferenceType) xconnector).getTarget().removeReference(this);
+                ((ExternalReferenceType) xconnector).getAlias().removeReference(this);
+            }
+        }
     }
     
     
@@ -163,7 +179,7 @@ public class NCLLink<T extends NCLLink,
      *          element representing a reference to a connector element or
      *          <i>null</i> if the attribute is not defined.
      */
-    public Ec getXconnector() {
+    public Object getXconnector() {
         return xconnector;
     }
     
@@ -344,9 +360,14 @@ public class NCLLink<T extends NCLLink,
         boolean comp = true;
 
         // Compara pelo xconnector
-        if(getXconnector() != null && other.getXconnector() != null)
-            comp &= ((NCLCausalConnector) getXconnector().getTarget())
-                    .compare((NCLCausalConnector) other.getXconnector().getTarget());
+        Object aux = getXconnector();
+        Object oaux = other.getXconnector();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLCausalConnector && oaux instanceof NCLCausalConnector)
+                comp &= ((Ec) aux).compare((Ec) oaux);
+            else
+                comp &= ((Ec) ((ExternalReferenceType) aux).getTarget()).compare((Ec) ((ExternalReferenceType) oaux).getTarget());
+        }
 
         // Compara o número de parâmetros
         comp &= linkParams.size() == other.getLinkParams().size();
@@ -490,11 +511,14 @@ public class NCLLink<T extends NCLLink,
     
     
     protected String parseXconnector() {
-        Ec aux = getXconnector();
-        if(aux != null)
-            return " xconnector='" + aux.parse() + "'";
-        else
+        Object aux = getXconnector();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLCausalConnector)
+            return " xconnector='" + ((Ec) aux).getId() + "'";
+        else
+            return " xconnector='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     

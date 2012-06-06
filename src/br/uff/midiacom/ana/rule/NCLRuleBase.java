@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -329,6 +329,7 @@ public class NCLRuleBase<T extends NCLRuleBase,
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -357,6 +358,7 @@ public class NCLRuleBase<T extends NCLRuleBase,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
@@ -492,14 +494,14 @@ public class NCLRuleBase<T extends NCLRuleBase,
      * @return 
      *          rule or null if no rule was found.
      */
-    public RuleReference findRule(String id) throws XMLException {
-        Et result;
+    public Object findRule(String id) throws XMLException {
+        Object result;
         
         if(!id.contains("#")){
             for(Et rule : rules){
-                result = (Et) rule.findRule(id);
+                result = rule.findRule(id);
                 if(result != null)
-                    return new RuleReference(result, NCLElementAttributes.ID);
+                    return result;
             }
         }
         else{
@@ -510,8 +512,11 @@ public class NCLRuleBase<T extends NCLRuleBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    RuleReference ref = findRuleReference(d, id);
-                    return new RuleReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                    Object ref = findRuleReference(d, id);
+                    if(ref instanceof NCLTestRule)
+                        return createExternalRef(imp, (Et) ref);
+                    else
+                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
                 }
             }
             
@@ -519,8 +524,11 @@ public class NCLRuleBase<T extends NCLRuleBase,
             for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    RuleReference ref = findRuleReference(d, id);
-                    return new RuleReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                    Object ref = findRuleReference(d, id);
+                    if(ref instanceof NCLTestRule)
+                        return createExternalRef(imp, (Et) ref);
+                    else
+                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
                 }
             }
         }
@@ -530,7 +538,7 @@ public class NCLRuleBase<T extends NCLRuleBase,
     }
     
     
-    protected RuleReference findRuleReference(NCLDoc doc, String id) throws XMLException {
+    protected Object findRuleReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -540,7 +548,7 @@ public class NCLRuleBase<T extends NCLRuleBase,
         if(base == null)
             throw new NCLParsingException("Could not find document ruleBase element");
 
-        RuleReference result = base.findRule(id);
+        Object result = base.findRule(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find rule in ruleBase with id: " + id);
@@ -582,5 +590,17 @@ public class NCLRuleBase<T extends NCLRuleBase,
      */
     protected Et createCompositeRule() throws XMLException {
         return (Et) new NCLCompositeRule();
+    }
+
+
+    /**
+     * Function to create a reference to a rule.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a rule.
+     */
+    protected ExternalReferenceType createExternalRef(Ei imp, Et ref) throws XMLException {
+        return new ExternalReferenceType(imp, ref);
     }
 }

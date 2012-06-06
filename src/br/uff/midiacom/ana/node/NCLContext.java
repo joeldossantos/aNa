@@ -47,7 +47,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ContextReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
@@ -112,12 +112,11 @@ public class NCLContext<T extends NCLContext,
                         Ei extends NCLInterface,
                         El extends NCLLink,
                         Em extends NCLMeta,
-                        Emt extends NCLMetadata,
-                        Rn extends ContextReference>
+                        Emt extends NCLMetadata>
         extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
 
-    protected Rn refer;
+    protected Object refer;
     private String refer_id;
     
     
@@ -174,24 +173,33 @@ public class NCLContext<T extends NCLContext,
      * a composition.
      * 
      * @param refer
-     *          reference to a context or body elements or <i>null</i> to erase
-     *          a reference already defined.
+     *          element representing a context or body, a reference to a context
+     *          or body elements or <i>null</i> to erase a reference already defined.
      * @throws XMLException 
      *          if any error occur while creating the reference to the context
      *          or body elements.
      */
-    public void setRefer(Rn refer) throws XMLException {
-        Rn aux = this.refer;
+    public void setRefer(Object refer) throws XMLException {
+        Object aux = this.refer;
         
-        this.refer = refer;
-        if(this.refer != null){
-            this.refer.setOwner((T) this);
-            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        if(refer instanceof NCLCompositeNodeElement)
+            ((T) refer).addReference(this);
+        else if(refer instanceof ExternalReferenceType){
+            ((ExternalReferenceType) refer).getTarget().addReference(this);
+            ((ExternalReferenceType) refer).getAlias().addReference(this);
         }
         
+        this.refer = refer;
         impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
-        if(aux != null)
-            aux.clean();
+        
+        if(aux != null){
+            if(aux instanceof NCLCompositeNodeElement)
+                ((T) aux).removeReference(this);
+            else{
+                ((ExternalReferenceType) aux).getTarget().removeReference(this);
+                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+            }
+        }
     }
 
 
@@ -230,14 +238,15 @@ public class NCLContext<T extends NCLContext,
      * a composition.
      * 
      * @return 
-     *          reference to a context or body elements or <i>null</i> if the
-     *          attribute is not defined.
+     *          element representing a context or body, a reference to a context
+     *          or body elements or <i>null</i> if the attribute is not defined.
      */
-    public Rn getRefer() {
+    public Object getRefer() {
         return refer;
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -270,6 +279,7 @@ public class NCLContext<T extends NCLContext,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -386,11 +396,14 @@ public class NCLContext<T extends NCLContext,
     
     
     protected String parseRefer() {
-        Rn aux = getRefer();
-        if(aux != null)
-            return " refer='" + aux.parse() + "'";
-        else
+        Object aux = getRefer();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLCompositeNodeElement)
+            return " refer='" + ((T) aux).getId() + "'";
+        else
+            return " refer='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     
@@ -560,13 +573,18 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    @Override
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
         // if reuses another context search in it
-        Rn aux;
-        if((aux = getRefer()) != null)
-            return (Ei) ((T) aux.getTarget()).findInterface(id);
+        Object aux;
+        if((aux = getRefer()) != null){
+            if(aux instanceof NCLCompositeNodeElement)
+                return (Ei) ((T) aux).findInterface(id);
+            else
+                return (Ei) ((T) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
+        }
         
         // search as a property
         result = (Ei) properties.get(id);
@@ -589,6 +607,7 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    @Override
     public En findNode(String id) throws XMLException {
         En result;
         
@@ -596,9 +615,13 @@ public class NCLContext<T extends NCLContext,
             return (En) this;
         
         // if reuses another context search in it
-        Rn aux;
-        if((aux = getRefer()) != null)
-            return (En) ((T) aux.getTarget()).findNode(id);
+        Object aux;
+        if((aux = getRefer()) != null){
+            if(aux instanceof NCLCompositeNodeElement)
+                return (En) ((T) aux).findNode(id);
+            else
+                return (En) ((T) ((ExternalReferenceType) aux).getTarget()).findNode(id);
+        }
         
         for(En node : nodes){
             result = (En) node.findNode(id);
@@ -610,15 +633,19 @@ public class NCLContext<T extends NCLContext,
     }
     
     
+    @Override
     public void fixReference() throws NCLParsingException {
         String aux;
         
         try{
             // set the refer (optional)
-//            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+            if((aux = ((NCLCompositeNodeElement) getRefer()).getId()) != null){
+                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
+                setRefer(ref);
+            }
             if(refer_id != null){
                 En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(refer_id);
-                setRefer(createContextRef(ref));
+                setRefer(ref);
             }
         }
         catch(XMLException ex){
@@ -726,17 +753,5 @@ public class NCLContext<T extends NCLContext,
      */
     protected El createLink() throws XMLException {
         return (El) new NCLLink();
-    }
-
-
-    /**
-     * Function to create a reference to a node.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a node.
-     */
-    protected Rn createContextRef(En ref) throws XMLException {
-        return (Rn) new ContextReference((NCLCompositeNodeElement)ref, NCLElementAttributes.ID);
     }
 }

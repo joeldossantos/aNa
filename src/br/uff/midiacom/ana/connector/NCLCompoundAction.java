@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -88,10 +87,9 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
                                P extends NCLElement,
                                I extends NCLElementImpl,
                                Ea extends NCLAction,
-                               Ep extends NCLConnectorParam,
-                               R extends ConParamReference>
+                               Ep extends NCLConnectorParam>
         extends ParamElement<Ea, P, I>
-        implements NCLAction<Ea, P, Ep, R> {
+        implements NCLAction<Ea, P, Ep> {
 
     protected NCLActionOperator operator;
     protected Object delay;
@@ -334,6 +332,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -357,6 +356,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;

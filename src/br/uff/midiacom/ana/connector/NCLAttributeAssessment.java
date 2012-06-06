@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
@@ -79,7 +78,6 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
                                     P extends NCLElement,
                                     I extends NCLElementImpl,
                                     Ep extends NCLConnectorParam,
-                                    R extends ConParamReference,
                                     Eb extends NCLBind>
         extends ParamElement<T, P, I>
         implements NCLElement<T, P>, NCLRoleElement<Eb> {

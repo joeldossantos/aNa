@@ -44,8 +44,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.MediaReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -55,9 +54,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -107,22 +105,21 @@ public class NCLMedia<T extends NCLMedia,
                       I extends NCLElementImpl,
                       Ea extends NCLArea,
                       Ep extends NCLProperty,
-                      Ed extends DescriptorReference,
+                      Ed extends NCLLayoutDescriptor,
                       En extends NCLNode,
-                      Ei extends NCLInterface,
-                      Rn extends MediaReference>
+                      Ei extends NCLInterface>
         extends NCLIdentifiableElementPrototype<En, P, I>
         implements NCLNode<En, P, Ei>, PostReferenceElement {
 
     protected SrcType src;
     protected NCLMimeType type;
-    protected Ed descriptor;
-    protected Rn refer;
+    protected Object descriptor;
+    protected Object refer;
     protected NCLInstanceType instance;
     protected IdentifiableElementList<Ea, T> areas;
     protected IdentifiableElementList<Ep, T> properties;
     
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P,P> references;
     
     
     /**
@@ -135,7 +132,7 @@ public class NCLMedia<T extends NCLMedia,
         super();
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
     }
     
     
@@ -143,7 +140,7 @@ public class NCLMedia<T extends NCLMedia,
         super();
         areas = new IdentifiableElementList<Ea, T>();
         properties = new IdentifiableElementList<Ep, T>();
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P,P>();
         setId(id);
     }
     
@@ -310,23 +307,32 @@ public class NCLMedia<T extends NCLMedia,
      * be indicated in the reference.
      * 
      * @param descriptor
-     *          element representing a reference to a descriptor element or
-     *          <i>null</i> to erase a descriptor already defined.
+     *          element representing a descriptor, a reference to a descriptor
+     *          element or <i>null</i> to erase a descriptor already defined.
      * @throws XMLException 
      *          if any error occur while creating the reference to the descriptor.
      */
-    public void setDescriptor(Ed descriptor) throws XMLException {
-        Ed aux = this.descriptor;
+    public void setDescriptor(Object descriptor) throws XMLException {
+        Object aux = this.descriptor;
         
-        this.descriptor = descriptor;
-        if(this.descriptor != null){
-            this.descriptor.setOwner((T) this);
-            this.descriptor.setOwnerAtt(NCLElementAttributes.DESCRIPTOR);
+        if(descriptor instanceof NCLLayoutDescriptor)
+            ((Ed) descriptor).addReference(this);
+        else if(descriptor instanceof ExternalReferenceType){
+            ((ExternalReferenceType) descriptor).getTarget().addReference(this);
+            ((ExternalReferenceType) descriptor).getAlias().addReference(this);
         }
         
+        this.descriptor = descriptor;
         impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
-        if(aux != null)
-            aux.clean();
+        
+        if(aux != null){
+            if(aux instanceof NCLLayoutDescriptor)
+                ((Ed) aux).removeReference(this);
+            else{
+                ((ExternalReferenceType) aux).getTarget().removeReference(this);
+                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+            }
+        }
     }
     
     
@@ -343,10 +349,10 @@ public class NCLMedia<T extends NCLMedia,
      * be indicated in the reference.
      * 
      * @return 
-     *          element representing a reference to a descriptor element or
-     *          <i>null</i> if the attribute is not defined.
+     *          element representing a descriptor, a reference to a descriptor
+     *          element or <i>null</i> if the attribute is not defined.
      */
-    public Ed getDescriptor() {
+    public Object getDescriptor() {
         return descriptor;
     }
 
@@ -396,24 +402,33 @@ public class NCLMedia<T extends NCLMedia,
      * 
      * 
      * @param refer
-     *          reference to a media element or <i>null</i> to erase a reference
-     *          already defined.
+     *          element representing a media, a reference to a media element or
+     *          <i>null</i> to erase a reference already defined.
      * @throws XMLException 
      *          if any error occur while creating the reference to the media
      *          element.
      */
-    public void setRefer(Rn refer) throws XMLException {
-        Rn aux = this.refer;
+    public void setRefer(Object refer) throws XMLException {
+        Object aux = this.refer;
         
-        this.refer = refer;
-        if(this.refer != null){
-            this.refer.setOwner((T) this);
-            this.refer.setOwnerAtt(NCLElementAttributes.REFER);
+        if(refer instanceof NCLMedia)
+            ((T) refer).addReference(this);
+        else if(refer instanceof ExternalReferenceType){
+            ((ExternalReferenceType) refer).getTarget().addReference(this);
+            ((ExternalReferenceType) refer).getAlias().addReference(this);
         }
         
+        this.refer = refer;
         impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
-        if(aux != null)
-            aux.clean();
+        
+        if(aux != null){
+            if(aux instanceof NCLMedia)
+                ((T) aux).removeReference(this);
+            else{
+                ((ExternalReferenceType) aux).getTarget().removeReference(this);
+                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+            }
+        }
     }
 
 
@@ -461,10 +476,10 @@ public class NCLMedia<T extends NCLMedia,
      * @see #setInstance(br.uff.midiacom.ana.datatype.enums.NCLInstanceType) 
      * 
      * @return 
-     *          reference to a media element or <i>null</i> if the attribute is
-     *          not defined.
+     *          element representing a media, a reference to a media element or
+     *          <i>null</i> if the attribute is not defined.
      */
-    public Rn getRefer() {
+    public Object getRefer() {
         return refer;
     }
 
@@ -818,23 +833,6 @@ public class NCLMedia<T extends NCLMedia,
     
     
     @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
-    
-    
     public String parse(int ident) {
         String space, content;
 
@@ -866,6 +864,7 @@ public class NCLMedia<T extends NCLMedia,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -1008,11 +1007,14 @@ public class NCLMedia<T extends NCLMedia,
     
     
     protected String parseDescriptor() {
-        Ed aux = getDescriptor();
-        if(aux != null)
-            return " descriptor='" + aux.parse() + "'";
-        else
+        Object aux = getDescriptor();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLLayoutDescriptor)
+            return " descriptor='" + ((Ed) aux).getId() + "'";
+        else
+            return " descriptor='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     
@@ -1028,11 +1030,14 @@ public class NCLMedia<T extends NCLMedia,
     
     
     protected String parseRefer() {
-        Rn aux = getRefer();
-        if(aux != null)
-            return " refer='" + aux.parse() + "'";
-        else
+        Object aux = getRefer();
+        if(aux == null)
             return "";
+        
+        if(aux instanceof NCLMedia)
+            return " refer='" + ((T) aux).getId() + "'";
+        else
+            return " refer='" + ((ExternalReferenceType) aux).parse() + "'";
     }
     
     
@@ -1043,7 +1048,7 @@ public class NCLMedia<T extends NCLMedia,
         att_name = NCLElementAttributes.REFER.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             En ref = (En) new NCLMedia(att_var);
-            setRefer(createMediaRef(ref));
+            setRefer(ref);
             NCLReferenceManager.getInstance().waitReference(this);
         }
     }
@@ -1112,15 +1117,17 @@ public class NCLMedia<T extends NCLMedia,
     }
     
     
+    @Override
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
         // first search in the reused media
-        Rn aux;
+        Object aux;
         if((aux = getRefer()) != null){
-            result = (Ei) ((T) aux.getTarget()).findInterface(id);
-            if(result != null)
-                return result;
+            if(aux instanceof NCLSwitch)
+                return (Ei) ((T) aux).findInterface(id);
+            else
+                return (Ei) ((T) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
         }
         
         // search as a property
@@ -1137,6 +1144,7 @@ public class NCLMedia<T extends NCLMedia,
     }
     
     
+    @Override
     public En findNode(String id) {
         if(getId().equals(id))
             return (En) this;
@@ -1145,14 +1153,15 @@ public class NCLMedia<T extends NCLMedia,
     }
     
     
+    @Override
     public void fixReference() throws NCLParsingException {
         String aux;
         
         try{
             // set the refer (optional)
-            if((aux = ((En) getRefer().getTarget()).getId()) != null){
+            if((aux = ((T) getRefer()).getId()) != null){
                 En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
-                setRefer(createMediaRef(ref));
+                setRefer(ref);
             }
         }
         catch(XMLException ex){
@@ -1164,6 +1173,24 @@ public class NCLMedia<T extends NCLMedia,
             
             throw new NCLParsingException("Media" + aux + ". Fixing reference:\n" + ex.getMessage());
         }
+    }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 
 
@@ -1188,29 +1215,5 @@ public class NCLMedia<T extends NCLMedia,
      */
     protected Ep createProperty() throws XMLException {
         return (Ep) new NCLProperty();
-    }
-
-
-    /**
-     * Function to create a reference to a node.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a node.
-     */
-    protected Rn createMediaRef(En ref) throws XMLException {
-        return (Rn) new MediaReference(ref, NCLElementAttributes.ID);
-    }
-
-
-    /**
-     * Function to create a reference to a descriptor.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a descriptor.
-     */
-    protected Ed createDescriptorRef(NCLLayoutDescriptor ref) throws XMLException {
-        return (Ed) new DescriptorReference(ref, NCLElementAttributes.ID);
     }
 }

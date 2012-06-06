@@ -190,6 +190,7 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -218,6 +219,7 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadId(element);

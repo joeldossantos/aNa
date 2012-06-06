@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
@@ -70,7 +71,7 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
                                I extends NCLElementImpl,
                                Ep extends NCLElement>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
+        implements NCLIdentifiableElement<T, P>, ReferredElement<Ep> {
     
     protected StringType type;
     
@@ -183,6 +184,7 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -202,6 +204,7 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadName(element);
@@ -269,16 +272,19 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
     }
     
     
+    @Override
     public boolean addReference(Ep reference) throws XMLException {
         return references.add(reference, null);
     }
     
     
+    @Override
     public boolean removeReference(Ep reference) throws XMLException {
         return references.remove(reference);
     }
     
     
+    @Override
     public ElementList getReferences() {
         return references;
     }

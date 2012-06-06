@@ -43,14 +43,13 @@ import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
-import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.aux.ItemList;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
-import br.uff.midiacom.xml.datatype.reference.ReferredElement;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.string.StringType;
 import java.io.File;
 import java.net.URI;
@@ -101,10 +100,10 @@ import org.w3c.dom.Element;
 public class NCLImport<T extends NCLImport,
                        P extends NCLElement,
                        I extends NCLElementImpl,
-                       Er extends RegionReference,
+                       Er extends NCLRegion,
                        Ed extends NCLDoc>
         extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P>, ReferredElement<ReferenceType> {
+        implements NCLElement<T, P>, ReferredElement<P> {
 
     protected StringType alias;
     protected SrcType documentURI;
@@ -112,7 +111,7 @@ public class NCLImport<T extends NCLImport,
 
     protected NCLImportType type;
     protected Ed importedDoc;
-    protected ItemList<ReferenceType> references;
+    protected ElementList<P, P> references;
 
 
     /**
@@ -131,7 +130,7 @@ public class NCLImport<T extends NCLImport,
             throw new XMLException("Null type");
 
         this.type = type;
-        references = new ItemList<ReferenceType>();
+        references = new ElementList<P, P>();
     }
 
 
@@ -224,14 +223,12 @@ public class NCLImport<T extends NCLImport,
         // Set the new region
         this.region = region;
         // If the region is not null, set the reference owner
-        if(this.region != null){
-            this.region.setOwner((T) this);
-            this.region.setOwnerAtt(NCLElementAttributes.REGION);
-        }
+        if(this.region != null)
+            this.region.addReference(this);
         
         impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
         if(aux != null)
-            aux.clean();
+            aux.removeReference(this);
     }
 
 
@@ -272,24 +269,6 @@ public class NCLImport<T extends NCLImport,
     public Ed getImportedDoc() {
         return importedDoc;
     }
-    
-    
-    @Override
-    public boolean addReference(ReferenceType reference) throws XMLException {
-        return references.add(reference);
-    }
-    
-    
-    @Override
-    public boolean removeReference(ReferenceType reference) throws XMLException {
-        return references.remove(reference);
-    }
-    
-    
-    @Override
-    public ItemList<ReferenceType> getReferences() {
-        return references;
-    }
 
 
     @Override
@@ -298,6 +277,7 @@ public class NCLImport<T extends NCLImport,
     }
 
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -317,6 +297,7 @@ public class NCLImport<T extends NCLImport,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadAlias(element);
@@ -403,7 +384,7 @@ public class NCLImport<T extends NCLImport,
     protected String parseRegion() {
         Er aux = getRegion();
         if(aux != null)
-            return " region='" + aux.parse() + "'";
+            return " region='" + aux.getId() + "'";
         else
             return "";
     }
@@ -417,6 +398,24 @@ public class NCLImport<T extends NCLImport,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
         }
+    }
+    
+    
+    @Override
+    public boolean addReference(P reference) throws XMLException {
+        return references.add(reference, null);
+    }
+    
+    
+    @Override
+    public boolean removeReference(P reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    public ElementList getReferences() {
+        return references;
     }
 
 

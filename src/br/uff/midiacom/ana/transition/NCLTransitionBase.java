@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.reference.TransitionReference;
+import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
@@ -319,6 +319,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -347,6 +348,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -466,13 +468,13 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      * @return 
      *          transition or null if no transition was found.
      */
-    public TransitionReference findTransition(String id) throws XMLException {
-        Et result;
+    public Object findTransition(String id) throws XMLException {
+        Object result;
         
         if(!id.contains("#")){
             result = getTransitions().get(id);
             if(result != null)
-                return new TransitionReference(result, NCLElementAttributes.ID);
+                return result;
         }
         else{
             int index = id.indexOf("#");
@@ -482,8 +484,11 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    TransitionReference ref = findTransitionReference(d, id);
-                    return new TransitionReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                    Object ref = findTransitionReference(d, id);
+                    if(ref instanceof NCLTransition)
+                        return createExternalRef(imp, (Et) ref);
+                    else
+                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
                 }
             }
             
@@ -491,8 +496,11 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
             for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    TransitionReference ref = findTransitionReference(d, id);
-                    return new TransitionReference(imp, (Et) ref.getTarget(), (NCLElementAttributes) ref.getTargetAtt());
+                    Object ref = findTransitionReference(d, id);
+                    if(ref instanceof NCLTransition)
+                        return createExternalRef(imp, (Et) ref);
+                    else
+                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
                 }
             }
         }
@@ -502,7 +510,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     }
 
 
-    protected TransitionReference findTransitionReference(NCLDoc doc, String id) throws XMLException {
+    protected Object findTransitionReference(NCLDoc doc, String id) throws XMLException {
         NCLHead head = (NCLHead) doc.getHead();
         
         if(head == null)
@@ -512,7 +520,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
         if(base == null)
             throw new NCLParsingException("Could not find document transitionBase element");
 
-        TransitionReference result = base.findTransition(id);
+        Object result = base.findTransition(id);
 
         if(result == null)
             throw new NCLParsingException("Could not find transition in transitionBase with id: " + id);
@@ -542,5 +550,17 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      */
     protected Et createTransition() throws XMLException {
         return (Et) new NCLTransition();
+    }
+
+
+    /**
+     * Function to create a reference to a transition.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a transition.
+     */
+    protected ExternalReferenceType createExternalRef(Ei imp, Et ref) throws XMLException {
+        return new ExternalReferenceType(imp, ref);
     }
 }

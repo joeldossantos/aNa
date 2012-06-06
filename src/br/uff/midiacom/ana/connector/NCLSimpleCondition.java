@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -84,10 +83,9 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
                                 I extends NCLElementImpl,
                                 Ec extends NCLCondition,
                                 Ep extends NCLConnectorParam,
-                                R extends ConParamReference,
                                 Eb extends NCLBind>
         extends ParamElement<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep, R>, NCLRoleElement<Eb> {
+        implements NCLCondition<Ec, P, Ep>, NCLRoleElement<Eb> {
 
     protected Object key;
     protected Integer min;
@@ -621,6 +619,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -640,6 +639,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadRole(element);

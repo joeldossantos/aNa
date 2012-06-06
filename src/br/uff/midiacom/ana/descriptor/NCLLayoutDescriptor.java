@@ -39,9 +39,8 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
+import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
 /**
@@ -53,7 +52,7 @@ import br.uff.midiacom.xml.datatype.elementList.ElementList;
  */
 public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor,
                                      P extends NCLElement>
-        extends NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElement<T, P>, ReferredElement<P> {
 
     
     /**
@@ -77,13 +76,4 @@ public interface NCLLayoutDescriptor<T extends NCLLayoutDescriptor,
      *          descriptor or null if no descriptor was found.
      */
     public T findDescriptor(Object focusIndex) throws XMLException;
-    
-    
-    public boolean addReference(P reference) throws XMLException;
-    
-    
-    public boolean removeReference(P reference) throws XMLException;
-    
-    
-    public ElementList<P, P> getReferences();
 }

@@ -840,7 +840,7 @@ public class NCLArea<T extends NCLArea,
     
     
     @Override
-    public ElementList<P,P> getReferences() {
+    public ElementList getReferences() {
         return references;
     }
 }

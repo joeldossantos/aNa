@@ -38,33 +38,18 @@
 package br.uff.midiacom.ana.datatype.aux.reference;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.reference.ReferenceType;
+import br.uff.midiacom.xml.datatype.elementList.ElementList;
 
 
-/**
- * Class that represents a reference to a node element.
- * 
- * @param <T>
- * @param <O>
- * @param <I> 
- */
-public class NodeReference<T extends NCLNode,
-                           O extends NCLElement,
-                           A extends NCLElementAttributes>
-        extends ReferenceType<O, T, A> {
-
-    
-    public NodeReference(T target, A targetAtt) throws XMLException {
-        setTarget(target);
-        setTargetAtt(targetAtt);
-    }
+public interface ReferredElement<T extends NCLElement> {
     
     
-    @Override
-    public String parse() {
-        return getTarget().getId();
-    }
+    public boolean addReference(T reference) throws XMLException;
+    
+    
+    public boolean removeReference(T reference) throws XMLException;
+    
+    
+    public ElementList<T, NCLElement> getReferences();
 }
