@@ -166,7 +166,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
             this.valueAssessment = valueAssessment;
             impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
             
-            if(valueAssessment instanceof NCLCausalConnector)
+            if(aux != null && aux instanceof NCLCausalConnector)
                 ((Ep) aux).removeReference(this);
             return;
         }

@@ -256,7 +256,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
             this.delay = delay;
             impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }

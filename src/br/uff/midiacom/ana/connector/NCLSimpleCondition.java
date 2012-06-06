@@ -387,7 +387,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             this.key = key;
             impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -525,7 +525,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             this.delay = delay;
             impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }

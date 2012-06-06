@@ -224,7 +224,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             this.value = value;
             impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -550,7 +550,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             this.repeat = repeat;
             impl.notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -632,7 +632,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             this.repeatDelay = repeatDelay;
             impl.notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -713,7 +713,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             this.duration = duration;
             impl.notifyAltered(NCLElementAttributes.DURATION, aux, duration);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -795,7 +795,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             this.by = by;
             impl.notifyAltered(NCLElementAttributes.BY, aux, by);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -860,7 +860,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             this.delay = delay;
             impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }

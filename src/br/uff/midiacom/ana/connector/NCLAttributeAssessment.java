@@ -212,7 +212,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
             this.key = key;
             impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
@@ -324,7 +324,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
             this.offset = offset;
             impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
             
-            if(aux instanceof NCLConnectorParam)
+            if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
             return;
         }
