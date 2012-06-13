@@ -39,7 +39,6 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
-import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
@@ -94,7 +93,7 @@ public class NCLPropertyTest {
         catch(Exception e){
         }
         try{
-            prop.setName(new VariableReference(new NCLVariable(new SysVarType(NCLSystemVariable.SYSTEM_SCREENSIZE))));
+            prop.setName(new NCLVariable(new SysVarType(NCLSystemVariable.SYSTEM_SCREENSIZE)));
         }
         catch(Exception e){
             fail("Exceção: " + e);

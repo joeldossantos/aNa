@@ -37,9 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
+import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
@@ -53,12 +52,12 @@ public class NCLSwitchTest {
     public void test1() throws XMLException {
         NCLSwitch s = new NCLSwitch("escolhe");
         NCLMedia med = new NCLMedia("m1");
-        NCLSwitchBindRule bind = new NCLSwitchBindRule();
-            bind.setRule(new RuleReference(new NCLRule("rpt"), NCLElementAttributes.ID));
-            bind.setConstituent(new NodeReference(med, NCLElementAttributes.ID));
+        NCLBindRule bind = new NCLBindRule();
+            bind.setRule(new NCLRule("rpt"));
+            bind.setConstituent(med);
         s.addBind(bind);
         s.addNode(med);
-        s.setDefaultComponent(new NodeReference(med, NCLElementAttributes.ID));
+        s.setDefaultComponent(med);
 
         String expResult = "<switch id='escolhe'>\n\t<bindRule constituent='m1' rule='rpt'/>\n\t<defaultComponent component='m1'/>\n\t<media id='m1'/>\n</switch>\n";
         String result = s.parse(0);

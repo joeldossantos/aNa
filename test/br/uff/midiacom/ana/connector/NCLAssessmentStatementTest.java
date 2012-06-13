@@ -55,22 +55,22 @@ public class NCLAssessmentStatementTest {
 
         nclel1 = new NCLAssessmentStatement();
         nclela = new NCLAttributeAssessment();
-        nclela.setRole(new NCLRole("R1"));
+        nclela.setRole("R1");
         nclel1.addAttributeAssessment(nclela);
 
         nclel2 = new NCLAssessmentStatement();
         nclelb = new NCLAttributeAssessment();
-        nclelb.setRole(new NCLRole("R2"));
+        nclelb.setRole("R2");
         nclel2.addAttributeAssessment(nclelb);
 
         nclel3 = new NCLAssessmentStatement();
         nclelc = new NCLAttributeAssessment();
-        nclelc.setRole(new NCLRole("R3"));
+        nclelc.setRole("R3");
         nclel3.addAttributeAssessment(nclelc);
 
         nclel4 = new NCLAssessmentStatement();
         ncleld = new NCLAttributeAssessment();
-        ncleld.setRole(new NCLRole("R4"));
+        ncleld.setRole("R4");
         nclel4.addAttributeAssessment(ncleld);
 
         ccon.addStatement(nclel1);

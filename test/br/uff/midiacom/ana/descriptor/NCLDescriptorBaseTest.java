@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.xml.XMLException;
 import java.net.URISyntaxException;
 import org.junit.Test;
@@ -68,7 +69,7 @@ public class NCLDescriptorBaseTest {
     public void test2() throws XMLException {
         NCLDescriptorBase base = new NCLDescriptorBase();
         NCLDescriptor desc = new NCLDescriptor("dTV");
-        NCLImport imp = new NCLImport(NCLImportType.BASE);
+        NCLImportBase imp = new NCLImportBase();
         imp.setAlias("base");
         imp.setDocumentURI(new SrcType("base.ncl"));
         base.addImportBase(imp);

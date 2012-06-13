@@ -38,9 +38,8 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
@@ -59,12 +58,12 @@ public class NCLDescriptorSwitchTest {
     public void test1() throws XMLException {
         NCLDescriptorSwitch ds = new NCLDescriptorSwitch("dLegenda");
         NCLDescriptor desc = new NCLDescriptor("dpt");
-            NCLDescriptorBindRule bind = new NCLDescriptorBindRule();
-            bind.setRule(new RuleReference(new NCLRule("rpt"), NCLElementAttributes.ID));
-            bind.setConstituent(new DescriptorReference(desc, NCLElementAttributes.ID));
+            NCLBindRule bind = new NCLBindRule();
+            bind.setRule(new NCLRule("rpt"));
+            bind.setConstituent(desc);
         ds.addBind(bind);
         ds.addDescriptor(desc);
-        ds.setDefaultDescriptor(new DescriptorReference(desc, NCLElementAttributes.ID));
+        ds.setDefaultDescriptor(desc);
 
         String expResult = "<descriptorSwitch id='dLegenda'>\n\t<bindRule constituent='dpt' rule='rpt'/>\n\t<defaultDescriptor descriptor='dpt'/>\n\t<descriptor id='dpt'/>\n</descriptorSwitch>\n";
         String result = ds.parse(0);

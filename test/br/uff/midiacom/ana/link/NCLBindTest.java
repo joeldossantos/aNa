@@ -38,15 +38,9 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
-import br.uff.midiacom.ana.connector.NCLRole;
+import br.uff.midiacom.ana.connector.NCLSimpleAction;
 import br.uff.midiacom.ana.connector.NCLSimpleCondition;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
-import br.uff.midiacom.ana.datatype.aux.reference.DescriptorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
-import br.uff.midiacom.ana.datatype.aux.reference.RoleReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
@@ -67,11 +61,14 @@ public class NCLBindTest {
 
     @Test
     public void test1() throws XMLException {
+        NCLSimpleAction a = new NCLSimpleAction();
+        a.setRole("start");
+        
         NCLBind b = new NCLBind();
-        b.setRole(new RoleReference(new NCLRole("start"), NCLElementAttributes.NAME));
-        b.setComponent(new NodeReference(new NCLMedia("video"), NCLElementAttributes.ID));
-        b.setInterface(new InterfaceReference(new NCLArea("track"), NCLElementAttributes.ID));
-        b.setDescriptor(new DescriptorReference(new NCLDescriptor("dvideo"), NCLElementAttributes.ID));
+        b.setRole(a);
+        b.setComponent(new NCLMedia("video"));
+        b.setInterface(new NCLArea("track"));
+        b.setDescriptor(new NCLDescriptor("dvideo"));
 
         String expResult = "<bind role='start' component='video' interface='track' descriptor='dvideo'/>\n";
         String result = b.parse(0);
@@ -80,11 +77,14 @@ public class NCLBindTest {
 
     @Test
     public void test2() throws XMLException {
+        NCLSimpleAction a = new NCLSimpleAction();
+        a.setRole("set");
+        
         NCLBind b = new NCLBind();
-        b.setRole(new RoleReference(new NCLRole("set"), NCLElementAttributes.NAME));
-        b.setComponent(new NodeReference(new NCLMedia("video"), NCLElementAttributes.ID));
-        NCLParam p = new NCLParam(NCLParamInstance.BINDPARAM);
-        p.setName(new ConParamReference(new NCLConnectorParam("var"), NCLElementAttributes.NAME));
+        b.setRole(a);
+        b.setComponent(new NCLMedia("video"));
+        NCLBindParam p = new NCLBindParam();
+        p.setName(new NCLConnectorParam("var"));
         p.setValue("10");
         b.addBindParam(p);
 
@@ -313,22 +313,35 @@ public class NCLBindTest {
 
     @Test
     public void test_roleset() throws XMLException {
+        NCLSimpleAction nclsa1, nclsa2, nclsa3, nclsa4;
         NCLBind nclel1, nclel2, nclel3, nclel4;
         boolean result = true;
+        
+        nclsa1 = new NCLSimpleAction();
+        nclsa1.setRole("R1");
+        
+        nclsa2 = new NCLSimpleAction();
+        nclsa2.setRole("R2");
+        
+        nclsa3 = new NCLSimpleAction();
+        nclsa3.setRole("R3");
+        
+        nclsa4 = new NCLSimpleAction();
+        nclsa4.setRole("R4");
 
         NCLLink con = new NCLLink();
 
         nclel1 = new NCLBind();
-        nclel1.setRole(new RoleReference(new NCLRole("R1"), NCLElementAttributes.NAME));
+        nclel1.setRole(nclsa1);
 
         nclel2 = new NCLBind();
-        nclel2.setRole(new RoleReference(new NCLRole("R2"), NCLElementAttributes.NAME));
+        nclel2.setRole(nclsa2);
 
         nclel3 = new NCLBind();
-        nclel3.setRole(new RoleReference(new NCLRole("R3"), NCLElementAttributes.NAME));
+        nclel3.setRole(nclsa3);
 
         nclel4 = new NCLBind();
-        nclel4.setRole(new RoleReference(new NCLRole("R4"), NCLElementAttributes.NAME));
+        nclel4.setRole(nclsa4);
 
         con.addBind(nclel1);
         con.addBind(nclel2);

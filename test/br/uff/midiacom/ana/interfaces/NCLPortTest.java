@@ -38,8 +38,6 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.xml.XMLException;
@@ -58,8 +56,8 @@ public class NCLPortTest {
     @Test
     public void test1() throws XMLException {
         NCLPort port = new NCLPort("pinit");
-        port.setComponent(new NodeReference(new NCLMedia("med1"), NCLElementAttributes.ID));
-        port.setInterface(new InterfaceReference(new NCLArea("trac1"), NCLElementAttributes.ID));
+        port.setComponent(new NCLMedia("med1"));
+        port.setInterface(new NCLArea("trac1"));
 
         String expResult = "<port id='pinit' component='med1' interface='trac1'/>\n";
         String result = port.parse(0);

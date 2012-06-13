@@ -38,9 +38,7 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
@@ -55,7 +53,7 @@ public class NCLRuleTest {
     @Test
     public void test1() throws XMLException {
         NCLRule rule = new NCLRule("r1");
-        rule.setVar(new VariableReference(new NCLVariable("legenda")));
+        rule.setVar(new NCLVariable("legenda"));
         rule.setComparator(NCLComparator.EQ);
         rule.setValue("ligada");
 

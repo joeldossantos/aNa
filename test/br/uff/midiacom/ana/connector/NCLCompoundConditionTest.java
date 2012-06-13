@@ -56,22 +56,22 @@ public class NCLCompoundConditionTest {
 
         nclel1 = new NCLCompoundCondition();
         nclela = new NCLSimpleCondition();
-        nclela.setRole(new NCLRole("R1"));
+        nclela.setRole("R1");
         nclel1.addCondition(nclela);
 
         nclel2 = new NCLCompoundCondition();
         nclelb = new NCLSimpleCondition();
-        nclelb.setRole(new NCLRole("R2"));
+        nclelb.setRole("R2");
         nclel2.addCondition(nclelb);
 
         nclel3 = new NCLCompoundCondition();
         nclelc = new NCLSimpleCondition();
-        nclelc.setRole(new NCLRole("R3"));
+        nclelc.setRole("R3");
         nclel3.addCondition(nclelc);
 
         nclel4 = new NCLCompoundCondition();
         ncleld = new NCLSimpleCondition();
-        ncleld.setRole(new NCLRole("R4"));
+        ncleld.setRole("R4");
         nclel4.addCondition(ncleld);
 
         ccon.addCondition(nclel1);

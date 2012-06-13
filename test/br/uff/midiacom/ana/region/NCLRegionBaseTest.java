@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
-import br.uff.midiacom.ana.datatype.aux.reference.RegionReference;
+import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
@@ -66,10 +66,10 @@ public class NCLRegionBaseTest {
     public void test2() throws XMLException {
         NCLRegionBase base = new NCLRegionBase();
         NCLRegion region = new NCLRegion("rgTV");
-        NCLImport imp = new NCLImport(NCLImportType.BASE);
+        NCLImportBase imp = new NCLImportBase();
         imp.setAlias("base");
         imp.setDocumentURI(new SrcType("base.ncl"));
-        imp.setRegion(new RegionReference(region, NCLElementAttributes.ID));
+        imp.setRegion(region);
         base.addImportBase(imp);
         base.addRegion(region);
 
@@ -101,7 +101,7 @@ public class NCLRegionBaseTest {
         instance.load(loader.getElement());
 
         String expResult = "teste";
-        String result = ((NCLRegion) ((NCLRegionBase) instance.getHead().getRegionBases().get(0)).getParentRegion().getTarget()).getTitle();
+        String result = ((NCLRegion) ((NCLRegionBase) instance.getHead().getRegionBases().get(0)).getParentRegion()).getTitle();
         assertEquals(expResult, result);
 
     }

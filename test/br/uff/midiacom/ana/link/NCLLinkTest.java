@@ -38,14 +38,9 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.enums.NCLParamInstance;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
-import br.uff.midiacom.ana.connector.NCLRole;
-import br.uff.midiacom.ana.datatype.aux.reference.ConParamReference;
-import br.uff.midiacom.ana.datatype.aux.reference.ConnectorReference;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
-import br.uff.midiacom.ana.datatype.aux.reference.RoleReference;
+import br.uff.midiacom.ana.connector.NCLSimpleAction;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.node.NCLMedia;
@@ -65,16 +60,19 @@ public class NCLLinkTest {
 
     @Test
     public void test1() throws XMLException {
+        NCLSimpleAction a = new NCLSimpleAction();
+        a.setRole("set");
+        
         NCLLink l = new NCLLink();
         l.setId("l1");
-        l.setXconnector(new ConnectorReference(new NCLCausalConnector("onBeginSet"), NCLElementAttributes.ID));
+        l.setXconnector(new NCLCausalConnector("onBeginSet"));
 
         NCLBind b = new NCLBind();
-        b.setRole(new RoleReference(new NCLRole("set"), NCLElementAttributes.NAME));
-        b.setComponent(new NodeReference(new NCLMedia("video"), NCLElementAttributes.ID));
+        b.setRole(a);
+        b.setComponent(new NCLMedia("video"));
 
-        NCLParam p = new NCLParam(NCLParamInstance.LINKPARAM);
-        p.setName(new ConParamReference(new NCLConnectorParam("var"), NCLElementAttributes.NAME));
+        NCLLinkParam p = new NCLLinkParam();
+        p.setName(new NCLConnectorParam("var"));
         p.setValue("10");
 
         l.addLinkParam(p);

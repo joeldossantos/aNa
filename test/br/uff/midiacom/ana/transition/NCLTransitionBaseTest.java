@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.transition;
 
+import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.xml.XMLException;
@@ -64,7 +65,7 @@ public class NCLTransitionBaseTest {
         NCLTransitionBase base = new NCLTransitionBase();
         NCLTransition trans = new NCLTransition("tr1");
         trans.setType(NCLTransitionType.FADE);
-        NCLImport imp = new NCLImport(NCLImportType.BASE);
+        NCLImportBase imp = new NCLImportBase();
         imp.setAlias("base");
         imp.setDocumentURI(new SrcType("base.ncl"));
         base.addImportBase(imp);

@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
@@ -68,7 +69,7 @@ public class NCLConnectorBaseTest {
     public void test2() throws XMLException {
         NCLConnectorBase base = new NCLConnectorBase();
         NCLCausalConnector con = new NCLCausalConnector("c1");
-        NCLImport imp = new NCLImport(NCLImportType.BASE);
+        NCLImportBase imp = new NCLImportBase();
         imp.setAlias("base");
         imp.setDocumentURI(new SrcType("base.ncl"));
         base.addImportBase(imp);

@@ -37,8 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.node.NCLMedia;
@@ -56,7 +54,7 @@ public class NCLBodyTest {
 
         NCLMedia m1 = new NCLMedia("video");
         NCLPort p1 = new NCLPort("pInicio");
-        p1.setComponent(new NodeReference(m1, NCLElementAttributes.ID));
+        p1.setComponent(m1);
         
         NCLMeta m = new NCLMeta();
         m.setName("autor");

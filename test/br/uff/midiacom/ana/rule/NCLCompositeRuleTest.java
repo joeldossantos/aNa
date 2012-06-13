@@ -37,8 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.rule;
 
-import br.uff.midiacom.ana.datatype.aux.reference.VariableReference;
-import br.uff.midiacom.ana.datatype.aux.reference.InterfaceReference;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -58,12 +56,12 @@ public class NCLCompositeRuleTest {
         crule.setOperator(NCLOperator.AND);
 
         NCLRule rule = new NCLRule("r1");
-        rule.setVar(new VariableReference(new NCLVariable("legenda")));
+        rule.setVar(new NCLVariable("legenda"));
         rule.setComparator(NCLComparator.EQ);
         rule.setValue("ligada");
 
         NCLRule rule2 = new NCLRule("r2");
-        rule2.setVar(new VariableReference(new NCLVariable("idioma")));
+        rule2.setVar(new NCLVariable("idioma"));
         rule2.setComparator(NCLComparator.EQ);
         rule2.setValue("en");
 

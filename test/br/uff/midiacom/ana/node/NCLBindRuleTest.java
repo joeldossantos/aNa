@@ -37,8 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
-import br.uff.midiacom.ana.datatype.aux.reference.RuleReference;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
@@ -49,22 +48,22 @@ public class NCLBindRuleTest {
 
     @Test
     public void test_roleset() throws XMLException {
-        NCLSwitchBindRule nclel1, nclel2, nclel3, nclel4;
+        NCLBindRule nclel1, nclel2, nclel3, nclel4;
         boolean result = true;
 
         NCLSwitch con = new NCLSwitch("teste");
 
-        nclel1 = new NCLSwitchBindRule();
-        nclel1.setRule(new RuleReference(new NCLRule("R1"), NCLElementAttributes.ID));
+        nclel1 = new NCLBindRule();
+        nclel1.setRule(new NCLRule("R1"));
 
-        nclel2 = new NCLSwitchBindRule();
-        nclel2.setRule(new RuleReference(new NCLRule("R2"), NCLElementAttributes.ID));
+        nclel2 = new NCLBindRule();
+        nclel2.setRule(new NCLRule("R2"));
 
-        nclel3 = new NCLSwitchBindRule();
-        nclel3.setRule(new RuleReference(new NCLRule("R3"), NCLElementAttributes.ID));
+        nclel3 = new NCLBindRule();
+        nclel3.setRule(new NCLRule("R3"));
 
-        nclel4 = new NCLSwitchBindRule();
-        nclel4.setRule(new RuleReference(new NCLRule("R4"), NCLElementAttributes.ID));
+        nclel4 = new NCLBindRule();
+        nclel4.setRule(new NCLRule("R4"));
 
         con.addBind(nclel1);
         con.addBind(nclel2);

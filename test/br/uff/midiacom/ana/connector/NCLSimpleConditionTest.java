@@ -54,16 +54,16 @@ public class NCLSimpleConditionTest {
         NCLCompoundCondition ccon = new NCLCompoundCondition();
 
         scon1 = new NCLSimpleCondition();
-        scon1.setRole(new NCLRole("R1"));
+        scon1.setRole("R1");
 
         scon2 = new NCLSimpleCondition();
-        scon2.setRole(new NCLRole("R2"));
+        scon2.setRole("R2");
 
         scon3 = new NCLSimpleCondition();
-        scon3.setRole(new NCLRole("R3"));
+        scon3.setRole("R3");
 
         scon4 = new NCLSimpleCondition();
-        scon4.setRole(new NCLRole("R4"));
+        scon4.setRole("R4");
 
         ccon.addCondition(scon1);
         ccon.addCondition(scon2);

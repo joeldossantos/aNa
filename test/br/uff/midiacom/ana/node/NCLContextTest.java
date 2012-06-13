@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.aux.reference.NodeReference;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.interfaces.NCLPort;
@@ -54,7 +53,7 @@ public class NCLContextTest {
         NCLContext cont = new NCLContext("ctx");
         NCLMedia m1 = new NCLMedia("video");
         NCLPort p1 = new NCLPort("pInicio");
-        p1.setComponent(new NodeReference(m1, NCLElementAttributes.ID));
+        p1.setComponent(m1);
 
         cont.addNode(m1);
         cont.addPort(p1);
@@ -90,7 +89,7 @@ public class NCLContextTest {
 
         String expResult = "m1";
         NCLContext aux1 = (NCLContext) instance.getBody().getNodes().get("da");
-        NCLContext aux2 = (NCLContext) aux1.getRefer().getTarget();
+        NCLContext aux2 = (NCLContext) aux1.getRefer();
         NCLMedia aux3 = (NCLMedia) aux2.getNodes().iterator().next();
         String result = aux3.getId();
         assertEquals(expResult, result);

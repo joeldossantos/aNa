@@ -56,22 +56,22 @@ public class NCLCompoundActionTest {
 
         nclel1 = new NCLCompoundAction();
         nclela = new NCLSimpleAction();
-        nclela.setRole(new NCLRole("R1"));
+        nclela.setRole("R1");
         nclel1.addAction(nclela);
 
         nclel2 = new NCLCompoundAction();
         nclelb = new NCLSimpleAction();
-        nclelb.setRole(new NCLRole("R2"));
+        nclelb.setRole("R2");
         nclel2.addAction(nclelb);
 
         nclel3 = new NCLCompoundAction();
         nclelc = new NCLSimpleAction();
-        nclelc.setRole(new NCLRole("R3"));
+        nclelc.setRole("R3");
         nclel3.addAction(nclelc);
 
         nclel4 = new NCLCompoundAction();
         ncleld = new NCLSimpleAction();
-        ncleld.setRole(new NCLRole("R4"));
+        ncleld.setRole("R4");
         nclel4.addAction(ncleld);
 
         ccon.addAction(nclel1);

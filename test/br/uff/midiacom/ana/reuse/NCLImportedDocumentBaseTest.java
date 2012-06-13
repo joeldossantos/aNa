@@ -60,7 +60,7 @@ public class NCLImportedDocumentBaseTest {
     @Test
     public void test2() throws XMLException {
         NCLImportedDocumentBase base = new NCLImportedDocumentBase();
-        NCLImport imp = new NCLImport(NCLImportType.NCL);
+        NCLImportNCL imp = new NCLImportNCL();
         imp.setAlias("base");
         imp.setDocumentURI(new SrcType("base.ncl"));
         base.addImportNCL(imp);

@@ -37,12 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.datatype.aux.parameterized.AssValueParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.ByParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.DoubleParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.IntegerParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.KeyParamType;
-import br.uff.midiacom.ana.datatype.aux.parameterized.StringParamType;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
@@ -53,14 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.enums.NCLKey;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.number.MaxType;
-import java.io.IOException;
-import java.io.StringReader;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import static org.junit.Assert.*;
 
 
@@ -72,53 +59,52 @@ public class NCLCausalConnectorTest {
 
         //Condicoes
         NCLSimpleCondition simplecondition = new NCLSimpleCondition();
-        simplecondition.setRole(new NCLRole("startSel"));
-        simplecondition.setDelay(new DoubleParamType(6.0));
+        simplecondition.setRole("startSel");
+        simplecondition.setDelay(6.0);
         simplecondition.setEventType(NCLEventType.SELECTION);
         simplecondition.setTransition(NCLEventTransition.STARTS);
-        simplecondition.setKey(new KeyParamType(NCLKey.KEY_A));
+        simplecondition.setKey(NCLKey.KEY_A);
         simplecondition.setMin(1);
-        simplecondition.setMax(new MaxType(2));
+        simplecondition.setMax(2);
         simplecondition.setQualifier(NCLConditionOperator.OR);
 
         NCLAssessmentStatement assessmentstatement = new NCLAssessmentStatement();
         assessmentstatement.setComparator(NCLComparator.EQ);
-        NCLValueAssessment valueassessment = new NCLValueAssessment(new AssValueParamType("1"));
         NCLAttributeAssessment attributeassessment = new NCLAttributeAssessment();
-        attributeassessment.setRole(new NCLRole("testeOccurences"));
+        attributeassessment.setRole("testeOccurences");
         attributeassessment.setEventType(NCLEventType.SELECTION);
-        attributeassessment.setKey(new KeyParamType(NCLKey.ENTER));
+        attributeassessment.setKey(NCLKey.ENTER);
         attributeassessment.setAttributeType(NCLAttributeType.OCCURRENCES);
-        attributeassessment.setOffset(new IntegerParamType(2));
-        assessmentstatement.setValueAssessment(valueassessment);
+        attributeassessment.setOffset(2);
+        assessmentstatement.setValueAssessment("1");
         assessmentstatement.addAttributeAssessment(attributeassessment);
 
         NCLCompoundCondition compoundcondition = new NCLCompoundCondition();
-        compoundcondition.setDelay(new DoubleParamType(5.0));
+        compoundcondition.setDelay(5.0);
         compoundcondition.setOperator(NCLConditionOperator.AND);
         compoundcondition.addCondition(simplecondition);
         compoundcondition.addStatement(assessmentstatement);
 
         //Acoes
         NCLSimpleAction simpleaction1 = new NCLSimpleAction();
-        simpleaction1.setRole(new NCLRole("seta2x"));
-        simpleaction1.setDelay(new DoubleParamType(0.0));
+        simpleaction1.setRole("seta2x");
+        simpleaction1.setDelay(0.0);
         simpleaction1.setEventType(NCLEventType.ATTRIBUTION);
         simpleaction1.setActionType(NCLEventAction.START);
-        simpleaction1.setValue(new StringParamType("value0"));
+        simpleaction1.setValue("value0");
         simpleaction1.setMin(1);
-        simpleaction1.setMax(new MaxType(2));
+        simpleaction1.setMax(2);
         simpleaction1.setQualifier(NCLActionOperator.PAR);
-        simpleaction1.setRepeat(new IntegerParamType(2));
-        simpleaction1.setRepeatDelay(new DoubleParamType(2.0));
-        simpleaction1.setDuration(new DoubleParamType(20.0));
-        simpleaction1.setBy(new ByParamType("2"));
+        simpleaction1.setRepeat(2);
+        simpleaction1.setRepeatDelay(2.0);
+        simpleaction1.setDuration(20.0);
+        simpleaction1.setBy("2");
 
         NCLSimpleAction simpleaction2 = new NCLSimpleAction();
-        simpleaction2.setRole(new NCLRole(NCLDefaultActionRole.STOP));
+        simpleaction2.setRole(NCLDefaultActionRole.STOP);
 
         NCLCompoundAction compoundaction = new NCLCompoundAction();
-        compoundaction.setDelay(new DoubleParamType(1.0));
+        compoundaction.setDelay(1.0);
         compoundaction.setOperator(NCLActionOperator.SEQ);
         compoundaction.addAction(simpleaction1);
         compoundaction.addAction(simpleaction2);

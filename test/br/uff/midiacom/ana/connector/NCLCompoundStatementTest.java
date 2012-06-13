@@ -58,28 +58,28 @@ public class NCLCompoundStatementTest {
         nclel1 = new NCLCompoundStatement();
         nclela = new NCLAssessmentStatement();
         nclelaa = new NCLAttributeAssessment();
-        nclelaa.setRole(new NCLRole("R1"));
+        nclelaa.setRole("R1");
         nclela.addAttributeAssessment(nclelaa);
         nclel1.addStatement(nclela);
 
         nclel2 = new NCLCompoundStatement();
         nclelb = new NCLAssessmentStatement();
         nclelbb = new NCLAttributeAssessment();
-        nclelbb.setRole(new NCLRole("R2"));
+        nclelbb.setRole("R2");
         nclelb.addAttributeAssessment(nclelbb);
         nclel2.addStatement(nclelb);
 
         nclel3 = new NCLCompoundStatement();
         nclelc = new NCLAssessmentStatement();
         nclelcc = new NCLAttributeAssessment();
-        nclelcc.setRole(new NCLRole("R3"));
+        nclelcc.setRole("R3");
         nclelc.addAttributeAssessment(nclelcc);
         nclel3.addStatement(nclelc);
 
         nclel4 = new NCLCompoundStatement();
         ncleld = new NCLAssessmentStatement();
         ncleldd = new NCLAttributeAssessment();
-        ncleldd.setRole(new NCLRole("R4"));
+        ncleldd.setRole("R4");
         ncleld.addAttributeAssessment(ncleldd);
         nclel4.addStatement(ncleld);
 
