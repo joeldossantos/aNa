@@ -45,12 +45,9 @@ import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLBase;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -90,12 +87,10 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
                               P extends NCLElement,
                               I extends NCLElementImpl,
                               Ec extends NCLCausalConnector,
-                              Ei extends NCLImport>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLBase<T, P> {
+                              Ei extends NCLImportBase>
+        extends NCLBase<T, P, I, Ei> {
 
     protected IdentifiableElementList<Ec, T> connectors;
-    protected ElementList<Ei, T> imports;
     
 
     /**
@@ -107,7 +102,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
     public NCLConnectorBase() throws XMLException {
         super();
         connectors = new IdentifiableElementList<Ec, T>();
-        imports = new ElementList<Ei, T>();
     }
 
 
@@ -229,93 +223,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
     public IdentifiableElementList<Ec, T> getCausalConnectors() {
         return connectors;        
     }
-
-
-    /**
-     * Adds an element that imports a base of connectors defined in another NCL
-     * document to the base of connectors. The base can have none or several
-     * import elements.
-     * 
-     * @param importBase
-     *          element that imports a base of connectors defined in another NCL
-     *          document.
-     * @return
-     *          true if the import element was added.
-     * @throws XMLException 
-     *          if the import element is null.
-     */
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(imports.add(importBase, (T) this)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Removes an element that imports a base of connectors defined in another
-     * NCL document of the base of connectors. The base can have none or several
-     * import elements.
-     * 
-     * @param importBase
-     *          element that imports a base of connectors defined in another NCL
-     *          document.
-     * @return
-     *          true if the import element was removed.
-     * @throws XMLException 
-     *          if the import element is null.
-     */
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(imports.remove(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Verifies if the base of connectors has a specific element that imports a
-     * base of connectors defined in another NCL document. The base can have
-     * none or several import elements.
-     * 
-     * @param importBase
-     *          element that imports a base of connectors defined in another NCL
-     *          document.
-     * @return
-     *          true if the base of connectors has the import element.
-     * @throws XMLException 
-     *          if the import element is null.
-     */
-    public boolean hasImportBase(Ei importBase) throws XMLException {
-        return imports.contains(importBase);
-    }
-
-
-    /**
-     * Verifies if the base of connectors has at least one element that imports
-     * a base of connectors defined in another NCL document. The base can have
-     * none or several import elements.
-     * 
-     * @return 
-     *          true if the base of connectors has at least import element.
-     */
-    public boolean hasImportBase() {
-        return !imports.isEmpty();
-    }
-
-
-    /**
-     * Returns the list of elements that imports a base of connectors defined in
-     * another NCL document. The base can have none or several import elements.
-     * 
-     * @return 
-     *          element list with all import elements.
-     */
-    public ElementList<Ei, T> getImportBases() {
-        return imports;
-    }
     
     
     @Override
@@ -407,34 +314,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
     }
     
     
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected void loadImportBases(Element element) throws XMLException {
-        String ch_name;
-        NodeList nl;
-        
-        // create the import child nodes
-        ch_name = NCLElementAttributes.IMPORTBASE.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
-            Ei inst = createImportBase();
-            addImportBase(inst);
-            inst.load(el);
-        }
-    }
-    
-    
     protected String parseCausalConnectors(int ident) {
         if(!hasCausalConnector())
             return "";
@@ -499,18 +378,6 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
         
         
         return null;
-    }
-
-
-    /**
-     * Function to create the child element <i>importBase</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing the child <i>importBase</i>.
-     */
-    protected Ei createImportBase() throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 

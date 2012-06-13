@@ -39,11 +39,10 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
-import br.uff.midiacom.ana.datatype.ncl.NCLBase;
 import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
@@ -91,9 +90,9 @@ import org.w3c.dom.NodeList;
 public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
                                      P extends NCLElement,
                                      I extends NCLElementImpl,
-                                     Ei extends NCLImport>
+                                     Ei extends NCLImportNCL>
         extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLBase<T, P> {
+        implements NCLIdentifiableElement<T, P> {
 
     protected ElementList<Ei, T> imports;
 
@@ -310,6 +309,6 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
      *          element representing the child <i>importNCL</i>.
      */
     protected Ei createImportNCL() throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.NCL);
+        return (Ei) new NCLImportNCL();
     }
 }

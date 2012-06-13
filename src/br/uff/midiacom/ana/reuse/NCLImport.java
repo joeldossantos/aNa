@@ -41,13 +41,10 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
 import br.uff.midiacom.xml.datatype.string.StringType;
@@ -70,26 +67,7 @@ import org.w3c.dom.Element;
  *                           importNCL element) or the document that will have
  *                           its base imported (if it is an importBase element).
  *                           This attribute is required.</li>
- *  <li><i>region</i> - region to become the parent of the regions imported by a
- *                      region base. This attribute is optional.</li>
  * </ul>
- * 
- * The alias attribute has to be unique in a document. An importing is transitive,
- * that is, if base A imports base B and it imports base C, then base A imports
- * base C. However, the alias defined to base C inside base B is not considered
- * by base A.
- * 
- * <br/>
- * 
- * When importing a base of descriptors, if the document that defines the base
- * of descriptors also defines a base of regions and a base of rules, both are
- * also imported.
- * 
- * <br/>
- * 
- * When importing a base of regions, the import element can define a region
- * attribute. Every regions defined in the base of regions imported are considered
- * as children of that region.
  * 
  * @param <T>
  * @param <P>
@@ -97,19 +75,16 @@ import org.w3c.dom.Element;
  * @param <Er>
  * @param <Ed> 
  */
-public class NCLImport<T extends NCLImport,
-                       P extends NCLElement,
-                       I extends NCLElementImpl,
-                       Er extends NCLRegion,
-                       Ed extends NCLDoc>
+public abstract class NCLImport<T extends NCLImport,
+                                P extends NCLElement,
+                                I extends NCLElementImpl,
+                                Ed extends NCLDoc>
         extends NCLElementPrototype<T, P, I>
         implements NCLElement<T, P>, ReferredElement<P> {
 
     protected StringType alias;
     protected SrcType documentURI;
-    protected Er region;
 
-    protected NCLImportType type;
     protected Ed importedDoc;
     protected ElementList<P, P> references;
 
@@ -117,19 +92,11 @@ public class NCLImport<T extends NCLImport,
     /**
      * Import element constructor.
      * 
-     * @param type
-     *          type of the import element. The type can be importBase or
-     *          importNCL. The type is required an can not be <i>null</i>.
-     *          The possible types are defined in the enumeration <i>NCLImportType</i>.
      * @throws XMLException 
-     *          if the type is null or an error occur while creating the element.
+     *          if an error occur while creating the element.
      */
-    public NCLImport(NCLImportType type) throws XMLException {
+    public NCLImport() throws XMLException {
         super();
-        if(type == null)
-            throw new XMLException("Null type");
-
-        this.type = type;
         references = new ElementList<P, P>();
     }
 
@@ -203,48 +170,6 @@ public class NCLImport<T extends NCLImport,
     public SrcType getDocumentURI() {
         return documentURI;
     }
-
-
-    /**
-     * Set the region that will have the imported regions as children. This
-     * attribute is optional an is only used by an importBase element that
-     * imports a base of regions. The region must refer to a region defined in
-     * the base of regions parent of the importBase element. Set the region to
-     * <i>null</i> to erase the region already defined.
-     * 
-     * @param region
-     *          element representing the referred region or <i>null</i> to erase
-     *          a region already defined.
-     * @throws XMLException 
-     *          if any error occur while creating the reference to the region.
-     */
-    public void setRegion(Er region) throws XMLException {
-        Er aux = this.region;
-        // Set the new region
-        this.region = region;
-        // If the region is not null, set the reference owner
-        if(this.region != null)
-            this.region.addReference(this);
-        
-        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
-        if(aux != null)
-            aux.removeReference(this);
-    }
-
-
-    /**
-     * Returns the region that will have the imported regions as children or
-     * <i>null</i> if no region is defined. This attribute is only used by an
-     * importBase element that imports a base of regions. The region must refer
-     * to a region defined in the base of regions parent of the importBase element.
-     * 
-     * @return
-     *          element representing the referred region or <i>null</i> to erase
-     *          a region already defined.
-     */
-    public Er getRegion() {
-        return region;
-    }
     
     
     /**
@@ -276,7 +201,7 @@ public class NCLImport<T extends NCLImport,
         return getAlias().equals(other.getAlias());
     }
 
-    
+
     @Override
     public String parse(int ident) {
         String space, content;
@@ -289,7 +214,7 @@ public class NCLImport<T extends NCLImport,
         for(int i = 0; i < ident; i++)
             space += "\t";
 
-        content = space + "<" + type.toString();
+        content = space + "<" + getType();
         content += parseAttributes();
         content += "/>\n";
 
@@ -323,7 +248,7 @@ public class NCLImport<T extends NCLImport,
             else
                 aux = "";
             
-            throw new NCLParsingException(type.toString() + aux + ":\n" + ex.getMessage());
+            throw new NCLParsingException(getType() + aux + ":\n" + ex.getMessage());
         }
     }
     
@@ -381,24 +306,10 @@ public class NCLImport<T extends NCLImport,
     }
     
     
-    protected String parseRegion() {
-        Er aux = getRegion();
-        if(aux != null)
-            return " region='" + aux.getId() + "'";
-        else
-            return "";
-    }
+    protected abstract String parseRegion();
     
     
-    protected void loadRegion(Element element) throws XMLException {
-        String att_name, att_var;
-        
-        // set the region (optional)
-        att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
-        }
-    }
+    protected abstract void loadRegion(Element element) throws XMLException;
     
     
     @Override
@@ -417,6 +328,9 @@ public class NCLImport<T extends NCLImport,
     public ElementList getReferences() {
         return references;
     }
+    
+    
+    protected abstract String getType();
 
 
     /**

@@ -45,10 +45,8 @@ import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.datatype.ncl.NCLBase;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.elementList.ElementList;
@@ -92,12 +90,10 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
                                P extends NCLElement,
                                I extends NCLElementImpl,
                                Et extends NCLTransition,
-                               Ei extends NCLImport>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLBase<T, P> {
+                               Ei extends NCLImportBase>
+        extends NCLBase<T, P, I, Ei> {
 
     protected IdentifiableElementList<Et, T> transitions;
-    protected ElementList<Ei, T> imports;
 
 
     /**
@@ -109,7 +105,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     public NCLTransitionBase() throws XMLException {
         super();
         transitions = new IdentifiableElementList<Et, T>();
-        imports = new ElementList<Ei, T>();
     }
 
 
@@ -232,93 +227,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     }
 
 
-    /**
-     * Adds an element that imports a base of transitions defined in another NCL
-     * document to the base of transitions. The base can have none or several
-     * import elements.
-     * 
-     * @param importBase
-     *          element that imports a base of transitions defined in another NCL
-     *          document.
-     * @return
-     *          true if the import element was added.
-     * @throws XMLException 
-     *          if the import element is null.
-     */
-    public boolean addImportBase(Ei importBase) throws XMLException {
-        if(imports.add(importBase, (T) this)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Removes an element that imports a base of transitions defined in another
-     * NCL document of the base of transitions. The base can have none or several
-     * import elements.
-     * 
-     * @param importBase
-     *          element that imports a base of transitions defined in another NCL
-     *          document.
-     * @return
-     *          true if the import element was removed.
-     * @throws XMLException 
-     *          if the import element is null.
-     */
-    public boolean removeImportBase(Ei importBase) throws XMLException {
-        if(imports.remove(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Verifies if the base of transitions has a specific element that imports a
-     * base of transitions defined in another NCL document. The base can have
-     * none or several import elements.
-     * 
-     * @param importBase
-     *          element that imports a base of transitions defined in another NCL
-     *          document.
-     * @return
-     *          true if the base of transitions has the import element.
-     * @throws XMLException 
-     *          if the import element is null.
-     */
-    public boolean hasImportBase(Ei importBase) throws XMLException {
-        return imports.contains(importBase);
-    }
-
-
-    /**
-     * Verifies if the base of transitions has at least one element that imports
-     * a base of transitions defined in another NCL document. The base can have
-     * none or several import elements.
-     * 
-     * @return 
-     *          true if the base of transitions has at least import element.
-     */
-    public boolean hasImportBase() {
-        return !imports.isEmpty();
-    }
-
-
-    /**
-     * Returns the list of elements that imports a base of transitions defined in
-     * another NCL document. The base can have none or several import elements.
-     * 
-     * @return 
-     *          element list with all import elements.
-     */
-    public ElementList<Ei, T> getImportBases() {
-        return imports;
-    }
-
-
     @Override
     public String parse(int ident) {
         String space, content;
@@ -416,28 +324,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
     }
     
     
-    protected String parseImportBases(int ident) {
-        if(!hasImportBase())
-            return "";
-        
-        String content = "";
-        for(Ei aux : imports)
-            content += aux.parse(ident);
-        
-        return content;
-    }
-    
-    
-    protected void loadImportBases(Element element) throws XMLException {
-        //create the imports
-        if(element.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
-            Ei inst = createImportBase();
-            addImportBase(inst);
-            inst.load(element);
-        }
-    }
-    
-    
     protected String parseTransitions(int ident) {
         if(!hasTransition())
             return "";
@@ -526,18 +412,6 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
             throw new NCLParsingException("Could not find transition in transitionBase with id: " + id);
         
         return result;
-    }
-
-
-    /**
-     * Function to create the child element <i>importBase</i>.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing the child <i>importBase</i>.
-     */
-    protected Ei createImportBase() throws XMLException {
-        return (Ei) new NCLImport(NCLImportType.BASE);
     }
 
 
