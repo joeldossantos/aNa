@@ -39,7 +39,6 @@ package br.uff.midiacom.ana.region;
 
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.number.RelativeType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -49,12 +48,12 @@ public class NCLRegionTest {
     @Test
     public void testRegion1() throws XMLException {
         NCLRegion region = new NCLRegion("rgTV");
-        region.setLeft(new RelativeType(10.0));
-        region.setRight(new RelativeType(20.0));
-        region.setTop(new RelativeType(10.0));
-        region.setBottom(new RelativeType(20.0));
-        region.setWidth(new RelativeType(80.0));
-        region.setHeight(new RelativeType(80.0));
+        region.setLeft(10.0);
+        region.setRight(20.0);
+        region.setTop(10.0);
+        region.setBottom(20.0);
+        region.setWidth(80.0);
+        region.setHeight(80.0);
         region.setzIndex(1);
         region.setTitle("Titulo de Teste");
 
@@ -66,12 +65,12 @@ public class NCLRegionTest {
     @Test
     public void testRegion2() throws XMLException {
         NCLRegion region = new NCLRegion("rgTV");
-        region.setLeft(new RelativeType(10));
-        region.setRight(new RelativeType(20));
-        region.setTop(new RelativeType(10));
-        region.setBottom(new RelativeType(20));
-        region.setWidth(new RelativeType(80));
-        region.setHeight(new RelativeType(80));
+        region.setLeft(10);
+        region.setRight(20);
+        region.setTop(10);
+        region.setBottom(20);
+        region.setWidth(80);
+        region.setHeight(80);
         region.setzIndex(1);
         region.setTitle("Titulo de Teste");
 
