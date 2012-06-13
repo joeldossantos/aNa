@@ -47,7 +47,6 @@ import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.xml.datatype.number.PercentageType;
-import br.uff.midiacom.xml.datatype.number.RelativeType;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -102,7 +101,7 @@ public class NCLDescriptorTest {
         NCLDescriptor descriptor = new NCLDescriptor("dTV");
         NCLDescriptorParam param = new NCLDescriptorParam();
         param.setName(NCLAttributes.TOP);
-        param.setValue(new RelativeType(100));
+        param.setValue(100);
         descriptor.addDescriptorParam(param);
 
         String expResult = "<descriptor id='dTV'>\n\t<descriptorParam name='top' value='100'/>\n</descriptor>\n";
