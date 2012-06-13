@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.basic.BlendColorType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
@@ -102,7 +101,7 @@ public class NCLTransition<T extends NCLTransition,
     protected Integer horRepeat;
     protected Integer vertRepeat;
     protected Integer borderWidth;
-    protected BlendColorType borderColor;
+    protected Object borderColor;
     
     protected ElementList<Ed, NCLElement> references;
 
@@ -598,9 +597,30 @@ public class NCLTransition<T extends NCLTransition,
      *          element representing the border color or <i>null</i> to erase
      *          a color already defined.
      */
-    public void setBorderColor(BlendColorType borderColor) {
-        BlendColorType aux = this.borderColor;
-        this.borderColor = borderColor;
+    public void setBorderColor(Object borderColor) throws XMLException {
+        Object aux = this.borderColor;
+        
+        if(borderColor == null){
+            this.borderColor = borderColor;
+            impl.notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
+            return;
+        }
+        
+        if(borderColor instanceof String){
+            String value = (String) borderColor;
+            if("".equals(value.trim()))
+                throw new XMLException("Empty delay String");
+            
+            if(!value.equals("blend"))
+                this.borderColor = NCLColor.getEnumType(value);
+            else
+                this.borderColor = borderColor;
+        }
+        else if(borderColor instanceof NCLColor)
+            this.borderColor = borderColor;
+        else
+            throw new XMLException("Wrong borderColor type.");
+        
         impl.notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
     }
 
@@ -625,7 +645,7 @@ public class NCLTransition<T extends NCLTransition,
      *          element representing the border color or <i>null</i> if the
      *          attribute is not defined.
      */
-    public BlendColorType getBorderColor() {
+    public Object getBorderColor() {
         return borderColor;
     }
 
@@ -941,9 +961,9 @@ public class NCLTransition<T extends NCLTransition,
     
     
     protected String parseBorderColor() {
-        BlendColorType aux = getBorderColor();
+        Object aux = getBorderColor();
         if(aux != null)
-            return " borderColor='" + aux.parse() + "'";
+            return " borderColor='" + aux.toString() + "'";
         else
             return "";
     }
@@ -955,7 +975,7 @@ public class NCLTransition<T extends NCLTransition,
         // set the borderColor (optional)
         att_name = NCLElementAttributes.BORDERCOLOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setBorderColor(new BlendColorType(att_var));
+            setBorderColor(att_var);
     }
     
     

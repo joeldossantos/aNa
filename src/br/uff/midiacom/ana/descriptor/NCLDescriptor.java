@@ -41,7 +41,6 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.basic.FocusIndexType;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
@@ -1262,7 +1261,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             T desc = (T) new NCLDescriptor();
             desc.setId("aux" + att_var);
-            desc.setFocusIndex(new FocusIndexType(att_var));
+            desc.setFocusIndex(att_var);
             setMoveLeft((Ed) desc);
             NCLReferenceManager.getInstance().waitReference(this);
         }
@@ -1286,7 +1285,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             T desc = (T) new NCLDescriptor();
             desc.setId("aux" + att_var);
-            desc.setFocusIndex(new FocusIndexType(att_var));
+            desc.setFocusIndex(att_var);
             setMoveRight((Ed) desc);
             NCLReferenceManager.getInstance().waitReference(this);
         }
@@ -1310,7 +1309,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             T desc = (T) new NCLDescriptor();
             desc.setId("aux" + att_var);
-            desc.setFocusIndex(new FocusIndexType(att_var));
+            desc.setFocusIndex(att_var);
             setMoveDown((Ed) desc);
             NCLReferenceManager.getInstance().waitReference(this);
         }
@@ -1334,7 +1333,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             T desc = (T) new NCLDescriptor();
             desc.setId("aux" + att_var);
-            desc.setFocusIndex(new FocusIndexType(att_var));
+            desc.setFocusIndex(att_var);
             setMoveUp((Ed) desc);
             NCLReferenceManager.getInstance().waitReference(this);
         }
@@ -1356,7 +1355,7 @@ public class NCLDescriptor<T extends NCLDescriptor,
         // set the focusIndex (optional)
         att_name = NCLElementAttributes.FOCUSINDEX.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setFocusIndex(new FocusIndexType(att_var));
+            setFocusIndex(att_var);
         }
     }
     
