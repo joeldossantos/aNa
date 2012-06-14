@@ -35,10 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml.datatype.elementList;
+package br.uff.midiacom.util.elementList;
 
-import br.uff.midiacom.xml.XMLElement;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.xml.XMLElement;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,11 +51,8 @@ import java.util.List;
  *
  * @param <T>
  *          the type of element stored in the list.
- * @param <P>
- *          type of the stored element parent.
  */
-public class ElementList<T extends XMLElement,
-                         P extends XMLElement>
+public class ElementList<T extends XMLElement>
         implements Iterable<T> {
 
     protected List<T> elements;
@@ -115,6 +112,7 @@ public class ElementList<T extends XMLElement,
      * @return
      *          iterator of the list elements.
      */
+    @Override
     public Iterator<T> iterator() {
         return elements.iterator();
     }
@@ -126,14 +124,12 @@ public class ElementList<T extends XMLElement,
      *
      * @param element
      *          element to be added.
-     * @param parent
-     *          element new parent.
      * @return
      *          true if the element was added to the list.
      * @throws XMLException
      *          if the element is null.
      */
-    public boolean add(T element, P parent) throws XMLException {
+    public boolean add(T element) throws XMLException {
         if(element == null)
             throw new XMLException("Null element.");
 
@@ -144,11 +140,7 @@ public class ElementList<T extends XMLElement,
             }
         }
 
-        if(elements.add(element)){
-            element.setParent(parent);
-            return true;
-        }
-        return false;
+        return elements.add(element);
     }
     
 
@@ -185,7 +177,7 @@ public class ElementList<T extends XMLElement,
      *          true if all elements were added and false if at least one
      *          element was not added.
      */
-    public boolean addAll(ElementList<T, P> list) {
+    public boolean addAll(ElementList<T> list) {
         boolean result = true;
         
         for(T aux : list){

@@ -35,65 +35,61 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml.datatype.elementList;
+package br.uff.midiacom.util.elementList;
 
-import br.uff.midiacom.xml.XMLElement;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLIdentifiableElement;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 
 
 /**
- * This class represents a list of xml elements with id. This element list does not
+ * This class represents a list of xml elements with name. This element list does not
  * stores null elements or repeated elements.
  *
  * @param <T>
  *          the type of element stored in the list.
- * @param <P>
- *          type of the stored element parent.
  */
-public class IdentifiableElementList<T extends XMLIdentifiableElement,
-                                     P extends XMLElement>
-        extends ElementList<T, P> {
+public class NamedElementList<T extends NCLNamedElementPrototype>
+        extends ElementList<T> {
 
 
     /**
-     * Removes an element with an specific id.
+     * Removes an element with an specific name.
      *
-     * @param id
+     * @param name
      *          id of the element to be removed.
      * @return
      *          true if the element was removed.
      * @throws XMLException
      *          if the string is null or empty.
      */
-    public boolean remove(String id) throws XMLException {
-        if(id == null)
+    public boolean remove(String name) throws XMLException {
+        if(name == null)
             throw new XMLException("Null id string.");
-        if("".equals(id.trim()))
+        if("".equals(name.trim()))
             throw new XMLException("Empty id string");
 
-        return elements.remove(get(id));
+        return elements.remove(get(name));
     }
 
 
     /**
-     * Returns the element with an specific id.
+     * Returns the element with an specific name.
      *
-     * @param id
-     *          id of the element to be retrieved.
+     * @param name
+     *          name of the element to be retrieved.
      * @return
-     *          element of the list with the id.
+     *          element of the list with the name.
      * @throws XMLException
      *          if the string is null or empty.
      */
-    public T get(String id) throws XMLException {
-        if(id == null)
+    public T get(String name) throws XMLException {
+        if(name == null)
             throw new XMLException("Null id string.");
-        if("".equals(id.trim()))
+        if("".equals(name.trim()))
             throw new XMLException("Empty id string");
 
         for(T el : elements){
-            if(el.getId().equals(id))
+            if(el.getName().equals(name))
                 return el;
         }
         return null;

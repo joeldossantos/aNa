@@ -35,11 +35,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml.datatype.elementList;
+package br.uff.midiacom.util.elementList;
 
-import br.uff.midiacom.xml.XMLElement;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.XMLIdentifiableElement;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 
 
 /**
@@ -48,12 +47,9 @@ import br.uff.midiacom.xml.XMLIdentifiableElement;
  *
  * @param <T>
  *          the type of element stored in the list.
- * @param <P>
- *          type of the stored element parent.
  */
-public class IdentifiableElementList<T extends XMLIdentifiableElement,
-                                     P extends XMLElement>
-        extends ElementList<T, P> {
+public class IdentifiableElementList<T extends NCLIdentifiableElementPrototype>
+        extends ElementList<T> {
 
 
     /**
