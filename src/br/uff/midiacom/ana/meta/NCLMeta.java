@@ -38,12 +38,10 @@
 package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import org.w3c.dom.Element;
 
 
@@ -64,14 +62,11 @@ import org.w3c.dom.Element;
  * @param <P>
  * @param <I> 
  */
-public class NCLMeta<T extends NCLMeta,
-                     P extends NCLElement,
-                     I extends NCLElementImpl>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+public class NCLMeta<T extends NCLElement>
+        extends NCLNamedElementPrototype<T>
+        implements NCLElement<T> {
 
-    protected StringType name;
-    protected StringType mcontent;
+    protected String mcontent;
 
 
     /**
@@ -94,13 +89,12 @@ public class NCLMeta<T extends NCLMeta,
      * @throws XMLException 
      *          if the string is null or empty.
      */
+    @Override
     public void setName(String name) throws XMLException {
         if(name == null)
             throw new XMLException("Null name.");
         
-        StringType aux = this.name;
-        this.name = new StringType(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        super.setName(name);
     }
 
 
@@ -112,11 +106,9 @@ public class NCLMeta<T extends NCLMeta,
      *          string representing the name of the metadata property or null if
      *          the attribute is not defined.
      */
+    @Override
     public String getName() {
-        if(name != null)
-            return name.getValue();
-        else
-            return null;
+        return super.getName();
     }
 
 
@@ -132,10 +124,12 @@ public class NCLMeta<T extends NCLMeta,
     public void setContent(String content) throws XMLException {
         if(content == null)
             throw new XMLException("Null content.");
+        if("".equals(content.trim()))
+            throw new XMLException("Empty content.");
         
-        StringType aux = this.mcontent;
-        this.mcontent = new StringType(content);
-        impl.notifyAltered(NCLElementAttributes.CONTENT, aux, content);
+        String aux = this.mcontent;
+        this.mcontent = content;
+        notifyAltered(NCLElementAttributes.CONTENT, aux, content);
     }
 
 
@@ -148,19 +142,23 @@ public class NCLMeta<T extends NCLMeta,
      *          if the attribute is not defined.
      */
     public String getContent() {
-        if(mcontent != null)
-            return mcontent.getValue();
-        else
-            return null;
+        return mcontent;
     }
 
 
     @Override
     public boolean compare(T other) {
-        return getName().equals(other.getName());
+        if(other == null || !(other instanceof NCLMeta))
+            return false;
+        
+        boolean result = true;
+        result &= getName().equals(((NCLMeta) other).getName());
+        result &= getContent().equals(((NCLMeta) other).getContent());
+        return result;
     }
 
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -182,6 +180,7 @@ public class NCLMeta<T extends NCLMeta,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadName(element);

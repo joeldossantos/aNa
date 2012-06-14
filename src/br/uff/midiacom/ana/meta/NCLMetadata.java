@@ -38,12 +38,10 @@
 package br.uff.midiacom.ana.meta;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 
 
@@ -55,13 +53,11 @@ import org.w3c.dom.Element;
  * @param <P>
  * @param <I> 
  */
-public class NCLMetadata<T extends NCLMetadata,
-                         P extends NCLElement,
-                         I extends NCLElementImpl>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+public class NCLMetadata<T extends NCLElement>
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
-    protected StringType rdfTree;
+    protected String rdfTree;
 
 
     /**
@@ -88,10 +84,12 @@ public class NCLMetadata<T extends NCLMetadata,
     public void setRDFTree(String rdfTree) throws XMLException {
         if(rdfTree == null)
             throw new XMLException("Null metadata content.");
+        if("".equals(rdfTree.trim()))
+            throw new XMLException("Empty metadata content.");
         
-        StringType aux = this.rdfTree;
-        this.rdfTree = new StringType(rdfTree);
-        impl.notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
+        String aux = this.rdfTree;
+        this.rdfTree = rdfTree;
+        notifyAltered(NCLElementAttributes.RDFTREE, aux, rdfTree);
     }
 
 
@@ -104,19 +102,20 @@ public class NCLMetadata<T extends NCLMetadata,
      *          tree or <i>null</i> if the content is not defined.
      */
     public String getRDFTree() {
-        if(rdfTree != null)
-            return rdfTree.getValue();
-        else
-            return null;
+        return rdfTree;
     }
 
 
     @Override
     public boolean compare(T other) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(other == null || !(other instanceof NCLMetadata))
+            return false;
+        
+        return getRDFTree().equals(((NCLMetadata) other).getRDFTree());
     }
 
 
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -147,6 +146,7 @@ public class NCLMetadata<T extends NCLMetadata,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             String aux = element.getTextContent();
