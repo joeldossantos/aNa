@@ -35,17 +35,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
+package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -54,18 +51,16 @@ import org.w3c.dom.NodeList;
  * @param <T>
  * @param <P> 
  */
-public abstract class NCLBase<T extends NCLBase,
-                              P extends NCLElement,
-                              I extends NCLElementImpl,
+public abstract class NCLBase<T extends NCLElement,
                               Ei extends NCLImportBase>
-        extends NCLIdentifiableElementPrototype<T, P, I> {
+        extends NCLIdentifiableElementPrototype<T> {
 
-    protected ElementList<Ei, T> imports;
+    protected ElementList<Ei> imports;
     
     
     public NCLBase() throws XMLException {
         super();
-        imports = new ElementList<Ei, T>();
+        imports = new ElementList<Ei>();
     }
 
 
@@ -83,8 +78,9 @@ public abstract class NCLBase<T extends NCLBase,
      *          if the import element is null.
      */
     public boolean addImportBase(Ei importBase) throws XMLException {
-        if(imports.add(importBase, (T) this)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importBase);
+        if(imports.add(importBase)){
+            importBase.setParent(this);
+            notifyInserted((T) importBase);
             return true;
         }
         return false;
@@ -106,7 +102,8 @@ public abstract class NCLBase<T extends NCLBase,
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(imports.remove(importBase)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importBase);
+            importBase.setParent(null);
+            notifyRemoved((T) importBase);
             return true;
         }
         return false;
@@ -151,7 +148,7 @@ public abstract class NCLBase<T extends NCLBase,
      * @return 
      *          element list with all import elements.
      */
-    public ElementList<Ei, T> getImportBases() {
+    public ElementList<Ei> getImportBases() {
         return imports;
     }
     
@@ -169,15 +166,29 @@ public abstract class NCLBase<T extends NCLBase,
     
     
     protected void loadImportBases(Element element) throws XMLException {
-        String ch_name;
-        NodeList nl;
-        
         //create the imports
         if(element.getTagName().equals(NCLElementAttributes.IMPORTBASE.toString())){
             Ei inst = createImportBase();
             addImportBase(inst);
             inst.load(element);
         }
+    }
+    
+    
+    public boolean compareImports(NCLBase other) {
+        boolean result = true;
+        ElementList<Ei> otherimp = other.getImportBases();
+        
+        result &= imports.size() == otherimp.size();
+        for (Ei imp : imports) {
+            try {
+                result &= otherimp.contains(imp);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
