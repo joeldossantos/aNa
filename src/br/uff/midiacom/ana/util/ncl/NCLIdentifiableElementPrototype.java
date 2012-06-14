@@ -35,57 +35,67 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml;
+package br.uff.midiacom.ana.util.ncl;
 
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
- * This class implements methods of the NCLElement interface.
+ * Class that implements the XMLIdentifiableElement interface.
+ *
+ * @param <T>
+ *          XML element type.
  */
-public class XMLElementImpl<T extends XMLIdentifiableElement,
-                            P extends XMLElement> {
+public abstract class NCLIdentifiableElementPrototype<T extends NCLElement>
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
-    protected StringType id;
-    protected P parent;
+    protected String id;
+    
+    
+    public NCLIdentifiableElementPrototype() throws XMLException {
+        super();
+    }
 
 
+    /**
+     * Sets the XML element id attribute.
+     *
+     * @param id
+     *          string representing the element id.
+     * @throws IllegalArgumentException
+     *          if the id is not valid.
+     */
     public void setId(String id) throws XMLException {
+        if(id != null && "".equals(id.trim()))
+            throw new XMLException("Empty id String");
         if(!validate(id))
             throw new XMLException("Invalid identifier: " + id);
 
-        this.id = new StringType(id);
+        this.id = id;
+        notifyAltered(NCLElementAttributes.ID, this.id, id);
     }
 
 
+    /**
+     * Returns the XML element id attribute.
+     *
+     * @return
+     *          string representing the element id.
+     */
     public String getId() {
-        if(id != null)
-            return id.getValue();
-        else
-            return null;
-    }
-
-
-    public boolean setParent(P parent) {
-        if(this.parent != null && parent != null)
-            return false;
-
-        this.parent = parent;
-        return true;
-    }
-
-
-    public P getParent() {
-        return parent;
-    }
-
-
-    public boolean compare(T other) {
-        return id.getValue().equals(other.getId());
+        return id;
     }
 
 
     protected boolean validate(String id) {
-        return true;
+        Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
+        Matcher matcher = pattern.matcher(id);
+
+        return matcher.matches();
     }
 }

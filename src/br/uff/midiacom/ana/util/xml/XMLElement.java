@@ -35,30 +35,81 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml;
+package br.uff.midiacom.ana.util.xml;
+
+import br.uff.midiacom.ana.util.exception.XMLException;
+import org.w3c.dom.Element;
 
 
 /**
- * This class represent an XML exception.
+ * This interface defines the basic type of an XML element.
+ *
+ * @param <T>
+ *          XML element type.
  */
-public class XMLException extends Exception {
-
-    public XMLException() {
-        super();
-    }
+public interface XMLElement<T extends XMLElement> {
 
 
-    public XMLException(String msg) {
-        super(msg);
-    }
+    /**
+     * Sets the element parent.
+     *
+     * @param parent
+     *          element representing the element parent.
+     * @return
+     *          true if the parent element was defined. If the element already
+     *          has a parent element it returns false.
+     */
+    public boolean setParent(T parent);
 
 
-    public XMLException(Throwable ex) {
-        super(ex);
-    }
+    /**
+     * Returns the parent element.
+     *
+     * @return
+     *          element representing the parent element.
+     */
+    public T getParent();
+    
+    
+    /**
+     * Returns the document root element.
+     * 
+     * @return 
+     *          element representing the document root.
+     */
+    public T getDoc();
 
 
-    public XMLException(String msg, Throwable ex) {
-        super(msg,ex);
-    }
+    /**
+     * Returns the XML code that represents the XML element.
+     *
+     * @param ident
+     *          integer indicating the indentation level. The XML code will be
+     *          indented by a tab "\t".
+     * @return
+     *          string representing the XML code.
+     */
+    public String parse(int ident);
+    
+    
+    /**
+     * Reads the XML code representing the XML element and creates the class.
+     * 
+     * @param element
+     *          representation of the element to read.
+     * @throws XMLException 
+     *          if any error occur.
+     */
+    public void load(Element element) throws XMLException;
+
+
+    /**
+     * Compares two elements.
+     *
+     * @param other
+     *          the element to be compared with.
+     * @return
+     *          true if the elements are equal and false otherwise.
+     */
+    public boolean compare(T other);
 }

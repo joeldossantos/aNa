@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.util.exception;
 
 import br.uff.midiacom.ana.datatype.ncl.*;
-import br.uff.midiacom.xml.XMLException;
 
 
 /**

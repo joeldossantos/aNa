@@ -35,74 +35,88 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml;
+package br.uff.midiacom.ana.util.ncl;
 
-import org.w3c.dom.Element;
+import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.util.xml.*;
+import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.modification.NCLModificationNotifier;
+import br.uff.midiacom.ana.util.modification.NCLNotification;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**
- * This interface defines the basic type of an XML element.
+ * Class that implements the XMLElement interface.
  *
  * @param <T>
  *          XML element type.
  * @param <P>
  *          XML element parent type.
  */
-public interface XMLElement<T extends XMLElement,
-                            P extends XMLElement> {
+public abstract class NCLElementPrototype<T extends NCLElement>
+        extends XMLElementPrototype<T>
+        implements NCLElement<T> {
 
-
-    /**
-     * Sets the element parent.
-     *
-     * @param parent
-     *          element representing the element parent.
-     * @return
-     *          true if the parent element was defined. If the element already
-     *          has a parent element it returns false.
-     */
-    public boolean setParent(P parent);
-
-
-    /**
-     * Returns the parent element.
-     *
-     * @return
-     *          element representing the parent element.
-     */
-    public P getParent();
-
-
-    /**
-     * Returns the XML code that represents the XML element.
-     *
-     * @param ident
-     *          integer indicating the indentation level. The XML code will be
-     *          indented by a tab "\t".
-     * @return
-     *          string representing the XML code.
-     */
-    public String parse(int ident);
+    private NCLModificationNotifier notifier;
     
-    
-    /**
-     * Reads the XML code representing the XML element and creates the class.
-     * 
-     * @param element
-     *          representation of the element to read.
-     * @throws XMLException 
-     *          if any error occur.
-     */
-    public void load(Element element) throws XMLException;
+
+    public NCLElementPrototype() throws XMLException {
+        notifier = NCLModificationNotifier.getInstance();
+    }
+
+
+    @Override
+    public boolean setParent(T parent) {
+        T aux = getParent();
+        if(this.parent != null && parent != null)
+            return false;
+
+        this.parent = parent;
+        this.doc = (T) parent.getDoc();
+        notifyAltered(NCLElementAttributes.PARENT, aux, parent);
+        return true;
+    }
 
 
     /**
-     * Compares two element.
+     * Notify the listener about a child node inserted.
      *
-     * @param other
-     *          the element to be compared with.
-     * @return
-     *          true if the elements are equal and false otherwise.
+     * @param inserted
+     *          element inserted.
      */
-    public boolean compare(T other);
+    public void notifyInserted(T inserted) {
+        try {
+            notifier.addNotification(new NCLNotification(inserted));
+        } catch (Exception ex) {}
+    }
+
+
+    /**
+     * Notify the listener about a child node removed.
+     *
+     * @param removed
+     *          element removed.
+     */
+    public void notifyRemoved(T removed) {
+        try {
+            notifier.addNotification(new NCLNotification(this, removed));
+        } catch (Exception ex) {}
+    }
+
+
+    /**
+     * Notify the listener about an attribute changed.
+     *
+     * @param attributeName
+     *          the attribute changed.
+     * @param oldValue
+     *          the attribute old value.
+     * @param newValue
+     *          the attribute new value.
+     */
+    public void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
+        try {
+            notifier.addNotification(new NCLNotification(this, attributeName, oldValue, newValue));
+        } catch (Exception ex) {}
+    }
 }

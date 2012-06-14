@@ -35,54 +35,30 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
-
-import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.xml.XMLElementPrototype;
-import br.uff.midiacom.xml.XMLException;
+package br.uff.midiacom.ana.util.exception;
 
 
 /**
- * Class that represent an NCL element.
- * 
- * @param <T>
- * @param <P>
- * @param <I> 
+ * This class represent an XML exception.
  */
-public abstract class NCLElementPrototype<T extends NCLElement,
-                                          P extends NCLElement,
-                                          I extends NCLElementImpl>
-        extends XMLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+public class XMLException extends Exception {
 
-
-    /**
-     * NCL element constructor.
-     * 
-     * @throws XMLException 
-     *          if an error occur while creating the element.
-     */
-    public NCLElementPrototype() throws XMLException {
+    public XMLException() {
         super();
     }
 
 
-    @Override
-    protected void createImpl() throws XMLException {
-        impl = (I) new NCLElementImpl<NCLIdentifiableElement, P>(this);
+    public XMLException(String msg) {
+        super(msg);
     }
 
 
-    @Override
-    public void setModificationListener(NCLModificationListener listener) {
-        impl.setModificationListener(listener);
+    public XMLException(Throwable ex) {
+        super(ex);
     }
 
 
-    @Override
-    public NCLModificationListener getModificationListener() {
-        return impl.getModificationListener();
+    public XMLException(String msg, Throwable ex) {
+        super(msg,ex);
     }
 }

@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml;
+package br.uff.midiacom.ana.util.xml;
 
 
 /**
@@ -46,30 +46,33 @@ package br.uff.midiacom.xml;
  * @param <P>
  *          XML element parent type.
  */
-public abstract class XMLElementPrototype<T extends XMLElement,
-                                          P extends XMLElement,
-                                          I extends XMLElementImpl>
-        implements XMLElement<T, P> {
+public abstract class XMLElementPrototype<T extends XMLElement>
+        implements XMLElement<T> {
 
-    protected I impl;
+    protected T parent;
+    protected T doc;
+    
 
+    @Override
+    public boolean setParent(T parent) {
+        T aux = getParent();
+        if(this.parent != null && parent != null)
+            return false;
 
-    public XMLElementPrototype() throws XMLException {
-        createImpl();
+        this.parent = parent;
+        this.doc = (T) parent.getDoc();
+        return true;
     }
 
 
-    public boolean setParent(P parent) {
-        return impl.setParent(parent);
+    @Override
+    public T getParent() {
+        return parent;
     }
-
-
-    public P getParent() {
-        return (P) impl.getParent();
-    }
-
-
-    protected void createImpl() throws XMLException {
-        impl = (I) new XMLElementImpl<XMLIdentifiableElement, P>();
+    
+    
+    @Override
+    public T getDoc() {
+        return doc;
     }
 }
