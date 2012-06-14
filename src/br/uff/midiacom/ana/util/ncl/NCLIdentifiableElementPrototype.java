@@ -40,8 +40,6 @@ package br.uff.midiacom.ana.util.ncl;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -75,9 +73,10 @@ public abstract class NCLIdentifiableElementPrototype<T extends NCLElement>
             throw new XMLException("Empty id String");
         if(!validate(id))
             throw new XMLException("Invalid identifier: " + id);
-
+        
+        String aux = this.id;
         this.id = id;
-        notifyAltered(NCLElementAttributes.ID, this.id, id);
+        notifyAltered(NCLElementAttributes.ID, aux, id);
     }
 
 
@@ -89,13 +88,5 @@ public abstract class NCLIdentifiableElementPrototype<T extends NCLElement>
      */
     public String getId() {
         return id;
-    }
-
-
-    protected boolean validate(String id) {
-        Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
-        Matcher matcher = pattern.matcher(id);
-
-        return matcher.matches();
     }
 }

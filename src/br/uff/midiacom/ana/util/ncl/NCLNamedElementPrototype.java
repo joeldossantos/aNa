@@ -38,95 +38,55 @@
 package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.util.xml.*;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.util.modification.NCLModificationNotifier;
-import br.uff.midiacom.ana.util.modification.NCLNotification;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
- * Class that implements the XMLElement interface.
+ * Class that implements the XMLIdentifiableElement interface.
  *
  * @param <T>
  *          XML element type.
- * @param <P>
- *          XML element parent type.
  */
-public abstract class NCLElementPrototype<T extends NCLElement>
-        extends XMLElementPrototype<T>
+public abstract class NCLNamedElementPrototype<T extends NCLElement>
+        extends NCLElementPrototype<T>
         implements NCLElement<T> {
 
-    private NCLModificationNotifier notifier;
+    protected String name;
     
-
-    public NCLElementPrototype() throws XMLException {
-        notifier = NCLModificationNotifier.getInstance();
-    }
-
-
-    @Override
-    public boolean setParent(T parent) {
-        T aux = getParent();
-        if(this.parent != null && parent != null)
-            return false;
-
-        this.parent = parent;
-        this.doc = (T) parent.getDoc();
-        notifyAltered(NCLElementAttributes.PARENT, aux, parent);
-        return true;
-    }
-
-
-    protected boolean validate(String id) {
-        Pattern pattern = Pattern.compile("[_:A-Za-z][-._:A-Za-z0-9]*");
-        Matcher matcher = pattern.matcher(id);
-
-        return matcher.matches();
+    
+    public NCLNamedElementPrototype() throws XMLException {
+        super();
     }
 
 
     /**
-     * Notify the listener about a child node inserted.
+     * Sets the XML element id attribute.
      *
-     * @param inserted
-     *          element inserted.
+     * @param name
+     *          string representing the element name.
+     * @throws XMLException
+     *          if the name is not valid.
      */
-    public void notifyInserted(T inserted) {
-        try {
-            notifier.addNotification(new NCLNotification(inserted));
-        } catch (Exception ex) {}
+    public void setName(String name) throws XMLException {
+        if(name != null && "".equals(name.trim()))
+            throw new XMLException("Empty id String");
+        if(!validate(name))
+            throw new XMLException("Invalid identifier: " + name);
+        
+        String aux = this.name;
+        this.name = name;
+        notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
     /**
-     * Notify the listener about a child node removed.
+     * Returns the XML element id attribute.
      *
-     * @param removed
-     *          element removed.
+     * @return
+     *          string representing the element id.
      */
-    public void notifyRemoved(T removed) {
-        try {
-            notifier.addNotification(new NCLNotification(this, removed));
-        } catch (Exception ex) {}
-    }
-
-
-    /**
-     * Notify the listener about an attribute changed.
-     *
-     * @param attributeName
-     *          the attribute changed.
-     * @param oldValue
-     *          the attribute old value.
-     * @param newValue
-     *          the attribute new value.
-     */
-    public void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
-        try {
-            notifier.addNotification(new NCLNotification(this, attributeName, oldValue, newValue));
-        } catch (Exception ex) {}
+    public String getName() {
+        return name;
     }
 }
