@@ -38,20 +38,18 @@
 package br.uff.midiacom.ana.transition;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
 import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -84,12 +82,10 @@ import org.w3c.dom.Element;
  * @param <P>
  * @param <I> 
  */
-public class NCLTransition<T extends NCLTransition,
-                           P extends NCLElement,
-                           I extends NCLElementImpl,
+public class NCLTransition<T extends NCLElement,
                            Ed extends NCLDescriptor>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<Ed> {
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T>, ReferredElement<Ed> {
 
     protected NCLTransitionType type;
     protected NCLTransitionSubtype subtype;
@@ -103,7 +99,7 @@ public class NCLTransition<T extends NCLTransition,
     protected Integer borderWidth;
     protected Object borderColor;
     
-    protected ElementList<Ed, NCLElement> references;
+    protected ElementList<Ed> references;
 
 
     /**
@@ -114,14 +110,21 @@ public class NCLTransition<T extends NCLTransition,
      */
     public NCLTransition() throws XMLException {
         super();
-        references = new ElementList<Ed, NCLElement>();
+        references = new ElementList<Ed>();
     }
     
     
     public NCLTransition(String id) throws XMLException {
         super();
-        references = new ElementList<Ed, NCLElement>();
+        references = new ElementList<Ed>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id String");
     }
 
 
@@ -142,7 +145,7 @@ public class NCLTransition<T extends NCLTransition,
         
         NCLTransitionType aux = this.type;
         this.type = type;
-        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
+        notifyAltered(NCLElementAttributes.TYPE, aux, type);
     }
 
 
@@ -176,10 +179,10 @@ public class NCLTransition<T extends NCLTransition,
      *          <i>NCLTransitionSubtype</i>  or <i>null</i> to erase a subtype
      *          already defined.
      */
-    public void setSubtype(NCLTransitionSubtype subtype) {
+    public void setSubtype(NCLTransitionSubtype subtype) throws XMLException {
         NCLTransitionSubtype aux = this.subtype;
         this.subtype = subtype;
-        impl.notifyAltered(NCLElementAttributes.SUBTYPE, aux, subtype);
+        notifyAltered(NCLElementAttributes.SUBTYPE, aux, subtype);
     }
 
 
@@ -215,10 +218,10 @@ public class NCLTransition<T extends NCLTransition,
      *          element representing the transition duration or <i>null</i> to
      *          erase a duration already defined.
      */
-    public void setDur(TimeType dur) {
+    public void setDur(TimeType dur) throws XMLException {
         TimeType aux = this.dur;
         this.dur = dur;
-        impl.notifyAltered(NCLElementAttributes.DUR, aux, dur);
+        notifyAltered(NCLElementAttributes.DUR, aux, dur);
     }
 
 
@@ -267,7 +270,7 @@ public class NCLTransition<T extends NCLTransition,
         
         Double aux = this.startProgress;
         this.startProgress = startProgress;
-        impl.notifyAltered(NCLElementAttributes.STARTPROGRESS, aux, startProgress);
+        notifyAltered(NCLElementAttributes.STARTPROGRESS, aux, startProgress);
     }
 
 
@@ -323,7 +326,7 @@ public class NCLTransition<T extends NCLTransition,
         
         Double aux = this.endProgress;
         this.endProgress = endProgress;
-        impl.notifyAltered(NCLElementAttributes.ENDPROGRESS, aux, endProgress);
+        notifyAltered(NCLElementAttributes.ENDPROGRESS, aux, endProgress);
     }
 
 
@@ -370,10 +373,10 @@ public class NCLTransition<T extends NCLTransition,
      *          element representing the transition direction from the enumeration
      *          <i>NCLTransitionDirection</i>.
      */
-    public void setDirection(NCLTransitionDirection direction) {
+    public void setDirection(NCLTransitionDirection direction) throws XMLException {
         NCLTransitionDirection aux = this.direction;
         this.direction = direction;
-        impl.notifyAltered(NCLElementAttributes.DIRECTION, aux, direction);
+        notifyAltered(NCLElementAttributes.DIRECTION, aux, direction);
     }
 
 
@@ -420,10 +423,10 @@ public class NCLTransition<T extends NCLTransition,
      *          element representing the fade color from the enumeration
      *          <i>NCLColor</i> or <i>null</i> to erase a color already defined.
      */
-    public void setFadeColor(NCLColor fadeColor) {
+    public void setFadeColor(NCLColor fadeColor) throws XMLException {
         NCLColor aux = this.fadeColor;
         this.fadeColor = fadeColor;
-        impl.notifyAltered(NCLElementAttributes.FADECOLOR, aux, fadeColor);
+        notifyAltered(NCLElementAttributes.FADECOLOR, aux, fadeColor);
     }
 
 
@@ -463,10 +466,10 @@ public class NCLTransition<T extends NCLTransition,
      *          integer representing the number of horizontal repetitions or
      *          <i>null</i> to erase a repetition already defined.
      */
-    public void setHorRepeat(Integer horRepeat) {
+    public void setHorRepeat(Integer horRepeat) throws XMLException {
         Integer aux = this.horRepeat;
         this.horRepeat = horRepeat;
-        impl.notifyAltered(NCLElementAttributes.HORREPEAT, aux, horRepeat);
+        notifyAltered(NCLElementAttributes.HORREPEAT, aux, horRepeat);
     }
 
 
@@ -500,10 +503,10 @@ public class NCLTransition<T extends NCLTransition,
      *          integer representing the number of vertical repetitions or
      *          <i>null</i> to erase a repetition already defined.
      */
-    public void setVertRepeat(Integer vertRepeat) {
+    public void setVertRepeat(Integer vertRepeat) throws XMLException {
         Integer aux = this.vertRepeat;
         this.vertRepeat = vertRepeat;
-        impl.notifyAltered(NCLElementAttributes.VERTREPEAT, aux, vertRepeat);
+        notifyAltered(NCLElementAttributes.VERTREPEAT, aux, vertRepeat);
     }
 
 
@@ -550,7 +553,7 @@ public class NCLTransition<T extends NCLTransition,
         
         Integer aux = this.borderWidth;
         this.borderWidth = borderWidth;
-        impl.notifyAltered(NCLElementAttributes.BORDERWIDTH, aux, borderWidth);
+        notifyAltered(NCLElementAttributes.BORDERWIDTH, aux, borderWidth);
     }
 
 
@@ -602,7 +605,7 @@ public class NCLTransition<T extends NCLTransition,
         
         if(borderColor == null){
             this.borderColor = borderColor;
-            impl.notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
+            notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
             return;
         }
         
@@ -621,7 +624,7 @@ public class NCLTransition<T extends NCLTransition,
         else
             throw new XMLException("Wrong borderColor type.");
         
-        impl.notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
+        notifyAltered(NCLElementAttributes.BORDERCOLOR, aux, borderColor);
     }
 
 
@@ -647,6 +650,42 @@ public class NCLTransition<T extends NCLTransition,
      */
     public Object getBorderColor() {
         return borderColor;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLTransition))
+            return false;
+        
+        boolean result = true;
+        Object aux;
+        
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLTransition) other).getId());
+        if((aux = getType()) != null)
+            result &= aux.equals(((NCLTransition) other).getType());
+        if((aux = getSubtype()) != null)
+            result &= aux.equals(((NCLTransition) other).getSubtype());
+        if((aux = getDur()) != null)
+            result &= aux.equals(((NCLTransition) other).getDur());
+        if((aux = getStartProgress()) != null)
+            result &= aux.equals(((NCLTransition) other).getStartProgress());
+        if((aux = getEndProgress()) != null)
+            result &= aux.equals(((NCLTransition) other).getEndProgress());
+        if((aux = getDirection()) != null)
+            result &= aux.equals(((NCLTransition) other).getDirection());
+        if((aux = getFadeColor()) != null)
+            result &= aux.equals(((NCLTransition) other).getFadeColor());
+        if((aux = getHorRepeat()) != null)
+            result &= aux.equals(((NCLTransition) other).getHorRepeat());
+        if((aux = getVertRepeat()) != null)
+            result &= aux.equals(((NCLTransition) other).getVertRepeat());
+        if((aux = getBorderWidth()) != null)
+            result &= aux.equals(((NCLTransition) other).getBorderWidth());
+        if((aux = getBorderColor()) != null)
+            result &= aux.equals(((NCLTransition) other).getBorderColor());
+        return result;
     }
 
     
@@ -981,7 +1020,7 @@ public class NCLTransition<T extends NCLTransition,
     
     @Override
     public boolean addReference(Ed reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     

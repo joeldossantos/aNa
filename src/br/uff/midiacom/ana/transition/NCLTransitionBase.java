@@ -39,18 +39,16 @@ package br.uff.midiacom.ana.transition;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLBase;
+import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -86,14 +84,13 @@ import org.w3c.dom.NodeList;
  * @param <Et>
  * @param <Ei> 
  */
-public class NCLTransitionBase<T extends NCLTransitionBase,
-                               P extends NCLElement,
-                               I extends NCLElementImpl,
+public class NCLTransitionBase<T extends NCLElement,
                                Et extends NCLTransition,
-                               Ei extends NCLImportBase>
-        extends NCLBase<T, P, I, Ei> {
+                               Ei extends NCLImportBase,
+                               R extends ExternalReferenceType>
+        extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<Et, T> transitions;
+    protected IdentifiableElementList<Et> transitions;
 
 
     /**
@@ -104,7 +101,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      */
     public NCLTransitionBase() throws XMLException {
         super();
-        transitions = new IdentifiableElementList<Et, T>();
+        transitions = new IdentifiableElementList<Et>();
     }
 
 
@@ -120,8 +117,9 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      *          if the element representing the transition is null.
      */
     public boolean addTransition(Et transition) throws XMLException {
-        if(transitions.add(transition, (T) this)){
-            impl.notifyInserted(NCLElementSets.TRANSITIONS, transition);
+        if(transitions.add(transition)){
+            transition.setParent(this);
+            notifyInserted((T) transition);
             return true;
         }
         return false;
@@ -141,7 +139,8 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      */
     public boolean removeTransition(Et transition) throws XMLException {
         if(transitions.remove(transition)){
-            impl.notifyRemoved(NCLElementSets.TRANSITIONS, transition);
+            notifyRemoved((T) transition);
+            transition.setParent(null);
             return true;
         }
         return false;
@@ -161,8 +160,10 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      *          if the string is null or empty.
      */
     public boolean removeTransition(String id) throws XMLException {
-        if(transitions.remove(id)){
-            impl.notifyRemoved(NCLElementSets.TRANSITIONS, id);
+        Et aux = transitions.get(id);
+        if(transitions.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -222,8 +223,31 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      * @return 
      *          element list with all transitions.
      */
-    public IdentifiableElementList<Et, T> getTransitions() {
+    public IdentifiableElementList<Et> getTransitions() {
         return transitions;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLTransitionBase))
+            return false;
+        
+        boolean result = true;
+        ElementList<Et> othertra = ((NCLTransitionBase) other).getTransitions();
+        
+        result &= super.compareImports((NCLBase) other);
+        
+        result &= transitions.size() == othertra.size();
+        for (Et tra : transitions) {
+            try {
+                result &= othertra.contains(tra);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
@@ -374,19 +398,19 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
                     if(ref instanceof NCLTransition)
                         return createExternalRef(imp, (Et) ref);
                     else
-                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Et) ((R) ref).getTarget());
                 }
             }
             
             NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
                     Object ref = findTransitionReference(d, id);
                     if(ref instanceof NCLTransition)
                         return createExternalRef(imp, (Et) ref);
                     else
-                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Et) ((R) ref).getTarget());
                 }
             }
         }
@@ -434,7 +458,7 @@ public class NCLTransitionBase<T extends NCLTransitionBase,
      * @return
      *          element representing a reference to a transition.
      */
-    protected ExternalReferenceType createExternalRef(Ei imp, Et ref) throws XMLException {
-        return new ExternalReferenceType(imp, ref);
+    protected R createExternalRef(Ei imp, Et ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
     }
 }
