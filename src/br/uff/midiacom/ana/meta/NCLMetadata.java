@@ -111,7 +111,12 @@ public class NCLMetadata<T extends NCLElement>
         if(other == null || !(other instanceof NCLMetadata))
             return false;
         
-        return getRDFTree().equals(((NCLMetadata) other).getRDFTree());
+        String aux;
+        
+        if((aux = getRDFTree()) != null)
+            return aux.equals(((NCLMetadata) other).getRDFTree());
+        else
+            return false;
     }
 
 

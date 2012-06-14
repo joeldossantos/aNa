@@ -152,8 +152,12 @@ public class NCLMeta<T extends NCLElement>
             return false;
         
         boolean result = true;
-        result &= getName().equals(((NCLMeta) other).getName());
-        result &= getContent().equals(((NCLMeta) other).getContent());
+        String aux;
+        
+        if((aux = getName()) != null)
+            result &= aux.equals(((NCLMeta) other).getName());
+        if((aux = getContent()) != null)
+            result &= aux.equals(((NCLMeta) other).getContent());
         return result;
     }
 
