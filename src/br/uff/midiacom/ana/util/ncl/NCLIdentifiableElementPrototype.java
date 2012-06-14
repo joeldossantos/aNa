@@ -55,7 +55,7 @@ public abstract class NCLIdentifiableElementPrototype<T extends NCLElement>
     protected String id;
     
     
-    public NCLIdentifiableElementPrototype() throws XMLException {
+    public NCLIdentifiableElementPrototype() {
         super();
     }
 

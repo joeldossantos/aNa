@@ -38,11 +38,11 @@
 package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.util.exception.NCLModificationException;
 import br.uff.midiacom.ana.util.xml.*;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.modification.NCLModificationNotifier;
 import br.uff.midiacom.ana.util.modification.NCLNotification;
-import br.uff.midiacom.ana.util.exception.XMLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,7 +62,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
     private NCLModificationNotifier notifier;
     
 
-    public NCLElementPrototype() throws XMLException {
+    public NCLElementPrototype() {
         notifier = NCLModificationNotifier.getInstance();
     }
 
@@ -75,7 +75,9 @@ public abstract class NCLElementPrototype<T extends NCLElement>
 
         this.parent = parent;
         this.doc = (T) parent.getDoc();
-        notifyAltered(NCLElementAttributes.PARENT, aux, parent);
+        try {
+            notifyAltered(NCLElementAttributes.PARENT, aux, parent);
+        } catch (Exception ex) {}
         return true;
     }
 
@@ -94,10 +96,8 @@ public abstract class NCLElementPrototype<T extends NCLElement>
      * @param inserted
      *          element inserted.
      */
-    public void notifyInserted(T inserted) {
-        try {
-            notifier.addNotification(new NCLNotification(inserted));
-        } catch (Exception ex) {}
+    public void notifyInserted(T inserted) throws NCLModificationException {
+        notifier.addNotification(new NCLNotification(inserted));
     }
 
 
@@ -107,10 +107,8 @@ public abstract class NCLElementPrototype<T extends NCLElement>
      * @param removed
      *          element removed.
      */
-    public void notifyRemoved(T removed) {
-        try {
-            notifier.addNotification(new NCLNotification(this, removed));
-        } catch (Exception ex) {}
+    public void notifyRemoved(T removed) throws NCLModificationException {
+        notifier.addNotification(new NCLNotification(this, removed));
     }
 
 
@@ -124,9 +122,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
      * @param newValue
      *          the attribute new value.
      */
-    public void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) {
-        try {
-            notifier.addNotification(new NCLNotification(this, attributeName, oldValue, newValue));
-        } catch (Exception ex) {}
+    public void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) throws NCLModificationException {
+        notifier.addNotification(new NCLNotification(this, attributeName, oldValue, newValue));
     }
 }

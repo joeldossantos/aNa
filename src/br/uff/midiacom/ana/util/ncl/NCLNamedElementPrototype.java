@@ -55,7 +55,7 @@ public abstract class NCLNamedElementPrototype<T extends NCLElement>
     protected String name;
     
     
-    public NCLNamedElementPrototype() throws XMLException {
+    public NCLNamedElementPrototype() {
         super();
     }
 
