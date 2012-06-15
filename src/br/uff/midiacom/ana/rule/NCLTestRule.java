@@ -66,4 +66,7 @@ public interface NCLTestRule<T extends NCLElement,
      *          rule or null if no rule was found.
      */
     public Et findRule(String id) throws XMLException;
+    
+    
+    public String getId();
 }

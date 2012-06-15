@@ -1075,12 +1075,38 @@ public class NCLDescriptor<T extends NCLElement,
             result &= el.compare(((NCLDescriptor) other).getMoveUp());
         if((el = (T) getMoveDown()) != null)
             result &= el.compare(((NCLDescriptor) other).getMoveDown());
-        if((el = (T) getTransIn()) != null)
-            result &= el.compare((T) ((NCLDescriptor) other).getTransIn());
-        if((el = (T) getTransOut()) != null)
-            result &= el.compare((T) ((NCLDescriptor) other).getTransOut());
-        if((el = (T) getRegion()) != null)
-            result &= el.compare((T) ((NCLDescriptor) other).getRegion());
+        
+        Object oaux;
+        aux = getTransIn();
+        oaux = ((NCLDescriptor) other).getTransIn();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLTransition && oaux instanceof NCLTransition)
+                result &= ((Et) aux).compare((Et) oaux);
+            else if(aux instanceof ExternalReferenceType && oaux instanceof ExternalReferenceType)
+                result &= ((R) aux).equals((R) oaux);
+            else
+                result = false;
+        }
+        aux = getTransOut();
+        oaux = ((NCLDescriptor) other).getTransOut();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLTransition && oaux instanceof NCLTransition)
+                result &= ((Et) aux).compare((Et) oaux);
+            else if(aux instanceof ExternalReferenceType && oaux instanceof ExternalReferenceType)
+                result &= ((R) aux).equals((R) oaux);
+            else
+                result = false;
+        }
+        aux = getRegion();
+        oaux = ((NCLDescriptor) other).getRegion();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLRegion && oaux instanceof NCLRegion)
+                result &= ((Er) aux).compare((Er) oaux);
+            else if(aux instanceof ExternalReferenceType && oaux instanceof ExternalReferenceType)
+                result &= ((R) aux).equals((R) oaux);
+            else
+                result = false;
+        }
         
         
         ElementList<Ep> otherpar = ((NCLDescriptor) other).getDescriptorParams();

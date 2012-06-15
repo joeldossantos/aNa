@@ -39,12 +39,10 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.util.basic.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
@@ -92,10 +90,11 @@ import org.w3c.dom.NodeList;
  */
 public class NCLRuleBase<T extends NCLElement,
                          Et extends NCLTestRule,
-                         Ei extends NCLImportBase>
+                         Ei extends NCLImportBase,
+                         R extends ExternalReferenceType>
         extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<Et, T> rules;
+    protected IdentifiableElementList<Et> rules;
 
 
     /**
@@ -104,9 +103,9 @@ public class NCLRuleBase<T extends NCLElement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLRuleBase() throws XMLException {
+    public NCLRuleBase() {
         super();
-        rules = new IdentifiableElementList<Et, T>();
+        rules = new IdentifiableElementList<Et>();
     }
 
 
@@ -123,8 +122,9 @@ public class NCLRuleBase<T extends NCLElement,
      *          if the element representing the rule is null.
      */
     public boolean addRule(Et rule) throws XMLException {
-        if(rules.add(rule, (T) this)){
-            impl.notifyInserted(NCLElementSets.RULES, rule);
+        if(rules.add(rule)){
+            notifyInserted((T) rule);
+            rule.setParent(this);
             return true;
         }
         return false;
@@ -145,7 +145,8 @@ public class NCLRuleBase<T extends NCLElement,
      */
     public boolean removeRule(Et rule) throws XMLException {
         if(rules.remove(rule)){
-            impl.notifyRemoved(NCLElementSets.RULES, rule);
+            notifyRemoved((T) rule);
+            rule.setParent(null);
             return true;
         }
         return false;
@@ -165,8 +166,10 @@ public class NCLRuleBase<T extends NCLElement,
      *          if the string is null or empty.
      */
     public boolean removeRule(String id) throws XMLException {
-        if(rules.remove(id)){
-            impl.notifyRemoved(NCLElementSets.RULES, id);
+        Et aux = rules.get(id);
+        if(rules.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -230,8 +233,31 @@ public class NCLRuleBase<T extends NCLElement,
      * @return 
      *          element list with all rules.
      */
-    public IdentifiableElementList<Et, T> getRules() {
+    public IdentifiableElementList<Et> getRules() {
         return rules;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLRuleBase))
+            return false;
+        
+        boolean result = true;
+        ElementList<Et> otherrul = ((NCLRuleBase) other).getRules();
+        
+        result &= super.compareImports((NCLBase) other);
+        
+        result &= rules.size() == otherrul.size();
+        for (Et rul : rules) {
+            try {
+                result &= otherrul.contains(rul);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
@@ -266,7 +292,6 @@ public class NCLRuleBase<T extends NCLElement,
 
     @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
         NodeList nl;
 
         try{
@@ -397,19 +422,19 @@ public class NCLRuleBase<T extends NCLElement,
                     if(ref instanceof NCLTestRule)
                         return createExternalRef(imp, (Et) ref);
                     else
-                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Et) ((R) ref).getTarget());
                 }
             }
             
             NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
                     Object ref = findRuleReference(d, id);
                     if(ref instanceof NCLTestRule)
                         return createExternalRef(imp, (Et) ref);
                     else
-                        return createExternalRef(imp, (Et) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Et) ((R) ref).getTarget());
                 }
             }
         }
@@ -469,7 +494,7 @@ public class NCLRuleBase<T extends NCLElement,
      * @return
      *          element representing a reference to a rule.
      */
-    protected ExternalReferenceType createExternalRef(Ei imp, Et ref) throws XMLException {
-        return new ExternalReferenceType(imp, ref);
+    protected R createExternalRef(Ei imp, Et ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
     }
 }
