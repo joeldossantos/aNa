@@ -46,7 +46,7 @@ import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ElementList;
 
 
 /**

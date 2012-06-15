@@ -38,14 +38,14 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

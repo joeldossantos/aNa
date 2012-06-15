@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.aux.basic;
+package br.uff.midiacom.util;
 
 import br.uff.midiacom.ana.datatype.enums.NCLUriType;
 import br.uff.midiacom.ana.util.exception.XMLException;

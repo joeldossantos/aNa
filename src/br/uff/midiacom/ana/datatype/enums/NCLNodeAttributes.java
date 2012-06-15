@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.datatype.enums;
 
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 
 
 public enum NCLNodeAttributes {

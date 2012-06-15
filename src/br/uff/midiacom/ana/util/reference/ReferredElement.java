@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.util.reference;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ElementList;
 
 
 public interface ReferredElement<T extends NCLElement> {

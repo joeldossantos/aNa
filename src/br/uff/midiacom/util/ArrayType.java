@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.xml.datatype.array;
+package br.uff.midiacom.util;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
 import java.util.Arrays;

@@ -46,7 +46,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
 import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
 import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;

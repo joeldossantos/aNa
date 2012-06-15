@@ -42,7 +42,7 @@ import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import org.w3c.dom.Element;
 

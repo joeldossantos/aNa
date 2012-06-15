@@ -38,14 +38,14 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.ana.datatype.aux.basic.SampleType;
-import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
+import br.uff.midiacom.util.SampleType;
+import br.uff.midiacom.util.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.datatype.array.ArrayType;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ArrayType;
+import br.uff.midiacom.util.ElementList;
 import org.w3c.dom.Element;
 
 

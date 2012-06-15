@@ -44,7 +44,7 @@ import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ElementList;
 import org.w3c.dom.Element;
 
 

@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLKey;
 import br.uff.midiacom.ana.util.exception.XMLException;

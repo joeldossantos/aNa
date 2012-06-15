@@ -39,11 +39,11 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ElementList;
 import org.w3c.dom.Element;
 
 

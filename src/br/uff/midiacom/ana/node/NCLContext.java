@@ -45,7 +45,7 @@ import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;

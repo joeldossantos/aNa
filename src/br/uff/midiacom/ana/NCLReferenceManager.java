@@ -37,14 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.ElementList;
 import java.util.ArrayList;
 
 
