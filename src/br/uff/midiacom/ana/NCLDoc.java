@@ -44,7 +44,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.util.ElementList;
+import br.uff.midiacom.ana.util.ElementList;
 import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;

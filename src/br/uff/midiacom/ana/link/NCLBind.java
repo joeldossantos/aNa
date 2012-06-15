@@ -52,7 +52,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
-import br.uff.midiacom.util.ElementList;
+import br.uff.midiacom.ana.util.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

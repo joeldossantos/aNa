@@ -51,7 +51,7 @@ import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
-import br.uff.midiacom.util.ElementList;
+import br.uff.midiacom.ana.util.ElementList;
 import org.w3c.dom.Element;
 
 

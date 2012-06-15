@@ -44,7 +44,7 @@ import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.util.ElementList;
+import br.uff.midiacom.ana.util.ElementList;
 import java.util.ArrayList;
 
 

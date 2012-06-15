@@ -46,7 +46,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.util.ElementList;
+import br.uff.midiacom.ana.util.ElementList;
 import org.w3c.dom.Element;
 
 

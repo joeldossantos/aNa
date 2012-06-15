@@ -35,107 +35,107 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.util;
+package br.uff.midiacom.ana.util;
 
-import br.uff.midiacom.ana.datatype.enums.NCLUriType;
 import br.uff.midiacom.ana.util.exception.XMLException;
+import java.util.Arrays;
+import java.util.Vector;
 
 
 /**
- * This class represents a source locator. The source locator my be defined as:
- * <ul>
- *   <li>untyped locator (ex.: media.ext or /home/media.ext)</li>
- *   <li>typed locator (ex.: file:///home/media.ext)</li>
- *   <li>time locator (ex.: 2011:01:01:12:10:10.500)</li>
- * </ul>
+ * This class represents an value represented as an array (ex.: 99,99,99).
  */
-public class SrcType {
+public class ArrayType {
 
-    private NCLUriType type;
-    private String src;
-
-
+    private double[] values;
+    
+    
     /**
-     * Creates a untyped locator.
+     * Create the array from an array of values.
      *
-     * @param src
-     *          String representing the locator.
+     * @param values
+     *          array of values.
      * @throws XMLException
-     *          if the String is empty.
+     *          if one value of the array is negative.
      */
-    public SrcType(String src) throws XMLException {
-        setSrc(src);
-    }
-
-
-    /**
-     * Creates a typed locator.
-     *
-     * @param type
-     *          element representing the locator type.
-     * @param src
-     *          String representing the locator.
-     * @throws XMLException
-     *          if the String is empty.
-     */
-    public SrcType(NCLUriType type, String src) throws XMLException {
-        setType(type);
-        setSrc(src);
+    public ArrayType(double[] values) throws XMLException {
+        setValues(values);
     }
 
 
     /**
-     * Creates a time locator.
+     * Create the array from an array of values.
      *
-     * @param time
-     *          element representing the time locator content.
+     * @param values
+     *          array of values.
      * @throws XMLException
-     *          if the time is not in the required format or null.
+     *          if one value of the array is negative.
      */
-    public SrcType(TimeType time) throws XMLException {
-        if(time == null)
-            throw new XMLException("Null time");
-        if(!time.isUTC())
-            throw new XMLException("Invalid src");
+    public ArrayType(String values) throws XMLException {
+        Vector<Double> array = new Vector<Double>();
+        while(values.contains(",")){
+            int index = values.indexOf(",");
+            array.add(new Double(values.substring(0, index)));
+            values = values.substring(index + 1);
+        }
+        array.add(new Double(values));
+        double[] a = new double[array.size()];
+        for(int k = 0; k < array.size(); k++)
+            a[k] = (double) array.elementAt(k);
 
-        setSrc(time.toString());
+        setValues(a);
     }
 
 
-    private void setSrc(String src) throws XMLException {
-        if(src != null && "".equals(src.trim()))
-            throw new XMLException("Empty src String");
+    private void setValues(double[] values) throws XMLException {
+        if(values != null){
+            for(double coord : values){
+                if(coord < 0)
+                    throw new XMLException("Invalid value: " + coord);
+            }
+        }
 
-        this.src = src;
+        this.values = values;
     }
 
 
-    private void setType(NCLUriType type) {
-        this.type = type;
+    /**
+     * Returns the array.
+     *
+     * @return
+     *          array of values.
+     */
+    public double[] getArray() {
+        return values;
     }
 
 
-    public String getExtension() {
-        return src.substring(src.lastIndexOf("."));
+    /**
+     * Returns the array size.
+     *
+     * @return
+     *          integer with the array size.
+     */
+    public int getSize() {
+        return values.length;
     }
 
 
     @Override
     public String toString() {
-        String value = "";
-
-        if(type != null)
-            value += type.toString();
-
-        value += src;
-
-        return value;
+        String result = "";
+        for(int i = 0; i < values.length; i++){
+            result += values[i];
+            if(i < values.length - 1)
+                result += ",";
+        }
+        return result;
     }
     
     
     @Override
     public boolean equals(Object o) {
-        if(o == null || !(o instanceof SrcType))
+        if(o == null || !(o instanceof ArrayType))
             return false;
         
         return toString().equals(o.toString());
@@ -145,8 +145,7 @@ public class SrcType {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + (this.type != null ? this.type.hashCode() : 0);
-        hash = 97 * hash + (this.src != null ? this.src.hashCode() : 0);
+        hash = 79 * hash + Arrays.hashCode(this.values);
         return hash;
     }
 }
