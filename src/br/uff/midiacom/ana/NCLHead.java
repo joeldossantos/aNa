@@ -40,8 +40,6 @@ package br.uff.midiacom.ana;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
@@ -49,9 +47,10 @@ import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.rule.NCLRuleBase;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,9 +89,7 @@ import org.w3c.dom.NodeList;
  * @param <Em>
  * @param <Emt> 
  */
-public class NCLHead<T extends NCLHead,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
+public class NCLHead<T extends NCLElement,
                      Eib extends NCLImportedDocumentBase,
                      Erl extends NCLRuleBase,
                      Etb extends NCLTransitionBase,
@@ -101,17 +98,17 @@ public class NCLHead<T extends NCLHead,
                      Ecb extends NCLConnectorBase,
                      Em extends NCLMeta,
                      Emt extends NCLMetadata>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
     protected Eib importedDocumentBase;
     protected Erl ruleBase;
     protected Etb transitionBase;
-    protected IdentifiableElementList<Erb, T> regionBases;
+    protected IdentifiableElementList<Erb> regionBases;
     protected Edb descriptorBase;
     protected Ecb connectorBase;
-    protected ElementList<Em, T> metas;
-    protected ElementList<Emt, T> metadatas;
+    protected ElementList<Em> metas;
+    protected ElementList<Emt> metadatas;
 
 
     /**
@@ -120,11 +117,11 @@ public class NCLHead<T extends NCLHead,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLHead() throws XMLException {
+    public NCLHead() {
         super();
-        regionBases = new IdentifiableElementList<Erb, T>();
-        metas = new ElementList<Em, T>();
-        metadatas = new ElementList<Emt, T>();
+        regionBases = new IdentifiableElementList<Erb>();
+        metas = new ElementList<Em>();
+        metadatas = new ElementList<Emt>();
     }
 
     
@@ -137,18 +134,18 @@ public class NCLHead<T extends NCLHead,
      *          element representing the base of imported documents or <i>null</i>
      *          to remove the base already defined.
      */
-    public void setImportedDocumentBase(Eib importedDocumentBase) {
+    public void setImportedDocumentBase(Eib importedDocumentBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.importedDocumentBase != null){
             this.importedDocumentBase.setParent(null);
-            impl.notifyRemoved(NCLElementSets.IMPORTEDDOCUMENTBASE, this.importedDocumentBase);
+            notifyRemoved((T) this.importedDocumentBase);
         }
         // Add the new base element
         this.importedDocumentBase = importedDocumentBase;
         // Set the parent of the new base, if it exists
         if(this.importedDocumentBase != null){
             this.importedDocumentBase.setParent(this);
-            impl.notifyInserted(NCLElementSets.IMPORTEDDOCUMENTBASE, this.importedDocumentBase);
+            notifyInserted((T) this.importedDocumentBase);
         }
     }
 
@@ -175,18 +172,18 @@ public class NCLHead<T extends NCLHead,
      *          element representing the base of rules or <i>null</i> to remove
      *          the base already defined.
      */
-    public void setRuleBase(Erl ruleBase) {
+    public void setRuleBase(Erl ruleBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.ruleBase != null){
             this.ruleBase.setParent(null);
-            impl.notifyRemoved(NCLElementSets.RULEBASE, this.ruleBase);
+            notifyRemoved((T) this.ruleBase);
         }
         // Add the new base element
         this.ruleBase = ruleBase;
         // Set the parent of the new base, if it exists
         if(this.ruleBase != null){
             this.ruleBase.setParent(this);
-            impl.notifyInserted(NCLElementSets.RULEBASE, this.ruleBase);
+            notifyInserted((T) this.ruleBase);
         }
     }
 
@@ -213,18 +210,18 @@ public class NCLHead<T extends NCLHead,
      *          element representing the base of transitions or <i>null</i> to
      *          remove the base already defined.
      */
-    public void setTransitionBase(Etb transitionBase) {
+    public void setTransitionBase(Etb transitionBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.transitionBase != null){
             this.transitionBase.setParent(null);
-            impl.notifyRemoved(NCLElementSets.TRANSITIONBASE, this.transitionBase);
+            notifyRemoved((T) this.transitionBase);
         }
         // Add the new base element
         this.transitionBase = transitionBase;
         // Set the parent of the new base, if it exists
         if(this.transitionBase != null){
             this.transitionBase.setParent(this);
-            impl.notifyInserted(NCLElementSets.TRANSITIONBASE, this.transitionBase);
+            notifyInserted((T) this.transitionBase);
         }
     }
 
@@ -255,8 +252,9 @@ public class NCLHead<T extends NCLHead,
      *          if the element representing the base is null.
      */
     public boolean addRegionBase(Erb regionBase) throws XMLException {
-        if(regionBases.add(regionBase, (T) this)){
-            impl.notifyInserted(NCLElementSets.REGIONBASE, regionBase);
+        if(regionBases.add(regionBase)){
+            notifyInserted((T) regionBase);
+            regionBase.setParent(this);
             return true;
         }
         return false;
@@ -276,7 +274,8 @@ public class NCLHead<T extends NCLHead,
      */
     public boolean removeRegionBase(Erb regionBase) throws XMLException {
         if(regionBases.remove(regionBase)){
-            impl.notifyRemoved(NCLElementSets.REGIONBASE, regionBase);
+            notifyRemoved((T) regionBase);
+            regionBase.setParent(null);
             return true;
         }
         return false;
@@ -295,8 +294,10 @@ public class NCLHead<T extends NCLHead,
      *          if the string is null or empty.
      */
     public boolean removeRegionBase(String id) throws XMLException {
-        if(regionBases.remove(id)){
-            impl.notifyRemoved(NCLElementSets.REGIONBASE, id);
+        Erb aux = regionBases.get(id);
+        if(regionBases.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -354,7 +355,7 @@ public class NCLHead<T extends NCLHead,
      * @return 
      *          element list with all bases of regions.
      */
-    public IdentifiableElementList<Erb, T> getRegionBases() {
+    public IdentifiableElementList<Erb> getRegionBases() {
         return regionBases;
     }
 
@@ -367,18 +368,18 @@ public class NCLHead<T extends NCLHead,
      *          element representing the base of descriptors or <i>null</i> to
      *          remove the base already defined.
      */    
-    public void setDescriptorBase(Edb descriptorBase) {
+    public void setDescriptorBase(Edb descriptorBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.descriptorBase != null){
             this.descriptorBase.setParent(null);
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORBASE, this.descriptorBase);
+            notifyRemoved((T) this.descriptorBase);
         }
         // Add the new base element
         this.descriptorBase = descriptorBase;
         // Set the parent of the new base, if it exists
         if(this.descriptorBase != null){
             this.descriptorBase.setParent(this);
-            impl.notifyInserted(NCLElementSets.DESCRIPTORBASE, this.descriptorBase);
+            notifyInserted((T) this.descriptorBase);
         }
     }
 
@@ -404,18 +405,18 @@ public class NCLHead<T extends NCLHead,
      *          element representing the base of connectors or <i>null</i> to
      *          remove the base already defined.
      */
-    public void setConnectorBase(Ecb connectorBase) {
+    public void setConnectorBase(Ecb connectorBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.connectorBase != null){
             this.connectorBase.setParent(null);
-            impl.notifyRemoved(NCLElementSets.CONNECTORBASE, this.connectorBase);
+            notifyRemoved((T) this.connectorBase);
         }
         // Add the new base element
         this.connectorBase = connectorBase;
         // Set the parent of the new base, if it exists
         if(this.connectorBase != null){
             this.connectorBase.setParent(this);
-            impl.notifyInserted(NCLElementSets.CONNECTORBASE, this.connectorBase);
+            notifyInserted((T) this.connectorBase);
         }
     }
 
@@ -445,8 +446,9 @@ public class NCLHead<T extends NCLHead,
      *          if the meta element is null.
      */
     public boolean addMeta(Em meta) throws XMLException {
-        if(metas.add(meta, (T) this)){
-            impl.notifyInserted(NCLElementSets.METAS, meta);
+        if(metas.add(meta)){
+            notifyInserted((T) meta);
+            meta.setParent(this);
             return true;
         }
         return false;
@@ -466,7 +468,8 @@ public class NCLHead<T extends NCLHead,
      */
     public boolean removeMeta(Em meta) throws XMLException {
         if(metas.remove(meta)){
-            impl.notifyRemoved(NCLElementSets.METAS, meta);
+            notifyRemoved((T) meta);
+            meta.setParent(null);
             return true;
         }
         return false;
@@ -508,7 +511,7 @@ public class NCLHead<T extends NCLHead,
      * @return 
      *          element list with all meta elements.
      */
-    public ElementList<Em, T> getMetas() {
+    public ElementList<Em> getMetas() {
         return metas;
     }
 
@@ -525,8 +528,9 @@ public class NCLHead<T extends NCLHead,
      *          if the metadata element is null.
      */
     public boolean addMetadata(Emt metadata) throws XMLException {
-        if(metadatas.add(metadata, (T) this)){
-            impl.notifyInserted(NCLElementSets.METADATAS, metadata);
+        if(metadatas.add(metadata)){
+            notifyInserted((T) metadata);
+            metadata.setParent(this);
             return true;
         }
         return false;
@@ -546,7 +550,8 @@ public class NCLHead<T extends NCLHead,
      */
     public boolean removeMetadata(Emt metadata) throws XMLException {
         if(metadatas.remove(metadata)){
-            impl.notifyRemoved(NCLElementSets.METADATAS, metadata);
+            notifyRemoved((T) metadata);
+            metadata.setParent(null);
             return true;
         }
         return false;
@@ -588,17 +593,67 @@ public class NCLHead<T extends NCLHead,
      * @return 
      *          element list with all metadata elements.
      */
-    public ElementList<Emt, T> getMetadatas() {
+    public ElementList<Emt> getMetadatas() {
         return metadatas;
     }
 
 
     @Override
     public boolean compare(T other) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(other == null || !(other instanceof NCLHead))
+            return false;
+        
+        boolean result = true;
+        
+        T el;
+        
+        if((el = (T) getImportedDocumentBase()) != null)
+            result &= el.compare(((NCLHead) other).getImportedDocumentBase());
+        if((el = (T) getRuleBase()) != null)
+            result &= el.compare(((NCLHead) other).getRuleBase());
+        if((el = (T) getTransitionBase()) != null)
+            result &= el.compare(((NCLHead) other).getTransitionBase());
+        
+        ElementList<Erb> otherrb = ((NCLHead) other).getRegionBases();
+        result &= regionBases.size() == otherrb.size();
+        for (Erb aux : regionBases) {
+            try {
+                result &= otherrb.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        if((el = (T) getDescriptorBase()) != null)
+            result &= el.compare(((NCLHead) other).getDescriptorBase());
+        if((el = (T) getConnectorBase()) != null)
+            result &= el.compare(((NCLHead) other).getConnectorBase());
+        
+        ElementList<Em> othermet = ((NCLHead) other).getMetas();
+        result &= metas.size() == othermet.size();
+        for (Em aux : metas) {
+            try {
+                result &= othermet.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Emt> othermtd = ((NCLHead) other).getMetadatas();
+        result &= metadatas.size() == othermtd.size();
+        for (Emt aux : metadatas) {
+            try {
+                result &= othermtd.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -620,6 +675,7 @@ public class NCLHead<T extends NCLHead,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         Element el;
 

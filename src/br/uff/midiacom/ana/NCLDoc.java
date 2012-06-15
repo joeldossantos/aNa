@@ -40,14 +40,11 @@ package br.uff.midiacom.ana;
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.ana.interfaces.NCLProperty;
-import br.uff.midiacom.ana.rule.NCLRule;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
@@ -87,14 +84,12 @@ import org.xml.sax.SAXException;
  * @param <Eh>
  * @param <Eb> 
  */
-public class NCLDoc<T extends NCLDoc,
-                    P extends NCLElement,
-                    I extends NCLElementImpl,
+public class NCLDoc<T extends NCLElement,
                     Eh extends NCLHead,
                     Eb extends NCLBody,
                     Ev extends NCLVariable>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T> {
 
     protected String title;
     protected NCLNamespace xmlns;
@@ -103,7 +98,7 @@ public class NCLDoc<T extends NCLDoc,
     
     protected String location;
     protected String fileName;
-    protected ElementList<Ev, T> globalVariables;
+    protected ElementList<Ev> globalVariables;
 
 
     /**
@@ -114,7 +109,16 @@ public class NCLDoc<T extends NCLDoc,
      */
     public NCLDoc() throws XMLException {
         super();
-        globalVariables = new ElementList<Ev, T>();
+        globalVariables = new ElementList<Ev>();
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
     
@@ -135,7 +139,7 @@ public class NCLDoc<T extends NCLDoc,
         
         String aux = this.title;
         this.title = title;
-        impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
+        notifyAltered(NCLElementAttributes.TITLE, aux, title);
     }
 
 
@@ -169,7 +173,7 @@ public class NCLDoc<T extends NCLDoc,
 
         NCLNamespace aux = this.xmlns;
         this.xmlns = xmlns;
-        impl.notifyAltered(NCLElementAttributes.XMLNS, aux, xmlns);
+        notifyAltered(NCLElementAttributes.XMLNS, aux, xmlns);
     }
 
 
@@ -196,18 +200,18 @@ public class NCLDoc<T extends NCLDoc,
      *          element representing the document head or <i>null</i> to remove
      *          the head already defined.
      */
-    public void setHead(Eh head) {
+    public void setHead(Eh head) throws XMLException {
         // Remove the parent of the actual head, if it exists
         if(this.head != null){
             this.head.setParent(null);
-            impl.notifyRemoved(NCLElementSets.HEAD, this.head);
+            notifyRemoved((T) this.head);
         }
         // Add the new head element
         this.head = head;
         // Set the parent of the new head, if it exists
         if(this.head != null){
             this.head.setParent(this);
-            impl.notifyInserted(NCLElementSets.HEAD, this.head);
+            notifyInserted((T) this.head);
         }
     }
 
@@ -233,18 +237,18 @@ public class NCLDoc<T extends NCLDoc,
      *          element representing the document body or <i>null</i> to remove
      *          the body already defined.
      */
-    public void setBody(Eb body) {
+    public void setBody(Eb body) throws XMLException {
         // Remove the parent of the actual body, if it exists
         if(this.body != null){
             this.body.setParent(null);
-            impl.notifyRemoved(NCLElementSets.BODY, this.body);
+            notifyRemoved((T) this.body);
         }
         // Add the new body element
         this.body = body;
         // Set the parent of the new body, if it exists
         if(this.body != null){
             this.body.setParent(this);
-            impl.notifyInserted(NCLElementSets.BODY, this.body);
+            notifyInserted((T) this.body);
         }
     }
 
@@ -298,7 +302,7 @@ public class NCLDoc<T extends NCLDoc,
      *          if the element representing the variable is null.
      */
     public boolean addGlobalVariable(Ev variable) throws XMLException {
-        return globalVariables.add(variable, (T) this);
+        return globalVariables.add(variable);
     }
 
 
@@ -395,7 +399,7 @@ public class NCLDoc<T extends NCLDoc,
      * @return 
      *          element list with all variables.
      */
-    public ElementList<Ev, T> getGlobalVariables() {
+    public ElementList<Ev> getGlobalVariables() {
         return globalVariables;
     }
     
@@ -407,8 +411,33 @@ public class NCLDoc<T extends NCLDoc,
      * @param list 
      *          element list with all variables.
      */
-    public void addGlobalVariableLists(ElementList<Ev, T> list) {
+    public void addGlobalVariableLists(ElementList<Ev> list) {
         globalVariables.addAll(list);
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLDoc))
+            return false;
+        
+        boolean result = true;
+        Object aux;
+        
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLDoc) other).getId());
+        if((aux = getTitle()) != null)
+            result &= aux.equals(((NCLDoc) other).getTitle());
+        if((aux = getXmlns()) != null)
+            result &= aux.equals(((NCLDoc) other).getXmlns());
+        
+        T el;
+        if((el = (T) getHead()) != null)
+            result &= el.compare(((NCLDoc) other).getHead());
+        if((el = (T) getBody()) != null)
+            result &= el.compare(((NCLDoc) other).getBody());
+        
+        return result;
     }
 
 
@@ -625,15 +654,15 @@ public class NCLDoc<T extends NCLDoc,
     }
     
     
-    public void mergeGlobalVariables(T other) throws XMLException {
-        ElementList<Ev,T> other_vars = other.getGlobalVariables();
+    public void mergeGlobalVariables(NCLDoc other) throws XMLException {
+        ElementList<Ev> other_vars = other.getGlobalVariables();
         if(other_vars.isEmpty())
             return;
         
         for(Ev var : getGlobalVariables()){
             for(Ev ovar : other_vars){
                 if(var.compare(ovar)){
-                    mergeVariables(var, ovar);
+                    var.mergeVariables(ovar);
                     other_vars.remove(ovar);
                     break;
                 }
@@ -642,18 +671,6 @@ public class NCLDoc<T extends NCLDoc,
         
         if(!other_vars.isEmpty())
             addGlobalVariableLists(other_vars);
-    }
-    
-    
-    protected void mergeVariables(Ev new_var, Ev old_var) throws XMLException {
-        ElementList<P,P> old_refs = old_var.getReferences();
-        
-        for(P ref : old_refs){
-            if(ref instanceof NCLProperty)
-                ((NCLProperty) ref).setName(new_var);
-            else if(ref instanceof NCLRule)
-                ((NCLRule) ref).setVar(new_var);
-        }
     }
 
 

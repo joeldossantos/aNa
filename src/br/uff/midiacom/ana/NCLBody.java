@@ -39,7 +39,7 @@ package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
+import br.uff.midiacom.ana.util.ncl.NCLCompositeNodeElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
@@ -52,8 +52,8 @@ import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -102,9 +102,7 @@ import org.w3c.dom.NodeList;
  * @param <Em>
  * @param <Emt> 
  */
-public class NCLBody<T extends NCLBody,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
+public class NCLBody<T extends NCLElement,
                      Ept extends NCLPort,
                      Epp extends NCLProperty,
                      En extends NCLNode,
@@ -112,8 +110,8 @@ public class NCLBody<T extends NCLBody,
                      El extends NCLLink,
                      Em extends NCLMeta,
                      Emt extends NCLMetadata>
-        extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
-        implements NCLNode<En, P, Ei> {
+        extends NCLCompositeNodeElement<T, Ept, Epp, En, El, Em, Emt>
+        implements NCLNode<T, En, Ei> {
 
     
     /**
@@ -122,11 +120,21 @@ public class NCLBody<T extends NCLBody,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLBody() throws XMLException {
+    public NCLBody() {
         super();
     }
     
     
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLBody))
+            return false;
+        
+        return super.compareContent((NCLCompositeNodeElement) other);
+    }
+    
+    
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -153,6 +161,7 @@ public class NCLBody<T extends NCLBody,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         String att_name, att_var;
         NodeList nl;
@@ -405,6 +414,7 @@ public class NCLBody<T extends NCLBody,
      * @return 
      *          interface or null if no interface was found.
      */
+    @Override
     public Ei findInterface(String id) throws XMLException {
         Ei result;
         
@@ -438,6 +448,7 @@ public class NCLBody<T extends NCLBody,
      * @return 
      *          node or null if no node was found.
      */
+    @Override
     public En findNode(String id) throws XMLException {
         En result;
         
@@ -460,7 +471,7 @@ public class NCLBody<T extends NCLBody,
         if(ib == null)
             return null;
         
-        for(NCLImport imp : (ElementList<NCLImport, NCLImportedDocumentBase>) ib.getImportNCLs()){
+        for(NCLImport imp : (ElementList<NCLImport>) ib.getImportNCLs()){
             NCLDoc d = (NCLDoc) imp.getImportedDoc();
             result = (En) findNodeReference(d, id);
             if(result != null)
