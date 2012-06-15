@@ -38,8 +38,7 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 
 
 /**
@@ -50,8 +49,7 @@ import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
  * @param <T>
  * @param <P> 
  */
-public interface NCLInterface<T extends NCLInterface,
-                              P extends NCLElement>
-        extends NCLIdentifiableElement<T, P>, ReferredElement<P> {
+public interface NCLInterface<T extends NCLElement>
+        extends NCLElement<T>, ReferredElement<T> {
     
 }

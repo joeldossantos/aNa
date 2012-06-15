@@ -38,16 +38,14 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.basic.SampleType;
 import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.datatype.array.ArrayType;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -79,23 +77,20 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <Ei> 
  */
-public class NCLArea<T extends NCLArea,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
-                     Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I>
-        implements NCLInterface<Ei, P> {
+public class NCLArea<T extends NCLElement>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLInterface<T> {
 
     protected ArrayType coords;
     protected TimeType begin;
     protected TimeType end;
-    protected StringType text;
+    protected String text;
     protected Integer position;
     protected SampleType first;
     protected SampleType last;
-    protected StringType label;
+    protected String label;
     
-    protected ElementList<P,P> references;
+    protected ElementList<T> references;
     
     
     /**
@@ -104,16 +99,25 @@ public class NCLArea<T extends NCLArea,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLArea() throws XMLException {
+    public NCLArea() {
         super();
-        references = new ElementList<P,P>();
+        references = new ElementList<T>();
     }
     
     
     public NCLArea(String id) throws XMLException {
         super();
-        references = new ElementList<P,P>();
+        references = new ElementList<T>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -132,10 +136,10 @@ public class NCLArea<T extends NCLArea,
      *          element representing the coordinates of the anchor or <i>null</i>
      *          to erase a coordinate already defined.
      */
-    public void setCoords(ArrayType coords){
+    public void setCoords(ArrayType coords) throws XMLException {
         ArrayType aux = this.coords;
         this.coords = coords;
-        impl.notifyAltered(NCLElementAttributes.COORDS, aux, coords);
+        notifyAltered(NCLElementAttributes.COORDS, aux, coords);
     }
     
     
@@ -194,10 +198,10 @@ public class NCLArea<T extends NCLArea,
      *          element representing the start time of the anchor or <i>null</i>
      *          to erase a begin already defined.
      */
-    public void setBegin(TimeType begin) {
+    public void setBegin(TimeType begin) throws XMLException {
         TimeType aux = this.begin;
         this.begin = begin;
-        impl.notifyAltered(NCLElementAttributes.BEGIN, aux, begin);
+        notifyAltered(NCLElementAttributes.BEGIN, aux, begin);
     }
     
     
@@ -277,10 +281,10 @@ public class NCLArea<T extends NCLArea,
      *          element representing the ending time of the anchor or <i>null</i>
      *          to erase a end already defined.
      */
-    public void setEnd(TimeType end) {
+    public void setEnd(TimeType end) throws XMLException {
         TimeType aux = this.end;
         this.end = end;
-        impl.notifyAltered(NCLElementAttributes.END, aux, end);
+        notifyAltered(NCLElementAttributes.END, aux, end);
     }
     
     
@@ -343,14 +347,17 @@ public class NCLArea<T extends NCLArea,
      *          if the string is empty.
      */
     public void setText(String text) throws XMLException {
-        StringType aux = this.text;
+        if(text != null && "".equals(text.trim()))
+            throw new XMLException("Empty text string");
+        
+        String aux = this.text;
         
         if(text != null)
-            this.text = new StringType(text);
+            this.text = text;
         else
             this.text = null;
         
-        impl.notifyAltered(NCLElementAttributes.TEXT, aux, text);
+        notifyAltered(NCLElementAttributes.TEXT, aux, text);
     }
     
     
@@ -371,10 +378,7 @@ public class NCLArea<T extends NCLArea,
      *          anchor or <i>null</i> if the attribute is not defined.
      */
     public String getText() {
-        if(text != null)
-            return text.getValue();
-        else
-            return null;
+        return text;
     }
     
     
@@ -403,7 +407,7 @@ public class NCLArea<T extends NCLArea,
         
         Integer aux = this.position;
         this.position = position;
-        impl.notifyAltered(NCLElementAttributes.POSITION, aux, position);
+        notifyAltered(NCLElementAttributes.POSITION, aux, position);
     }
     
     
@@ -452,10 +456,10 @@ public class NCLArea<T extends NCLArea,
      *          element representing the initial sample of the anchor or <i>null</i>
      *          to erase a initial sample already defined.
      */
-    public void setFirst(SampleType first) {
+    public void setFirst(SampleType first) throws XMLException {
         SampleType aux = this.first;
         this.first = first;
-        impl.notifyAltered(NCLElementAttributes.FIRST, aux, first);
+        notifyAltered(NCLElementAttributes.FIRST, aux, first);
     }
     
     
@@ -512,10 +516,10 @@ public class NCLArea<T extends NCLArea,
      *          element representing the final sample of the anchor or <i>null</i>
      *          to erase a final sample already defined.
      */
-    public void setLast(SampleType last) {
+    public void setLast(SampleType last) throws XMLException {
         SampleType aux = this.last;
         this.last = last;
-        impl.notifyAltered(NCLElementAttributes.LAST, aux, last);
+        notifyAltered(NCLElementAttributes.LAST, aux, last);
     }
     
     
@@ -559,14 +563,9 @@ public class NCLArea<T extends NCLArea,
      *          if the string is empty.
      */
     public void setLabel(String label) throws XMLException {
-        StringType aux = this.label;
-        
-        if(label != null)
-            this.label = new StringType(label);
-        else
-            this.label = null;
-        
-        impl.notifyAltered(NCLElementAttributes.LABEL, aux, label);
+        String aux = this.label;
+        this.label = label;
+        notifyAltered(NCLElementAttributes.LABEL, aux, label);
     }
     
     
@@ -579,10 +578,45 @@ public class NCLArea<T extends NCLArea,
      *          the media or <i>null</i> if the attribute is not defined.
      */
     public String getLabel() {
-        if(label != null)
-            return label.getValue();
-        else
-            return null;
+        return label;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLArea))
+            return false;
+        
+        boolean result = true;
+        
+        Object aux;
+        if((aux = getCoords()) != null)
+            result &= aux.equals(((NCLArea) other).getCoords());
+        if((aux = getBegin()) != null)
+            result &= aux.equals(((NCLArea) other).getBegin());
+        if((aux = getEnd()) != null)
+            result &= aux.equals(((NCLArea) other).getEnd());
+        if((aux = getText()) != null)
+            result &= aux.equals(((NCLArea) other).getText());
+        if((aux = getPosition()) != null)
+            result &= aux.equals(((NCLArea) other).getPosition());
+        if((aux = getFirst()) != null)
+            result &= aux.equals(((NCLArea) other).getFirst());
+        if((aux = getLast()) != null)
+            result &= aux.equals(((NCLArea) other).getLast());
+        if((aux = getLabel()) != null)
+            result &= aux.equals(((NCLArea) other).getLabel());
+
+        return result;
+        
+//        protected ArrayType ;
+//    protected TimeType begin;
+//    protected TimeType end;
+//    protected String text;
+//    protected Integer position;
+//    protected SampleType first;
+//    protected SampleType last;
+//    protected String label;
     }
     
     
@@ -673,7 +707,7 @@ public class NCLArea<T extends NCLArea,
     protected String parseCoords() {
         ArrayType aux = getCoords();
         if(aux != null)
-            return " coords='" + aux.parse() + "'";
+            return " coords='" + aux.toString() + "'";
         else
             return "";
     }
@@ -692,7 +726,7 @@ public class NCLArea<T extends NCLArea,
     protected String parseBegin() {
         TimeType aux = getBegin();
         if(aux != null)
-            return " begin='" + aux.parse() + "'";
+            return " begin='" + aux.toString() + "'";
         else
             return "";
     }
@@ -711,7 +745,7 @@ public class NCLArea<T extends NCLArea,
     protected String parseEnd() {
         TimeType aux = getEnd();
         if(aux != null)
-            return " end='" + aux.parse() + "'";
+            return " end='" + aux.toString() + "'";
         else
             return "";
     }
@@ -773,7 +807,7 @@ public class NCLArea<T extends NCLArea,
     protected String parseFirst() {
         SampleType aux = getFirst();
         if(aux != null)
-            return " first='" + aux.parse() + "'";
+            return " first='" + aux.toString() + "'";
         else
             return "";
     }
@@ -792,7 +826,7 @@ public class NCLArea<T extends NCLArea,
     protected String parseLast() {
         SampleType aux = getLast();
         if(aux != null)
-            return " last='" + aux.parse() + "'";
+            return " last='" + aux.toString() + "'";
         else
             return "";
     }
@@ -828,13 +862,13 @@ public class NCLArea<T extends NCLArea,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     

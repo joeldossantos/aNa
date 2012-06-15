@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -49,10 +48,10 @@ import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
 import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -74,18 +73,15 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <Ei> 
  */
-public class NCLProperty<T extends NCLProperty,
-                         P extends NCLElement,
-                         I extends NCLElementImpl,
+public class NCLProperty<T extends NCLElement,
                          Ei extends NCLInterface,
                          Ea extends NCLAttribute>
-        extends NCLElementPrototype<Ei, P, I>
-        implements NCLInterface<Ei, P> {
+        extends NCLNamedElementPrototype<T, Object>
+        implements NCLInterface<T> {
 
-    protected Object name;
     protected Object value;
     
-    protected ElementList<P,P> references;
+    protected ElementList<T> references;
     
     
     /**
@@ -94,22 +90,16 @@ public class NCLProperty<T extends NCLProperty,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLProperty() throws XMLException {
+    public NCLProperty() {
         super();
-        references = new ElementList<P,P>();
+        references = new ElementList<T>();
     }
     
     
     public NCLProperty(Object name) throws XMLException {
         super();
-        references = new ElementList<P,P>();
+        references = new ElementList<T>();
         setName(name);
-    }
-    
-    
-    @Override
-    public String getId() {
-        return getName().toString();
     }
     
     
@@ -134,6 +124,7 @@ public class NCLProperty<T extends NCLProperty,
      * @throws XMLException 
      *          if the name is null.
      */
+    @Override
     public void setName(Object name) throws XMLException {
         if(name == null)
             throw new XMLException("Null name.");
@@ -164,7 +155,7 @@ public class NCLProperty<T extends NCLProperty,
             throw new XMLException("Wrong name type.");
         
         
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        notifyAltered(NCLElementAttributes.NAME, aux, name);
         //Erase the name as a variable
         if(aux != null && aux instanceof NCLVariable)
             ((NCLVariable) name).removeReference(this);
@@ -191,8 +182,9 @@ public class NCLProperty<T extends NCLProperty,
      *          global variable representing the name of the property element or
      *          <i>null</i> if the attribute is not defined.
      */
+    @Override
     public Object getName() {
-        return name;
+        return super.getName();
     }
     
     
@@ -212,7 +204,7 @@ public class NCLProperty<T extends NCLProperty,
             value = convertValue((String) value);
         
         this.value = value;
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+        notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
     
@@ -272,13 +264,19 @@ public class NCLProperty<T extends NCLProperty,
     
     
     @Override
-    public boolean compare(Ei other) {
-        if(other == null)
-            return false;
-        if(!(other instanceof NCLProperty))
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLProperty))
             return false;
         
-        return getName().equals(((NCLProperty) other).getName());
+        boolean result = true;
+        Object aux;
+        
+        if((aux = getName()) != null)
+            result &= aux.equals(((NCLProperty) other).getName());
+        if((aux = getValue()) != null)
+            result &= aux.equals(((NCLProperty) other).getValue());
+
+        return result;
     }
     
     
@@ -311,7 +309,7 @@ public class NCLProperty<T extends NCLProperty,
             loadValue(element);
         }
         catch(XMLException ex){
-            String aux = getId();
+            String aux = getName().toString();
             if(aux != null)
                 aux = "(" + aux + ")";
             else
@@ -373,13 +371,13 @@ public class NCLProperty<T extends NCLProperty,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     

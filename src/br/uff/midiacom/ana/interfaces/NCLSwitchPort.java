@@ -38,13 +38,11 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -81,17 +79,14 @@ import org.w3c.dom.NodeList;
  * @param <Em>
  * @param <Ei> 
  */
-public class NCLSwitchPort<T extends NCLSwitchPort,
-                           P extends NCLElement,
-                           I extends NCLElementImpl,
-                           Em extends NCLMapping,
-                           Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<Ei, P, I>
-        implements NCLInterface<Ei, P> {
+public class NCLSwitchPort<T extends NCLElement,
+                           Em extends NCLMapping>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLInterface<T> {
 
-    protected ElementList<Em, T> mappings;
+    protected ElementList<Em> mappings;
     
-    protected ElementList<P,P> references;
+    protected ElementList<T> references;
 
 
     /**
@@ -100,18 +95,27 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLSwitchPort() throws XMLException {
+    public NCLSwitchPort() {
         super();
-        mappings = new ElementList<Em, T>();
-        references = new ElementList<P,P>();
+        mappings = new ElementList<Em>();
+        references = new ElementList<T>();
     }
     
     
     public NCLSwitchPort(String id) throws XMLException {
         super();
-        mappings = new ElementList<Em, T>();
-        references = new ElementList<P,P>();
+        mappings = new ElementList<Em>();
+        references = new ElementList<T>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -127,8 +131,9 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
      *          if the element representing the mapping is null.
      */
     public boolean addMapping(Em mapping) throws XMLException {
-        if(mappings.add(mapping, (T) this)){
-            impl.notifyInserted(NCLElementSets.MAPPINGS, mapping);
+        if(mappings.add(mapping)){
+            notifyInserted((T) mapping);
+            mapping.setParent(this);
             return true;
         }
         return false;
@@ -148,7 +153,8 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
      */
     public boolean removeMapping(Em mapping) throws XMLException {
         if(mappings.remove(mapping)){
-            impl.notifyRemoved(NCLElementSets.MAPPINGS, mapping);
+            notifyRemoved((T) mapping);
+            mapping.setParent(null);
             return true;
         }
         return false;
@@ -192,8 +198,34 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
      * @return 
      *          element list with all mappings.
      */
-    public ElementList<Em, T> getMappings() {
+    public ElementList<Em> getMappings() {
         return mappings;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLSwitchPort))
+            return false;
+        
+        boolean result = true;
+        
+        String aux;
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLSwitchPort) other).getId());
+        
+        
+        ElementList<Em> othermap = ((NCLSwitchPort) other).getMappings();
+        result &= mappings.size() == othermap.size();
+        for (Em map : mappings) {
+            try {
+                result &= othermap.contains(map);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
@@ -321,13 +353,13 @@ public class NCLSwitchPort<T extends NCLSwitchPort,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     

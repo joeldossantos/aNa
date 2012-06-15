@@ -39,13 +39,13 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLBody;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -78,19 +78,17 @@ import org.w3c.dom.Element;
  * @param <En>
  * @param <Ei> 
  */
-public class NCLPort<T extends NCLPort,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
+public class NCLPort<T extends NCLElement,
                      It extends NCLInterface,
                      En extends NCLNode,
                      Ei extends NCLInterface>
-        extends NCLIdentifiableElementPrototype<It, P, I>
-        implements NCLInterface<It, P> {
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLInterface<T> {
 
     protected En component;
     protected Ei interfac;
     
-    protected ElementList<P,P> references;
+    protected ElementList<T> references;
 
 
     /**
@@ -99,16 +97,25 @@ public class NCLPort<T extends NCLPort,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLPort() throws XMLException{
+    public NCLPort() {
         super();
-        references = new ElementList<P,P>();
+        references = new ElementList<T>();
     }
     
     
-    public NCLPort(String id) throws XMLException{
+    public NCLPort(String id) throws XMLException {
         super();
-        references = new ElementList<P,P>();
+        references = new ElementList<T>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -136,7 +143,7 @@ public class NCLPort<T extends NCLPort,
         this.component = component;
         this.component.addReference(this);
         
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -185,7 +192,7 @@ public class NCLPort<T extends NCLPort,
             this.interfac.addReference(this);
         }
         
-        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -208,6 +215,27 @@ public class NCLPort<T extends NCLPort,
      */
     public Ei getInterface() {
         return interfac;
+    }
+
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLPort))
+            return false;
+        
+        boolean result = true;
+        T el;
+        String aux;
+        
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLPort) other).getId());
+        
+        if((el = (T) getComponent()) != null)
+            result &= el.compare(((NCLPort) other).getComponent());
+        if((el = (T) getInterface()) != null)
+            result &= el.compare(((NCLPort) other).getInterface());
+
+        return result;
     }
     
     
@@ -301,8 +329,8 @@ public class NCLPort<T extends NCLPort,
         // set the component (required)
         att_name = NCLElementAttributes.COMPONENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
+            T aux;
+            if((aux = (T) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
             En refEl;
@@ -322,8 +350,12 @@ public class NCLPort<T extends NCLPort,
     
     protected String parseInterface() {
         Ei aux = getInterface();
-        if(aux != null)
-            return " interface='" + aux.getId() + "'";
+        if(aux != null){
+            if(aux instanceof NCLIdentifiableElementPrototype)
+                return " interface='" + ((NCLIdentifiableElementPrototype) aux).getId() + "'";
+            else
+                return " interface='" + ((NCLNamedElementPrototype) aux).getName() + "'";
+        }
         else
             return "";
     }
@@ -345,13 +377,13 @@ public class NCLPort<T extends NCLPort,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     

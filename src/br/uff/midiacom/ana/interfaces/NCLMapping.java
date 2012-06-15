@@ -38,13 +38,14 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.node.NCLSwitch;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import org.w3c.dom.Element;
 
 
@@ -68,13 +69,11 @@ import org.w3c.dom.Element;
  * @param <En>
  * @param <Ei> 
  */
-public class NCLMapping<T extends NCLMapping,
-                        P extends NCLElement,
-                        I extends NCLElementImpl,
+public class NCLMapping<T extends NCLElement,
                         En extends NCLNode,
                         Ei extends NCLInterface>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
     protected En component;
     protected Ei interfac;
@@ -115,7 +114,7 @@ public class NCLMapping<T extends NCLMapping,
         this.component = component;
         this.component.addReference(this);
         
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -164,7 +163,7 @@ public class NCLMapping<T extends NCLMapping,
             this.interfac.addReference(this);
         }
         
-        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -192,25 +191,18 @@ public class NCLMapping<T extends NCLMapping,
     
     @Override
     public boolean compare(T other) {
-        boolean comp = true;
+        if(other == null || !(other instanceof NCLMapping))
+            return false;
+        
+        boolean result = true;
+        T el;
+        
+        if((el = (T) getComponent()) != null)
+            result &= el.compare(((NCLMapping) other).getComponent());
+        if((el = (T) getInterface()) != null)
+            result &= el.compare(((NCLMapping) other).getInterface());
 
-        // Compara pelo componente
-        En thisComp = (En) getComponent();
-        En otherComp = (En) other.getComponent();
-        if(thisComp != null && otherComp != null)
-            comp &= thisComp.compare(otherComp);
-        else
-            comp &= !(thisComp != null || otherComp != null);
-
-        // Compara pela interface
-        Ei thisInt = (Ei) getInterface();
-        Ei otherInt = (Ei) other.getInterface();
-        if(thisInt != null && otherInt != null)
-            comp &= thisInt.compare(otherInt);
-        else
-            comp &= !(thisInt != null || otherInt != null);
-
-        return comp;
+        return result;
     }
 
 
@@ -238,8 +230,6 @@ public class NCLMapping<T extends NCLMapping,
 
     @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-
         try{
             loadComponent(element);
             loadInterface(element);
@@ -275,10 +265,10 @@ public class NCLMapping<T extends NCLMapping,
         // set the component (required)
         att_name = NCLElementAttributes.COMPONENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
+            T aux;
+            if((aux = (T) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
-            if((aux = (P) getParent()) == null)
+            if((aux = (T) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
             En refEl = (En) ((NCLSwitch) aux).findNode(att_var);
@@ -294,8 +284,12 @@ public class NCLMapping<T extends NCLMapping,
     
     protected String parseInterface() {
         Ei aux = getInterface();
-        if(aux != null)
-            return " interface='" + aux.getId() + "'";
+        if(aux != null){
+            if(aux instanceof NCLIdentifiableElementPrototype)
+                return " interface='" + ((NCLIdentifiableElementPrototype) aux).getId() + "'";
+            else
+                return " interface='" + ((NCLNamedElementPrototype) aux).getName() + "'";
+        }
         else
             return "";
     }
