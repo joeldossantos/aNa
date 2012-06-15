@@ -50,7 +50,6 @@ import br.uff.midiacom.ana.transition.NCLTransitionBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -104,7 +103,7 @@ public class NCLHead<T extends NCLElement,
     protected Eib importedDocumentBase;
     protected Erl ruleBase;
     protected Etb transitionBase;
-    protected IdentifiableElementList<Erb> regionBases;
+    protected ElementList<Erb> regionBases;
     protected Edb descriptorBase;
     protected Ecb connectorBase;
     protected ElementList<Em> metas;
@@ -119,7 +118,7 @@ public class NCLHead<T extends NCLElement,
      */
     public NCLHead() {
         super();
-        regionBases = new IdentifiableElementList<Erb>();
+        regionBases = new ElementList<Erb>();
         metas = new ElementList<Em>();
         metadatas = new ElementList<Emt>();
     }
@@ -355,7 +354,7 @@ public class NCLHead<T extends NCLElement,
      * @return 
      *          element list with all bases of regions.
      */
-    public IdentifiableElementList<Erb> getRegionBases() {
+    public ElementList<Erb> getRegionBases() {
         return regionBases;
     }
 

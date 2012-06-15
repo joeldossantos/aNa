@@ -48,7 +48,6 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -97,7 +96,7 @@ public class NCLRegionBase<T extends NCLElement,
 
     protected String device;
     protected Object parent_region;
-    protected IdentifiableElementList<Er> regions;
+    protected ElementList<Er> regions;
 
 
     /**
@@ -108,7 +107,7 @@ public class NCLRegionBase<T extends NCLElement,
      */
     public NCLRegionBase() {
         super();
-        regions = new IdentifiableElementList<Er>();
+        regions = new ElementList<Er>();
     }
 
 
@@ -312,7 +311,7 @@ public class NCLRegionBase<T extends NCLElement,
      * @return 
      *          element list with all regions.
      */
-    public IdentifiableElementList<Er> getRegions() {
+    public ElementList<Er> getRegions() {
         return regions;
     }
     
@@ -481,7 +480,7 @@ public class NCLRegionBase<T extends NCLElement,
         if(aux instanceof NCLRegion)
             return " region='" + ((Er) aux).getId() + "'";
         else
-            return " region='" + ((R) aux).parse() + "'";
+            return " region='" + ((R) aux).toString() + "'";
     }
     
     
@@ -588,7 +587,7 @@ public class NCLRegionBase<T extends NCLElement,
         if(!head.hasRegionBase())
             throw new NCLParsingException("Could not find regionBase element");
         
-        IdentifiableElementList<NCLRegionBase> list = head.getRegionBases();
+        ElementList<NCLRegionBase> list = head.getRegionBases();
 
         for(NCLRegionBase base : list){
             result = base.findRegion(id);

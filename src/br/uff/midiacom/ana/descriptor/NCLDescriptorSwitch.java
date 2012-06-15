@@ -46,7 +46,6 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -95,7 +94,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
         extends NCLIdentifiableElementPrototype<T>
         implements NCLLayoutDescriptor<T, El> {
 
-    protected IdentifiableElementList<Ed> descriptors;
+    protected ElementList<Ed> descriptors;
     protected ElementList<Eb> binds;
     protected Ed defaultDescriptor;
     
@@ -110,7 +109,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
      */
     public NCLDescriptorSwitch() {
         super();
-        descriptors = new IdentifiableElementList<Ed>();
+        descriptors = new ElementList<Ed>();
         binds = new ElementList<Eb>();
         references = new ElementList<T>();
     }
@@ -118,7 +117,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     
     public NCLDescriptorSwitch(String id) throws XMLException {
         super();
-        descriptors = new IdentifiableElementList<Ed>();
+        descriptors = new ElementList<Ed>();
         binds = new ElementList<Eb>();
         references = new ElementList<T>();
         setId(id);
@@ -252,7 +251,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
      * @return 
      *          element list with all descriptors.
      */
-    public IdentifiableElementList<Ed> getDescriptors() {
+    public ElementList<Ed> getDescriptors() {
         return descriptors;
     }
 
@@ -271,7 +270,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     public boolean addBind(Eb bind) throws XMLException {
         if(binds.add(bind)){
             notifyInserted((T) bind);
-            bind.setParent(this);
+            bind.setParent((T) this);
             return true;
         }
         return false;

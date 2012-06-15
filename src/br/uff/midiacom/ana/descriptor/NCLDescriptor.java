@@ -1284,7 +1284,7 @@ public class NCLDescriptor<T extends NCLElement,
     protected String parseExplicitDur() {
         TimeType aux = getExplicitDur();
         if(aux != null)
-            return " explicitDur='" + aux.parse() + "'";
+            return " explicitDur='" + aux.toString() + "'";
         else
             return "";
     }

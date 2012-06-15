@@ -48,7 +48,6 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -94,7 +93,7 @@ public class NCLRuleBase<T extends NCLElement,
                          R extends ExternalReferenceType>
         extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<Et> rules;
+    protected ElementList<Et> rules;
 
 
     /**
@@ -105,7 +104,7 @@ public class NCLRuleBase<T extends NCLElement,
      */
     public NCLRuleBase() {
         super();
-        rules = new IdentifiableElementList<Et>();
+        rules = new ElementList<Et>();
     }
 
 
@@ -233,7 +232,7 @@ public class NCLRuleBase<T extends NCLElement,
      * @return 
      *          element list with all rules.
      */
-    public IdentifiableElementList<Et> getRules() {
+    public ElementList<Et> getRules() {
         return rules;
     }
     

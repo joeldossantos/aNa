@@ -39,6 +39,8 @@ package br.uff.midiacom.util.elementList;
 
 import br.uff.midiacom.ana.util.xml.XMLElement;
 import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -164,6 +166,30 @@ public class ElementList<T extends XMLElement>
         }
         return false;
     }
+    
+    
+    /**
+     * Removes an element with an specific identification.
+     *
+     * @param ident
+     *          identification of the element to be removed.
+     * @return
+     *          true if the element was removed.
+     * @throws XMLException
+     *          if the string is null or empty.
+     */
+    public boolean remove(String ident) throws XMLException {
+        if(ident == null)
+            throw new XMLException("Null identification string.");
+        if("".equals(ident.trim()))
+            throw new XMLException("Empty identification string");
+
+        T aux = get(ident);
+        if(aux != null)
+            return elements.remove(aux);
+        else
+            return false;
+    }
 
 
     /**
@@ -227,6 +253,46 @@ public class ElementList<T extends XMLElement>
             throw new XMLException("Index out of bounds.");
 
         return elements.get(i);
+    }
+
+
+    /**
+     * Returns the element with an specific identification. The element
+     * identification can be its id, name or alias.
+     *
+     * @param ident
+     *          identification of the element to be retrieved.
+     * @return
+     *          element of the list with the identification. Return <i>null</i>
+     *          if the element was not found or the element type does not have
+     *          an identification.
+     * @throws XMLException
+     *          if the string is null or empty.
+     */
+    public T get(String ident) throws XMLException {
+        if(ident == null)
+            throw new XMLException("Null identification string.");
+        if("".equals(ident.trim()))
+            throw new XMLException("Empty identification string");
+        
+        if(elements.isEmpty())
+            return null;
+        
+        T aux = elements.get(0);
+        if(aux instanceof NCLIdentifiableElementPrototype){
+            for(T el : elements){
+                if(((NCLIdentifiableElementPrototype) el).getId().equals(ident))
+                    return el;
+            }
+        }
+        else if(aux instanceof NCLNamedElementPrototype){
+            for(T el : elements){
+                if(((NCLNamedElementPrototype) el).getName().equals(ident))
+                    return el;
+            }
+        }
+        
+        return null;
     }
     
     

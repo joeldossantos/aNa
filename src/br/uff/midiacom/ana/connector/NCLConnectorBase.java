@@ -47,7 +47,6 @@ import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -88,7 +87,7 @@ public class NCLConnectorBase<T extends NCLElement,
                               R extends ExternalReferenceType>
         extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<Ec> connectors;
+    protected ElementList<Ec> connectors;
     
 
     /**
@@ -99,7 +98,7 @@ public class NCLConnectorBase<T extends NCLElement,
      */
     public NCLConnectorBase() {
         super();
-        connectors = new IdentifiableElementList<Ec>();
+        connectors = new ElementList<Ec>();
     }
 
 
@@ -222,7 +221,7 @@ public class NCLConnectorBase<T extends NCLElement,
      * @return 
      *          element list with all connectors.
      */
-    public IdentifiableElementList<Ec> getCausalConnectors() {
+    public ElementList<Ec> getCausalConnectors() {
         return connectors;        
     }
     

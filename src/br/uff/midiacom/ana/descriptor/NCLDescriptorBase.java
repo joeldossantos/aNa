@@ -48,7 +48,6 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -93,7 +92,7 @@ public class NCLDescriptorBase<T extends NCLElement,
                                R extends ExternalReferenceType>
         extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<El> descriptors;
+    protected ElementList<El> descriptors;
 
 
     /**
@@ -104,7 +103,7 @@ public class NCLDescriptorBase<T extends NCLElement,
      */
     public NCLDescriptorBase() {
         super();
-        descriptors = new IdentifiableElementList<El>();
+        descriptors = new ElementList<El>();
     }
 
 
@@ -240,7 +239,7 @@ public class NCLDescriptorBase<T extends NCLElement,
      * @return 
      *          element list with all descriptors and descriptor switches.
      */
-    public IdentifiableElementList<El> getDescriptors() {
+    public ElementList<El> getDescriptors() {
         return descriptors;
     }
     

@@ -44,7 +44,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -118,7 +117,7 @@ public class NCLRegion<T extends NCLElement,
     protected Object height;
     protected Object width;
     protected Integer zIndex;
-    protected IdentifiableElementList<Er> regions;
+    protected ElementList<Er> regions;
     
     protected ElementList<T> references;
 
@@ -131,14 +130,14 @@ public class NCLRegion<T extends NCLElement,
      */
     public NCLRegion() {
         super();
-        regions = new IdentifiableElementList<Er>();
+        regions = new ElementList<Er>();
         references = new ElementList<T>();
     }
     
     
     public NCLRegion(String id) throws XMLException {
         super();
-        regions = new IdentifiableElementList<Er>();
+        regions = new ElementList<Er>();
         references = new ElementList<T>();
         setId(id);
     }
@@ -855,7 +854,7 @@ public class NCLRegion<T extends NCLElement,
      * @return 
      *          element list with all regions.
      */
-    public IdentifiableElementList<Er> getRegions() {
+    public ElementList<Er> getRegions() {
         return regions;
     }
     

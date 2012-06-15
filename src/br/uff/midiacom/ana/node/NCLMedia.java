@@ -54,8 +54,6 @@ import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
-import br.uff.midiacom.util.elementList.NamedElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -115,8 +113,8 @@ public class NCLMedia<T extends NCLElement,
     protected Object descriptor;
     protected Object refer;
     protected NCLInstanceType instance;
-    protected IdentifiableElementList<Ea> areas;
-    protected NamedElementList<Ep> properties;
+    protected ElementList<Ea> areas;
+    protected ElementList<Ep> properties;
     
     protected ElementList<T> references;
     
@@ -129,16 +127,16 @@ public class NCLMedia<T extends NCLElement,
      */
     public NCLMedia() {
         super();
-        areas = new IdentifiableElementList<Ea>();
-        properties = new NamedElementList<Ep>();
+        areas = new ElementList<Ea>();
+        properties = new ElementList<Ep>();
         references = new ElementList<T>();
     }
     
     
     public NCLMedia(String id) throws XMLException {
         super();
-        areas = new IdentifiableElementList<Ea>();
-        properties = new NamedElementList<Ep>();
+        areas = new ElementList<Ea>();
+        properties = new ElementList<Ep>();
         references = new ElementList<T>();
         setId(id);
     }
@@ -693,7 +691,7 @@ public class NCLMedia<T extends NCLElement,
      * @return 
      *          element list with all anchors.
      */
-    public IdentifiableElementList<Ea> getAreas() {
+    public ElementList<Ea> getAreas() {
         return areas;
     }
     
@@ -815,7 +813,7 @@ public class NCLMedia<T extends NCLElement,
      * @return 
      *          element list with all properties.
      */
-    public NamedElementList<Ep> getProperties() {
+    public ElementList<Ep> getProperties() {
         return properties;
     }
 

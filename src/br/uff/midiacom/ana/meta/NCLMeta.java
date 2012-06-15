@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
  * @param <I> 
  */
 public class NCLMeta<T extends NCLElement>
-        extends NCLNamedElementPrototype<T>
+        extends NCLNamedElementPrototype<T, String>
         implements NCLElement<T> {
 
     protected String mcontent;
@@ -94,7 +94,7 @@ public class NCLMeta<T extends NCLElement>
         if(name == null)
             throw new XMLException("Null name.");
         
-        super.setName(name);
+        this.name = name;
     }
 
 

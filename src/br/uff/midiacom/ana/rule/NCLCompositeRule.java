@@ -44,7 +44,6 @@ import br.uff.midiacom.ana.datatype.enums.NCLOperator;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -88,7 +87,7 @@ public class NCLCompositeRule<T extends NCLElement,
         implements NCLTestRule<T, Eb, Et> {
 
     protected NCLOperator operator;
-    protected IdentifiableElementList<Et> rules;
+    protected ElementList<Et> rules;
     
     protected ElementList<Eb> references;
 
@@ -101,14 +100,14 @@ public class NCLCompositeRule<T extends NCLElement,
      */
     public NCLCompositeRule() {
         super();
-        rules = new IdentifiableElementList<Et>();
+        rules = new ElementList<Et>();
         references = new ElementList<Eb>();
     }
     
     
     public NCLCompositeRule(String id) throws XMLException {
         super();
-        rules = new IdentifiableElementList<Et>();
+        rules = new ElementList<Et>();
         references = new ElementList<Eb>();
         setId(id);
     }
@@ -283,7 +282,7 @@ public class NCLCompositeRule<T extends NCLElement,
      * @return 
      *          element list with all rules.
      */
-    public IdentifiableElementList<Et> getRules() {
+    public ElementList<Et> getRules() {
         return rules;
     }
 

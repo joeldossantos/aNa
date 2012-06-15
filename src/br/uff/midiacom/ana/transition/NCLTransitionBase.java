@@ -48,7 +48,6 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,7 +89,7 @@ public class NCLTransitionBase<T extends NCLElement,
                                R extends ExternalReferenceType>
         extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<Et> transitions;
+    protected ElementList<Et> transitions;
 
 
     /**
@@ -101,7 +100,7 @@ public class NCLTransitionBase<T extends NCLElement,
      */
     public NCLTransitionBase() {
         super();
-        transitions = new IdentifiableElementList<Et>();
+        transitions = new ElementList<Et>();
     }
 
 
@@ -223,7 +222,7 @@ public class NCLTransitionBase<T extends NCLElement,
      * @return 
      *          element list with all transitions.
      */
-    public IdentifiableElementList<Et> getTransitions() {
+    public ElementList<Et> getTransitions() {
         return transitions;
     }
     

@@ -52,7 +52,6 @@ import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -110,9 +109,9 @@ public class NCLSwitch<T extends NCLElement,
 
     protected Object refer;
     protected En defaultComponent;
-    protected IdentifiableElementList<Ep> ports;
+    protected ElementList<Ep> ports;
     protected ElementList<Eb> binds;
-    protected IdentifiableElementList<En> nodes;
+    protected ElementList<En> nodes;
     
     protected ElementList<T> references;
 
@@ -125,18 +124,18 @@ public class NCLSwitch<T extends NCLElement,
      */
     public NCLSwitch() {
         super();
-        ports = new IdentifiableElementList<Ep>();
+        ports = new ElementList<Ep>();
         binds = new ElementList<Eb>();
-        nodes = new IdentifiableElementList<En>();
+        nodes = new ElementList<En>();
         references = new ElementList<T>();
     }
     
     
     public NCLSwitch(String id) throws XMLException {
         super();
-        ports = new IdentifiableElementList<Ep>();
+        ports = new ElementList<Ep>();
         binds = new ElementList<Eb>();
-        nodes = new IdentifiableElementList<En>();
+        nodes = new ElementList<En>();
         references = new ElementList<T>();
         setId(id);
     }
@@ -377,7 +376,7 @@ public class NCLSwitch<T extends NCLElement,
      * @return 
      *          element list with all interface points.
      */
-    public IdentifiableElementList<Ep> getPorts() {
+    public ElementList<Ep> getPorts() {
         return ports;
     }
 
@@ -434,7 +433,7 @@ public class NCLSwitch<T extends NCLElement,
     public boolean addBind(Eb bind) throws XMLException {
         if(binds.add(bind)){
             notifyInserted((T) bind);
-            bind.setParent(this);
+            bind.setParent((T) this);
             return true;
         }
         return false;
@@ -626,7 +625,7 @@ public class NCLSwitch<T extends NCLElement,
      * @return 
      *          element list with all nodes.
      */
-    public IdentifiableElementList<En> getNodes() {
+    public ElementList<En> getNodes() {
         return nodes;
     }
 

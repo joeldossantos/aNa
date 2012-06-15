@@ -47,7 +47,6 @@ import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.util.elementList.ElementList;
-import br.uff.midiacom.util.elementList.IdentifiableElementList;
 
 
 /**
@@ -102,10 +101,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
         extends NCLIdentifiableElementPrototype<T>
         implements NCLElement<T>, ReferredElement<T> {
 
-    protected IdentifiableElementList<Ept> ports;
-    protected IdentifiableElementList<Epp> properties;
-    protected IdentifiableElementList<En> nodes;
-    protected IdentifiableElementList<El> links;
+    protected ElementList<Ept> ports;
+    protected ElementList<Epp> properties;
+    protected ElementList<En> nodes;
+    protected ElementList<El> links;
     protected ElementList<Em> metas;
     protected ElementList<Emt> metadatas;
     
@@ -120,10 +119,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public NCLCompositeNodeElement() {
         super();
-        ports = new IdentifiableElementList<Ept>();
-        properties = new IdentifiableElementList<Epp>();
-        nodes = new IdentifiableElementList<En>();
-        links = new IdentifiableElementList<El>();
+        ports = new ElementList<Ept>();
+        properties = new ElementList<Epp>();
+        nodes = new ElementList<En>();
+        links = new ElementList<El>();
         metas = new ElementList<Em>();
         metadatas = new ElementList<Emt>();
         references = new ElementList<T>();
@@ -248,7 +247,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      * @return 
      *          element list with all interface points.
      */
-    public IdentifiableElementList<Ept> getPorts() {
+    public ElementList<Ept> getPorts() {
         return ports;
     }
 
@@ -368,7 +367,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      * @return 
      *          element list with all properties.
      */
-    public IdentifiableElementList<Epp> getProperties() {
+    public ElementList<Epp> getProperties() {
         return properties;
     }
 
@@ -495,7 +494,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      * @return 
      *          element list with all nodes.
      */
-    public IdentifiableElementList<En> getNodes() {
+    public ElementList<En> getNodes() {
         return nodes;
     }
 
@@ -618,7 +617,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      * @return 
      *          element list with all links.
      */
-    public IdentifiableElementList<El> getLinks() {
+    public ElementList<El> getLinks() {
         return links;
     }
 

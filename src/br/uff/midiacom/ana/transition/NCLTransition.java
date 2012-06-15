@@ -824,7 +824,7 @@ public class NCLTransition<T extends NCLElement,
     protected String parseDur() {
         TimeType aux = getDur();
         if(aux != null)
-            return " dur='" + aux.parse() + "'";
+            return " dur='" + aux.toString() + "'";
         else
             return "";
     }
