@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 
 
@@ -48,11 +47,11 @@ import br.uff.midiacom.ana.util.exception.XMLException;
  * @param <T>
  *          XML element type.
  */
-public abstract class NCLNamedElementPrototype<T extends NCLElement>
+public abstract class NCLNamedElementPrototype<T extends NCLElement, V>
         extends NCLElementPrototype<T>
         implements NCLElement<T> {
 
-    protected String name;
+    protected V name;
     
     
     public NCLNamedElementPrototype() {
@@ -61,32 +60,23 @@ public abstract class NCLNamedElementPrototype<T extends NCLElement>
 
 
     /**
-     * Sets the XML element id attribute.
+     * Sets the XML element name attribute.
      *
      * @param name
      *          string representing the element name.
      * @throws XMLException
      *          if the name is not valid.
      */
-    public void setName(String name) throws XMLException {
-        if(name != null && "".equals(name.trim()))
-            throw new XMLException("Empty id String");
-        if(!validate(name))
-            throw new XMLException("Invalid identifier: " + name);
-        
-        String aux = this.name;
-        this.name = name;
-        notifyAltered(NCLElementAttributes.NAME, aux, name);
-    }
+    public abstract void setName(V name) throws XMLException;
 
 
     /**
-     * Returns the XML element id attribute.
+     * Returns the XML element name attribute.
      *
      * @return
-     *          string representing the element id.
+     *          string representing the element name.
      */
-    public String getName() {
+    public V getName() {
         return name;
     }
 }
