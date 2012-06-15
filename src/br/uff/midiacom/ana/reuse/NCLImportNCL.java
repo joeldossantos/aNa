@@ -39,8 +39,7 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import org.w3c.dom.Element;
 
 
@@ -70,12 +69,10 @@ import org.w3c.dom.Element;
  * @param <Er>
  * @param <Ed> 
  */
-public class NCLImportNCL<T extends NCLImport,
-                       P extends NCLElement,
-                       I extends NCLElementImpl,
-                       Ed extends NCLDoc>
-        extends NCLImport<T, P, I, Ed>
-        implements NCLElement<T, P> {
+public class NCLImportNCL<T extends NCLElement,
+                          Ed extends NCLDoc>
+        extends NCLImport<T, Ed>
+        implements NCLElement<T> {
 
     
     /**

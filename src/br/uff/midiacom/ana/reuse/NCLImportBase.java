@@ -39,11 +39,10 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.region.NCLRegion;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import org.w3c.dom.Element;
 
 
@@ -88,13 +87,11 @@ import org.w3c.dom.Element;
  * @param <Er>
  * @param <Ed> 
  */
-public class NCLImportBase<T extends NCLImport,
-                       P extends NCLElement,
-                       I extends NCLElementImpl,
-                       Er extends NCLRegion,
-                       Ed extends NCLDoc>
-        extends NCLImport<T, P, I, Ed>
-        implements NCLElement<T, P> {
+public class NCLImportBase<T extends NCLElement,
+                           Er extends NCLRegion,
+                           Ed extends NCLDoc>
+        extends NCLImport<T, Ed>
+        implements NCLElement<T> {
 
     protected Er region;
 
@@ -105,7 +102,7 @@ public class NCLImportBase<T extends NCLImport,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLImportBase() throws XMLException {
+    public NCLImportBase() {
         super();
     }
 
@@ -131,7 +128,7 @@ public class NCLImportBase<T extends NCLImport,
         if(this.region != null)
             this.region.addReference(this);
         
-        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
+        notifyAltered(NCLElementAttributes.REGION, aux, region);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -149,6 +146,22 @@ public class NCLImportBase<T extends NCLImport,
      */
     public Er getRegion() {
         return region;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLImportBase))
+            return false;
+        
+        boolean result = true;
+        Er aux;
+        
+        result &= super.compare(other);
+        
+        if((aux = getRegion()) != null)
+            result &= aux.compare((T) ((NCLImportBase) other).getRegion());
+        return result;
     }
     
     
@@ -169,7 +182,7 @@ public class NCLImportBase<T extends NCLImport,
         // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setRegion((Er) NCLReferenceManager.getInstance().findRegionReference(impl.getDoc(), att_var));
+            setRegion((Er) NCLReferenceManager.getInstance().findRegionReference((Ed) getDoc(), att_var));
         }
     }
     

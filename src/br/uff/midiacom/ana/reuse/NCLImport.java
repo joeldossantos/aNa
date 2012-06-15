@@ -39,15 +39,13 @@ package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import java.io.File;
 import java.net.URI;
 import org.w3c.dom.Element;
@@ -75,18 +73,16 @@ import org.w3c.dom.Element;
  * @param <Er>
  * @param <Ed> 
  */
-public abstract class NCLImport<T extends NCLImport,
-                                P extends NCLElement,
-                                I extends NCLElementImpl,
+public abstract class NCLImport<T extends NCLElement,
                                 Ed extends NCLDoc>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P>, ReferredElement<P> {
+        extends NCLElementPrototype<T>
+        implements NCLElement<T>, ReferredElement<T> {
 
-    protected StringType alias;
+    protected String alias;
     protected SrcType documentURI;
 
     protected Ed importedDoc;
-    protected ElementList<P, P> references;
+    protected ElementList<T> references;
 
 
     /**
@@ -95,9 +91,9 @@ public abstract class NCLImport<T extends NCLImport,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLImport() throws XMLException {
+    public NCLImport() {
         super();
-        references = new ElementList<P, P>();
+        references = new ElementList<T>();
     }
 
 
@@ -114,10 +110,12 @@ public abstract class NCLImport<T extends NCLImport,
     public void setAlias(String alias) throws XMLException {
         if(alias == null)
             throw new XMLException("Null alias");
+        if("".equals(alias.trim()))
+            throw new XMLException("Empty alias string");
         
-        StringType aux = this.alias;
-        this.alias = new StringType(alias);
-        impl.notifyAltered(NCLElementAttributes.ALIAS, aux, alias);
+        String aux = this.alias;
+        this.alias = alias;
+        notifyAltered(NCLElementAttributes.ALIAS, aux, alias);
     }
 
 
@@ -131,10 +129,7 @@ public abstract class NCLImport<T extends NCLImport,
      *          attribute is not defined.
      */
     public String getAlias() {
-        if(alias != null)
-            return alias.getValue();
-        else
-            return null;
+        return alias;
     }
 
 
@@ -154,7 +149,7 @@ public abstract class NCLImport<T extends NCLImport,
         
         SrcType aux = this.documentURI;
         this.documentURI = documentURI;
-        impl.notifyAltered(NCLElementAttributes.DOCUMENTURI, aux, documentURI);
+        notifyAltered(NCLElementAttributes.DOCUMENTURI, aux, documentURI);
     }
 
 
@@ -198,7 +193,17 @@ public abstract class NCLImport<T extends NCLImport,
 
     @Override
     public boolean compare(T other) {
-        return getAlias().equals(other.getAlias());
+        if(other == null || !(other instanceof NCLImport))
+            return false;
+        
+        boolean result = true;
+        Object aux;
+        
+        if((aux = getAlias()) != null)
+            result &= aux.equals(((NCLImport) other).getAlias());
+        if((aux = getDocumentURI()) != null)
+            result &= aux.equals(((NCLImport) other).getDocumentURI());
+        return result;
     }
 
 
@@ -232,13 +237,13 @@ public abstract class NCLImport<T extends NCLImport,
             // load the imported document or base depending on the element type
             try{
                 Ed aux = createDoc();
-                URI base = new URI(impl.getDoc().getLocation() + File.separator);
-                URI path = base.resolve(getDocumentURI().parse());
+                URI base = new URI(((Ed) getDoc()).getLocation() + File.separator);
+                URI path = base.resolve(getDocumentURI().toString());
                 aux.loadXML(new File(path.getPath()));
                 setImportedDoc(aux);
-                impl.getDoc().mergeGlobalVariables(aux);
+                ((Ed) getDoc()).mergeGlobalVariables(aux);
             }catch(Exception e){
-                throw new NCLParsingException("Could not find document in location: " + getDocumentURI().parse());
+                throw new NCLParsingException("Could not find document in location: " + getDocumentURI().toString());
             }
         }
         catch(XMLException ex){
@@ -288,7 +293,7 @@ public abstract class NCLImport<T extends NCLImport,
     protected String parseDocumentURI() {
         SrcType aux = getDocumentURI();
         if(aux != null)
-            return " documentURI='" + aux.parse() + "'";
+            return " documentURI='" + aux.toString() + "'";
         else
             return "";
     }
@@ -313,13 +318,13 @@ public abstract class NCLImport<T extends NCLImport,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     

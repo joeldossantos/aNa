@@ -38,14 +38,11 @@
 package br.uff.midiacom.ana.reuse;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -87,14 +84,12 @@ import org.w3c.dom.NodeList;
  * @param <I>
  * @param <Ei> 
  */
-public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
-                                     P extends NCLElement,
-                                     I extends NCLElementImpl,
+public class NCLImportedDocumentBase<T extends NCLElement,
                                      Ei extends NCLImportNCL>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T> {
 
-    protected ElementList<Ei, T> imports;
+    protected ElementList<Ei> imports;
 
 
     /**
@@ -105,7 +100,7 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
      */
     public NCLImportedDocumentBase() throws XMLException {
         super();
-        imports = new ElementList<Ei, T>();
+        imports = new ElementList<Ei>();
     }
 
 
@@ -121,8 +116,9 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
      *          if the import element is null.
      */
     public boolean addImportNCL(Ei importNCL) throws XMLException {
-        if(imports.add(importNCL, (T) this)){
-            impl.notifyInserted(NCLElementSets.IMPORTS, importNCL);
+        if(imports.add(importNCL)){
+            notifyInserted((T) importNCL);
+            importNCL.setParent(this);
             return true;
         }
         return false;
@@ -142,7 +138,8 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
      */
     public boolean removeImportNCL(Ei importNCL) throws XMLException {
         if(imports.remove(importNCL)){
-            impl.notifyRemoved(NCLElementSets.IMPORTS, importNCL);
+            notifyRemoved((T) importNCL);
+            importNCL.setParent(null);
             return true;
         }
         return false;
@@ -184,8 +181,33 @@ public class NCLImportedDocumentBase<T extends NCLImportedDocumentBase,
      * @return 
      *          element list with all import elements.
      */
-    public ElementList<Ei, T> getImportNCLs() {
+    public ElementList<Ei> getImportNCLs() {
         return imports;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLImportedDocumentBase))
+            return false;
+        
+        boolean result = true;
+        ElementList<Ei> otherimp = ((NCLImportedDocumentBase) other).getImportNCLs();
+        
+        String aux = getId();
+        if(aux != null)
+            result &= aux.equals(((NCLImportedDocumentBase) other).getId());
+        
+        result &= imports.size() == otherimp.size();
+        for (Ei imp : imports) {
+            try {
+                result &= otherimp.contains(imp);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
