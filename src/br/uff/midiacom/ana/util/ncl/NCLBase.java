@@ -58,7 +58,7 @@ public abstract class NCLBase<T extends NCLElement,
     protected ElementList<Ei> imports;
     
     
-    public NCLBase() throws XMLException {
+    public NCLBase() {
         super();
         imports = new ElementList<Ei>();
     }

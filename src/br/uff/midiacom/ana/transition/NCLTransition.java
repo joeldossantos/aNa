@@ -108,7 +108,7 @@ public class NCLTransition<T extends NCLElement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLTransition() throws XMLException {
+    public NCLTransition() {
         super();
         references = new ElementList<Ed>();
     }

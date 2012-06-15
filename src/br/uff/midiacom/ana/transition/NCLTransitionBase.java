@@ -99,7 +99,7 @@ public class NCLTransitionBase<T extends NCLElement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLTransitionBase() throws XMLException {
+    public NCLTransitionBase() {
         super();
         transitions = new IdentifiableElementList<Et>();
     }

@@ -75,7 +75,7 @@ public class NCLMeta<T extends NCLElement>
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLMeta() throws XMLException {
+    public NCLMeta() {
         super();
     }
 
