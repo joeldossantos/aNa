@@ -39,19 +39,16 @@ package br.uff.midiacom.ana.region;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLBase;
+import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -92,16 +89,15 @@ import org.w3c.dom.NodeList;
  * @param <Ei>
  * @param <Rr> 
  */
-public class NCLRegionBase<T extends NCLRegionBase,
-                           P extends NCLElement,
-                           I extends NCLElementImpl,
+public class NCLRegionBase<T extends NCLElement,
                            Er extends NCLRegion,
-                           Ei extends NCLImportBase>
-        extends NCLBase<T, P, I, Ei> {
+                           Ei extends NCLImportBase,
+                           R extends ExternalReferenceType>
+        extends NCLBase<T, Ei> {
 
-    protected StringType device;
+    protected String device;
     protected Object parent_region;
-    protected IdentifiableElementList<Er, T> regions;
+    protected IdentifiableElementList<Er> regions;
 
 
     /**
@@ -112,7 +108,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
      */
     public NCLRegionBase() throws XMLException {
         super();
-        regions = new IdentifiableElementList<Er, T>();
+        regions = new IdentifiableElementList<Er>();
     }
 
 
@@ -127,9 +123,12 @@ public class NCLRegionBase<T extends NCLRegionBase,
      *          if the string is empty.
      */
     public void setDevice(String device) throws XMLException {
-        StringType aux = this.device;
-        this.device = new StringType(device);
-        impl.notifyAltered(NCLElementAttributes.DEVICE, aux, device);
+        if(device != null && "".equals(device.trim()))
+            throw new XMLException("Empty device string");
+        
+        String aux = this.device;
+        this.device = device;
+        notifyAltered(NCLElementAttributes.DEVICE, aux, device);
     }
 
 
@@ -142,10 +141,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
      *          regions or <i>null</i> if the attribute is not defined.
      */
     public String getDevice() {
-        if(device != null)
-            return device.getValue();
-        else
-            return null;
+        return device;
     }    
 
 
@@ -168,19 +164,19 @@ public class NCLRegionBase<T extends NCLRegionBase,
         if(region instanceof NCLRegion)
             ((Er) region).addReference(this);
         else if(region instanceof ExternalReferenceType){
-            ((ExternalReferenceType) region).getTarget().addReference(this);
-            ((ExternalReferenceType) region).getAlias().addReference(this);
+            ((R) region).getTarget().addReference(this);
+            ((R) region).getAlias().addReference(this);
         }
         
         this.parent_region = region;
-        impl.notifyAltered(NCLElementAttributes.REGION, aux, region);
+        notifyAltered(NCLElementAttributes.REGION, aux, region);
         
         if(aux != null){
             if(aux instanceof NCLRegion)
                 ((Er) aux).removeReference(this);
             else{
-                ((ExternalReferenceType) aux).getTarget().removeReference(this);
-                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+                ((R) aux).getTarget().removeReference(this);
+                ((R) aux).getAlias().removeReference(this);
             }
         }
     }
@@ -213,8 +209,9 @@ public class NCLRegionBase<T extends NCLRegionBase,
      *          if the element representing the region is null.
      */
     public boolean addRegion(Er region) throws XMLException {
-        if(regions.add(region, (T) this)){
-            impl.notifyInserted(NCLElementSets.REGIONS, region);
+        if(regions.add(region)){
+            notifyInserted((T) region);
+            region.setParent(this);
             return true;
         }
         return false;
@@ -234,7 +231,8 @@ public class NCLRegionBase<T extends NCLRegionBase,
      */
     public boolean removeRegion(Er region) throws XMLException {
         if(regions.remove(region)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, region);
+            notifyRemoved((T) region);
+            region.setParent(null);
             return true;
         }
         return false;
@@ -253,8 +251,10 @@ public class NCLRegionBase<T extends NCLRegionBase,
      *          if the string is null or empty.
      */
     public boolean removeRegion(String id) throws XMLException {
-        if(regions.remove(id)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, id);
+        Er aux = regions.get(id);
+        if(regions.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -312,8 +312,31 @@ public class NCLRegionBase<T extends NCLRegionBase,
      * @return 
      *          element list with all regions.
      */
-    public IdentifiableElementList<Er, T> getRegions() {
+    public IdentifiableElementList<Er> getRegions() {
         return regions;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLRegionBase))
+            return false;
+        
+        boolean result = true;
+        ElementList<Er> otherreg = ((NCLRegionBase) other).getRegions();
+        
+        result &= super.compareImports((NCLBase) other);
+        
+        result &= regions.size() == otherreg.size();
+        for (Er reg : regions) {
+            try {
+                result &= otherreg.contains(reg);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
@@ -458,7 +481,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
         if(aux instanceof NCLRegion)
             return " region='" + ((Er) aux).getId() + "'";
         else
-            return " region='" + ((ExternalReferenceType) aux).parse() + "'";
+            return " region='" + ((R) aux).parse() + "'";
     }
     
     
@@ -533,19 +556,19 @@ public class NCLRegionBase<T extends NCLRegionBase,
                     if(ref instanceof NCLRegion)
                         return createExternalRef(imp, (Er) ref);
                     else
-                        return createExternalRef(imp, (Er) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Er) ((R) ref).getTarget());
                 }
             }
             
             NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
                     Object ref = findRegionReference(d, id);
                     if(ref instanceof NCLRegion)
                         return createExternalRef(imp, (Er) ref);
                     else
-                        return createExternalRef(imp, (Er) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Er) ((R) ref).getTarget());
                 }
             }
         }
@@ -565,7 +588,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
         if(!head.hasRegionBase())
             throw new NCLParsingException("Could not find regionBase element");
         
-        IdentifiableElementList<NCLRegionBase, NCLHead> list = head.getRegionBases();
+        IdentifiableElementList<NCLRegionBase> list = head.getRegionBases();
 
         for(NCLRegionBase base : list){
             result = base.findRegion(id);
@@ -599,7 +622,7 @@ public class NCLRegionBase<T extends NCLRegionBase,
      * @return
      *          element representing a reference to a region.
      */
-    protected ExternalReferenceType createExternalRef(Ei imp, Er ref) throws XMLException {
-        return new ExternalReferenceType(imp, ref);
+    protected R createExternalRef(Ei imp, Er ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
     }
 }

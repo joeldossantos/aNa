@@ -38,16 +38,13 @@
 package br.uff.midiacom.ana.region;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -108,11 +105,10 @@ import org.w3c.dom.NodeList;
  * @param <P>
  * @param <I> 
  */
-public class NCLRegion<T extends NCLRegion,
-                       P extends NCLElement,
-                       I extends NCLElementImpl>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<P> {
+public class NCLRegion<T extends NCLElement,
+                       Er extends NCLRegion>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T>, ReferredElement<T> {
 
     protected String title;
     protected Object left;
@@ -122,9 +118,9 @@ public class NCLRegion<T extends NCLRegion,
     protected Object height;
     protected Object width;
     protected Integer zIndex;
-    protected IdentifiableElementList<T, T> regions;
+    protected IdentifiableElementList<Er> regions;
     
-    protected ElementList<P, NCLElement> references;
+    protected ElementList<T> references;
 
 
     /**
@@ -133,18 +129,27 @@ public class NCLRegion<T extends NCLRegion,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLRegion() throws XMLException {
+    public NCLRegion() {
         super();
-        regions = new IdentifiableElementList<T, T>();
-        references = new ElementList<P, NCLElement>();
+        regions = new IdentifiableElementList<Er>();
+        references = new ElementList<T>();
     }
     
     
     public NCLRegion(String id) throws XMLException {
         super();
-        regions = new IdentifiableElementList<T, T>();
-        references = new ElementList<P, NCLElement>();
+        regions = new IdentifiableElementList<Er>();
+        references = new ElementList<T>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -164,7 +169,7 @@ public class NCLRegion<T extends NCLRegion,
         
         String aux = this.title;
         this.title = title;
-        impl.notifyAltered(NCLElementAttributes.TITLE, aux, title);
+        notifyAltered(NCLElementAttributes.TITLE, aux, title);
     }
 
 
@@ -208,7 +213,7 @@ public class NCLRegion<T extends NCLRegion,
         
         if(left == null){
             this.left = left;
-            impl.notifyAltered(NCLElementAttributes.LEFT, aux, left);
+            notifyAltered(NCLElementAttributes.LEFT, aux, left);
             return;
         }
         
@@ -234,7 +239,7 @@ public class NCLRegion<T extends NCLRegion,
         else
             throw new XMLException("Wrong left type.");
         
-        impl.notifyAltered(NCLElementAttributes.LEFT, aux, left);
+        notifyAltered(NCLElementAttributes.LEFT, aux, left);
     }
 
 
@@ -291,7 +296,7 @@ public class NCLRegion<T extends NCLRegion,
         
         if(right == null){
             this.right = right;
-            impl.notifyAltered(NCLElementAttributes.RIGHT, aux, right);
+            notifyAltered(NCLElementAttributes.RIGHT, aux, right);
             return;
         }
         
@@ -317,7 +322,7 @@ public class NCLRegion<T extends NCLRegion,
         else
             throw new XMLException("Wrong right type.");
         
-        impl.notifyAltered(NCLElementAttributes.RIGHT, aux, right);
+        notifyAltered(NCLElementAttributes.RIGHT, aux, right);
     }
 
 
@@ -374,7 +379,7 @@ public class NCLRegion<T extends NCLRegion,
         
         if(top == null){
             this.top = top;
-            impl.notifyAltered(NCLElementAttributes.TOP, aux, top);
+            notifyAltered(NCLElementAttributes.TOP, aux, top);
             return;
         }
         
@@ -400,7 +405,7 @@ public class NCLRegion<T extends NCLRegion,
         else
             throw new XMLException("Wrong top type.");
         
-        impl.notifyAltered(NCLElementAttributes.TOP, aux, top);
+        notifyAltered(NCLElementAttributes.TOP, aux, top);
     }
 
 
@@ -457,7 +462,7 @@ public class NCLRegion<T extends NCLRegion,
         
         if(bottom == null){
             this.bottom = bottom;
-            impl.notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
+            notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
             return;
         }
         
@@ -483,7 +488,7 @@ public class NCLRegion<T extends NCLRegion,
         else
             throw new XMLException("Wrong bottom type.");
         
-        impl.notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
+        notifyAltered(NCLElementAttributes.BOTTOM, aux, bottom);
     }
 
 
@@ -539,7 +544,7 @@ public class NCLRegion<T extends NCLRegion,
         
         if(height == null){
             this.height = height;
-            impl.notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
+            notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
             return;
         }
         
@@ -565,7 +570,7 @@ public class NCLRegion<T extends NCLRegion,
         else
             throw new XMLException("Wrong bottom type.");
         
-        impl.notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
+        notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
     }
 
 
@@ -621,7 +626,7 @@ public class NCLRegion<T extends NCLRegion,
         
         if(width == null){
             this.width = width;
-            impl.notifyAltered(NCLElementAttributes.WIDTH, aux, width);
+            notifyAltered(NCLElementAttributes.WIDTH, aux, width);
             return;
         }
         
@@ -647,7 +652,7 @@ public class NCLRegion<T extends NCLRegion,
         else
             throw new XMLException("Wrong bottom type.");
         
-        impl.notifyAltered(NCLElementAttributes.WIDTH, aux, width);
+        notifyAltered(NCLElementAttributes.WIDTH, aux, width);
     }
 
 
@@ -706,7 +711,7 @@ public class NCLRegion<T extends NCLRegion,
 
         Integer aux = this.zIndex;
         this.zIndex = zIndex;
-        impl.notifyAltered(NCLElementAttributes.ZINDEX, aux, zIndex);
+        notifyAltered(NCLElementAttributes.ZINDEX, aux, zIndex);
     }
 
 
@@ -746,9 +751,10 @@ public class NCLRegion<T extends NCLRegion,
      * @throws XMLException 
      *          if the element representing the region is null.
      */
-    public boolean addRegion(T region) throws XMLException {
-        if(regions.add(region, (T) this)){
-            impl.notifyInserted(NCLElementSets.REGIONS, region);
+    public boolean addRegion(Er region) throws XMLException {
+        if(regions.add(region)){
+            notifyInserted((T) region);
+            region.setParent(this);
             return true;
         }
         return false;
@@ -766,9 +772,10 @@ public class NCLRegion<T extends NCLRegion,
      * @throws XMLException 
      *          if the element representing the region is null.
      */
-    public boolean removeRegion(T region) throws XMLException {
+    public boolean removeRegion(Er region) throws XMLException {
         if(regions.remove(region)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, region);
+            notifyRemoved((T) region);
+            region.setParent(null);
             return true;
         }
         return false;
@@ -787,8 +794,10 @@ public class NCLRegion<T extends NCLRegion,
      *          if the string is null or empty.
      */
     public boolean removeRegion(String id) throws XMLException {
-        if(regions.remove(id)){
-            impl.notifyRemoved(NCLElementSets.REGIONS, id);
+        Er aux = regions.get(id);
+        if(regions.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -806,7 +815,7 @@ public class NCLRegion<T extends NCLRegion,
      * @throws XMLException 
      *          if the element representing the region is null.
      */
-    public boolean hasRegion(T child) throws XMLException {
+    public boolean hasRegion(Er child) throws XMLException {
         return regions.contains(child);
     }
 
@@ -846,8 +855,50 @@ public class NCLRegion<T extends NCLRegion,
      * @return 
      *          element list with all regions.
      */
-    public IdentifiableElementList<T, T> getRegions() {
+    public IdentifiableElementList<Er> getRegions() {
         return regions;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLRegion))
+            return false;
+        
+        boolean result = true;
+        Object aux;
+        
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLRegion) other).getId());
+        if((aux = getTitle()) != null)
+            result &= aux.equals(((NCLRegion) other).getTitle());
+        if((aux = getLeft()) != null)
+            result &= aux.equals(((NCLRegion) other).getLeft());
+        if((aux = getRight()) != null)
+            result &= aux.equals(((NCLRegion) other).getRight());
+        if((aux = getTop()) != null)
+            result &= aux.equals(((NCLRegion) other).getTop());
+        if((aux = getBottom()) != null)
+            result &= aux.equals(((NCLRegion) other).getBottom());
+        if((aux = getHeight()) != null)
+            result &= aux.equals(((NCLRegion) other).getHeight());
+        if((aux = getWidth()) != null)
+            result &= aux.equals(((NCLRegion) other).getWidth());
+        if((aux = getzIndex()) != null)
+            result &= aux.equals(((NCLRegion) other).getzIndex());
+        
+        ElementList<Er> otherreg = ((NCLRegion) other).getRegions();
+        
+        result &= regions.size() == otherreg.size();
+        for (Er reg : regions) {
+            try {
+                result &= otherreg.contains(reg);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
     
 
@@ -1146,7 +1197,7 @@ public class NCLRegion<T extends NCLRegion,
             return "";
         
         String content = "";
-        for(T aux : regions)
+        for(Er aux : regions)
             content += aux.parse(ident);
         
         return content;
@@ -1165,7 +1216,7 @@ public class NCLRegion<T extends NCLRegion,
             if(!el.getParentNode().equals(element))
                 continue;
 
-            T inst = createRegion();
+            Er inst = createRegion();
             addRegion(inst);
             inst.load(el);
         }
@@ -1180,14 +1231,14 @@ public class NCLRegion<T extends NCLRegion,
      * @return 
      *          region or null if no region was found.
      */
-    public T findRegion(String id) throws XMLException {
-        T result;
+    public Er findRegion(String id) throws XMLException {
+        Er result;
         
         if(getId().equals(id))
-            return (T) this;
+            return (Er) this;
         
-        for(T region : regions){
-            result = (T) region.findRegion(id);
+        for(Er region : regions){
+            result = (Er) region.findRegion(id);
             if(result != null)
                 return result;
         }
@@ -1197,19 +1248,19 @@ public class NCLRegion<T extends NCLRegion,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public ElementList<P, NCLElement> getReferences() {
+    public ElementList<T> getReferences() {
         return references;
     }
 
@@ -1221,7 +1272,7 @@ public class NCLRegion<T extends NCLRegion,
      * @return
      *          element representing the child <i>region</i>.
      */
-    protected T createRegion() throws XMLException {
-        return (T) new NCLRegion();
+    protected Er createRegion() throws XMLException {
+        return (Er) new NCLRegion();
     }
 }
