@@ -37,7 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.xml.datatype.array;
 
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import java.util.Arrays;
 import java.util.Vector;
 
 
@@ -120,13 +121,8 @@ public class ArrayType {
     }
 
 
-    /**
-     * Returns the array.
-     *
-     * @return
-     *          String representing the array.
-     */
-    public String parse() {
+    @Override
+    public String toString() {
         String result = "";
         for(int i = 0; i < values.length; i++){
             result += values[i];
@@ -134,5 +130,22 @@ public class ArrayType {
                 result += ",";
         }
         return result;
+    }
+    
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof ArrayType))
+            return false;
+        
+        return toString().equals(o.toString());
+    }
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + Arrays.hashCode(this.values);
+        return hash;
     }
 }

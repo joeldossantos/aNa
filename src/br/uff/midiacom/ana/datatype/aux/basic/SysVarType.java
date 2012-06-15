@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.datatype.aux.basic;
 
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**

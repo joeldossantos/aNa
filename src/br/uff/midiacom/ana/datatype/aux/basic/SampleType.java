@@ -164,7 +164,8 @@ public class SampleType {
     }
     
     
-    public String parse() {
+    @Override
+    public String toString() {
         switch(type){
         case S:
             return value + "s";
@@ -176,15 +177,22 @@ public class SampleType {
             return null;
         }
     }
-
-
-    public int compareTo(SampleType other){
-        String this_sample = toString();
-        String other_sample = other.toString();
-
-        if(this_sample == null) this_sample = "";
-        if(other_sample == null) other_sample = "";
-
-        return this_sample.compareTo(other_sample);
+    
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof SampleType))
+            return false;
+        
+        return toString().equals(o.toString());
+    }
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + this.value;
+        hash = 71 * hash + (this.type != null ? this.type.hashCode() : 0);
+        return hash;
     }
 }

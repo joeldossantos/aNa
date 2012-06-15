@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.xml.datatype.string;
 
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**

@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.datatype.aux.basic;
 
 import br.uff.midiacom.ana.datatype.enums.NCLUriType;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**
@@ -120,13 +120,8 @@ public class SrcType {
     }
 
 
-    /**
-     * Returns the source locator.
-     *
-     * @return
-     *          String representing the source locator.
-     */
-    public String parse() {
+    @Override
+    public String toString() {
         String value = "";
 
         if(type != null)
@@ -135,5 +130,23 @@ public class SrcType {
         value += src;
 
         return value;
+    }
+    
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof SrcType))
+            return false;
+        
+        return toString().equals(o.toString());
+    }
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (this.type != null ? this.type.hashCode() : 0);
+        hash = 97 * hash + (this.src != null ? this.src.hashCode() : 0);
+        return hash;
     }
 }

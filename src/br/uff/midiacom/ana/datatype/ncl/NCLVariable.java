@@ -38,13 +38,13 @@
 package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.interfaces.NCLProperty;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.rule.NCLRule;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -58,17 +58,16 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <V> 
  */
-public class NCLVariable<T extends NCLVariable,
+public class NCLVariable<T extends NCLElement,
                          P extends NCLRule,
-                         I extends NCLElementImpl,
                          V extends SysVarType>
-        extends NCLElementPrototype<T, P, I>
-        implements ReferredElement<NCLElement> {
+        extends NCLElementPrototype<T>
+        implements ReferredElement<T> {
 
     protected V Rname;
-    protected StringType Sname;
+    protected String Sname;
     
-    protected ElementList<NCLElement,NCLElement> references;
+    protected ElementList<T> references;
     
     
     /**
@@ -83,7 +82,7 @@ public class NCLVariable<T extends NCLVariable,
     public NCLVariable(V name) throws XMLException {
         super();
         setName(name);
-        references = new ElementList<NCLElement,NCLElement>();
+        references = new ElementList<T>();
     }
     
     
@@ -98,7 +97,7 @@ public class NCLVariable<T extends NCLVariable,
     public NCLVariable(String name) throws XMLException {
         super();
         setName(name);
-        references = new ElementList<NCLElement,NCLElement>();
+        references = new ElementList<T>();
     }
     
     
@@ -135,7 +134,7 @@ public class NCLVariable<T extends NCLVariable,
         if(aux.getValue() != null)
             Rname = aux;
         else
-            this.Sname = new StringType(name);
+            this.Sname = name;
     }
     
     
@@ -162,7 +161,7 @@ public class NCLVariable<T extends NCLVariable,
         if(Rname != null)
             return Rname.parse();
         else
-            return Sname.getValue();
+            return Sname;
     }
     
     
@@ -177,24 +176,36 @@ public class NCLVariable<T extends NCLVariable,
         if(other == null)
             return false;
         
-        return getName().equals(other.getName());
+        return getName().equals(other.toString());
+    }
+    
+    
+    public void mergeVariables(NCLVariable old_var) throws XMLException {
+        ElementList<T> old_refs = old_var.getReferences();
+        
+        for(T ref : old_refs){
+            if(ref instanceof NCLProperty)
+                ((NCLProperty) ref).setName(this);
+            else if(ref instanceof NCLRule)
+                ((NCLRule) ref).setVar(this);
+        }
     }
     
     
     @Override
-    public boolean addReference(NCLElement reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(NCLElement reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
-    public ElementList<NCLElement,NCLElement> getReferences() {
+    public ElementList<T> getReferences() {
         return references;
     }
     

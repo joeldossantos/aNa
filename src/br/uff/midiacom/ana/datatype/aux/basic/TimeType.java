@@ -396,7 +396,8 @@ public class TimeType {
     }
     
     
-    public String parse() {
+    @Override
+    public String toString() {
         if(getSecond() == null)
             return null;
         
@@ -414,16 +415,26 @@ public class TimeType {
 
         return result;
     }
-
-
-    public int compareTo(TimeType other) {
-        String this_time = toString();
-        String other_time = other.toString();
-
-        if(this_time == null) this_time = "";
-        if(other_time == null) other_time = "";
-
-        return this_time.compareTo(other_time);
+    
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof TimeType))
+            return false;
+        
+        return toString().equals(o.toString());
     }
-
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.year != null ? this.year.hashCode() : 0);
+        hash = 29 * hash + (this.month != null ? this.month.hashCode() : 0);
+        hash = 29 * hash + (this.day != null ? this.day.hashCode() : 0);
+        hash = 29 * hash + (this.hour != null ? this.hour.hashCode() : 0);
+        hash = 29 * hash + (this.minute != null ? this.minute.hashCode() : 0);
+        hash = 29 * hash + (this.second != null ? this.second.hashCode() : 0);
+        return hash;
+    }
 }

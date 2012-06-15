@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.datatype.ncl;
 
 import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.xml.datatype.string.StringType;
 
 
