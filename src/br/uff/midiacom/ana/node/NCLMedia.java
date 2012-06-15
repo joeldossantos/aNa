@@ -855,12 +855,6 @@ public class NCLMedia<T extends NCLElement,
         
         boolean result = true;
         
-//        SrcType src;
-//    protected NCLMimeType type;
-//    protected Object descriptor;
-//    protected Object refer;
-//    protected NCLInstanceType instance;
-        
         Object aux;
         if((aux = getId()) != null)
             result &= aux.equals(((NCLMedia) other).getId());
