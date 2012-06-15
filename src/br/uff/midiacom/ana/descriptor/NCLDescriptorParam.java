@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
@@ -47,9 +46,9 @@ import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
 import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
 import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 
 
@@ -72,12 +71,9 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <V> 
  */
-public class NCLDescriptorParam<T extends NCLDescriptorParam,
-                                         P extends NCLElement,
-                                         I extends NCLElementImpl,
-                                         V>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+public class NCLDescriptorParam<T extends NCLElement, V>
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
     protected NCLAttributes name;
     protected Object value;
@@ -90,7 +86,7 @@ public class NCLDescriptorParam<T extends NCLDescriptorParam,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLDescriptorParam() throws XMLException {
+    public NCLDescriptorParam() {
         super();
     }
 
@@ -114,7 +110,7 @@ public class NCLDescriptorParam<T extends NCLDescriptorParam,
         
         NCLAttributes aux = this.name;
         this.name = name;
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
 
 
@@ -179,7 +175,7 @@ public class NCLDescriptorParam<T extends NCLDescriptorParam,
             
         this.value = newvalue;
         
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, newvalue);
+        notifyAltered(NCLElementAttributes.VALUE, aux, newvalue);
     }
 
 
@@ -228,7 +224,17 @@ public class NCLDescriptorParam<T extends NCLDescriptorParam,
 
     @Override
     public boolean compare(T other) {
-        return getName().equals(other.getName());
+        if(other == null || !(other instanceof NCLDescriptorParam))
+            return false;
+        
+        boolean result = true;
+        Object aux;
+        
+        if((aux = getName()) != null)
+            result &= aux.equals(((NCLDescriptorParam) other).getName());
+        if((aux = getValue()) != null)
+            result &= aux.equals(((NCLDescriptorParam) other).getValue());
+        return result;
     }
 
 

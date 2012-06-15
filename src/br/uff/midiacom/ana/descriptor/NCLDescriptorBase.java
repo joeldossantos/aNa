@@ -39,18 +39,16 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLBase;
+import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -89,14 +87,13 @@ import org.w3c.dom.NodeList;
  * @param <El>
  * @param <Ei> 
  */
-public class NCLDescriptorBase<T extends NCLDescriptorBase,
-                               P extends NCLElement,
-                               I extends NCLElementImpl,
+public class NCLDescriptorBase<T extends NCLElement,
                                El extends NCLLayoutDescriptor,
-                               Ei extends NCLImportBase>
-        extends NCLBase<T, P, I, Ei> {
+                               Ei extends NCLImportBase,
+                               R extends ExternalReferenceType>
+        extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<El, T> descriptors;
+    protected IdentifiableElementList<El> descriptors;
 
 
     /**
@@ -105,9 +102,9 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLDescriptorBase() throws XMLException {
+    public NCLDescriptorBase() {
         super();
-        descriptors = new IdentifiableElementList<El, T>();
+        descriptors = new IdentifiableElementList<El>();
     }
 
 
@@ -126,8 +123,9 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      *          is null.
      */
     public boolean addDescriptor(El descriptor) throws XMLException {
-        if(descriptors.add(descriptor, (T) this)){
-            impl.notifyInserted(NCLElementSets.DESCRIPTORS, descriptor);
+        if(descriptors.add(descriptor)){
+            notifyInserted((T) descriptor);
+            descriptor.setParent(this);
             return true;
         }
         return false;
@@ -150,7 +148,8 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      */
     public boolean removeDescriptor(El descriptor) throws XMLException {
         if(descriptors.remove(descriptor)){
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, descriptor);
+            notifyRemoved((T) descriptor);
+            descriptor.setParent(null);
             return true;
         }
         return false;
@@ -171,8 +170,10 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      *          if the string is null or empty.
      */
     public boolean removeDescriptor(String id) throws XMLException {
-        if(descriptors.remove(id)){
-            impl.notifyRemoved(NCLElementSets.DESCRIPTORS, id);
+        El aux = descriptors.get(id);
+        if(descriptors.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -239,8 +240,31 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      * @return 
      *          element list with all descriptors and descriptor switches.
      */
-    public IdentifiableElementList<El, T> getDescriptors() {
+    public IdentifiableElementList<El> getDescriptors() {
         return descriptors;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLDescriptorBase))
+            return false;
+        
+        boolean result = true;
+        ElementList<El> otherdes = ((NCLDescriptorBase) other).getDescriptors();
+        
+        result &= super.compareImports((NCLBase) other);
+        
+        result &= descriptors.size() == otherdes.size();
+        for (El des : descriptors) {
+            try {
+                result &= otherdes.contains(des);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
@@ -405,19 +429,19 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
                     if(ref instanceof NCLLayoutDescriptor)
                         return createExternalRef(imp, (El) ref);
                     else
-                        return createExternalRef(imp, (El) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (El) ((R) ref).getTarget());
                 }
             }
             
             NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
                     Object ref = findDescriptorReference(d, id);
                     if(ref instanceof NCLLayoutDescriptor)
                         return createExternalRef(imp, (El) ref);
                     else
-                        return createExternalRef(imp, (El) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (El) ((R) ref).getTarget());
                 }
             }
         }
@@ -452,7 +476,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
         }
 
         NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-        for(Ei imp : (ElementList<Ei, NCLImportedDocumentBase>) ib.getImportNCLs()){
+        for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
             NCLDoc d = (NCLDoc) imp.getImportedDoc();
             result = (El) findDescriptorReference(d, focusIndex);
             if(result != null)
@@ -532,7 +556,7 @@ public class NCLDescriptorBase<T extends NCLDescriptorBase,
      * @return
      *          element representing a reference to a descriptor.
      */
-    protected ExternalReferenceType createExternalRef(Ei imp, El ref) throws XMLException {
-        return new ExternalReferenceType(imp, ref);
+    protected R createExternalRef(Ei imp, El ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
     }
 }
