@@ -35,22 +35,19 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
+package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 
 
 /**
@@ -95,26 +92,24 @@ import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
  * @param <Em>
  * @param <Emt> 
  */
-public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
-                                              P extends NCLElement,
-                                              I extends NCLElementImpl,
+public abstract class NCLCompositeNodeElement<T extends NCLElement,
                                               Ept extends NCLPort,
                                               Epp extends NCLProperty,
                                               En extends NCLNode,
                                               El extends NCLLink,
                                               Em extends NCLMeta,
                                               Emt extends NCLMetadata>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<P> {
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T>, ReferredElement<T> {
 
-    protected IdentifiableElementList<Ept, T> ports;
-    protected IdentifiableElementList<Epp, T> properties;
-    protected IdentifiableElementList<En, T> nodes;
-    protected IdentifiableElementList<El, T> links;
-    protected ElementList<Em, T> metas;
-    protected ElementList<Emt, T> metadatas;
+    protected IdentifiableElementList<Ept> ports;
+    protected IdentifiableElementList<Epp> properties;
+    protected IdentifiableElementList<En> nodes;
+    protected IdentifiableElementList<El> links;
+    protected ElementList<Em> metas;
+    protected ElementList<Emt> metadatas;
     
-    protected ElementList<P,P> references;
+    protected ElementList<T> references;
 
 
     /**
@@ -123,15 +118,15 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLCompositeNodeElement() throws XMLException {
+    public NCLCompositeNodeElement() {
         super();
-        ports = new IdentifiableElementList<Ept, T>();
-        properties = new IdentifiableElementList<Epp, T>();
-        nodes = new IdentifiableElementList<En, T>();
-        links = new IdentifiableElementList<El, T>();
-        metas = new ElementList<Em, T>();
-        metadatas = new ElementList<Emt, T>();
-        references = new ElementList<P,P>();
+        ports = new IdentifiableElementList<Ept>();
+        properties = new IdentifiableElementList<Epp>();
+        nodes = new IdentifiableElementList<En>();
+        links = new IdentifiableElementList<El>();
+        metas = new ElementList<Em>();
+        metadatas = new ElementList<Emt>();
+        references = new ElementList<T>();
     }
 
 
@@ -147,8 +142,9 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the element representing the port is null.
      */
     public boolean addPort(Ept port) throws XMLException {
-        if(ports.add(port, (T) this)){
-            impl.notifyInserted(NCLElementSets.PORTS, port);
+        if(ports.add(port)){
+            notifyInserted((T) port);
+            port.setParent(this);
             return true;
         }
         return false;
@@ -168,7 +164,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      */
     public boolean removePort(Ept port) throws XMLException {
         if(ports.remove(port)){
-            impl.notifyRemoved(NCLElementSets.PORTS, port);
+            notifyRemoved((T) port);
+            port.setParent(null);
             return true;
         }
         return false;
@@ -188,8 +185,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the string is null or empty.
      */
     public boolean removePort(String id) throws XMLException {
-        if(ports.remove(id)){
-            impl.notifyRemoved(NCLElementSets.PORTS, id);
+        Ept aux = ports.get(id);
+        if(ports.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -249,7 +248,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @return 
      *          element list with all interface points.
      */
-    public IdentifiableElementList<Ept, T> getPorts() {
+    public IdentifiableElementList<Ept> getPorts() {
         return ports;
     }
 
@@ -266,8 +265,9 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the element representing the property is null.
      */
     public boolean addProperty(Epp property) throws XMLException {
-        if(properties.add(property, (T) this)){
-            impl.notifyInserted(NCLElementSets.PROPERTIES, property);
+        if(properties.add(property)){
+            notifyInserted((T) property);
+            property.setParent(this);
             return true;
         }
         return false;
@@ -287,7 +287,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      */
     public boolean removeProperty(Epp property) throws XMLException {
         if(properties.remove(property)){
-            impl.notifyRemoved(NCLElementSets.PROPERTIES, property);
+            notifyRemoved((T) property);
+            property.setParent(null);
             return true;
         }
         return false;
@@ -306,8 +307,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the string is null or empty.
      */
     public boolean removeProperty(String name) throws XMLException {
-        if(properties.remove(name)){
-            impl.notifyRemoved(NCLElementSets.PROPERTIES, name);
+        Epp aux = properties.get(name);
+        if(properties.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -365,7 +368,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @return 
      *          element list with all properties.
      */
-    public IdentifiableElementList<Epp, T> getProperties() {
+    public IdentifiableElementList<Epp> getProperties() {
         return properties;
     }
 
@@ -383,8 +386,9 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the element representing the node is null.
      */
     public boolean addNode(En node) throws XMLException {
-        if(nodes.add(node, (T) this)){
-            impl.notifyInserted(NCLElementSets.NODES, node);
+        if(nodes.add(node)){
+            notifyInserted((T) node);
+            node.setParent(this);
             return true;
         }
         return false;
@@ -405,7 +409,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      */
     public boolean removeNode(En node) throws XMLException {
         if(nodes.remove(node)){
-            impl.notifyRemoved(NCLElementSets.NODES, node);
+            notifyRemoved((T) node);
+            node.setParent(null);
             return true;
         }
         return false;
@@ -425,8 +430,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the string is null or empty.
      */
     public boolean removeNode(String id) throws XMLException {
-        if(nodes.remove(id)){
-            impl.notifyRemoved(NCLElementSets.NODES, id);
+        En aux = nodes.get(id);
+        if(nodes.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -488,7 +495,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @return 
      *          element list with all nodes.
      */
-    public IdentifiableElementList<En, T> getNodes() {
+    public IdentifiableElementList<En> getNodes() {
         return nodes;
     }
 
@@ -505,8 +512,9 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the element representing the link is null.
      */
     public boolean addLink(El link) throws XMLException {
-        if(links.add(link, (T) this)){
-            impl.notifyInserted(NCLElementSets.LINKS, link);
+        if(links.add(link)){
+            notifyInserted((T) link);
+            link.setParent(this);
             return true;
         }
         return false;
@@ -526,7 +534,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      */
     public boolean removeLink(El link) throws XMLException {
         if(links.remove(link)){
-            impl.notifyRemoved(NCLElementSets.LINKS, link);
+            notifyRemoved((T) link);
+            link.setParent(null);
             return true;
         }
         return false;
@@ -546,8 +555,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the string is null or empty.
      */
     public boolean removeLink(String id) throws XMLException {
-        if(links.remove(id)){
-            impl.notifyRemoved(NCLElementSets.LINKS, id);
+        El aux = links.get(id);
+        if(links.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -607,7 +618,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @return 
      *          element list with all links.
      */
-    public IdentifiableElementList<El, T> getLinks() {
+    public IdentifiableElementList<El> getLinks() {
         return links;
     }
 
@@ -624,8 +635,9 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the meta element is null.
      */
     public boolean addMeta(Em meta) throws XMLException {
-        if(metas.add(meta, (T) this)){
-            impl.notifyInserted(NCLElementSets.METAS, meta);
+        if(metas.add(meta)){
+            notifyInserted((T) meta);
+            meta.setParent(this);
             return true;
         }
         return false;
@@ -645,7 +657,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      */
     public boolean removeMeta(Em meta) throws XMLException {
         if(metas.remove(meta)){
-            impl.notifyRemoved(NCLElementSets.METAS, meta);
+            notifyRemoved((T) meta);
+            meta.setParent(null);
             return true;
         }
         return false;
@@ -687,7 +700,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @return 
      *          element list with all meta elements.
      */
-    public ElementList<Em, T> getMetas() {
+    public ElementList<Em> getMetas() {
         return metas;
     }
 
@@ -704,8 +717,9 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      *          if the metadata element is null.
      */
     public boolean addMetadata(Emt metadata) throws XMLException {
-        if(metadatas.add(metadata, (T) this)){
-            impl.notifyInserted(NCLElementSets.METADATAS, metadata);
+        if(metadatas.add(metadata)){
+            notifyInserted((T) metadata);
+            metadata.setParent(this);
             return true;
         }
         return false;
@@ -725,7 +739,8 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      */
     public boolean removeMetadata(Emt metadata) throws XMLException {
         if(metadatas.remove(metadata)){
-            impl.notifyRemoved(NCLElementSets.METADATAS, metadata);
+            notifyRemoved((T) metadata);
+            metadata.setParent(null);
             return true;
         }
         return false;
@@ -767,19 +782,91 @@ public abstract class NCLCompositeNodeElement<T extends NCLIdentifiableElement,
      * @return 
      *          element list with all metadata elements.
      */
-    public ElementList<Emt, T> getMetadatas() {
+    public ElementList<Emt> getMetadatas() {
         return metadatas;
     }
     
     
-    @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean compareContent(NCLCompositeNodeElement other) {
+        boolean result = true;
+        
+        String saux = getId();
+        if(saux != null)
+            result &= saux.equals(other.getId());
+        
+        
+        ElementList<Ept> otherpor = other.getPorts();
+        result &= ports.size() == otherpor.size();
+        for (Ept aux : ports) {
+            try {
+                result &= otherpor.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Epp> otherpro = other.getProperties();
+        result &= properties.size() == otherpro.size();
+        for (Epp aux : properties) {
+            try {
+                result &= otherpro.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<En> othernod = other.getNodes();
+        result &= nodes.size() == othernod.size();
+        for (En aux : nodes) {
+            try {
+                result &= othernod.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<El> otherlin = other.getLinks();
+        result &= links.size() == otherlin.size();
+        for (El aux : links) {
+            try {
+                result &= otherlin.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Em> othermet = other.getMetas();
+        result &= metas.size() == othermet.size();
+        for (Em aux : metas) {
+            try {
+                result &= othermet.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Emt> othermtd = other.getMetadatas();
+        result &= metadatas.size() == othermtd.size();
+        for (Emt aux : metadatas) {
+            try {
+                result &= othermtd.contains(aux);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     
