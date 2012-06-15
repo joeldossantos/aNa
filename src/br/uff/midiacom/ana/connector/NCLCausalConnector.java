@@ -38,17 +38,14 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.link.NCLLink;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -89,21 +86,20 @@ import org.w3c.dom.NodeList;
  * @param <Ea>
  * @param <Ep> 
  */
-public class NCLCausalConnector<T extends NCLCausalConnector,
-                                P extends NCLElement,
-                                I extends NCLElementImpl,
+public class NCLCausalConnector<T extends NCLElement,
                                 Ec extends NCLCondition,
                                 Ea extends NCLAction,
                                 Ep extends NCLConnectorParam,
+                                Er extends NCLRoleElement,
                                 El extends NCLLink>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<El> {
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T>, ReferredElement<El> {
 
     protected Ec condition;
     protected Ea action;
-    protected IdentifiableElementList<Ep, T> conn_params;
+    protected IdentifiableElementList<Ep> conn_params;
     
-    protected ElementList<El, NCLElement> references;
+    protected ElementList<El> references;
 
 
     /**
@@ -112,18 +108,27 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */  
-    public NCLCausalConnector() throws XMLException {
+    public NCLCausalConnector() {
         super();
-        conn_params = new IdentifiableElementList<Ep, T>();
-        references = new ElementList<El, NCLElement>();
+        conn_params = new IdentifiableElementList<Ep>();
+        references = new ElementList<El>();
     }
     
     
     public NCLCausalConnector(String id) throws XMLException {
         super();
-        conn_params = new IdentifiableElementList<Ep, T>();
-        references = new ElementList<El, NCLElement>();
+        conn_params = new IdentifiableElementList<Ep>();
+        references = new ElementList<El>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
     
     
@@ -139,18 +144,18 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      *          element representing a connector condition or <i>null</i> to
      *          erase a condition already defined.
      */
-    public void setCondition(Ec condition) {
+    public void setCondition(Ec condition) throws XMLException {
         //Removes the parent of the actual condition
         if(this.condition != null){
             this.condition.setParent(null);
-            impl.notifyRemoved(NCLElementSets.CONDITIONS, this.condition);
+            notifyRemoved((T) this.condition);
         }
 
         this.condition = condition;
         //Sets this as the parent of the new condition
         if(this.condition != null){
             this.condition.setParent(this);
-            impl.notifyInserted(NCLElementSets.CONDITIONS, this.condition);
+            notifyInserted((T) this.condition);
         }
     }
     
@@ -185,18 +190,18 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      *          element representing a connector action or <i>null</i> to
      *          erase an action already defined.
      */
-    public void setAction(Ea action) {
+    public void setAction(Ea action) throws XMLException {
         //Removes the parent of the actual action
         if(this.action != null){
             this.action.setParent(null);
-            impl.notifyRemoved(NCLElementSets.ACTIONS, this.action);
+            notifyRemoved((T) this.action);
         }
 
         this.action = action;
         //Sets this as the parent of the new action
         if(this.action != null){
             this.action.setParent(this);
-            impl.notifyInserted(NCLElementSets.ACTIONS, this.action);
+            notifyInserted((T) this.action);
         }
     }
     
@@ -231,8 +236,9 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      *          if the element representing the connector parameter is null.
      */
     public boolean addConnectorParam(Ep param) throws XMLException {
-        if(conn_params.add(param, (T) this)){
-            impl.notifyInserted(NCLElementSets.CONNECTOR_PARAMS, param);
+        if(conn_params.add(param)){
+            notifyInserted((T) param);
+            param.setParent(this);
             return true;
         }
         return false;
@@ -252,7 +258,8 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      */
     public boolean removeConnectorParam(Ep param) throws XMLException {
         if(conn_params.remove(param)){
-            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, param);
+            notifyRemoved((T) param);
+            param.setParent(null);
             return true;
         }
         return false;
@@ -272,8 +279,10 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      *          if the string is null or empty.
      */
     public boolean removeConnectorParam(String name) throws XMLException {
-        if(conn_params.remove(name)){
-            impl.notifyRemoved(NCLElementSets.CONNECTOR_PARAMS, name);
+        Ep aux = conn_params.get(name);
+        if(conn_params.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -333,11 +342,44 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      * @return 
      *          element list with all connector parameters.
      */
-    public IdentifiableElementList<Ep, T> getConnectorParams() {
+    public IdentifiableElementList<Ep> getConnectorParams() {
         return conn_params;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLCausalConnector))
+            return false;
+        
+        boolean result = true;
+
+        Object aux;
+
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLCausalConnector) other).getId());
+
+        T el;
+        if((el = (T) getCondition()) != null)
+            result &= el.compare(((NCLCausalConnector) other).getCondition());
+        if((el = (T) getAction()) != null)
+            result &= el.compare(((NCLCausalConnector) other).getAction());
+
+        ElementList<Ep> otherpar = ((NCLCausalConnector) other).getConnectorParams();
+        result &= conn_params.size() == otherpar.size();
+        for (Ep par : conn_params) {
+            try {
+                result &= otherpar.contains(par);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+
+        return result;
     }
 
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -361,6 +403,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         NodeList nl;
 
@@ -541,14 +584,14 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
      * @return 
      *          role or null if no role was found.
      */
-    public NCLRoleElement findRole(String name) {
-        NCLRoleElement result;
+    public Er findRole(String name) {
+        Er result;
         
-        result = (NCLRoleElement) getCondition().findRole(name);
+        result = (Er) getCondition().findRole(name);
         if(result != null)
             return result;
         
-        result = (NCLRoleElement) getAction().findRole(name);
+        result = (Er) getAction().findRole(name);
         if(result != null)
             return result;
         
@@ -618,7 +661,7 @@ public class NCLCausalConnector<T extends NCLCausalConnector,
     
     @Override
     public boolean addReference(El reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     

@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
@@ -46,8 +45,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.link.NCLBind;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -84,14 +83,12 @@ import org.w3c.dom.Element;
  * @param <Ep>
  * @param <R> 
  */
-public class NCLSimpleAction<T extends NCLSimpleAction,
-                             P extends NCLElement,
-                             I extends NCLElementImpl,
-                             Ea extends NCLAction,
+public class NCLSimpleAction<T extends NCLElement,
                              Ep extends NCLConnectorParam,
+                             Er extends NCLRoleElement,
                              Eb extends NCLBind>
-        extends ParamElement<Ea, P, I>
-        implements NCLAction<Ea, P, Ep>, NCLRoleElement<Eb> {
+        extends ParamElement<T>
+        implements NCLAction<T, Ep, Er>, NCLRoleElement<Eb> {
 
     protected Object value;
     protected Integer min;
@@ -106,7 +103,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
     protected Object role;
     protected Object delay;
     
-    protected ElementList<Eb, NCLElement> references;
+    protected ElementList<Eb> references;
 
 
     /**
@@ -115,7 +112,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLSimpleAction() throws XMLException {
+    public NCLSimpleAction() {
         super();
     }
 
@@ -153,17 +150,17 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             for(NCLDefaultActionRole drole : NCLDefaultActionRole.values()){
                 if(name.equals(drole.toString())){
                     this.role = drole;
-                    impl.notifyAltered(NCLElementAttributes.ROLE, aux, drole);
+                    notifyAltered(NCLElementAttributes.ROLE, aux, drole);
                     return;
                 }
             }
             
             this.role = role;
-            impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+            notifyAltered(NCLElementAttributes.ROLE, aux, role);
         }
         else if(role instanceof NCLDefaultActionRole){
             this.role = role;
-            impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+            notifyAltered(NCLElementAttributes.ROLE, aux, role);
         }
         else{
             throw new XMLException("Wrong role type.");
@@ -220,7 +217,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(value == null){
             this.value = value;
-            impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+            notifyAltered(NCLElementAttributes.VALUE, aux, value);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -246,7 +243,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         else
             throw new XMLException("Wrong key type.");
         
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+        notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
         
@@ -294,7 +291,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
 
         Integer aux = this.min;
         this.min = min;
-        impl.notifyAltered(NCLElementAttributes.MIN, aux, min);
+        notifyAltered(NCLElementAttributes.MIN, aux, min);
     }
 
 
@@ -333,7 +330,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(max == null){
             this.max = max;
-            impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+            notifyAltered(NCLElementAttributes.MAX, aux, max);
             return;
         }
         
@@ -360,7 +357,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             throw new XMLException("Wrong max type.");
 
         // notify the modification
-        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+        notifyAltered(NCLElementAttributes.MAX, aux, max);
     }
 
 
@@ -407,10 +404,10 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
      *          enumeration <i>NCLActionOperator</i> or <i>null</i> to erase
      *          a qualifier already defined.
      */
-    public void setQualifier(NCLActionOperator qualifier) {
+    public void setQualifier(NCLActionOperator qualifier) throws XMLException {
         NCLActionOperator aux = this.qualifier;
         this.qualifier = qualifier;
-        impl.notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
+        notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
     }
 
 
@@ -455,10 +452,10 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
      *          <i>NCLEventType</i> or <i>null</i> to erase an event type
      *          already defined.
      */
-    public void setEventType(NCLEventType eventType) {
+    public void setEventType(NCLEventType eventType) throws XMLException {
         NCLEventType aux = this.eventType;
         this.eventType = eventType;
-        impl.notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
+        notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
     }
 
 
@@ -493,10 +490,10 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
      *          <i>NCLEventAction</i> or <i>null</i> to erase an action type
      *          already defined.
      */
-    public void setActionType(NCLEventAction actionType) {
+    public void setActionType(NCLEventAction actionType) throws XMLException {
         NCLEventAction aux = this.actionType;
         this.actionType = actionType;
-        impl.notifyAltered(NCLElementAttributes.ACTIONTYPE, aux, actionType);
+        notifyAltered(NCLElementAttributes.ACTIONTYPE, aux, actionType);
     }
 
 
@@ -546,7 +543,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(repeat == null){
             this.repeat = repeat;
-            impl.notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
+            notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -574,7 +571,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         else
             throw new XMLException("Wrong repeat type.");
         
-        impl.notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
+        notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
     }
 
 
@@ -628,7 +625,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(repeatDelay == null){
             this.repeatDelay = repeatDelay;
-            impl.notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
+            notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -656,7 +653,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
+        notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
     }
 
 
@@ -709,7 +706,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(duration == null){
             this.duration = duration;
-            impl.notifyAltered(NCLElementAttributes.DURATION, aux, duration);
+            notifyAltered(NCLElementAttributes.DURATION, aux, duration);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -737,7 +734,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.DURATION, aux, duration);
+        notifyAltered(NCLElementAttributes.DURATION, aux, duration);
     }
 
 
@@ -791,7 +788,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(by == null){
             this.by = by;
-            impl.notifyAltered(NCLElementAttributes.BY, aux, by);
+            notifyAltered(NCLElementAttributes.BY, aux, by);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -823,7 +820,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.BY, aux, by);
+        notifyAltered(NCLElementAttributes.BY, aux, by);
     }
 
 
@@ -856,7 +853,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         
         if(delay == null){
             this.delay = delay;
-            impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+            notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -884,7 +881,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
@@ -895,7 +892,10 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
 
 
     @Override
-    public boolean compare(Ea other) {
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLSimpleAction))
+            return false;
+        
         boolean comp = true;
 
         String this_act, other_act;
@@ -972,6 +972,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -991,9 +992,8 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
-
         try{
             loadRole(element);
             loadValue(element);
@@ -1061,7 +1061,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " value='$" + aux.toString() + "'";
+            return " value='$" + ((Ep) aux).getName() + "'";
         else
             return " value='" + aux.toString() + "'";
     }
@@ -1083,7 +1083,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " delay='$" + aux.toString() + "'";
+            return " delay='$" + ((Ep) aux).getName() + "'";
         else
             return " delay='" + aux.toString() + "s'";
     }
@@ -1205,7 +1205,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " repeat='$" + aux.toString() + "'";
+            return " repeat='$" + ((Ep) aux).getName() + "'";
         else
             return " repeat='" + aux.toString() + "'";
     }
@@ -1227,7 +1227,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " repeatDelay='$" + aux.toString() + "'";
+            return " repeatDelay='$" + ((Ep) aux).getName() + "'";
         else
             return " repeatDelay='" + aux.toString() + "s'";
     }
@@ -1249,7 +1249,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " duration='$" + aux.toString() + "'";
+            return " duration='$" + ((Ep) aux).getName() + "'";
         else
             return " duration='" + aux.toString() + "s'";
     }
@@ -1271,7 +1271,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " by='$" + aux.toString() + "'";
+            return " by='$" + ((Ep) aux).getName() + "'";
         else
             return " by='" + aux.toString() + "'";
     }
@@ -1288,9 +1288,9 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
     
     
     @Override
-    public NCLRoleElement findRole(String name) {
+    public Er findRole(String name) {
         if(role.toString().equals(name))
-            return this;
+            return (Er) this;
         else
             return null;
     }
@@ -1298,7 +1298,7 @@ public class NCLSimpleAction<T extends NCLSimpleAction,
     
     @Override
     public boolean addReference(Eb reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     

@@ -39,16 +39,15 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLBase;
+import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -83,14 +82,13 @@ import org.w3c.dom.NodeList;
  * @param <Ec>
  * @param <Ei> 
  */
-public class NCLConnectorBase<T extends NCLConnectorBase,
-                              P extends NCLElement,
-                              I extends NCLElementImpl,
+public class NCLConnectorBase<T extends NCLElement,
                               Ec extends NCLCausalConnector,
-                              Ei extends NCLImportBase>
-        extends NCLBase<T, P, I, Ei> {
+                              Ei extends NCLImportBase,
+                              R extends ExternalReferenceType>
+        extends NCLBase<T, Ei> {
 
-    protected IdentifiableElementList<Ec, T> connectors;
+    protected IdentifiableElementList<Ec> connectors;
     
 
     /**
@@ -99,9 +97,9 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLConnectorBase() throws XMLException {
+    public NCLConnectorBase() {
         super();
-        connectors = new IdentifiableElementList<Ec, T>();
+        connectors = new IdentifiableElementList<Ec>();
     }
 
 
@@ -117,8 +115,9 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      *          if the element representing the connector is null.
      */
     public boolean addCausalConnector(Ec connector) throws XMLException {
-        if(connectors.add(connector, (T) this)){
-            impl.notifyInserted(NCLElementSets.CONNECTORS, connector);
+        if(connectors.add(connector)){
+            notifyInserted((T) connector);
+            connector.setParent(this);
             return true;
         }
         return false;
@@ -138,7 +137,8 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      */
     public boolean removeCausalConnector(Ec connector) throws XMLException {
         if(connectors.remove(connector)){
-            impl.notifyRemoved(NCLElementSets.CONNECTORS, connector);
+            notifyRemoved((T) connector);
+            connector.setParent(null);
             return true;
         }
         return false;
@@ -158,8 +158,10 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      *          if the string is null or empty.
      */
     public boolean removeCausalConnector(String id) throws XMLException {
-        if(connectors.remove(id)){
-            impl.notifyRemoved(NCLElementSets.CONNECTORS, id);
+        Ec aux = connectors.get(id);
+        if(connectors.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -220,8 +222,31 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      * @return 
      *          element list with all connectors.
      */
-    public IdentifiableElementList<Ec, T> getCausalConnectors() {
+    public IdentifiableElementList<Ec> getCausalConnectors() {
         return connectors;        
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLConnectorBase))
+            return false;
+        
+        boolean result = true;
+        ElementList<Ec> othercon = ((NCLConnectorBase) other).getCausalConnectors();
+        
+        result &= super.compareImports((NCLBase) other);
+        
+        result &= connectors.size() == othercon.size();
+        for (Ec con : connectors) {
+            try {
+                result &= othercon.contains(con);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
     
     
@@ -371,7 +396,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
                     if(ref instanceof NCLCausalConnector)
                         return createExternalRef(imp, (Ec) ref);
                     else
-                        return createExternalRef(imp, (Ec) ((ExternalReferenceType) ref).getTarget());
+                        return createExternalRef(imp, (Ec) ((R) ref).getTarget());
                 }
             }
         }
@@ -400,7 +425,7 @@ public class NCLConnectorBase<T extends NCLConnectorBase,
      * @return
      *          element representing a reference to a connector.
      */
-    protected ExternalReferenceType createExternalRef(Ei imp, Ec ref) throws XMLException {
-        return new ExternalReferenceType(imp, ref);
+    protected R createExternalRef(Ei imp, Ec ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
     }
 }

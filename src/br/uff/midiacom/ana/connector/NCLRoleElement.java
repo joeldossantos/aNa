@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.link.NCLBind;
 
 /**

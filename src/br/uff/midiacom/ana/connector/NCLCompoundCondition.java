@@ -38,14 +38,11 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import java.util.Iterator;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,19 +87,18 @@ import org.w3c.dom.NodeList;
  * @param <Ep>
  * @param <R> 
  */
-public class NCLCompoundCondition<T extends NCLCompoundCondition,
-                                  P extends NCLElement,
-                                  I extends NCLElementImpl,
+public class NCLCompoundCondition<T extends NCLElement,
                                   Ec extends NCLCondition,
                                   Es extends NCLStatement,
-                                  Ep extends NCLConnectorParam>
-        extends ParamElement<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep> {
+                                  Ep extends NCLConnectorParam,
+                                  Er extends NCLRoleElement>
+        extends ParamElement<T>
+        implements NCLCondition<T, Ep, Er> {
     
     protected NCLConditionOperator operator;
     protected Object delay;
-    protected ElementList<Ec, T> conditions;
-    protected ElementList<Es, T> statements;
+    protected ElementList<Ec> conditions;
+    protected ElementList<Es> statements;
     
 
     /**
@@ -111,10 +107,10 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLCompoundCondition() throws XMLException {
+    public NCLCompoundCondition() {
         super();
-        conditions = new ElementList<Ec, T>();
-        statements = new ElementList<Es, T>();
+        conditions = new ElementList<Ec>();
+        statements = new ElementList<Es>();
     }
 
 
@@ -146,7 +142,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         
         NCLConditionOperator aux = this.operator;
         this.operator = operator;
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+        notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
     
@@ -188,8 +184,9 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      *          if the element representing the condition is null.
      */
     public boolean addCondition(Ec condition) throws XMLException {
-        if(conditions.add(condition, (T) this)){
-            impl.notifyInserted(NCLElementSets.CONDITIONS, condition);
+        if(conditions.add(condition)){
+            notifyInserted((T) condition);
+            condition.setParent(this);
             return true;
         }
         return false;
@@ -209,7 +206,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      */
     public boolean removeCondition(Ec condition) throws XMLException {
         if(conditions.remove(condition)){
-            impl.notifyRemoved(NCLElementSets.CONDITIONS, condition);
+            notifyRemoved((T) condition);
+            condition.setParent(null);
             return true;
         }
         return false;
@@ -252,7 +250,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      * @return 
      *          element list with all conditions.
      */
-    public ElementList<Ec, T> getConditions() {
+    public ElementList<Ec> getConditions() {
         return conditions;
     }
 
@@ -269,8 +267,9 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      *          if the element representing the statement is null.
      */
     public boolean addStatement(Es statement) throws XMLException {
-        if(statements.add(statement, (T) this)){
-            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
+        if(statements.add(statement)){
+            notifyInserted((T) statement);
+            statement.setParent(this);
             return true;
         }
         return false;
@@ -290,7 +289,8 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      */
     public boolean removeStatement(Es statement) throws XMLException {
         if(statements.remove(statement)){
-            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
+            notifyRemoved((T) statement);
+            statement.setParent(null);
             return true;
         }
         return false;
@@ -333,7 +333,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
      * @return 
      *          element list with all statements.
      */
-    public ElementList<Es, T> getStatements() {
+    public ElementList<Es> getStatements() {
         return statements;
     }
 
@@ -344,7 +344,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         
         if(delay == null){
             this.delay = delay;
-            impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+            notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -372,7 +372,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
@@ -383,17 +383,14 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
     
     
     @Override
-    public boolean compare(Ec other) {
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLCompoundCondition))
+            return false;
+        
         boolean comp = true;
 
         String this_cond, other_cond;
-        NCLCompoundCondition other_comp;
-
-        // Verifica se sao do mesmo tipo
-        if(!(other instanceof NCLCompoundCondition))
-            return false;
-
-        other_comp = (NCLCompoundCondition) other;
+        NCLCompoundCondition other_comp = (NCLCompoundCondition) other;
         
         // Compara pelo operador
         if(getOperator() == null) this_cond = ""; else this_cond = getOperator().toString();
@@ -405,34 +402,25 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
         if(other_comp.getDelay() == null) other_cond = ""; else other_cond = other_comp.getDelay().toString();
         comp &= this_cond.equals(other_cond);
 
-        // Compara o número de condicoes
-        comp &= conditions.size() == other_comp.getConditions().size();
-
-        // Compara as condicoes
-        Iterator it = other_comp.getConditions().iterator();
-        for(NCLCondition c : conditions){
-            if(!it.hasNext())
-                continue;
-            NCLCondition other_c = (NCLCondition) it.next();
-            comp &= c.compare(other_c);
-            if(comp)
+        ElementList otherlist = ((NCLCompoundCondition) other).getConditions();
+        comp &= conditions.size() == otherlist.size();
+        for (Ec aux : conditions) {
+            try {
+                comp &= otherlist.contains(aux);
+            } catch (XMLException ex) {}
+            if(!comp)
                 break;
         }
 
-        // Compara o número de statements
-        comp &= statements.size() == other_comp.getStatements().size();
-
-        // Compara as statements
-        it = other_comp.getStatements().iterator();
-        for(NCLStatement st : statements){
-            if(!it.hasNext())
-                continue;
-            NCLStatement other_st = (NCLStatement) it.next();
-            comp &= st.compare(other_st);
-            if(comp)
+        otherlist = ((NCLCompoundCondition) other).getStatements();
+        comp &= statements.size() == otherlist.size();
+        for (Es aux : statements) {
+            try {
+                comp &= otherlist.contains(aux);
+            } catch (XMLException ex) {}
+            if(!comp)
                 break;
         }
-
 
         return comp;
     }
@@ -542,7 +530,7 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " delay='$" + aux.toString() + "'";
+            return " delay='$" + ((Ep) aux).getName() + "'";
         else
             return " delay='" + aux.toString() + "s'";
     }
@@ -623,17 +611,17 @@ public class NCLCompoundCondition<T extends NCLCompoundCondition,
     
     
     @Override
-    public NCLRoleElement findRole(String name) {
-        NCLRoleElement result;
+    public Er findRole(String name) {
+        Er result;
         
         for(Ec condition : conditions){
-            result = condition.findRole(name);
+            result = (Er) condition.findRole(name);
             if(result != null)
                 return result;
         }
         
         for(Es statement : statements){
-            result = statement.findRole(name);
+            result = (Er) statement.findRole(name);
             if(result != null)
                 return result;
         }

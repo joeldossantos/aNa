@@ -38,7 +38,6 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
@@ -47,8 +46,8 @@ import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.enums.NCLKey;
 import br.uff.midiacom.ana.link.NCLBind;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -78,14 +77,12 @@ import org.w3c.dom.Element;
  * @param <Ep>
  * @param <R> 
  */
-public class NCLSimpleCondition<T extends NCLSimpleCondition,
-                                P extends NCLElement,
-                                I extends NCLElementImpl,
-                                Ec extends NCLCondition,
+public class NCLSimpleCondition<T extends NCLElement,
                                 Ep extends NCLConnectorParam,
+                                Er extends NCLRoleElement,
                                 Eb extends NCLBind>
-        extends ParamElement<Ec, P, I>
-        implements NCLCondition<Ec, P, Ep>, NCLRoleElement<Eb> {
+        extends ParamElement<T>
+        implements NCLCondition<T, Ep, Er>, NCLRoleElement<Eb> {
 
     protected Object key;
     protected Integer min;
@@ -96,7 +93,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     protected Object role;
     protected Object delay;
     
-    protected ElementList<Eb, NCLElement> references;
+    protected ElementList<Eb> references;
     
 
     /**
@@ -105,7 +102,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLSimpleCondition() throws XMLException {
+    public NCLSimpleCondition() {
         super();
     }
 
@@ -143,17 +140,17 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             for(NCLDefaultConditionRole drole : NCLDefaultConditionRole.values()){
                 if(name.equals(drole.toString())){
                     this.role = drole;
-                    impl.notifyAltered(NCLElementAttributes.ROLE, aux, drole);
+                    notifyAltered(NCLElementAttributes.ROLE, aux, drole);
                     return;
                 }
             }
             
             this.role = role;
-            impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+            notifyAltered(NCLElementAttributes.ROLE, aux, role);
         }
         else if(role instanceof NCLDefaultConditionRole){
             this.role = role;
-            impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+            notifyAltered(NCLElementAttributes.ROLE, aux, role);
         }
         else{
             throw new XMLException("Wrong role type.");
@@ -200,13 +197,13 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      * @throws XMLException 
      *          if the value is negative.
      */
-    public void setMin(Integer min) {
+    public void setMin(Integer min) throws XMLException {
         if(min != null && min < 0)
-            throw new IllegalArgumentException("Invalid min");
+            throw new XMLException("Invalid min");
 
         Integer aux = this.min;
         this.min = min;
-        impl.notifyAltered(NCLElementAttributes.MIN, aux, min);
+        notifyAltered(NCLElementAttributes.MIN, aux, min);
     }
 
 
@@ -245,7 +242,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         
         if(max == null){
             this.max = max;
-            impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+            notifyAltered(NCLElementAttributes.MAX, aux, max);
             return;
         }
         
@@ -272,7 +269,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             throw new XMLException("Wrong max type.");
 
         // notify the modification
-        impl.notifyAltered(NCLElementAttributes.MAX, aux, max);
+        notifyAltered(NCLElementAttributes.MAX, aux, max);
     }
 
 
@@ -319,10 +316,10 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      *          enumeration <i>NCLConditionOperator</i> or <i>null</i> to erase
      *          a qualifier already defined.
      */
-    public void setQualifier(NCLConditionOperator qualifier) {
+    public void setQualifier(NCLConditionOperator qualifier) throws XMLException {
         NCLConditionOperator aux = this.qualifier;
         this.qualifier = qualifier;
-        impl.notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
+        notifyAltered(NCLElementAttributes.QUALIFIER, aux, qualifier);
     }
 
 
@@ -383,7 +380,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         
         if(key == null){
             this.key = key;
-            impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+            notifyAltered(NCLElementAttributes.KEY, aux, key);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -411,7 +408,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         else
             throw new XMLException("Wrong key type.");
         
-        impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+        notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
 
 
@@ -450,10 +447,10 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      *          <i>NCLEventType</i> or <i>null</i> to erase an event type
      *          already defined.
      */
-    public void setEventType(NCLEventType eventType) {
+    public void setEventType(NCLEventType eventType) throws XMLException {
         NCLEventType aux = this.eventType;
         this.eventType = eventType;
-        impl.notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
+        notifyAltered(NCLElementAttributes.EVENTTYPE, aux, eventType);
     }
 
 
@@ -488,10 +485,10 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
      *          <i>NCLEventTransition</i> or <i>null</i> to erase a transition
      *          already defined.
      */
-    public void setTransition(NCLEventTransition transition) {
+    public void setTransition(NCLEventTransition transition) throws XMLException {
         NCLEventTransition aux = this.transition;
         this.transition = transition;
-        impl.notifyAltered(NCLElementAttributes.TRANSITION, aux, transition);
+        notifyAltered(NCLElementAttributes.TRANSITION, aux, transition);
     }
 
 
@@ -521,7 +518,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         
         if(delay == null){
             this.delay = delay;
-            impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+            notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -549,7 +546,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
@@ -560,17 +557,14 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
 
     
     @Override
-    public boolean compare(Ec other) {
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLSimpleCondition))
+            return false;
+        
         boolean comp = true;
 
         String this_cond, other_cond;
-        NCLSimpleCondition other_simp;
-
-        // Verifica se sao do mesmo tipo
-        if(!(other instanceof NCLSimpleCondition))
-            return false;
-
-         other_simp = (NCLSimpleCondition) other;
+        NCLSimpleCondition other_simp = (NCLSimpleCondition) other;
 
         // Compara pelo role
         if(getRole() == null) this_cond = ""; else this_cond = getRole().toString();
@@ -578,7 +572,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         comp &= this_cond.equals(other_cond);
 
         // Compara pelo número mínimo
-        
         int this_min, other_min;
         if(getMin() == null) this_min = 0; else this_min = getMin();
         if(other_simp.getMin() == null) other_min = 0; else other_min = other_simp.getMin();
@@ -613,7 +606,6 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
         if(getTransition() == null) this_cond = ""; else this_cond = getTransition().toString();
         if(other_simp.getTransition() == null) other_cond = ""; else other_cond = other_simp.getTransition().toString();
         comp &= this_cond.equals(other_cond);
-
 
         return comp;
     }
@@ -700,7 +692,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " key='$" + aux.toString() + "'";
+            return " key='$" + ((Ep) aux).getName() + "'";
         else
             return " key='" + aux.toString() + "'";
     }
@@ -722,7 +714,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " delay='$" + aux.toString() + "'";
+            return " delay='$" + ((Ep) aux).getName() + "'";
         else
             return " delay='" + aux.toString() + "s'";
     }
@@ -838,9 +830,9 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     }
     
     
-    public NCLRoleElement findRole(String name) {
+    public Er findRole(String name) {
         if(role.toString().equals(name))
-            return this;
+            return (Er) this;
         else
             return null;
     }
@@ -848,7 +840,7 @@ public class NCLSimpleCondition<T extends NCLSimpleCondition,
     
     @Override
     public boolean addReference(Eb reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     

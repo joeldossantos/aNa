@@ -38,15 +38,12 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import java.util.Iterator;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,16 +80,15 @@ import org.w3c.dom.NodeList;
  * @param <I>
  * @param <Es> 
  */
-public class NCLCompoundStatement<T extends NCLCompoundStatement,
-                                  P extends NCLElement,
-                                  I extends NCLElementImpl,
-                                  Es extends NCLStatement>
-        extends NCLElementPrototype<Es, P, I>
-        implements NCLStatement<Es, P> {
+public class NCLCompoundStatement<T extends NCLElement,
+                                  Es extends NCLStatement,
+                                  Er extends NCLRoleElement>
+        extends NCLElementPrototype<T>
+        implements NCLStatement<T, Er> {
 
     protected NCLOperator operator;
     protected Boolean isNegated;
-    protected ElementList<Es, T> statements;
+    protected ElementList<Es> statements;
 
 
     /**
@@ -101,9 +97,9 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLCompoundStatement() throws XMLException {
+    public NCLCompoundStatement() {
         super();
-        statements = new ElementList<Es, T>();
+        statements = new ElementList<Es>();
     }
     
     
@@ -135,7 +131,7 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
         
         NCLOperator aux = this.operator;
         this.operator = operator;
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+        notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
     
@@ -179,10 +175,10 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
      *          boolean indicating if the compound statement is negated or
      *          <i>null</i> to erase an isNegated already defined.
      */
-    public void setIsNegated(Boolean isNegated) {
+    public void setIsNegated(Boolean isNegated) throws XMLException {
         Boolean aux = this.isNegated;
         this.isNegated = isNegated;
-        impl.notifyAltered(NCLElementAttributes.ISNEGATED, aux, isNegated);
+        notifyAltered(NCLElementAttributes.ISNEGATED, aux, isNegated);
     }
     
     
@@ -216,8 +212,9 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
      *          if the element representing the statement is null.
      */
     public boolean addStatement(Es statement) throws XMLException {
-        if(statements.add(statement, (T) this)){
-            impl.notifyInserted(NCLElementSets.STATEMENTS, statement);
+        if(statements.add(statement)){
+            notifyInserted((T) statement);
+            statement.setParent(this);
             return true;
         }
         return false;
@@ -237,7 +234,8 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
      */
     public boolean removeStatement(Es statement) throws XMLException {
         if(statements.remove(statement)){
-            impl.notifyRemoved(NCLElementSets.STATEMENTS, statement);
+            notifyRemoved((T) statement);
+            statement.setParent(null);
             return true;
         }
         return false;
@@ -279,23 +277,20 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
      * @return 
      *          element list with all statements.
      */
-    public ElementList<Es, T> getStatements() {
+    public ElementList<Es> getStatements() {
         return statements;
     }
     
     
     @Override
-    public boolean compare(Es other) {
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLCompoundStatement))
+            return false;
+        
         boolean comp = true;
 
         String this_stat, other_stat;
-        NCLCompoundStatement other_comp;
-
-        // Verifica se sao do mesmo tipo
-        if(!(other instanceof NCLCompoundStatement))
-            return false;
-
-        other_comp = (NCLCompoundStatement) other;
+        NCLCompoundStatement other_comp = (NCLCompoundStatement) other;
         
         // Compara pelo operador
         if(getOperator() == null) this_stat = ""; else this_stat = getOperator().toString();
@@ -307,25 +302,21 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
         if(other_comp.getIsNegated() == null) other_stat = ""; else other_stat = other_comp.getIsNegated().toString();
         comp &= this_stat.equals(other_stat);
 
-        // Compara o número de statements
-        comp &= statements.size() == other_comp.getStatements().size();
-
-        // Compara as statements
-        Iterator it = other_comp.getStatements().iterator();
-        for(NCLStatement st : statements){
-            if(!it.hasNext())
-                continue;
-            NCLStatement other_st = (NCLStatement) it.next();
-            comp &= st.compare(other_st);
-            if(comp)
+        ElementList<Es> otherlist = ((NCLCompoundStatement) other).getStatements();
+        comp &= statements.size() == otherlist.size();
+        for (Es aux : statements) {
+            try {
+                comp &= otherlist.contains(aux);
+            } catch (XMLException ex) {}
+            if(!comp)
                 break;
         }
-
 
         return comp;
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -349,8 +340,8 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
         NodeList nl;
 
         try{
@@ -472,11 +463,11 @@ public class NCLCompoundStatement<T extends NCLCompoundStatement,
     
     
     @Override
-    public NCLRoleElement findRole(String name) {
-        NCLRoleElement result;
+    public Er findRole(String name) {
+        Er result;
         
         for(Es statement : statements){
-            result =  statement.findRole(name);
+            result = (Er) statement.findRole(name);
             if(result != null)
                 return result;
         }

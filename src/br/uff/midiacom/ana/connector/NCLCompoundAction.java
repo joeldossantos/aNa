@@ -38,14 +38,11 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import java.util.Iterator;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,17 +80,16 @@ import org.w3c.dom.NodeList;
  * @param <Ep>
  * @param <R> 
  */
-public class NCLCompoundAction<T extends NCLCompoundAction,
-                               P extends NCLElement,
-                               I extends NCLElementImpl,
+public class NCLCompoundAction<T extends NCLElement,
                                Ea extends NCLAction,
-                               Ep extends NCLConnectorParam>
-        extends ParamElement<Ea, P, I>
-        implements NCLAction<Ea, P, Ep> {
+                               Ep extends NCLConnectorParam,
+                               Er extends NCLRoleElement>
+        extends ParamElement<T>
+        implements NCLAction<T, Ep, Er> {
 
     protected NCLActionOperator operator;
     protected Object delay;
-    protected ElementList<Ea, T> actions;
+    protected ElementList<Ea> actions;
 
 
     /**
@@ -102,9 +98,9 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLCompoundAction() throws XMLException {
+    public NCLCompoundAction() {
         super();
-        actions = new ElementList<Ea, T>();
+        actions = new ElementList<Ea>();
     }
     
     
@@ -136,7 +132,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
         
         NCLActionOperator aux = this.operator;
         this.operator = operator;
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+        notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
     
     
@@ -178,8 +174,9 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
      *          if the element representing the action is null.
      */
     public boolean addAction(Ea action) throws XMLException {
-        if(actions.add(action, (T) this)){
-            impl.notifyInserted(NCLElementSets.ACTIONS, action);
+        if(actions.add(action)){
+            notifyInserted((T) action);
+            action.setParent(this);
             return true;
         }
         return false;
@@ -199,7 +196,8 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
      */
     public boolean removeAction(Ea action) throws XMLException {
         if(actions.remove(action)){
-            impl.notifyRemoved(NCLElementSets.ACTIONS, action);
+            notifyRemoved((T) action);
+            action.setParent(null);
             return true;
         }
         return false;
@@ -241,7 +239,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
      * @return 
      *          element list with all actions.
      */
-    public ElementList<Ea, T> getActions() {
+    public ElementList<Ea> getActions() {
         return actions;
     }
 
@@ -252,7 +250,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
         
         if(delay == null){
             this.delay = delay;
-            impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+            notifyAltered(NCLElementAttributes.DELAY, aux, delay);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -280,7 +278,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
         else
             throw new XMLException("Wrong delay type.");
         
-        impl.notifyAltered(NCLElementAttributes.DELAY, aux, delay);
+        notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
 
 
@@ -291,17 +289,14 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
     
     
     @Override
-    public boolean compare(Ea other) {
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLCompoundAction))
+            return false;
+        
         boolean comp = true;
 
         String this_act, other_act;
-        NCLCompoundAction other_comp;
-
-        // Verify if actions are of the same type
-        if(!(other instanceof NCLCompoundAction))
-            return false;
-
-        other_comp = (NCLCompoundAction) other;
+        NCLCompoundAction other_comp = (NCLCompoundAction) other;
         
         // Compare the operator
         if(getOperator() == null) this_act = ""; else this_act = getOperator().toString();
@@ -313,20 +308,15 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
         if(other_comp.getDelay() == null) other_act = ""; else other_act = other_comp.getDelay().toString();
         comp &= this_act.equals(other_act);
 
-        // Compare the number of actions
-        comp &= actions.size() == other_comp.getActions().size();
-
-        // Compare the actions
-        Iterator it = other_comp.getActions().iterator();
-        for(NCLAction a : actions){
-            if(!it.hasNext())
-                continue;
-            NCLAction other_a = (NCLAction) it.next();
-            comp &= a.compare(other_a);
-            if(comp)
+        ElementList<Ea> otherlist = ((NCLCompoundAction) other).getActions();
+        comp &= actions.size() == otherlist.size();
+        for (Ea aux : actions) {
+            try {
+                comp &= otherlist.contains(aux);
+            } catch (XMLException ex) {}
+            if(!comp)
                 break;
         }
-
         
         return comp;
     }
@@ -434,7 +424,7 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " delay='$" + aux.toString() + "'";
+            return " delay='$" + ((Ep) aux).getName() + "'";
         else
             return " delay='" + aux.toString() + "s'";
     }
@@ -483,11 +473,11 @@ public class NCLCompoundAction<T extends NCLCompoundAction,
     
     
     @Override
-    public NCLRoleElement findRole(String name) {
-        NCLRoleElement result;
+    public Er findRole(String name) {
+        Er result;
         
         for(Ea action : actions){
-            result = action.findRole(name);
+            result = (Er) action.findRole(name);
             if(result != null)
                 return result;
         }

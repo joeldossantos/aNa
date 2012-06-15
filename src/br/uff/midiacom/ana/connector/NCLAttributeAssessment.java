@@ -38,15 +38,14 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLEventType;
 import br.uff.midiacom.ana.datatype.enums.NCLKey;
 import br.uff.midiacom.ana.link.NCLBind;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -74,13 +73,12 @@ import org.w3c.dom.Element;
  * @param <Ep>
  * @param <R> 
  */
-public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
-                                    P extends NCLElement,
-                                    I extends NCLElementImpl,
+public class NCLAttributeAssessment<T extends NCLElement,
                                     Ep extends NCLConnectorParam,
-                                    Eb extends NCLBind>
-        extends ParamElement<T, P, I>
-        implements NCLElement<T, P>, NCLRoleElement<Eb> {
+                                    Eb extends NCLBind,
+                                    Er extends NCLRoleElement>
+        extends ParamElement<T>
+        implements NCLElement<T>, NCLRoleElement<Eb> {
 
     protected String role;
     protected NCLEventType eventType;
@@ -88,7 +86,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     protected NCLAttributeType attributeType;
     protected Object offset;
     
-    protected ElementList<Eb, NCLElement> references;
+    protected ElementList<Eb> references;
     
 
     /**
@@ -97,7 +95,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLAttributeAssessment() throws XMLException {
+    public NCLAttributeAssessment() {
         super();
     }
 
@@ -123,7 +121,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         
         String aux = this.role;
         this.role = role;
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        notifyAltered(NCLElementAttributes.ROLE, aux, role);
     }
     
     
@@ -162,7 +160,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         
         NCLEventType aux = this.eventType;
         this.eventType = eventType;
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, eventType);
+        notifyAltered(NCLElementAttributes.ROLE, aux, eventType);
     }
     
     
@@ -208,7 +206,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         
         if(key == null){
             this.key = key;
-            impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+            notifyAltered(NCLElementAttributes.KEY, aux, key);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -236,7 +234,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         else
             throw new XMLException("Wrong key type.");
         
-        impl.notifyAltered(NCLElementAttributes.KEY, aux, key);
+        notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
     
     
@@ -274,10 +272,10 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
      *          <i>NCLAttributeType</i> or <i>null</i> to erase an attribute
      *          already defined.
      */
-    public void setAttributeType(NCLAttributeType attributeType) {
+    public void setAttributeType(NCLAttributeType attributeType) throws XMLException {
         NCLAttributeType aux = this.attributeType;
         this.attributeType = attributeType;
-        impl.notifyAltered(NCLElementAttributes.ATTRIBUTETYPE, aux, attributeType);
+        notifyAltered(NCLElementAttributes.ATTRIBUTETYPE, aux, attributeType);
     }
     
     
@@ -320,7 +318,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         
         if(offset == null){
             this.offset = offset;
-            impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
+            notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
             
             if(aux != null && aux instanceof NCLConnectorParam)
                 ((Ep) aux).removeReference(this);
@@ -348,7 +346,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
         else
             throw new XMLException("Wrong repeat type.");
         
-        impl.notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
+        notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
     }
     
     
@@ -375,34 +373,39 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     }
 
     
+    @Override
     public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLAttributeAssessment))
+            return false;
+        
         boolean comp = true;
 
         String this_att, other_att;
+        NCLAttributeAssessment otheratt = (NCLAttributeAssessment) other;
 
         // Compara pelo role
         if(getRole() == null) this_att = ""; else this_att = getRole().toString();
-        if(other.getRole() == null) other_att = ""; else other_att = other.getRole().toString();
+        if(otheratt.getRole() == null) other_att = ""; else other_att = otheratt.getRole().toString();
         comp &= this_att.equals(other_att);
 
         // Compara pelo tipo do evento
         if(getEventType() == null) this_att = ""; else this_att = getEventType().toString();
-        if(other.getEventType() == null) other_att = ""; else other_att = other.getEventType().toString();
+        if(otheratt.getEventType() == null) other_att = ""; else other_att = otheratt.getEventType().toString();
         comp &= this_att.equals(other_att);
 
         // Compara pelo tipo do atributo
         if(getAttributeType() == null) this_att = ""; else this_att = getAttributeType().toString();
-        if(other.getAttributeType() == null) other_att = ""; else other_att = other.getAttributeType().toString();
+        if(otheratt.getAttributeType() == null) other_att = ""; else other_att = otheratt.getAttributeType().toString();
         comp &= this_att.equals(other_att);
 
         // Compara pelo offset
         if(getOffset() == null) this_att = ""; else this_att = getOffset().toString();
-        if(other.getOffset() == null) other_att = ""; else other_att = other.getOffset().toString();
+        if(otheratt.getOffset() == null) other_att = ""; else other_att = otheratt.getOffset().toString();
         comp &= this_att.equals(other_att);
 
         // Compara pela tecla
         if(getKey() == null) this_att = ""; else this_att = getKey().toString();
-        if(other.getKey() == null) other_att = ""; else other_att = other.getKey().toString();
+        if(otheratt.getKey() == null) other_att = ""; else other_att = otheratt.getKey().toString();
         comp &= this_att.equals(other_att);
 
 
@@ -410,6 +413,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -429,6 +433,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
         try{
             loadRole(element);
@@ -504,7 +509,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " key='$" + aux.toString() + "'";
+            return " key='$" + ((Ep) aux).getName() + "'";
         else
             return " key='" + aux.toString() + "'";
     }
@@ -545,7 +550,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
             return "";
         
         if(aux instanceof NCLConnectorParam)
-            return " offset='$" + aux.toString() + "'";
+            return " offset='$" + ((Ep) aux).getName() + "'";
         else
             return " offset='" + aux.toString() + "'";
     }
@@ -561,9 +566,9 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     }
     
     
-    public NCLRoleElement findRole(String name) {
+    public Er findRole(String name) {
         if(role.toString().equals(name))
-            return this;
+            return (Er) this;
         else
             return null;
     }
@@ -571,7 +576,7 @@ public class NCLAttributeAssessment<T extends NCLAttributeAssessment,
     
     @Override
     public boolean addReference(Eb reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     

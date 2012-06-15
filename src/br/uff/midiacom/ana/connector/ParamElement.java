@@ -38,34 +38,31 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 
 /**
  * Class that searches for connector parameters.
  */
-public abstract class ParamElement<T extends NCLElement,
-                          P extends NCLElement,
-                          I extends NCLElementImpl>
-        extends NCLElementPrototype<T, P, I> {
+public abstract class ParamElement<T extends NCLElement>
+        extends NCLElementPrototype<T> {
     
     
-    public ParamElement() throws XMLException {
+    public ParamElement() {
         super();
     }
     
     
-    protected P findConnectorParam(String name) throws XMLException {
-        P connector = (P) getParent();
+    protected T findConnectorParam(String name) throws XMLException {
+        T connector = (T) getParent();
         while(!(connector instanceof NCLCausalConnector)){
-            connector = (P) connector.getParent();
+            connector = (T) connector.getParent();
             if(connector == null)
                 throw new NCLParsingException("Could not find a parent connector");
         }
 
-        P par = (P) ((NCLCausalConnector) connector).getConnectorParams().get(name);
+        T par = (T) ((NCLCausalConnector) connector).getConnectorParams().get(name);
         if(par == null)
             throw new NCLParsingException("Could not find a param in connector with name: " + name);
 

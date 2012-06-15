@@ -38,15 +38,12 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -66,16 +63,14 @@ import org.w3c.dom.Element;
  * @param <P>
  * @param <I> 
  */
-public class NCLConnectorParam<T extends NCLConnectorParam,
-                               P extends NCLElement,
-                               I extends NCLElementImpl,
+public class NCLConnectorParam<T extends NCLElement,
                                Ep extends NCLElement>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P>, ReferredElement<Ep> {
+        extends NCLNamedElementPrototype<T, String>
+        implements NCLElement<T>, ReferredElement<Ep> {
     
-    protected StringType type;
+    protected String type;
     
-    protected ElementList<Ep, NCLElement> references;
+    protected ElementList<Ep> references;
     
     
     /**
@@ -84,30 +79,16 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLConnectorParam() throws XMLException {
+    public NCLConnectorParam() {
         super();
-        references = new ElementList<Ep, NCLElement>();
+        references = new ElementList<Ep>();
     }
     
     
     public NCLConnectorParam(String name) throws XMLException {
         super();
-        references = new ElementList<Ep, NCLElement>();
+        references = new ElementList<Ep>();
         setName(name);
-    }
-    
-    
-    @Deprecated
-    @Override
-    public void setId(String id) throws XMLException {
-        super.setId(id);
-    }
-    
-    
-    @Deprecated
-    @Override
-    public String getId() {
-        return super.getId();
     }
     
     
@@ -124,13 +105,14 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
      * @throws XMLException 
      *          if the name is null or empty.
      */
+    @Override
     public void setName(String name) throws XMLException {
         if(name == null)
             throw new XMLException("Null name.");
         
         String aux = this.getName();
-        super.setId(name);
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, name);
+        this.name = name;
+        notifyAltered(NCLElementAttributes.NAME, aux, name);
     }
     
     
@@ -146,8 +128,9 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
      *          string representing the name of the parameter or <i>null</i> if
      *          the attribute is not defined.
      */
+    @Override
     public String getName() {
-        return super.getId();
+        return super.getName();
     }
     
     
@@ -162,9 +145,9 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
      *          if the string is empty.
      */
     public void setType(String type) throws XMLException {
-        StringType aux = this.type;
-        this.type = new StringType(type);
-        impl.notifyAltered(NCLElementAttributes.TYPE, aux, type);
+        String aux = this.type;
+        this.type = type;
+        notifyAltered(NCLElementAttributes.TYPE, aux, type);
     }
 
 
@@ -177,10 +160,23 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
      *          the attribute is not defined.
      */
     public String getType() {
-        if(type == null)
-            return null;
-        else
-            return type.getValue();
+        return type;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLConnectorParam))
+            return false;
+        
+        boolean result = true;
+        String aux;
+        
+        if((aux = getName()) != null)
+            result &= aux.equals(((NCLConnectorParam) other).getName());
+        if((aux = getType()) != null)
+            result &= aux.equals(((NCLConnectorParam) other).getType());
+        return result;
     }
     
     
@@ -274,7 +270,7 @@ public class NCLConnectorParam<T extends NCLConnectorParam,
     
     @Override
     public boolean addReference(Ep reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     

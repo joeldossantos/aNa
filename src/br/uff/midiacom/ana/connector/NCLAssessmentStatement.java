@@ -38,14 +38,12 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
 import java.util.Iterator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -87,18 +85,17 @@ import org.w3c.dom.NodeList;
  * @param <Ev>
  * @param <Es> 
  */
-public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
-                                    P extends NCLElement,
-                                    I extends NCLElementImpl,
+public class NCLAssessmentStatement<T extends NCLElement,
                                     Ea extends NCLAttributeAssessment,
                                     Ep extends NCLConnectorParam,
-                                    Es extends NCLStatement>
-        extends ParamElement<Es, P, I>
-        implements NCLStatement<Es, P> {
+                                    Es extends NCLStatement,
+                                    Er extends NCLRoleElement>
+        extends ParamElement<T>
+        implements NCLStatement<T, Er> {
 
     protected NCLComparator comparator;
     protected Object valueAssessment;
-    protected ElementList<Ea, T> attributeAssessments;
+    protected ElementList<Ea> attributeAssessments;
 
 
     /**
@@ -107,9 +104,9 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLAssessmentStatement() throws XMLException {
+    public NCLAssessmentStatement() {
         super();
-        attributeAssessments = new ElementList<Ea, T>();
+        attributeAssessments = new ElementList<Ea>();
     }
 
 
@@ -130,7 +127,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
         
         NCLComparator aux = this.comparator;
         this.comparator = comparator;
-        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
+        notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
     }
     
     
@@ -164,7 +161,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
         
         if(valueAssessment == null){
             this.valueAssessment = valueAssessment;
-            impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
+            notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
             
             if(aux != null && aux instanceof NCLCausalConnector)
                 ((Ep) aux).removeReference(this);
@@ -195,7 +192,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
         else
             throw new XMLException("Wrong repeat type.");
         
-        impl.notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
+        notifyAltered(NCLElementAttributes.VALUEASSESSMENT, aux, valueAssessment);
     }
     
     
@@ -231,8 +228,9 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
         if(attributeAssessments.size() == 2)
             throw new XMLException("can't have more than two attributes");
         
-        if(attributeAssessments.add(attribute, (T) this)){
-            impl.notifyInserted(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
+        if(attributeAssessments.add(attribute)){
+            notifyInserted((T) attribute);
+            attribute.setParent(this);
             return true;
         }
         return false;
@@ -252,7 +250,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      */
     public boolean removeAttributeAssessment(Ea attribute) throws XMLException {
         if(attributeAssessments.remove(attribute)){
-            impl.notifyRemoved(NCLElementSets.ATTRIBUTEASSESSMENTS, attribute);
+            notifyRemoved((T) attribute);
+            attribute.setParent(null);
             return true;
         }
         return false;
@@ -298,23 +297,20 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
      * @return 
      *          element list with all attribute assessments.
      */
-    public ElementList<Ea, T> getAttributeAssessments() {
+    public ElementList<Ea> getAttributeAssessments() {
         return attributeAssessments;
     }
     
     
     @Override
-    public boolean compare(Es other) {
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLAssessmentStatement))
+            return false;
+        
         boolean comp = true;
 
         String this_stat, other_stat;
-        NCLAssessmentStatement other_asses;
-
-        // Verifica se sao do mesmo tipo
-        if(!(other instanceof NCLAssessmentStatement))
-            return false;
-
-        other_asses = (NCLAssessmentStatement) other;
+        NCLAssessmentStatement other_asses = (NCLAssessmentStatement) other;
         
         // Compara pelo comparador
         if(getComparator() == null) this_stat = ""; else this_stat = getComparator().toString();
@@ -344,6 +340,7 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
     }
     
     
+    @Override
     public String parse(int ident) {
         String space, content;
 
@@ -367,8 +364,8 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
     }
 
 
+    @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
         NodeList nl;
 
         try{
@@ -460,6 +457,10 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
     
     
     protected String parseValueAssessment(int ident) {
+        Object aux = getValueAssessment();
+        if(aux == null)
+            return "";
+        
         String space, content;
 
         if(ident < 0)
@@ -471,11 +472,10 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
             space += "\t";
 
         content = space + "<valueAssessment";
-        Object aux = getValueAssessment();
-        if(aux != null)
-            content += " value='" + aux.toString() + "'";
+        if(aux instanceof NCLConnectorParam)
+            content += " value='$" + ((Ep) aux).getName() + "'";
         else
-            content += "";
+            content += " value='" + aux.toString() + "'";
         content += "/>\n";
 
         return content;
@@ -503,11 +503,11 @@ public class NCLAssessmentStatement<T extends NCLAssessmentStatement,
     
     
     @Override
-    public NCLRoleElement findRole(String name) {
-        NCLRoleElement result;
+    public Er findRole(String name) {
+        Er result;
         
         for(Ea attribute : attributeAssessments){
-            result = attribute.findRole(name);
+            result = (Er) attribute.findRole(name);
             if(result != null)
                 return result;
         }

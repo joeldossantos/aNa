@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**
@@ -50,10 +50,10 @@ import br.uff.midiacom.xml.XMLException;
  * @param <Ep>
  * @param <R> 
  */
-public interface NCLCondition<T extends NCLCondition,
-                              P extends NCLElement,
-                              Ep extends NCLConnectorParam>
-        extends NCLElement<T, P> {
+public interface NCLCondition<T extends NCLElement,
+                              Ep extends NCLConnectorParam,
+                              Er extends NCLRoleElement>
+        extends NCLElement<T> {
 
 
     /**
@@ -108,5 +108,5 @@ public interface NCLCondition<T extends NCLCondition,
      * @return 
      *          role or null if no role was found.
      */
-    public NCLRoleElement findRole(String name);
+    public Er findRole(String name);
 }
