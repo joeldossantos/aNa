@@ -106,7 +106,7 @@ public class NCLRegionBase<T extends NCLElement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLRegionBase() throws XMLException {
+    public NCLRegionBase() {
         super();
         regions = new IdentifiableElementList<Er>();
     }
