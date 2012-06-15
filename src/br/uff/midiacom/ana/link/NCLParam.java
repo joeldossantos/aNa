@@ -39,13 +39,13 @@ package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLKey;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import org.w3c.dom.Element;
 
 
@@ -68,12 +68,11 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <Ec> 
  */
-public abstract class NCLParam<T extends NCLParam,
-                               P extends NCLElement,
-                               I extends NCLElementImpl,
-                               Ec extends NCLConnectorParam>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+public abstract class NCLParam<T extends NCLElement,
+                               Ec extends NCLConnectorParam,
+                               R extends ExternalReferenceType>
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
     protected Ec name;
     protected Object value;
@@ -115,7 +114,7 @@ public abstract class NCLParam<T extends NCLParam,
         this.name = connectorParam;
         this.name.addReference(this);
         
-        impl.notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
+        notifyAltered(NCLElementAttributes.NAME, aux, connectorParam);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -158,7 +157,7 @@ public abstract class NCLParam<T extends NCLParam,
             value = convertValue((String) value);
         
         this.value = value;
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+        notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
     
@@ -223,10 +222,24 @@ public abstract class NCLParam<T extends NCLParam,
     
     @Override
     public boolean compare(T other) {
-        if(other == null)
+        if(other == null || !(other instanceof NCLParam))
             return false;
         
-        return getName().equals(other.getName());
+        boolean result = true;
+        Object aux;
+        
+        Object oaux = ((NCLParam) other).getName();
+        if((aux = getName()) != null && oaux != null){
+            if(aux instanceof NCLConnectorParam && oaux instanceof NCLConnectorParam)
+                result &= ((Ec) aux).compare((Ec) oaux);
+            else if(aux instanceof ExternalReferenceType && oaux instanceof ExternalReferenceType)
+                result &= ((R) aux).equals((R) oaux);
+            else
+                result = false;
+        }
+        if((aux = getValue()) != null)
+            result &= aux.equals(((NCLParam) other).getValue());
+        return result;
     }
 
 

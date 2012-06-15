@@ -38,21 +38,21 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLBody;
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.connector.*;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.node.NCLNode;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import java.util.Iterator;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -92,22 +92,21 @@ import org.w3c.dom.NodeList;
  * @param <Ed>
  * @param <Ep> 
  */
-public class NCLBind<T extends NCLBind,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
+public class NCLBind<T extends NCLElement,
                      Er extends NCLRoleElement,
                      En extends NCLNode,
                      Ei extends NCLInterface,
-                     Ed extends NCLLayoutDescriptor,
-                     Ep extends NCLBindParam>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P>{
+                     El extends NCLLayoutDescriptor,
+                     Ep extends NCLBindParam,
+                     R extends ExternalReferenceType>
+        extends NCLElementPrototype<T>
+        implements NCLElement<T>{
 
     protected Er role;
     protected En component;
     protected Ei interfac;
     protected Object descriptor;
-    protected ElementList<Ep, T> bindParams;
+    protected ElementList<Ep> bindParams;
     
 
     /**
@@ -118,7 +117,7 @@ public class NCLBind<T extends NCLBind,
      */
     public NCLBind() throws XMLException {
         super();
-        bindParams = new ElementList<Ep, T>();
+        bindParams = new ElementList<Ep>();
     }
 
 
@@ -146,7 +145,7 @@ public class NCLBind<T extends NCLBind,
         this.role = role;
         this.role.addReference(this);
         
-        impl.notifyAltered(NCLElementAttributes.ROLE, aux, role);
+        notifyAltered(NCLElementAttributes.ROLE, aux, role);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -194,7 +193,7 @@ public class NCLBind<T extends NCLBind,
         this.component = component;
         this.component.addReference(this);
         
-        impl.notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
+        notifyAltered(NCLElementAttributes.COMPONENT, aux, component);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -243,7 +242,7 @@ public class NCLBind<T extends NCLBind,
             this.interfac.addReference(this);
         }
         
-        impl.notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
+        notifyAltered(NCLElementAttributes.INTERFACE, aux, interfac);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -293,24 +292,24 @@ public class NCLBind<T extends NCLBind,
         
         if(descriptor instanceof NCLLayoutDescriptor){
             this.descriptor = descriptor;
-            ((Ed) descriptor).addReference(this);
+            ((El) descriptor).addReference(this);
             
         }
         else if(descriptor instanceof ExternalReferenceType){
             this.descriptor = descriptor;
-            ((ExternalReferenceType) descriptor).getTarget().addReference(this);
-            ((ExternalReferenceType) descriptor).getAlias().addReference(this);
+            ((R) descriptor).getTarget().addReference(this);
+            ((R) descriptor).getAlias().addReference(this);
         }
         
         this.descriptor = descriptor;
-        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
+        notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, descriptor);
         
         if(aux != null){
             if(aux instanceof NCLLayoutDescriptor)
-                ((Ed) descriptor).removeReference(this);
+                ((El) descriptor).removeReference(this);
             else{
-                ((ExternalReferenceType) descriptor).getTarget().removeReference(this);
-                ((ExternalReferenceType) descriptor).getAlias().removeReference(this);
+                ((R) descriptor).getTarget().removeReference(this);
+                ((R) descriptor).getAlias().removeReference(this);
             }
         }
     }
@@ -350,8 +349,9 @@ public class NCLBind<T extends NCLBind,
      *          if the element representing the parameter is null.
      */
     public boolean addBindParam(Ep param) throws XMLException {
-        if(bindParams.add(param, (T) this)){
-            impl.notifyInserted(NCLElementSets.BINDPARAMS, param);
+        if(bindParams.add(param)){
+            notifyInserted((T) param);
+            param.setParent(this);
             return true;
         }
         return false;
@@ -372,7 +372,8 @@ public class NCLBind<T extends NCLBind,
      */
     public boolean removeBindParam(Ep param) throws XMLException {
         if(bindParams.remove(param)){
-            impl.notifyRemoved(NCLElementSets.BINDPARAMS, param);
+            notifyRemoved((T) param);
+            param.setParent(null);
             return true;
         }
         return false;
@@ -417,59 +418,49 @@ public class NCLBind<T extends NCLBind,
      * @return 
      *          element list with all parameters.
      */
-    public ElementList<Ep, T> getBindParams() {
+    public ElementList<Ep> getBindParams() {
         return bindParams;
     }
     
     
     @Override
     public boolean compare(T other) {
-        if(other == null)
+        if(other == null || !(other instanceof NCLBind))
             return false;
         
-        boolean comp = true;
+        boolean result = true;
 
-        String this_bind, other_bind;
+        Object aux;
 
-        // Compara pelo role
-        if(getRole() == null) this_bind = ""; else this_bind = getRole().getRole().toString();
-        if(other.getRole() == null) other_bind = ""; else other_bind = other.getRole().getRole().toString();
-        comp &= this_bind.equals(other_bind);
+        if((aux = getRole()) != null)
+            result &= aux.equals(((NCLBind) other).getRole());
 
-        // Compara pelo componente
-        if(getComponent() != null && other.getComponent() != null)
-            comp &= getComponent().compare(other.getComponent());
+        T el;
+        if((el = (T) getComponent()) != null)
+            result &= el.compare(((NCLBind) other).getComponent());
+        if((el = (T) getInterface()) != null)
+            result &= el.compare(((NCLBind) other).getInterface());
 
-        // Compara pela interface
-        if(getInterface() != null && other.getInterface() != null)
-            comp &= getInterface().compare(other.getInterface());
-
-        // Compara pelo descritor
-        Object aux = getDescriptor();
-        Object oaux = other.getDescriptor();
+        aux = getDescriptor();
+        Object oaux = ((NCLBind) other).getDescriptor();
         if(aux != null && oaux != null){
             if(aux instanceof NCLLayoutDescriptor && oaux instanceof NCLLayoutDescriptor)
-                comp &= ((Ed) aux).compare((Ed) oaux);
+                result &= ((El) aux).compare((El) oaux);
             else
-                comp &= ((Ed) ((ExternalReferenceType) aux).getTarget()).compare((Ed) oaux);
+                result &= ((R) aux).equals((R) oaux);
         }
 
-        // Compara o número de parâmetros
-        comp &= bindParams.size() == other.getBindParams().size();
-
-        // Compara os parâmetros
-        Iterator it = other.getBindParams().iterator();
-        for(Ep param : bindParams){
-            if(!it.hasNext())
-                continue;
-            Ep other_param = (Ep) it.next();
-            comp = param.compare(other_param);
-            if(comp)
+        ElementList<Ep> otherpar = ((NCLBind) other).getBindParams();
+        result &= bindParams.size() == otherpar.size();
+        for (Ep par : bindParams) {
+            try {
+                result &= otherpar.contains(par);
+            } catch (XMLException ex) {}
+            if(!result)
                 break;
         }
 
-
-        return comp;
+        return result;
     }
     
     
@@ -578,13 +569,13 @@ public class NCLBind<T extends NCLBind,
         // set the role (required)
         att_name = NCLElementAttributes.ROLE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
+            T aux;
+            if((aux = (T) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
             Object conn = ((NCLLink) aux).getXconnector();
             if(conn instanceof ExternalReferenceType)
-                conn = ((ExternalReferenceType) conn).getTarget();
+                conn = ((R) conn).getTarget();
             if(conn == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
@@ -613,8 +604,8 @@ public class NCLBind<T extends NCLBind,
         // set the component (required)
         att_name = NCLElementAttributes.COMPONENT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null || (aux = (P) aux.getParent()) == null)
+            T aux;
+            if((aux = (T) getParent()) == null || (aux = (T) aux.getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
             En refEl;
@@ -634,8 +625,12 @@ public class NCLBind<T extends NCLBind,
     
     protected String parseInterface() {
         Ei aux = getInterface();
-        if(aux != null)
-            return " interface='" + aux.getId() + "'";
+        if(aux != null){
+            if(aux instanceof NCLIdentifiableElementPrototype)
+                return " interface='" + ((NCLIdentifiableElementPrototype) aux).getId() + "'";
+            else
+                return " interface='" + ((NCLNamedElementPrototype) aux).getName() + "'";
+        }
         else
             return "";
     }
@@ -662,9 +657,9 @@ public class NCLBind<T extends NCLBind,
             return "";
         
         if(aux instanceof NCLLayoutDescriptor)
-            return " descriptor='" + ((Ed) aux).getId() + "'";
+            return " descriptor='" + ((El) aux).getId() + "'";
         else
-            return " descriptor='" + ((ExternalReferenceType) aux).parse() + "'";
+            return " descriptor='" + ((R) aux).toString() + "'";
     }
     
     
@@ -674,7 +669,7 @@ public class NCLBind<T extends NCLBind,
         // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setDescriptor((Ed) NCLReferenceManager.getInstance().findDescriptorReference(impl.getDoc(), att_var));
+            setDescriptor((El) NCLReferenceManager.getInstance().findDescriptorReference((NCLDoc) getDoc(), att_var));
         }
     }
     

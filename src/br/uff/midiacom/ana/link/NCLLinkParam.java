@@ -38,13 +38,12 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import org.w3c.dom.Element;
 
 
@@ -67,11 +66,10 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <Ec> 
  */
-public class NCLLinkParam<T extends NCLParam,
-                          P extends NCLElement,
-                          I extends NCLElementImpl,
-                          Ec extends NCLConnectorParam>
-        extends NCLParam<T, P, I, Ec> {
+public class NCLLinkParam<T extends NCLElement,
+                          Ec extends NCLConnectorParam,
+                          R extends ExternalReferenceType>
+        extends NCLParam<T, Ec, R> {
     
     
     /**
@@ -98,8 +96,8 @@ public class NCLLinkParam<T extends NCLParam,
         // set the name (required)
         att_name = NCLElementAttributes.NAME.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            P aux;
-            if((aux = (P) getParent()) == null)
+            T aux;
+            if((aux = (T) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
             Object con = ((NCLLink) aux).getXconnector();
@@ -114,5 +112,14 @@ public class NCLLinkParam<T extends NCLParam,
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLLinkParam))
+            return false;
+        
+        return super.compare(other);
     }
 }

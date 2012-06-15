@@ -37,19 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.link;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import java.util.Iterator;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -86,18 +83,17 @@ import org.w3c.dom.NodeList;
  * @param <Eb>
  * @param <Ec> 
  */
-public class NCLLink<T extends NCLLink,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
+public class NCLLink<T extends NCLElement,
                      Ep extends NCLLinkParam,
                      Eb extends NCLBind,
-                     Ec extends NCLCausalConnector>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLIdentifiableElement<T, P> {
+                     Ec extends NCLCausalConnector,
+                     R extends ExternalReferenceType>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLElement<T> {
 
     protected Object xconnector;
-    protected ElementList<Ep, T> linkParams;
-    protected ElementList<Eb, T> binds;
+    protected ElementList<Ep> linkParams;
+    protected ElementList<Eb> binds;
     
 
     /**
@@ -106,10 +102,10 @@ public class NCLLink<T extends NCLLink,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLLink() throws XMLException {
+    public NCLLink() {
         super();
-        linkParams = new ElementList<Ep, T>();
-        binds = new ElementList<Eb, T>();
+        linkParams = new ElementList<Ep>();
+        binds = new ElementList<Eb>();
     }
 
 
@@ -145,19 +141,19 @@ public class NCLLink<T extends NCLLink,
         }
         else if(xconnector instanceof ExternalReferenceType){
             this.xconnector = xconnector;
-            ((ExternalReferenceType) xconnector).getTarget().addReference(this);
-            ((ExternalReferenceType) xconnector).getAlias().addReference(this);
+            ((R) xconnector).getTarget().addReference(this);
+            ((R) xconnector).getAlias().addReference(this);
         }
         
         this.xconnector = xconnector;
-        impl.notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, xconnector);
+        notifyAltered(NCLElementAttributes.DESCRIPTOR, aux, xconnector);
         
         if(aux != null){
             if(aux instanceof NCLCausalConnector)
                 ((Ec) xconnector).removeReference(this);
             else{
-                ((ExternalReferenceType) xconnector).getTarget().removeReference(this);
-                ((ExternalReferenceType) xconnector).getAlias().removeReference(this);
+                ((R) xconnector).getTarget().removeReference(this);
+                ((R) xconnector).getAlias().removeReference(this);
             }
         }
     }
@@ -197,8 +193,9 @@ public class NCLLink<T extends NCLLink,
      *          if the element representing the parameter is null.
      */
     public boolean addLinkParam(Ep param) throws XMLException {
-        if(linkParams.add(param, (T) this)){
-            impl.notifyInserted(NCLElementSets.LINKPARAMS, param);
+        if(linkParams.add(param)){
+            notifyInserted((T) param);
+            param.setParent(this);
             return true;
         }
         return false;
@@ -219,7 +216,8 @@ public class NCLLink<T extends NCLLink,
      */
     public boolean removeLinkParam(Ep param) throws XMLException {
         if(linkParams.remove(param)){
-            impl.notifyRemoved(NCLElementSets.LINKPARAMS, param);
+            notifyRemoved((T) param);
+            param.setParent(null);
             return true;
         }
         return false;
@@ -264,7 +262,7 @@ public class NCLLink<T extends NCLLink,
      * @return 
      *          element list with all parameters.
      */
-    public ElementList<Ep, T> getLinkParams() {
+    public ElementList<Ep> getLinkParams() {
         return linkParams;
     }
     
@@ -281,8 +279,9 @@ public class NCLLink<T extends NCLLink,
      *          if the element representing the bind is null.
      */
     public boolean addBind(Eb bind) throws XMLException {
-        if(binds.add(bind, (T) this)){
-            impl.notifyInserted(NCLElementSets.BINDS, bind);
+        if(binds.add(bind)){
+            notifyInserted((T) bind);
+            bind.setParent(this);
             return true;
         }
         return false;
@@ -302,7 +301,8 @@ public class NCLLink<T extends NCLLink,
      */
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
-            impl.notifyRemoved(NCLElementSets.BINDS, bind);
+            notifyRemoved((T) bind);
+            bind.setParent(null);
             return true;
         }
         return false;
@@ -347,56 +347,53 @@ public class NCLLink<T extends NCLLink,
      * @return 
      *          element list with all binds.
      */
-    public ElementList<Eb, T> getBinds() {
+    public ElementList<Eb> getBinds() {
         return binds;
     }
 
 
     @Override
     public boolean compare(T other) {
-        if(other == null)
+        if(other == null || !(other instanceof NCLLink))
             return false;
         
-        boolean comp = true;
+        boolean result = true;
 
-        // Compara pelo xconnector
-        Object aux = getXconnector();
-        Object oaux = other.getXconnector();
+        Object aux;
+
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLLink) other).getId());
+
+        aux = getXconnector();
+        Object oaux = ((NCLLink) other).getXconnector();
         if(aux != null && oaux != null){
             if(aux instanceof NCLCausalConnector && oaux instanceof NCLCausalConnector)
-                comp &= ((Ec) aux).compare((Ec) oaux);
+                result &= ((Ec) aux).compare((Ec) oaux);
             else
-                comp &= ((Ec) ((ExternalReferenceType) aux).getTarget()).compare((Ec) ((ExternalReferenceType) oaux).getTarget());
+                result &= ((R) aux).equals((R) oaux);
         }
 
-        // Compara o número de parâmetros
-        comp &= linkParams.size() == other.getLinkParams().size();
-
-        // Compara o número de binds
-        comp &= binds.size() == other.getBinds().size();
-
-        // Compara os parâmetros
-        Iterator it = other.getLinkParams().iterator();
-        for(Ep param : linkParams){
-            Ep other_param = (Ep) it.next();
-            comp &= param.compare(other_param);
-            if(comp)
+        ElementList<Eb> otherbin = ((NCLLink) other).getBinds();
+        result &= binds.size() == otherbin.size();
+        for (Eb bin : binds) {
+            try {
+                result &= otherbin.contains(bin);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Ep> otherpar = ((NCLLink) other).getLinkParams();
+        result &= linkParams.size() == otherpar.size();
+        for (Ep par : linkParams) {
+            try {
+                result &= otherpar.contains(par);
+            } catch (XMLException ex) {}
+            if(!result)
                 break;
         }
 
-        // Compara os binds
-        it = other.getBinds().iterator();
-        for(Eb bind : binds){
-            if(!it.hasNext())
-                continue;
-            Eb other_bind = (Eb) it.next();
-            comp &= bind.compare(other_bind);
-            if(comp)
-                break;
-        }
-
-
-        return comp;
+        return result;
     }
     
     
@@ -518,7 +515,7 @@ public class NCLLink<T extends NCLLink,
         if(aux instanceof NCLCausalConnector)
             return " xconnector='" + ((Ec) aux).getId() + "'";
         else
-            return " xconnector='" + ((ExternalReferenceType) aux).parse() + "'";
+            return " xconnector='" + ((R) aux).toString() + "'";
     }
     
     
@@ -528,7 +525,7 @@ public class NCLLink<T extends NCLLink,
         // set the xconnector (required)
         att_name = NCLElementAttributes.XCONNECTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setXconnector((Ec) NCLReferenceManager.getInstance().findConnectorReference(impl.getDoc(), att_var));
+            setXconnector((Ec) NCLReferenceManager.getInstance().findConnectorReference((NCLDoc) getDoc(), att_var));
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
