@@ -39,12 +39,12 @@ package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
-import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.transition.NCLTransitionBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import java.util.ArrayList;
 
 
@@ -72,7 +72,7 @@ public class NCLReferenceManager {
         if(!head.hasRegionBase())
             throw new NCLParsingException("Could not find regionBase element");
         
-        IdentifiableElementList<NCLRegionBase, NCLHead> list = head.getRegionBases();
+        IdentifiableElementList<NCLRegionBase> list = head.getRegionBases();
 
         for(NCLRegionBase base : list){
             result = base.findRegion(id);
