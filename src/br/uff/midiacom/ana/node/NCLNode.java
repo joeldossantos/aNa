@@ -38,10 +38,10 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLBindConstituent;
 
 
 /**
@@ -52,10 +52,10 @@ import br.uff.midiacom.xml.XMLException;
  * @param <T>
  * @param <P> 
  */
-public interface NCLNode<T extends NCLNode,
-                         P extends NCLElement,
+public interface NCLNode<T extends NCLElement,
+                         En extends NCLNode,
                          Ei extends NCLInterface>
-        extends NCLIdentifiableElement<T, P>, ReferredElement<P> {
+        extends NCLElement<T>, ReferredElement<T>, NCLBindConstituent<T> {
 
     
     /**
@@ -79,5 +79,5 @@ public interface NCLNode<T extends NCLNode,
      * @return 
      *          node or null if no node was found.
      */
-    public T findNode(String id) throws XMLException;
+    public En findNode(String id) throws XMLException;
 }

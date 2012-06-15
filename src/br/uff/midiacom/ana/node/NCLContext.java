@@ -38,21 +38,21 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLBody;
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.interfaces.NCLPort;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
-import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLCompositeNodeElement;
+import br.uff.midiacom.ana.util.ncl.NCLCompositeNodeElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -103,18 +103,17 @@ import org.w3c.dom.NodeList;
  * @param <Emt>
  * @param <Rn> 
  */
-public class NCLContext<T extends NCLContext,
-                        P extends NCLElement,
-                        I extends NCLElementImpl,
+public class NCLContext<T extends NCLElement,
                         Ept extends NCLPort,
                         Epp extends NCLProperty,
                         En extends NCLNode,
                         Ei extends NCLInterface,
                         El extends NCLLink,
                         Em extends NCLMeta,
-                        Emt extends NCLMetadata>
-        extends NCLCompositeNodeElement<En, P, I, Ept, Epp, En, El, Em, Emt>
-        implements NCLNode<En, P, Ei>, PostReferenceElement {
+                        Emt extends NCLMetadata,
+                        R extends ExternalReferenceType>
+        extends NCLCompositeNodeElement<T, Ept, Epp, En, El, Em, Emt>
+        implements NCLNode<T, En, Ei>, PostReferenceElement {
 
     protected Object refer;
     private String refer_id;
@@ -126,7 +125,7 @@ public class NCLContext<T extends NCLContext,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLContext() throws XMLException {
+    public NCLContext() {
         super();
     }
     
@@ -134,6 +133,15 @@ public class NCLContext<T extends NCLContext,
     public NCLContext(String id) throws XMLException {
         super();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -183,21 +191,21 @@ public class NCLContext<T extends NCLContext,
         Object aux = this.refer;
         
         if(refer instanceof NCLCompositeNodeElement)
-            ((T) refer).addReference(this);
+            ((En) refer).addReference(this);
         else if(refer instanceof ExternalReferenceType){
-            ((ExternalReferenceType) refer).getTarget().addReference(this);
-            ((ExternalReferenceType) refer).getAlias().addReference(this);
+            ((R) refer).getTarget().addReference(this);
+            ((R) refer).getAlias().addReference(this);
         }
         
         this.refer = refer;
-        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+        notifyAltered(NCLElementAttributes.REFER, aux, refer);
         
         if(aux != null){
             if(aux instanceof NCLCompositeNodeElement)
-                ((T) aux).removeReference(this);
+                ((En) aux).removeReference(this);
             else{
-                ((ExternalReferenceType) aux).getTarget().removeReference(this);
-                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+                ((R) aux).getTarget().removeReference(this);
+                ((R) aux).getAlias().removeReference(this);
             }
         }
     }
@@ -243,6 +251,30 @@ public class NCLContext<T extends NCLContext,
      */
     public Object getRefer() {
         return refer;
+    }
+    
+    
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLContext))
+            return false;
+        
+        boolean result = true;
+        
+        result &= super.compareContent((NCLCompositeNodeElement) other);
+        
+        Object aux = getRefer();
+        Object oaux = ((NCLContext) other).getRefer();
+        if(aux != null && oaux != null){
+            if(aux instanceof NCLContext && oaux instanceof NCLContext)
+                result &= ((En) aux).compare((En) oaux);
+            else if(aux instanceof ExternalReferenceType && oaux instanceof ExternalReferenceType)
+                result &= ((R) aux).equals((R) oaux);
+            else
+                result = false;
+        }
+        
+        return result;
     }
     
     
@@ -401,9 +433,9 @@ public class NCLContext<T extends NCLContext,
             return "";
         
         if(aux instanceof NCLCompositeNodeElement)
-            return " refer='" + ((T) aux).getId() + "'";
+            return " refer='" + ((En) aux).getId() + "'";
         else
-            return " refer='" + ((ExternalReferenceType) aux).parse() + "'";
+            return " refer='" + ((R) aux).toString() + "'";
     }
     
     
@@ -581,9 +613,9 @@ public class NCLContext<T extends NCLContext,
         Object aux;
         if((aux = getRefer()) != null){
             if(aux instanceof NCLCompositeNodeElement)
-                return (Ei) ((T) aux).findInterface(id);
+                return (Ei) ((En) aux).findInterface(id);
             else
-                return (Ei) ((T) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
+                return (Ei) ((En) ((R) aux).getTarget()).findInterface(id);
         }
         
         // search as a property
@@ -618,9 +650,9 @@ public class NCLContext<T extends NCLContext,
         Object aux;
         if((aux = getRefer()) != null){
             if(aux instanceof NCLCompositeNodeElement)
-                return (En) ((T) aux).findNode(id);
+                return (En) ((En) aux).findNode(id);
             else
-                return (En) ((T) ((ExternalReferenceType) aux).getTarget()).findNode(id);
+                return (En) ((En) ((R) aux).getTarget()).findNode(id);
         }
         
         for(En node : nodes){
@@ -640,11 +672,11 @@ public class NCLContext<T extends NCLContext,
         try{
             // set the refer (optional)
             if((aux = ((NCLCompositeNodeElement) getRefer()).getId()) != null){
-                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
+                En ref = (En) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findNode(aux);
                 setRefer(ref);
             }
             if(refer_id != null){
-                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(refer_id);
+                En ref = (En) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findNode(refer_id);
                 setRefer(ref);
             }
         }

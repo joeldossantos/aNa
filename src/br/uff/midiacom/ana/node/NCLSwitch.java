@@ -38,22 +38,21 @@
 package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.NCLBody;
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
-import br.uff.midiacom.ana.datatype.aux.reference.PostReferenceElement;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLRule;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -99,24 +98,23 @@ import org.w3c.dom.NodeList;
  * @param <Eb>
  * @param <Rn> 
  */
-public class NCLSwitch<T extends NCLSwitch,
-                       P extends NCLElement,
-                       I extends NCLElementImpl,
+public class NCLSwitch<T extends NCLElement,
                        En extends NCLNode,
                        Ei extends NCLInterface,
                        Ep extends NCLSwitchPort,
-                       Eb extends NCLBindRule<NCLBindRule, P, I, En, Er>,
-                       Er extends NCLRule>
-        extends NCLIdentifiableElementPrototype<En, P, I>
-        implements NCLNode<En, P, Ei>, PostReferenceElement {
+                       Er extends NCLRule,
+                       R extends ExternalReferenceType,
+                       Eb extends NCLBindRule<T, En, Er, R>>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLNode<T, En, Ei>, PostReferenceElement {
 
     protected Object refer;
     protected En defaultComponent;
-    protected IdentifiableElementList<Ep, T> ports;
-    protected ElementList<Eb, T> binds;
-    protected IdentifiableElementList<En, T> nodes;
+    protected IdentifiableElementList<Ep> ports;
+    protected ElementList<Eb> binds;
+    protected IdentifiableElementList<En> nodes;
     
-    protected ElementList<P,P> references;
+    protected ElementList<T> references;
 
 
     /**
@@ -125,22 +123,31 @@ public class NCLSwitch<T extends NCLSwitch,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLSwitch() throws XMLException {
+    public NCLSwitch() {
         super();
-        ports = new IdentifiableElementList<Ep, T>();
-        binds = new ElementList<Eb, T>();
-        nodes = new IdentifiableElementList<En, T>();
-        references = new ElementList<P,P>();
+        ports = new IdentifiableElementList<Ep>();
+        binds = new ElementList<Eb>();
+        nodes = new IdentifiableElementList<En>();
+        references = new ElementList<T>();
     }
     
     
     public NCLSwitch(String id) throws XMLException {
         super();
-        ports = new IdentifiableElementList<Ep, T>();
-        binds = new ElementList<Eb, T>();
-        nodes = new IdentifiableElementList<En, T>();
-        references = new ElementList<P,P>();
+        ports = new IdentifiableElementList<Ep>();
+        binds = new ElementList<Eb>();
+        nodes = new IdentifiableElementList<En>();
+        references = new ElementList<T>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -189,21 +196,21 @@ public class NCLSwitch<T extends NCLSwitch,
         Object aux = this.refer;
         
         if(refer instanceof NCLSwitch)
-            ((T) refer).addReference(this);
+            ((En) refer).addReference(this);
         else if(refer instanceof ExternalReferenceType){
-            ((ExternalReferenceType) refer).getTarget().addReference(this);
-            ((ExternalReferenceType) refer).getAlias().addReference(this);
+            ((R) refer).getTarget().addReference(this);
+            ((R) refer).getAlias().addReference(this);
         }
         
         this.refer = refer;
-        impl.notifyAltered(NCLElementAttributes.REFER, aux, refer);
+        notifyAltered(NCLElementAttributes.REFER, aux, refer);
         
         if(aux != null){
             if(aux instanceof NCLSwitch)
-                ((T) aux).removeReference(this);
+                ((En) aux).removeReference(this);
             else{
-                ((ExternalReferenceType) aux).getTarget().removeReference(this);
-                ((ExternalReferenceType) aux).getAlias().removeReference(this);
+                ((R) aux).getTarget().removeReference(this);
+                ((R) aux).getAlias().removeReference(this);
             }
         }
     }
@@ -264,8 +271,9 @@ public class NCLSwitch<T extends NCLSwitch,
      *          if the element representing the port is null.
      */
     public boolean addPort(Ep port) throws XMLException {
-        if(ports.add(port, (T) this)){
-            impl.notifyInserted(NCLElementSets.PORTS, port);
+        if(ports.add(port)){
+            notifyInserted((T) port);
+            port.setParent(this);
             return true;
         }
         return false;
@@ -285,7 +293,8 @@ public class NCLSwitch<T extends NCLSwitch,
      */
     public boolean removePort(Ep port) throws XMLException {
         if(ports.remove(port)){
-            impl.notifyRemoved(NCLElementSets.PORTS, port);
+            notifyRemoved((T) port);
+            port.setParent(null);
             return true;
         }
         return false;
@@ -305,8 +314,10 @@ public class NCLSwitch<T extends NCLSwitch,
      *          if the string is null or empty.
      */
     public boolean removePort(String id) throws XMLException {
-        if(ports.remove(id)){
-            impl.notifyRemoved(NCLElementSets.PORTS, id);
+        Ep aux = ports.get(id);
+        if(ports.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -366,7 +377,7 @@ public class NCLSwitch<T extends NCLSwitch,
      * @return 
      *          element list with all interface points.
      */
-    public IdentifiableElementList<Ep, T> getPorts() {
+    public IdentifiableElementList<Ep> getPorts() {
         return ports;
     }
 
@@ -384,17 +395,15 @@ public class NCLSwitch<T extends NCLSwitch,
      *          component.
      */
     public void setDefaultComponent(En defaultComponent) throws XMLException {
-        if(this.defaultComponent != null){
-            impl.notifyRemoved(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
+        if(this.defaultComponent != null)
             this.defaultComponent.removeReference(this);
-        }
         
+        En aux = this.defaultComponent;
         this.defaultComponent = defaultComponent;
+        notifyAltered(NCLElementAttributes.DEFAULTCOMPONENT, aux, defaultComponent);
         
-        if(this.defaultComponent != null){
+        if(this.defaultComponent != null)
             this.defaultComponent.addReference(this);
-            impl.notifyInserted(NCLElementSets.DEFAULTCOMPONENT, this.defaultComponent);
-        }
     }
 
 
@@ -423,8 +432,9 @@ public class NCLSwitch<T extends NCLSwitch,
      *          if the element representing the bind is null.
      */
     public boolean addBind(Eb bind) throws XMLException {
-        if(binds.add(bind, (T) this)){
-            impl.notifyInserted(NCLElementSets.BINDS, bind);
+        if(binds.add(bind)){
+            notifyInserted((T) bind);
+            bind.setParent(this);
             return true;
         }
         return false;
@@ -444,7 +454,8 @@ public class NCLSwitch<T extends NCLSwitch,
      */
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
-            impl.notifyRemoved(NCLElementSets.BINDS, bind);
+            notifyRemoved((T) bind);
+            bind.setParent(null);
             return true;
         }
         return false;
@@ -488,7 +499,7 @@ public class NCLSwitch<T extends NCLSwitch,
      * @return 
      *          element list with all binds.
      */
-    public ElementList<Eb, T> getBinds() {
+    public ElementList<Eb> getBinds() {
         return binds;
     }
 
@@ -506,8 +517,9 @@ public class NCLSwitch<T extends NCLSwitch,
      *          if the element representing the node is null.
      */
     public boolean addNode(En node) throws XMLException {
-        if(nodes.add(node, (T) this)){
-            impl.notifyInserted(NCLElementSets.NODES, node);
+        if(nodes.add(node)){
+            notifyInserted((T) node);
+            node.setParent(this);
             return true;
         }
         return false;
@@ -528,7 +540,8 @@ public class NCLSwitch<T extends NCLSwitch,
      */
     public boolean removeNode(En node) throws XMLException {
         if(nodes.remove(node)){
-            impl.notifyRemoved(NCLElementSets.NODES, node);
+            notifyRemoved((T) node);
+            node.setParent(null);
             return true;
         }
         return false;
@@ -548,8 +561,10 @@ public class NCLSwitch<T extends NCLSwitch,
      *          if the string is null or empty.
      */
     public boolean removeNode(String id) throws XMLException {
-        if(nodes.remove(id)){
-            impl.notifyRemoved(NCLElementSets.NODES, id);
+        En aux = nodes.get(id);
+        if(nodes.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -611,8 +626,68 @@ public class NCLSwitch<T extends NCLSwitch,
      * @return 
      *          element list with all nodes.
      */
-    public IdentifiableElementList<En, T> getNodes() {
+    public IdentifiableElementList<En> getNodes() {
         return nodes;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLSwitch))
+            return false;
+        
+        boolean result = true;
+        
+        String aux;
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLSwitch) other).getId());
+        
+        En def;
+        if((def = getDefaultComponent()) != null)
+            result &= def.compare(((NCLSwitch) other).getDefaultComponent());
+        
+        Object ref = getRefer();
+        Object oref = ((NCLSwitch) other).getRefer();
+        if(ref != null && oref != null){
+            if(ref instanceof NCLSwitch && oref instanceof NCLSwitch)
+                result &= ((En) ref).compare((En) oref);
+            else if(ref instanceof ExternalReferenceType && oref instanceof ExternalReferenceType)
+                result &= ((R) ref).equals((R) oref);
+            else
+                result = false;
+        }
+        
+        ElementList<En> othernod = ((NCLSwitch) other).getNodes();
+        result &= nodes.size() == othernod.size();
+        for (En nod : nodes) {
+            try {
+                result &= othernod.contains(nod);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Ep> otherpor = ((NCLSwitch) other).getPorts();
+        result &= ports.size() == otherpor.size();
+        for (Ep por : ports) {
+            try {
+                result &= otherpor.contains(por);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        ElementList<Eb> otherbin = ((NCLSwitch) other).getBinds();
+        result &= binds.size() == otherbin.size();
+        for (Eb bin : binds) {
+            try {
+                result &= otherbin.contains(bin);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
     
@@ -763,9 +838,9 @@ public class NCLSwitch<T extends NCLSwitch,
             return "";
         
         if(aux instanceof NCLSwitch)
-            return " refer='" + ((T) aux).getId() + "'";
+            return " refer='" + ((En) aux).getId() + "'";
         else
-            return " refer='" + ((ExternalReferenceType) aux).parse() + "'";
+            return " refer='" + ((R) aux).toString() + "'";
     }
     
     
@@ -904,9 +979,9 @@ public class NCLSwitch<T extends NCLSwitch,
         Object aux;
         if((aux = getRefer()) != null){
             if(aux instanceof NCLSwitch)
-                return (Ei) ((T) aux).findInterface(id);
+                return (Ei) ((En) aux).findInterface(id);
             else
-                return (Ei) ((T) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
+                return (Ei) ((En) ((R) aux).getTarget()).findInterface(id);
         }
         
         // search as a switchPort
@@ -936,9 +1011,9 @@ public class NCLSwitch<T extends NCLSwitch,
         Object aux;
         if((aux = getRefer()) != null){
             if(aux instanceof NCLSwitch)
-                return (En) ((T) aux).findNode(id);
+                return (En) ((En) aux).findNode(id);
             else
-                return (En) ((T) ((ExternalReferenceType) aux).getTarget()).findNode(id);
+                return (En) ((En) ((R) aux).getTarget()).findNode(id);
         }
         
         for(En node : nodes){
@@ -958,7 +1033,7 @@ public class NCLSwitch<T extends NCLSwitch,
         try{
             // set the refer (optional)
             if((aux = ((En) getRefer()).getId()) != null){
-                En ref = (En) ((NCLBody) impl.getDoc().getBody()).findNode(aux);
+                En ref = (En) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findNode(aux);
                 setRefer(ref);
             }
         }
@@ -975,13 +1050,13 @@ public class NCLSwitch<T extends NCLSwitch,
     
     
     @Override
-    public boolean addReference(P reference) throws XMLException {
-        return references.add(reference, null);
+    public boolean addReference(T reference) throws XMLException {
+        return references.add(reference);
     }
     
     
     @Override
-    public boolean removeReference(P reference) throws XMLException {
+    public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     
@@ -1000,7 +1075,7 @@ public class NCLSwitch<T extends NCLSwitch,
      *          element representing the child <i>bindRule</i>.
      */
     protected Eb createBindRule() throws XMLException {
-        return (Eb) new NCLBindRule<NCLBindRule, P, I, En, Er>();
+        return (Eb) new NCLBindRule<T, En, Er, R>();
     }
 
 
