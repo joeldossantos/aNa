@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.datatype.enums;
 
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**
@@ -89,6 +90,7 @@ public enum NCLSystemVariable {
 
 
     private String name;
+    private Integer param;
     
     private NCLSystemVariable(String name) {
         this.name = name;
@@ -102,8 +104,47 @@ public enum NCLSystemVariable {
         throw new NCLParsingException("Could not find " + name +" type");
     }
     
+    
+    public boolean isParameterized() {
+        switch(this){
+            case SYSTEM_RETURNBITRATE_i: return true;
+            case SYSTEM_SCREENSIZE_i: return true;
+            case SYSTEM_SCREENGRAPHICSIZE_i: return true;
+            case SYSTEM_AUDIOTYPE_i: return true;
+            case SYSTEM_DEVNUMBER_i: return true;
+            case SYSTEM_CLASSTYPE_i: return true;
+            case SYSTEM_INFO_i: return true;
+            default: return false;
+        }
+    }
+    
+    
+    public boolean hasParameter() {
+        return param != null;
+    }
+    
+    
+    public void setParamenter(int param) throws XMLException {
+        if(param < 0)
+            throw new XMLException("Parameter can not be negative.");
+        
+        this.param = param;
+    }
+    
+    
     @Override
     public String toString() {
+        if(isParameterized() && hasParameter())
+            return name + "(" + param + ")";
+        
         return name;
+    }
+    
+    
+    public boolean compare(Object o) {
+        if(o == null || o instanceof NCLSystemVariable)
+            return false;
+        
+        return toString().equals(((NCLSystemVariable) o).toString());
     }
 }

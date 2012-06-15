@@ -857,6 +857,20 @@ public class NCLRegion<T extends NCLElement,
     public ElementList<Er> getRegions() {
         return regions;
     }
+
+
+    /**
+     * Returns the region with a specific id. The region can have none
+     * or several regions.
+     * 
+     * @param id
+     *          string representing the id of the element representing a region.
+     * @return 
+     *          element representing a region.
+     */
+    public Er getRegion(String id) throws XMLException {
+        return regions.get(id);
+    }
     
     
     @Override

@@ -257,6 +257,21 @@ public class NCLDescriptorSwitch<T extends NCLElement,
 
 
     /**
+     * Returns the descriptor with a specific name. The descriptor switch must
+     * have at least one descriptor element.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          descriptor.
+     * @return 
+     *          element representing a descriptor.
+     */
+    public Ed getDescriptor(String id) throws XMLException {
+        return descriptors.get(id);
+    }
+
+
+    /**
      * Adds an element relating a rule to a descriptor switch component descriptor.
      * The descriptor switch can have none or several bindRule elements.
      * 

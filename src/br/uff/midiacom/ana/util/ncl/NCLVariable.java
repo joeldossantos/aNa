@@ -35,15 +35,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.datatype.ncl;
+package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
+import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import org.w3c.dom.Element;
 
@@ -58,14 +57,11 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <V> 
  */
-public class NCLVariable<T extends NCLElement,
-                         P extends NCLRule,
-                         V extends SysVarType>
-        extends NCLElementPrototype<T>
+public class NCLVariable<T extends NCLElement>
+        extends NCLNamedElementPrototype<T, Object>
         implements ReferredElement<T> {
 
-    protected V Rname;
-    protected String Sname;
+    protected Object name;
     
     protected ElementList<T> references;
     
@@ -74,27 +70,12 @@ public class NCLVariable<T extends NCLElement,
      * Global variable constructor.
      * 
      * @param name
-     *          element representing the name of the variable from the list of
-     *          reserved system variable names.
+     *          element representing the name of the variable. The name can be a
+     *          string of a name from the list of reserved system variable names.
      * @throws XMLException 
      *          if the name is null.
      */
-    public NCLVariable(V name) throws XMLException {
-        super();
-        setName(name);
-        references = new ElementList<T>();
-    }
-    
-    
-    /**
-     * Global variable constructor.
-     * 
-     * @param name
-     *          string representing the name of the variable.
-     * @throws XMLException 
-     *          if the string is null or empty.
-     */
-    public NCLVariable(String name) throws XMLException {
+    public NCLVariable(Object name) throws XMLException {
         super();
         setName(name);
         references = new ElementList<T>();
@@ -106,77 +87,61 @@ public class NCLVariable<T extends NCLElement,
      * required and can not be <i>null</i>.
      * 
      * @param name
-     *          element representing the name of the variable from the list of
-     *          reserved system variable names.
+     *          element representing the name of the variable. The name can be a
+     *          string of a name from the list of reserved system variable names.
      * @throws XMLException 
      *          if the name is null.
      */
-    protected void setName(V name) throws XMLException {
+    @Override
+    public void setName(Object name) throws XMLException {
         if(name == null)
             throw new XMLException("Null name.");
         
-        this.Rname = name;
-    }
-    
-    
-    /**
-     * Sets the name of the global variable. The name is required and can not
-     * be <i>null</i>.
-     * 
-     * @param name
-     *          string representing the name of the variable.
-     * @throws XMLException 
-     *          if the string is null or empty.
-     */
-    protected void setName(String name) throws XMLException {
-        V aux = (V) new SysVarType(name);
-        
-        if(aux.getValue() != null)
-            Rname = aux;
-        else
-            this.Sname = name;
-    }
-    
-    
-    /**
-     * Returns the name of the global variable.
-     * 
-     * @return 
-     *          element representing the name of the variable from the list of
-     *          reserved system variable names or <i>null</i> if the variable
-     *          name is not a reserved name.
-     */
-    public V getReservedName() {
-        return Rname;
-    }
-    
-    
-    /**
-     * Returns the name of the global variable.
-     * 
-     * @return 
-     *          string representing the name of the variable.
-     */
-    public String getName() {
-        if(Rname != null)
-            return Rname.parse();
-        else
-            return Sname;
+        if(name instanceof String){
+            String n,a;
+            Integer i, p = null;
+            
+            n = (String) name;
+            if("".equals(n.trim()))
+                throw new XMLException("Empty role String");
+            
+            i = n.indexOf("(");
+            if(i > 0){
+                a = n.substring(i+1, n.length()-1);
+                n = n.substring(0, i);
+                p = new Integer(a);
+            }
+            
+            NCLSystemVariable v = NCLSystemVariable.getEnumType(n);
+            if(v != null){
+                if(p != null)
+                    v.setParamenter(p);
+                this.name = v;
+            }
+            
+            this.name = name;
+        }
+        else if(name instanceof NCLSystemVariable){
+            this.name = name;
+        }
+        else{
+            throw new XMLException("Wrong name type.");
+        }
     }
     
     
     @Override
     public String parse(int ident) {
-        return getName();
+        return name.toString();
     }
     
     
     @Override
     public boolean compare(T other) {
-        if(other == null)
+        if(other == null || other instanceof NCLVariable)
             return false;
         
-        return getName().equals(other.toString());
+        return getName().equals(((NCLVariable) other).getName());
     }
     
     
@@ -211,6 +176,6 @@ public class NCLVariable<T extends NCLElement,
     
     
     @Deprecated
-    public void load(Element element) throws XMLException {
-    }
+    @Override
+    public void load(Element element) throws XMLException {}
 }

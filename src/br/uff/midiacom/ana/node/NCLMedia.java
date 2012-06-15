@@ -694,6 +694,21 @@ public class NCLMedia<T extends NCLElement,
     public ElementList<Ea> getAreas() {
         return areas;
     }
+
+
+    /**
+     * Returns the anchor with a specific id. An anchor represents a
+     * subpart of the node content. The media can have none or several area
+     * elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing an anchor.
+     * @return 
+     *          element representing a composite node interface point.
+     */
+    public Ea getArea(String id) throws XMLException {
+        return areas.get(id);
+    }
     
     
     /**
@@ -815,6 +830,20 @@ public class NCLMedia<T extends NCLElement,
      */
     public ElementList<Ep> getProperties() {
         return properties;
+    }
+
+
+    /**
+     * Returns the property with a specific name. A property represents a
+     * node attribute. The media can have none or several property elements.
+     * 
+     * @param name
+     *          string representing the name of the property.
+     * @return 
+     *          element representing a property.
+     */
+    public Ep getProperty(String name) throws XMLException {
+        return properties.get(name);
     }
 
 

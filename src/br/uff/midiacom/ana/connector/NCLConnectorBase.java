@@ -224,6 +224,20 @@ public class NCLConnectorBase<T extends NCLElement,
     public ElementList<Ec> getCausalConnectors() {
         return connectors;        
     }
+
+
+    /**
+     * Returns the connector with a specific id. The base of connectors can have
+     * none or several connector elements.
+     * 
+     * @param id
+     *          string representing the id of the connector.
+     * @return 
+     *          element representing a connector.
+     */
+    public Ec getCausalConnector(String id) throws XMLException {
+        return connectors.get(id);
+    }
     
     
     @Override

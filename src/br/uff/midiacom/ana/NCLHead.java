@@ -360,6 +360,20 @@ public class NCLHead<T extends NCLElement,
 
 
     /**
+     * Returns the base of regions with a specific id. The head can have none or
+     * several bases of regions.
+     * 
+     * @param id
+     *          string representing the id of the base of regions.
+     * @return 
+     *          element representing a base of regions.
+     */
+    public Erb getRegionBase(String id) throws XMLException {
+        return regionBases.get(id);
+    }
+
+
+    /**
      * Adds a base of descriptors to the head. The base of descriptors is
      * optional. Set the base to <i>null</i> to remove the base already defined.
      *

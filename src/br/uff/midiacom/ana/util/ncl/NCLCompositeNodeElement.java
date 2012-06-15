@@ -253,6 +253,21 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
 
 
     /**
+     * Returns the interface point with a specific id. The composite node can
+     * have none or several port elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a 
+     *          composite node interface point.
+     * @return 
+     *          element representing a composite node interface point.
+     */
+    public Ept getPort(String id) throws XMLException {
+        return ports.get(id);
+    }
+
+
+    /**
      * Adds an element representing a property to the composite node. The
      * composite node can have none or several property elements.
      *
@@ -369,6 +384,20 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public ElementList<Epp> getProperties() {
         return properties;
+    }
+
+
+    /**
+     * Returns the property with a specific name. The composite node can have
+     * none or several property elements.
+     * 
+     * @param name
+     *          string representing the name of the property.
+     * @return 
+     *          element representing a property.
+     */
+    public Epp getProperty(String name) throws XMLException {
+        return properties.get(name);
     }
 
 
@@ -500,6 +529,21 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
 
 
     /**
+     * Returns the node with a specific id. The node can be a media, a context
+     * or a switch element. The composite node can have none or several node
+     * elements.
+     * 
+     * @param id
+     *          string representing the id of the node.
+     * @return 
+     *          element representing a node.
+     */
+    public En getNode(String id) throws XMLException {
+        return nodes.get(id);
+    }
+
+
+    /**
      * Adds an element representing a link among nodes to the composite node.
      * The composite node can have none or several link elements.
      *
@@ -619,6 +663,20 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public ElementList<El> getLinks() {
         return links;
+    }
+
+
+    /**
+     * Returns the link with a specific id. The composite node can have none or
+     * several link elements.
+     * 
+     * @param id
+     *          string representing the id of the link.
+     * @return 
+     *          element representing a link.
+     */
+    public El getLink(String id) throws XMLException {
+        return links.get(id);
     }
 
 

@@ -47,8 +47,7 @@ import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
 import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
 import br.uff.midiacom.ana.datatype.enums.NCLScroll;
-import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
-import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
+import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
@@ -74,8 +73,7 @@ import org.w3c.dom.Element;
  * @param <Ei> 
  */
 public class NCLProperty<T extends NCLElement,
-                         Ei extends NCLInterface,
-                         Ea extends NCLAttribute>
+                         Ev extends NCLVariable>
         extends NCLNamedElementPrototype<T, Object>
         implements NCLInterface<T> {
 
@@ -149,7 +147,7 @@ public class NCLProperty<T extends NCLElement,
         else if(name instanceof NCLVariable){
             aux = this.name;
             this.name = name;
-            ((NCLVariable) name).addReference(this);
+            ((Ev) name).addReference(this);
         }
         else
             throw new XMLException("Wrong name type.");
@@ -158,7 +156,7 @@ public class NCLProperty<T extends NCLElement,
         notifyAltered(NCLElementAttributes.NAME, aux, name);
         //Erase the name as a variable
         if(aux != null && aux instanceof NCLVariable)
-            ((NCLVariable) name).removeReference(this);
+            ((Ev) name).removeReference(this);
     }
     
     

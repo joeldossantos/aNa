@@ -382,6 +382,21 @@ public class NCLSwitch<T extends NCLElement,
 
 
     /**
+     * Returns the interface point with a specific id. The switch node can
+     * have none or several port elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a 
+     *          switch node interface point.
+     * @return 
+     *          element representing a switch node interface point.
+     */
+    public Ep getPort(String id) throws XMLException {
+        return ports.get(id);
+    }
+
+
+    /**
      * Sets the element representing the switch component node presented when no
      * rule is true. This element is optional. Set the default component to
      * <i>null</i> to erase a default component already defined.
@@ -627,6 +642,21 @@ public class NCLSwitch<T extends NCLElement,
      */
     public ElementList<En> getNodes() {
         return nodes;
+    }
+
+
+    /**
+     * Returns the node with a specific id. The node can be a media, a context
+     * or a switch element. The switch node can have none or several node
+     * elements.
+     * 
+     * @param id
+     *          string representing the id of the node.
+     * @return 
+     *          element representing a node.
+     */
+    public En getNode(String id) throws XMLException {
+        return nodes.get(id);
     }
 
 

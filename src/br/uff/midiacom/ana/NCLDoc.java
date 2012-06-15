@@ -37,11 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
-import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
-import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
+import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
@@ -107,7 +106,7 @@ public class NCLDoc<T extends NCLElement,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLDoc() throws XMLException {
+    public NCLDoc() {
         super();
         globalVariables = new ElementList<Ev>();
     }
@@ -333,9 +332,9 @@ public class NCLDoc<T extends NCLElement,
      * @throws XMLException 
      *          if the string is null or empty.
      */
-    public boolean removeGlobalVariable(SysVarType name) throws XMLException {
+    public boolean removeGlobalVariable(String name) throws XMLException {
         for(Ev aux : globalVariables){
-            if(aux.getReservedName().compare(name))
+            if(aux.parse(0).equals(name))
                 return globalVariables.remove(aux);
         }
         
@@ -370,9 +369,9 @@ public class NCLDoc<T extends NCLElement,
      * @throws XMLException 
      *          if the string is null or empty.
      */
-    public boolean hasGlobalVariable(SysVarType name) throws XMLException {
+    public boolean hasGlobalVariable(String name) throws XMLException {
         for(Ev aux : globalVariables){
-            if(aux.getReservedName().compare(name))
+            if(aux.parse(0).equals(name))
                 return true;
         }
         
@@ -401,6 +400,24 @@ public class NCLDoc<T extends NCLElement,
      */
     public ElementList<Ev> getGlobalVariables() {
         return globalVariables;
+    }
+
+
+    /**
+     * Returns the global variables with a specific name. The global variables
+     * are referred by rule and property elements.
+     * 
+     * @param name
+     *          string representing the name of the global variable.
+     * @return 
+     *          element representing a variable.
+     */
+    public Ev getGlobalVariable(String name) {
+        for(Ev aux : globalVariables){
+            if(aux.parse(0).equals(name))
+                return aux;
+        }
+        return null;
     }
     
     

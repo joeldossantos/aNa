@@ -242,6 +242,21 @@ public class NCLDescriptorBase<T extends NCLElement,
     public ElementList<El> getDescriptors() {
         return descriptors;
     }
+
+
+    /**
+     * Returns the descriptor with a specific name. The base of descriptors can
+     * have none or several descriptor or descriptor switch elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          descriptor or descriptor switch.
+     * @return 
+     *          element representing a descriptor or descriptor switch.
+     */
+    public El getDescriptor(String id) throws XMLException {
+        return descriptors.get(id);
+    }
     
     
     @Override

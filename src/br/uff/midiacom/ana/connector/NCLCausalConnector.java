@@ -344,6 +344,20 @@ public class NCLCausalConnector<T extends NCLElement,
     public ElementList<Ep> getConnectorParams() {
         return conn_params;
     }
+
+
+    /**
+     * Returns the connector parameter with a specific name. The connector can
+     * have none or several parameter elements.
+     * 
+     * @param name
+     *          string representing the name of the connector parameter.
+     * @return 
+     *          element representing a connector parameter.
+     */
+    public Ep getConnectorParam(String name) throws XMLException {
+        return conn_params.get(name);
+    }
     
     
     @Override

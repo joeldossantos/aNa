@@ -225,6 +225,21 @@ public class NCLTransitionBase<T extends NCLElement,
     public ElementList<Et> getTransitions() {
         return transitions;
     }
+
+
+    /**
+     * Returns the transition with a specific id. The base of transitions can
+     * have none or several transition elements.
+     * 
+     * @param id
+     *          string representing the id of the element representing a
+     *          transition.
+     * @return 
+     *          element representing a transition.
+     */
+    public Et getTransition(String id) throws XMLException {
+        return transitions.get(id);
+    }
     
     
     @Override

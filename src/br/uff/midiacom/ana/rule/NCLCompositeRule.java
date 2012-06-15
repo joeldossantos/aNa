@@ -287,6 +287,21 @@ public class NCLCompositeRule<T extends NCLElement,
     }
 
 
+    /**
+     * Returns the rule with a specific id. The rule can be a simple rule or a
+     * composite rule. The composite rule can have none or several rules.
+     * 
+     * @param id
+     *          string representing the id of the element representing a rule.
+     *          This rule can be a simple rule or a composite rule.
+     * @return 
+     *          element representing a rule or a composite rule.
+     */
+    public Et getRule(String id) throws XMLException {
+        return rules.get(id);
+    }
+
+
     @Override
     public boolean compare(T other) {
         if(other == null || !(other instanceof NCLCompositeRule))
