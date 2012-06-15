@@ -37,11 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.interfaces.NCLPort;
-import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

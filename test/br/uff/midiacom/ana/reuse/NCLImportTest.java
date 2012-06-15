@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.reuse;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.xml.XMLException;
 import br.uff.midiacom.ana.region.NCLRegionBase;
 import br.uff.midiacom.ana.NCLDoc;
 import org.junit.Test;

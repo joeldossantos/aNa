@@ -37,13 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.aux.basic.SysVarType;
 import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
-import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
-import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -55,13 +53,13 @@ public class NCLPropertyTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-            prop = new NCLProperty(new NCLAttribute("a"));
+            prop = new NCLProperty("a");
     }
 
     @Test
     public void testParse() {
         try{
-            prop.setName(new NCLAttribute("interacao"));
+            prop.setName("interacao");
             prop.setValue("nao");
             String expResult = "<property name='interacao' value='nao'/>\n";
             String result = prop.parse(0);
@@ -75,25 +73,25 @@ public class NCLPropertyTest {
     @Test
     public void testSetName() {
         try{
-            prop.setName(new NCLAttribute((String)null));
+            prop.setName(null);
             fail("Deveria gerar exceção");
         }
         catch(Exception e){
         }
         try{
-            prop.setName(new NCLAttribute("qualquer-coisa"));
+            prop.setName("qualquer-coisa");
         }
         catch(Exception e){
             fail("Exceção: " + e);
         }
         try{
-            prop.setName(new NCLAttribute((NCLNodeAttributes)null));
+            prop.setName(null);
             fail("Deveria gerar exceção");
         }
         catch(Exception e){
         }
         try{
-            prop.setName(new NCLVariable(new SysVarType(NCLSystemVariable.SYSTEM_SCREENSIZE)));
+            prop.setName(new NCLVariable(NCLSystemVariable.SYSTEM_SCREENSIZE));
         }
         catch(Exception e){
             fail("Exceção: " + e);

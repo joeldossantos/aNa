@@ -37,17 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLInstanceType;
 import br.uff.midiacom.ana.datatype.enums.NCLMimeType;
-import br.uff.midiacom.ana.datatype.ncl.NCLAttribute;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
-import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -72,7 +71,7 @@ public class NCLMediaTest {
     public void test2() throws XMLException {
         NCLMedia med = new NCLMedia("m1");
         NCLArea a = new NCLArea("a1");
-        NCLProperty p = new NCLProperty(new NCLAttribute("top"));
+        NCLProperty p = new NCLProperty("top");
         med.addArea(a);
         med.addProperty(p);
 
@@ -117,7 +116,7 @@ public class NCLMediaTest {
         instance.load(loader.getElement());
 
         String expResult = "media.png";
-        String result = ((NCLMedia) ((NCLMedia) instance.getBody().getNodes().get("da")).getRefer()).getSrc().parse();
+        String result = ((NCLMedia) ((NCLMedia) instance.getBody().getNodes().get("da")).getRefer()).getSrc().toString();
         assertEquals(expResult, result);
     }
 

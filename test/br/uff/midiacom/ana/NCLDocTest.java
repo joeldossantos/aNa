@@ -37,10 +37,10 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.io.File;
 import br.uff.midiacom.ana.datatype.enums.NCLNamespace;
-import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

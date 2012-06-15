@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
-import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.util.TimeType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -58,28 +58,28 @@ public class NCLTimeTest {
 	@Test
 	public void testToString_t1() {
 		String expResult = "10.0s";
-		String result = t1.parse();
+		String result = t1.toString();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testToString_t2() {
 		String expResult = "10.1s";
-		String result = t2.parse();
+		String result = t2.toString();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testToString_t3() {
 		String expResult = "20:54:54.2548";
-		String result = t3.parse();
+		String result = t3.toString();
 		assertEquals(expResult, result);
 	}
 
 	@Test
 	public void testToString_t4() {
 		String expResult = "154:10:22:23:55:55.1568";
-		String result = t4.parse();
+		String result = t4.toString();
 		assertEquals(expResult, result);
 	}
 
@@ -243,7 +243,7 @@ public class NCLTimeTest {
             String expResult = "1:12:23:12:56:2.1";
             TimeType t = new TimeType(expResult);
 
-            String result = t.parse();
+            String result = t.toString();
             assertEquals(expResult, result);
         }
 
@@ -252,7 +252,7 @@ public class NCLTimeTest {
             String expResult = "125:56:2.1";
             TimeType t = new TimeType(expResult);
 
-            String result = t.parse();
+            String result = t.toString();
             assertEquals(expResult, result);
         }
 
@@ -261,7 +261,7 @@ public class NCLTimeTest {
             String expResult = "200.1s";
             TimeType t = new TimeType(expResult);
 
-            String result = t.parse();
+            String result = t.toString();
             assertEquals(expResult, result);
         }
 
@@ -270,7 +270,7 @@ public class NCLTimeTest {
             String expResult = "100.0s";
             TimeType t = new TimeType(expResult);
 
-            String result = t.parse();
+            String result = t.toString();
             assertEquals(expResult, result);
         }
 
@@ -279,7 +279,7 @@ public class NCLTimeTest {
             String expResult = "1:12:23:12:56:2.0";
             TimeType t = new TimeType(expResult);
 
-            String result = t.parse();
+            String result = t.toString();
             assertEquals(expResult, result);
         }
 }

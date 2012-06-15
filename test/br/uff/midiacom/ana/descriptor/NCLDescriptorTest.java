@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLDoc;
-import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
-import br.uff.midiacom.ana.datatype.aux.basic.TimeType;
+import br.uff.midiacom.ana.util.SrcType;
+import br.uff.midiacom.ana.util.TimeType;
 import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLColor;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.transition.NCLTransition;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.number.PercentageType;
+import br.uff.midiacom.ana.util.PercentageType;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;

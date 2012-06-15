@@ -37,9 +37,9 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLRule;
-import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -37,11 +37,11 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
-import br.uff.midiacom.ana.datatype.aux.basic.SrcType;
+import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.datatype.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
-import br.uff.midiacom.xml.XMLException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;

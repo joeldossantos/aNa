@@ -1,8 +1,8 @@
 package br.uff.midiacom.ana.util.modification;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.util.exception.NCLModificationException;
-import br.uff.midiacom.xml.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

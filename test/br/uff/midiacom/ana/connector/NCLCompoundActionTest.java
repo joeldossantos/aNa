@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
