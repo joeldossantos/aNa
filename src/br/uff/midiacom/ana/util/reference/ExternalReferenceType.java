@@ -108,13 +108,8 @@ public class ExternalReferenceType<T extends ReferredElement,
     }
 
 
-    /**
-     * Returns the string that represents the element reference.
-     *
-     * @return
-     *          string representing the element complete reference string.
-     */
-    public String parse() {
+    @Override
+    public String toString() {
         String content = "";
         
         content += alias.getAlias();
@@ -124,5 +119,22 @@ public class ExternalReferenceType<T extends ReferredElement,
             content += ((NCLIdentifiableElementPrototype) target).getId();
         
         return content;
+    }
+    
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof ExternalReferenceType))
+            return false;
+        
+        boolean result = true;
+        
+        T aux;
+        if((aux = (T) getAlias()) != null)
+            result &= aux.equals(((ExternalReferenceType) o).getAlias());
+        if((aux = getTarget()) != null)
+            result &= aux.equals(((ExternalReferenceType) o).getTarget());
+        
+        return result;
     }
 }

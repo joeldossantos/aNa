@@ -39,15 +39,15 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.descriptor.*;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.node.NCLNode;
+import br.uff.midiacom.ana.util.ncl.NCLBindConstituent;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.xml.XMLException;
 import org.w3c.dom.Element;
 
@@ -72,13 +72,11 @@ import org.w3c.dom.Element;
  * @param <En>
  * @param <Er> 
  */
-public class NCLBindRule<T extends NCLBindRule,
-                         P extends NCLElement,
-                         I extends NCLElementImpl,
-                         Ec extends NCLIdentifiableElement,
+public class NCLBindRule<T extends NCLElement,
+                         Ec extends NCLBindConstituent,
                          Er extends NCLTestRule>
-        extends NCLElementPrototype<T, P, I>
-        implements NCLElement<T, P> {
+        extends NCLElementPrototype<T>
+        implements NCLElement<T> {
 
     protected Ec constituent;
     protected Object rule;
@@ -90,7 +88,7 @@ public class NCLBindRule<T extends NCLBindRule,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLBindRule() throws XMLException {
+    public NCLBindRule() {
         super();
     }
 

@@ -39,15 +39,13 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLComparator;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.datatype.ncl.NCLVariable;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.string.StringType;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
 import org.w3c.dom.Element;
 
 
@@ -72,19 +70,18 @@ import org.w3c.dom.Element;
  * @param <I>
  * @param <Ep> 
  */
-public class NCLRule<T extends NCLTestRule,
-                     P extends NCLElement,
-                     I extends NCLElementImpl,
-                     Ep extends NCLVariable,
-                     Eb extends NCLBindRule>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLTestRule<T, P, Eb> {
+public class NCLRule<T extends NCLElement,
+                     Ev extends NCLVariable,
+                     Eb extends NCLBindRule,
+                     Et extends NCLTestRule>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLTestRule<T, Eb, Et> {
 
-    protected Ep var;
+    protected Ev var;
     protected NCLComparator comparator;
-    protected StringType value;
+    protected String value;
     
-    protected ElementList<Eb, P> references;
+    protected ElementList<Eb> references;
 
 
     /**
@@ -93,15 +90,15 @@ public class NCLRule<T extends NCLTestRule,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLRule() throws XMLException {
+    public NCLRule() {
         super();
-        references = new ElementList<Eb, P>();
+        references = new ElementList<Eb>();
     }
     
     
     public NCLRule(String id) throws XMLException {
         super();
-        references = new ElementList<Eb, P>();
+        references = new ElementList<Eb>();
         setId(id);
     }
 
@@ -130,16 +127,16 @@ public class NCLRule<T extends NCLTestRule,
      *          if the variable is null or any error occur while creating the
      *          reference to the variable.
      */
-    public void setVar(Ep var) throws XMLException {
+    public void setVar(Ev var) throws XMLException {
         if(var == null)
             throw new XMLException("Null variable");
         
-        Ep aux = this.var;
+        Ev aux = this.var;
         
         this.var = var;
         this.var.addReference((T) this);
         
-        impl.notifyAltered(NCLElementAttributes.VAR, aux, var);
+        notifyAltered(NCLElementAttributes.VAR, aux, var);
         if(aux != null)
             aux.removeReference(this);
     }
@@ -158,7 +155,7 @@ public class NCLRule<T extends NCLTestRule,
      * @return
      *          element that makes reference to the variable to be tested.
      */
-    public Ep getVar() {
+    public Ev getVar() {
         return var;
     }
 
@@ -180,7 +177,7 @@ public class NCLRule<T extends NCLTestRule,
         
         NCLComparator aux = this.comparator;
         this.comparator = comparator;
-        impl.notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
+        notifyAltered(NCLElementAttributes.COMPARATOR, aux, comparator);
     }
 
 
@@ -211,9 +208,9 @@ public class NCLRule<T extends NCLTestRule,
         if(value == null)
             throw new XMLException("Null value.");
         
-        StringType aux = this.value;
-        this.value = new StringType(value);
-        impl.notifyAltered(NCLElementAttributes.VALUE, aux, value);
+        String aux = this.value;
+        this.value = value;
+        notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
 
 
@@ -226,10 +223,30 @@ public class NCLRule<T extends NCLTestRule,
      *          <i>null</i> if no value is defined.
      */
     public String getValue() {
-        if(value != null)
-            return value.getValue();
-        else
-            return null;
+        return value;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLRule))
+            return false;
+        
+        boolean result = true;
+        
+        Object aux;
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLRule) other).getId());
+        if((aux = getComparator()) != null)
+            result &= aux.equals(((NCLRule) other).getComparator());
+        if((aux = getValue()) != null)
+            result &= aux.equals(((NCLRule) other).getValue());
+        
+        Ev el;
+        if((el = getVar()) != null)
+            result &= el.compare(((NCLRule) other).getVar());
+        
+        return result;
     }
     
 
@@ -309,7 +326,7 @@ public class NCLRule<T extends NCLTestRule,
     
     
     protected String parseVar() {
-        Ep aux = getVar();
+        Ev aux = getVar();
         if(aux != null)
             return " var='" + aux.parse(0) + "'";
         else
@@ -373,21 +390,21 @@ public class NCLRule<T extends NCLTestRule,
     
     
     @Override
-    public T findRule(String id) throws XMLException {
+    public Et findRule(String id) throws XMLException {
         if(getId().equals(id))
-            return (T) this;
+            return (Et) this;
         else
             return null;
     }
     
     
-    public Ep findVariableReference(String name) throws XMLException {
-        NCLDoc doc = impl.getDoc();
+    public Ev findVariableReference(String name) throws XMLException {
+        NCLDoc doc = (NCLDoc) getDoc();
         
         if(doc == null)
             throw new NCLParsingException("Could not find document doc element");
 
-        for(Ep docVar : (ElementList<Ep, NCLDoc>) doc.getGlobalVariables()){
+        for(Ev docVar : (ElementList<Ev>) doc.getGlobalVariables()){
             if(docVar.getName().equals(name))
                 return docVar;
         }
@@ -398,7 +415,7 @@ public class NCLRule<T extends NCLTestRule,
     
     @Override
     public boolean addReference(Eb reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     
@@ -421,7 +438,7 @@ public class NCLRule<T extends NCLTestRule,
      * @return
      *          element representing a reference to a interface.
      */
-    protected Ep createVariableRef(String name) throws XMLException {
-        return (Ep) new NCLVariable(name);
+    protected Ev createVariableRef(String name) throws XMLException {
+        return (Ev) new NCLVariable(name);
     }
 }

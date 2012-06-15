@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.util.elementList.ElementList;
 import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
@@ -89,7 +90,8 @@ public class NCLDescriptorSwitch<T extends NCLElement,
                                  Ed extends NCLDescriptor,
                                  Er extends NCLTestRule,
                                  El extends NCLLayoutDescriptor,
-                                 Eb extends NCLBindRule<T, Ed, Er>>
+                                 R extends ExternalReferenceType,
+                                 Eb extends NCLBindRule<T, Ed, Er, R>>
         extends NCLIdentifiableElementPrototype<T>
         implements NCLLayoutDescriptor<T, El> {
 
@@ -666,7 +668,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
      *          element representing the child <i>bindRule</i>.
      */
     protected Eb createBindRule() throws XMLException {
-        return (Eb) new NCLBindRule<NCLBindRule, Ed, Er>();
+        return (Eb) new NCLBindRule<NCLBindRule, Ed, Er, R>();
     }
 
 

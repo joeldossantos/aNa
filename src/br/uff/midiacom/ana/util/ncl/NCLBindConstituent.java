@@ -35,44 +35,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *******************************************************************************/
-package br.uff.midiacom.ana.descriptor;
+package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.util.ncl.NCLBindConstituent;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 
 
-/**
- * Interface that represents a layout descriptor. A layout descriptor can be a
- * descriptor or a descriptor switch element.
- * 
- * @param <T>
- * @param <P> 
- */
-public interface NCLLayoutDescriptor<T extends NCLElement,
-                                     El extends NCLLayoutDescriptor>
-        extends NCLElement<T>, NCLBindConstituent<T> {
-
-    
-    /**
-     * Searches for a descriptor inside a descriptorSwitch and its descendants.
-     * The descriptor can be a descriptor or a descriptorSwitch.
-     * 
-     * @param id
-     *          id of the descriptor to be found.
-     * @return 
-     *          descriptor or null if no descriptor was found.
-     */
-    public El findDescriptor(String id) throws XMLException;
+public interface NCLBindConstituent<T extends NCLElement>
+        extends NCLElement<T>, ReferredElement<T> {
     
     
-    /**
-     * Searches for a descriptor inside a descriptorSwitch and its descendants.
-     * 
-     * @param focusIndex
-     *          integer or string of the descriptor to be found.
-     * @return 
-     *          descriptor or null if no descriptor was found.
-     */
-    public El findDescriptor(Object focusIndex) throws XMLException;
+    public String getId();
 }

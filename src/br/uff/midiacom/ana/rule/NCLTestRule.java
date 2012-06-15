@@ -38,9 +38,8 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLIdentifiableElement;
-import br.uff.midiacom.ana.datatype.aux.reference.ReferredElement;
-import br.uff.midiacom.xml.XMLException;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
+import br.uff.midiacom.ana.util.exception.XMLException;
 
 
 /**
@@ -51,10 +50,10 @@ import br.uff.midiacom.xml.XMLException;
  * @param <T>
  * @param <P> 
  */
-public interface NCLTestRule<T extends NCLTestRule,
-                             P extends NCLElement,
-                             Eb extends NCLBindRule>
-        extends NCLIdentifiableElement<T, P>, ReferredElement<Eb> {
+public interface NCLTestRule<T extends NCLElement,
+                             Eb extends NCLBindRule,
+                             Et extends NCLTestRule>
+        extends NCLElement<T>, ReferredElement<Eb> {
 
     
     /**
@@ -66,5 +65,5 @@ public interface NCLTestRule<T extends NCLTestRule,
      * @return 
      *          rule or null if no rule was found.
      */
-    public T findRule(String id) throws XMLException;
+    public Et findRule(String id) throws XMLException;
 }

@@ -39,18 +39,18 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
+import br.uff.midiacom.ana.util.basic.NCLElementImpl;
 import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.datatype.aux.reference.ExternalReferenceType;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
-import br.uff.midiacom.ana.datatype.ncl.NCLBase;
+import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,12 +90,10 @@ import org.w3c.dom.NodeList;
  * @param <Et>
  * @param <Ei> 
  */
-public class NCLRuleBase<T extends NCLRuleBase,
-                         P extends NCLElement,
-                         I extends NCLElementImpl,
+public class NCLRuleBase<T extends NCLElement,
                          Et extends NCLTestRule,
                          Ei extends NCLImportBase>
-        extends NCLBase<T, P, I, Ei> {
+        extends NCLBase<T, Ei> {
 
     protected IdentifiableElementList<Et, T> rules;
 

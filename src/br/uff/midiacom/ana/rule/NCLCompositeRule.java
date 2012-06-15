@@ -38,15 +38,13 @@
 package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLElementImpl;
 import br.uff.midiacom.ana.datatype.ncl.NCLParsingException;
 import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLElementSets;
 import br.uff.midiacom.ana.datatype.enums.NCLOperator;
-import br.uff.midiacom.ana.datatype.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.xml.XMLException;
-import br.uff.midiacom.xml.datatype.elementList.ElementList;
-import br.uff.midiacom.xml.datatype.elementList.IdentifiableElementList;
+import br.uff.midiacom.ana.util.exception.XMLException;
+import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import br.uff.midiacom.util.elementList.ElementList;
+import br.uff.midiacom.util.elementList.IdentifiableElementList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,17 +81,16 @@ import org.w3c.dom.NodeList;
  * @param <P>
  * @param <I> 
  */
-public class NCLCompositeRule<T extends NCLTestRule,
-                              P extends NCLElement,
-                              I extends NCLElementImpl,
-                              Eb extends NCLBindRule>
-        extends NCLIdentifiableElementPrototype<T, P, I>
-        implements NCLTestRule<T, P, Eb> {
+public class NCLCompositeRule<T extends NCLElement,
+                              Eb extends NCLBindRule,
+                              Et extends NCLTestRule>
+        extends NCLIdentifiableElementPrototype<T>
+        implements NCLTestRule<T, Eb, Et> {
 
     protected NCLOperator operator;
-    protected IdentifiableElementList<T, T> rules;
+    protected IdentifiableElementList<Et> rules;
     
-    protected ElementList<Eb,P> references;
+    protected ElementList<Eb> references;
 
 
     /**
@@ -102,18 +99,27 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @throws XMLException 
      *          if an error occur while creating the element.
      */
-    public NCLCompositeRule() throws XMLException {
+    public NCLCompositeRule() {
         super();
-        rules = new IdentifiableElementList<T, T>();
-        references = new ElementList<Eb,P>();
+        rules = new IdentifiableElementList<Et>();
+        references = new ElementList<Eb>();
     }
     
     
     public NCLCompositeRule(String id) throws XMLException {
         super();
-        rules = new IdentifiableElementList<T, T>();
-        references = new ElementList<Eb,P>();
+        rules = new IdentifiableElementList<Et>();
+        references = new ElementList<Eb>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setId(String id) throws XMLException {
+        if(id == null)
+            throw new XMLException("Null id string");
+        
+        super.setId(id);
     }
 
 
@@ -134,7 +140,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
         
         NCLOperator aux = this.operator;
         this.operator = operator;
-        impl.notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
+        notifyAltered(NCLElementAttributes.OPERATOR, aux, operator);
     }
 
 
@@ -165,9 +171,10 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @throws XMLException 
      *          if the element representing the rule is null.
      */
-    public boolean addRule(T rule) throws XMLException {
-        if(rules.add(rule, (T) this)){
-            impl.notifyInserted(NCLElementSets.RULES, rule);
+    public boolean addRule(Et rule) throws XMLException {
+        if(rules.add(rule)){
+            notifyInserted((T) rule);
+            rule.setParent(this);
             return true;
         }
         return false;
@@ -186,9 +193,10 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @throws XMLException 
      *          if the element representing the rule is null.
      */
-    public boolean removeRule(T rule) throws XMLException {
+    public boolean removeRule(Et rule) throws XMLException {
         if(rules.remove(rule)){
-            impl.notifyRemoved(NCLElementSets.RULES, rule);
+            notifyRemoved((T) rule);
+            rule.setParent(null);
             return true;
         }
         return false;
@@ -208,8 +216,10 @@ public class NCLCompositeRule<T extends NCLTestRule,
      *          if the string is null or empty.
      */
     public boolean removeRule(String id) throws XMLException {
-        if(rules.remove(id)){
-            impl.notifyRemoved(NCLElementSets.RULES, id);
+        Et aux = rules.get(id);
+        if(rules.remove(aux)){
+            notifyRemoved((T) aux);
+            aux.setParent(null);
             return true;
         }
         return false;
@@ -229,7 +239,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @throws XMLException 
      *          if the element representing the rule is null.
      */
-    public boolean hasRule(T rule) throws XMLException {
+    public boolean hasRule(Et rule) throws XMLException {
         return rules.contains(rule);
     }
 
@@ -273,8 +283,35 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @return 
      *          element list with all rules.
      */
-    public IdentifiableElementList<T, T> getRules() {
+    public IdentifiableElementList<Et> getRules() {
         return rules;
+    }
+
+
+    @Override
+    public boolean compare(T other) {
+        if(other == null || !(other instanceof NCLCompositeRule))
+            return false;
+        
+        boolean result = true;
+        
+        Object aux;
+        if((aux = getId()) != null)
+            result &= aux.equals(((NCLCompositeRule) other).getId());
+        if((aux = getOperator()) != null)
+            result &= aux.equals(((NCLCompositeRule) other).getOperator());
+        
+        ElementList<Et> otherpar = ((NCLCompositeRule) other).getRules();
+        result &= rules.size() == otherpar.size();
+        for (Et rul : rules) {
+            try {
+                result &= otherpar.contains(rul);
+            } catch (XMLException ex) {}
+            if(!result)
+                break;
+        }
+        
+        return result;
     }
 
 
@@ -413,7 +450,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
             return "";
         
         String content = "";
-        for(T aux : rules)
+        for(Et aux : rules)
             content += aux.parse(ident);
         
         return content;
@@ -423,7 +460,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
     protected void loadRules(Element element) throws XMLException {
         //create the rules
         if(element.getTagName().equals(NCLElementAttributes.RULE.toString())){
-            T inst = createRule(); 
+            Et inst = createRule(); 
             addRule(inst);
             inst.load(element);
         }
@@ -433,7 +470,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
     protected void loadCompositeRules(Element element) throws XMLException {
         // create the compositeRules
         if(element.getTagName().equals(NCLElementAttributes.COMPOSITERULE.toString())){
-            T inst = createCompositeRule();
+            Et inst = createCompositeRule();
             addRule(inst);
             inst.load(element);
         }
@@ -441,14 +478,14 @@ public class NCLCompositeRule<T extends NCLTestRule,
     
     
     @Override
-    public T findRule(String id) throws XMLException {
-        T result;
+    public Et findRule(String id) throws XMLException {
+        Et result;
         
         if(getId().equals(id))
-            return (T) this;
+            return (Et) this;
         
-        for(T rule : rules){
-            result = (T) rule.findRule(id);
+        for(Et rule : rules){
+            result = (Et) rule.findRule(id);
             if(result != null)
                 return result;
         }
@@ -459,7 +496,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
     
     @Override
     public boolean addReference(Eb reference) throws XMLException {
-        return references.add(reference, null);
+        return references.add(reference);
     }
     
     
@@ -482,8 +519,8 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @return
      *          element representing the child <i>compositeRule</i>.
      */
-    protected T createCompositeRule() throws XMLException {
-        return (T) new NCLCompositeRule();
+    protected Et createCompositeRule() throws XMLException {
+        return (Et) new NCLCompositeRule();
     }
 
 
@@ -494,7 +531,7 @@ public class NCLCompositeRule<T extends NCLTestRule,
      * @return
      *          element representing the child <i>rule</i>.
      */
-    protected T createRule() throws XMLException {
-        return (T) new NCLRule();
+    protected Et createRule() throws XMLException {
+        return (Et) new NCLRule();
     }
 }

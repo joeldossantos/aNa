@@ -1240,7 +1240,7 @@ public class NCLDescriptor<T extends NCLElement,
         if(aux instanceof NCLRegion)
             return " region='" + ((Er) aux).getId() + "'";
         else
-            return " region='" + ((R) aux).parse() + "'";
+            return " region='" + ((R) aux).toString() + "'";
     }
     
     
@@ -1555,7 +1555,7 @@ public class NCLDescriptor<T extends NCLElement,
         if(aux instanceof NCLTransition)
             return " transIn='" + ((Et) aux).getId() + "'";
         else
-            return " transIn='" + ((R) aux).parse() + "'";
+            return " transIn='" + ((R) aux).toString() + "'";
     }
     
     
@@ -1578,7 +1578,7 @@ public class NCLDescriptor<T extends NCLElement,
         if(aux instanceof NCLTransition)
             return " transOut='" + ((Et) aux).getId() + "'";
         else
-            return " transOut='" + ((R) aux).parse() + "'";
+            return " transOut='" + ((R) aux).toString() + "'";
     }
     
     
