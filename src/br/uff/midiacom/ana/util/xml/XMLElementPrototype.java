@@ -62,7 +62,10 @@ public abstract class XMLElementPrototype<T extends XMLElement>
             throw new XMLException("This element already has a parent element.");
 
         this.parent = parent;
-        this.doc = (T) parent.getDoc();
+        if(parent == null)
+            this.doc = null;
+        else
+            this.doc = (T) parent.getDoc();
     }
 
 

@@ -75,7 +75,10 @@ public abstract class NCLElementPrototype<T extends NCLElement>
             throw new XMLException("This element already has a parent element.");
 
         this.parent = parent;
-        this.doc = (T) parent.getDoc();
+        if(parent == null)
+            this.doc = null;
+        else
+            this.doc = (T) parent.getDoc();
         try {
             notifyAltered(NCLElementAttributes.PARENT, aux, parent);
         } catch (Exception ex) {}
