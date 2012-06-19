@@ -205,12 +205,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
      */
     public boolean removeDescriptor(String id) throws XMLException {
         Ed aux = descriptors.get(id);
-        if(descriptors.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeDescriptor(aux);
     }
 
 

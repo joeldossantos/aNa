@@ -303,12 +303,7 @@ public class NCLCausalConnector<T extends NCLElement,
      */
     public boolean removeConnectorParam(String name) throws XMLException {
         Ep aux = conn_params.get(name);
-        if(conn_params.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeConnectorParam(aux);
     }
 
 

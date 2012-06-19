@@ -180,12 +180,7 @@ public class NCLRuleBase<T extends NCLElement,
      */
     public boolean removeRule(String id) throws XMLException {
         Et aux = rules.get(id);
-        if(rules.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeRule(aux);
     }
 
 

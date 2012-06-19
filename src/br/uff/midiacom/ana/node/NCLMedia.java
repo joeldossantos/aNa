@@ -643,12 +643,7 @@ public class NCLMedia<T extends NCLElement,
      */
     public boolean removeArea(String id) throws XMLException {
         Ea aux = areas.get(id);
-        if(areas.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeArea(aux);
     }
 
 
@@ -786,12 +781,7 @@ public class NCLMedia<T extends NCLElement,
      */
     public boolean removeProperty(String name) throws XMLException {
         Ep aux = properties.get(name);
-        if(properties.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeProperty(aux);
     }
 
 

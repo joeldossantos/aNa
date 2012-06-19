@@ -807,12 +807,7 @@ public class NCLRegion<T extends NCLElement,
      */
     public boolean removeRegion(String id) throws XMLException {
         Er aux = regions.get(id);
-        if(regions.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeRegion(aux);
     }
 
 

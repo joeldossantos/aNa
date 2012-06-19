@@ -173,12 +173,7 @@ public class NCLTransitionBase<T extends NCLElement,
      */
     public boolean removeTransition(String id) throws XMLException {
         Et aux = transitions.get(id);
-        if(transitions.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeTransition(aux);
     }
 
 

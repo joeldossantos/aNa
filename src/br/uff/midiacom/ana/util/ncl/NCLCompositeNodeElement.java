@@ -213,12 +213,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removePort(String id) throws XMLException {
         Ept aux = ports.get(id);
-        if(ports.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removePort(aux);
     }
 
 
@@ -354,12 +349,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removeProperty(String name) throws XMLException {
         Epp aux = properties.get(name);
-        if(properties.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeProperty(aux);
     }
 
 
@@ -495,12 +485,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removeNode(String id) throws XMLException {
         En aux = nodes.get(id);
-        if(nodes.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeNode(aux);
     }
 
 
@@ -635,12 +620,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removeLink(String id) throws XMLException {
         El aux = links.get(id);
-        if(links.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeLink(aux);
     }
 
 

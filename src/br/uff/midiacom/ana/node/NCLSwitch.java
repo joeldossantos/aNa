@@ -334,12 +334,7 @@ public class NCLSwitch<T extends NCLElement,
      */
     public boolean removePort(String id) throws XMLException {
         Ep aux = ports.get(id);
-        if(ports.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removePort(aux);
     }
 
 
@@ -600,12 +595,7 @@ public class NCLSwitch<T extends NCLElement,
      */
     public boolean removeNode(String id) throws XMLException {
         En aux = nodes.get(id);
-        if(nodes.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeNode(aux);
     }
 
 

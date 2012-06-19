@@ -314,12 +314,7 @@ public class NCLHead<T extends NCLElement,
      */
     public boolean removeRegionBase(String id) throws XMLException {
         Erb aux = regionBases.get(id);
-        if(regionBases.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeRegionBase(aux);
     }
 
 

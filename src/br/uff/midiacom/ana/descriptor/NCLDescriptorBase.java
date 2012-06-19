@@ -184,12 +184,7 @@ public class NCLDescriptorBase<T extends NCLElement,
      */
     public boolean removeDescriptor(String id) throws XMLException {
         El aux = descriptors.get(id);
-        if(descriptors.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeDescriptor(aux);
     }
 
 

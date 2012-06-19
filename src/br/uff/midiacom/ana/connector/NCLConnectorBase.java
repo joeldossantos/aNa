@@ -171,12 +171,7 @@ public class NCLConnectorBase<T extends NCLElement,
      */
     public boolean removeCausalConnector(String id) throws XMLException {
         Ec aux = connectors.get(id);
-        if(connectors.remove(aux)){
-            notifyRemoved((T) aux);
-            aux.setParent(null);
-            return true;
-        }
-        return false;
+        return removeCausalConnector(aux);
     }
     
     
