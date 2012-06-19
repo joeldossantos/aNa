@@ -110,6 +110,10 @@ public abstract class NCLBase<T extends NCLElement,
      *          if the import element is null.
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
+        if(!importBase.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(imports.remove(importBase)){
             importBase.setParent(null);
             notifyRemoved((T) importBase);

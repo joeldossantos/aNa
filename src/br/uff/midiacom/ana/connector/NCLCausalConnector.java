@@ -158,6 +158,10 @@ public class NCLCausalConnector<T extends NCLElement,
     public void setCondition(Ec condition) throws XMLException {
         //Removes the parent of the actual condition
         if(this.condition != null){
+            if(this.condition instanceof ReferredElement && !((ReferredElement) this.condition).getReferences().isEmpty())
+                throw new XMLException("This element has a reference to it."
+                        + " The reference must be undone before erasing this element.");
+        
             this.condition.setParent(null);
             notifyRemoved((T) this.condition);
         }
@@ -204,6 +208,10 @@ public class NCLCausalConnector<T extends NCLElement,
     public void setAction(Ea action) throws XMLException {
         //Removes the parent of the actual action
         if(this.action != null){
+            if(this.action instanceof ReferredElement && !((ReferredElement) this.action).getReferences().isEmpty())
+                throw new XMLException("This element has a reference to it."
+                        + " The reference must be undone before erasing this element.");
+            
             this.action.setParent(null);
             notifyRemoved((T) this.action);
         }
@@ -268,6 +276,10 @@ public class NCLCausalConnector<T extends NCLElement,
      *          if the element representing the connector parameter is null.
      */
     public boolean removeConnectorParam(Ep param) throws XMLException {
+        if(!param.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(conn_params.remove(param)){
             notifyRemoved((T) param);
             param.setParent(null);

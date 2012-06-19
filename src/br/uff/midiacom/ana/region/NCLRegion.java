@@ -781,6 +781,10 @@ public class NCLRegion<T extends NCLElement,
      *          if the element representing the region is null.
      */
     public boolean removeRegion(Er region) throws XMLException {
+        if(!region.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(regions.remove(region)){
             notifyRemoved((T) region);
             region.setParent(null);

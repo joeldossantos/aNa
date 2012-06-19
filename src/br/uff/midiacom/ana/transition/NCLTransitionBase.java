@@ -146,6 +146,10 @@ public class NCLTransitionBase<T extends NCLElement,
      *          if the element representing the transition is null.
      */
     public boolean removeTransition(Et transition) throws XMLException {
+        if(!transition.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(transitions.remove(transition)){
             notifyRemoved((T) transition);
             transition.setParent(null);

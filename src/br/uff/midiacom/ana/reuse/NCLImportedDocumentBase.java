@@ -146,6 +146,10 @@ public class NCLImportedDocumentBase<T extends NCLElement,
      *          if the import element is null.
      */
     public boolean removeImportNCL(Ei importNCL) throws XMLException {
+        if(!importNCL.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(imports.remove(importNCL)){
             notifyRemoved((T) importNCL);
             importNCL.setParent(null);

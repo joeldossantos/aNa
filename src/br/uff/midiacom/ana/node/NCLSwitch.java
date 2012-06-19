@@ -307,6 +307,10 @@ public class NCLSwitch<T extends NCLElement,
      *          if the element representing the port is null.
      */
     public boolean removePort(Ep port) throws XMLException {
+        if(!port.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(ports.remove(port)){
             notifyRemoved((T) port);
             port.setParent(null);
@@ -569,6 +573,10 @@ public class NCLSwitch<T extends NCLElement,
      *          if the element representing the node is null.
      */
     public boolean removeNode(En node) throws XMLException {
+        if(!node.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(nodes.remove(node)){
             notifyRemoved((T) node);
             node.setParent(null);

@@ -144,6 +144,10 @@ public class NCLConnectorBase<T extends NCLElement,
      *          if the element representing the connector is null.
      */
     public boolean removeCausalConnector(Ec connector) throws XMLException {
+        if(!connector.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(connectors.remove(connector)){
             notifyRemoved((T) connector);
             connector.setParent(null);

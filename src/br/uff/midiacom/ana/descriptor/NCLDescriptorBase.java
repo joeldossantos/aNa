@@ -156,6 +156,10 @@ public class NCLDescriptorBase<T extends NCLElement,
      *          is null.
      */
     public boolean removeDescriptor(El descriptor) throws XMLException {
+        if(!descriptor.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(descriptors.remove(descriptor)){
             notifyRemoved((T) descriptor);
             descriptor.setParent(null);

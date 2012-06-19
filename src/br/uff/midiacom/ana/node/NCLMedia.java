@@ -617,6 +617,10 @@ public class NCLMedia<T extends NCLElement,
      *          if the element representing the area is null.
      */
     public boolean removeArea(Ea area) throws XMLException {
+        if(!area.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(areas.remove(area)){
             notifyRemoved((T) area);
             area.setParent(null);
@@ -756,6 +760,10 @@ public class NCLMedia<T extends NCLElement,
      *          if the element representing the property is null.
      */
     public boolean removeProperty(Ep property) throws XMLException {
+        if(!property.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(properties.remove(property)){
             notifyRemoved((T) property);
             property.setParent(null);

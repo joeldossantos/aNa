@@ -203,6 +203,10 @@ public class NCLCompositeRule<T extends NCLElement,
      *          if the element representing the rule is null.
      */
     public boolean removeRule(Et rule) throws XMLException {
+        if(!rule.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(rules.remove(rule)){
             notifyRemoved((T) rule);
             rule.setParent(null);

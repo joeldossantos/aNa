@@ -186,6 +186,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      *          if the element representing the port is null.
      */
     public boolean removePort(Ept port) throws XMLException {
+        if(!port.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(ports.remove(port)){
             notifyRemoved((T) port);
             port.setParent(null);
@@ -324,6 +328,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      *          if the element representing the property is null.
      */
     public boolean removeProperty(Epp property) throws XMLException {
+        if(!property.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(properties.remove(property)){
             notifyRemoved((T) property);
             property.setParent(null);
@@ -460,6 +468,10 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      *          if the element representing the node is null.
      */
     public boolean removeNode(En node) throws XMLException {
+        if(!node.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(nodes.remove(node)){
             notifyRemoved((T) node);
             node.setParent(null);

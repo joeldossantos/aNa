@@ -178,6 +178,10 @@ public class NCLDescriptorSwitch<T extends NCLElement,
      *          if the element representing the descriptor is null.
      */
     public boolean removeDescriptor(Ed descriptor) throws XMLException {
+        if(!descriptor.getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(descriptors.remove(descriptor)){
             notifyRemoved((T) descriptor);
             descriptor.setParent(null);

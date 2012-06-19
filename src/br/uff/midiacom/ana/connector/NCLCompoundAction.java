@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -205,6 +206,10 @@ public class NCLCompoundAction<T extends NCLElement,
      *          if the element representing the action is null.
      */
     public boolean removeAction(Ea action) throws XMLException {
+        if(action instanceof ReferredElement && !((ReferredElement) action).getReferences().isEmpty())
+            throw new XMLException("This element has a reference to it."
+                    + " The reference must be undone before erasing this element.");
+        
         if(actions.remove(action)){
             notifyRemoved((T) action);
             action.setParent(null);
