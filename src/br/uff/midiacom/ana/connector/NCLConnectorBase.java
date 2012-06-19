@@ -100,6 +100,15 @@ public class NCLConnectorBase<T extends NCLElement,
         super();
         connectors = new ElementList<Ec>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ec aux : connectors) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

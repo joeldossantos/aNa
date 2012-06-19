@@ -52,6 +52,7 @@ import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -138,6 +139,21 @@ public class NCLSwitch<T extends NCLElement,
         nodes = new ElementList<En>();
         references = new ElementList<T>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ep aux : ports) {
+            aux.setDoc(doc);
+        }
+        for (Eb aux : binds) {
+            aux.setDoc(doc);
+        }
+        for (En aux : nodes) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
     }
     
     

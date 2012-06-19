@@ -125,6 +125,18 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     
     
     @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ed aux : descriptors) {
+            aux.setDoc(doc);
+        }
+        for (Eb aux : binds) {
+            aux.setDoc(doc);
+        }
+    }
+    
+    
+    @Override
     public void setId(String id) throws XMLException {
         if(id == null)
             throw new XMLException("Null id string");

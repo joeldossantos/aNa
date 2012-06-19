@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -104,6 +105,15 @@ public class NCLDescriptorBase<T extends NCLElement,
     public NCLDescriptorBase() {
         super();
         descriptors = new ElementList<El>();
+    }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (El aux : descriptors) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
     }
 
 

@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.util.enums.NCLOperator;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -110,6 +111,15 @@ public class NCLCompositeRule<T extends NCLElement,
         rules = new ElementList<Et>();
         references = new ElementList<Eb>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Et aux : rules) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
     }
     
     

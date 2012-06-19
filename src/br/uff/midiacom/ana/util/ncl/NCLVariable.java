@@ -61,8 +61,6 @@ public class NCLVariable<T extends NCLElement>
         extends NCLNamedElementPrototype<T, Object>
         implements ReferredElement<T> {
 
-    protected Object name;
-    
     protected ElementList<T> references;
     
     

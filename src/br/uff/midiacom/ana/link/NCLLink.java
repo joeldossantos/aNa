@@ -107,6 +107,18 @@ public class NCLLink<T extends NCLElement,
         linkParams = new ElementList<Ep>();
         binds = new ElementList<Eb>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ep aux : linkParams) {
+            aux.setDoc(doc);
+        }
+        for (Eb aux : binds) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

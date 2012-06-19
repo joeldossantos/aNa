@@ -62,6 +62,15 @@ public abstract class NCLBase<T extends NCLElement,
         super();
         imports = new ElementList<Ei>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ei aux : imports) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

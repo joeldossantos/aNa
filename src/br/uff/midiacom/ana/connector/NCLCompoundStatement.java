@@ -103,6 +103,15 @@ public class NCLCompoundStatement<T extends NCLElement,
     }
     
     
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Es aux : statements) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
+    }
+    
+    
     /**
      * Sets the compound statement operator. This attribute is required and can
      * not be set to <i>null</i>.

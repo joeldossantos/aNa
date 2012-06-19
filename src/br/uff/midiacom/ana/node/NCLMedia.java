@@ -143,6 +143,18 @@ public class NCLMedia<T extends NCLElement,
     
     
     @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ea aux : areas) {
+            aux.setDoc(doc);
+        }
+        for (Ep aux : properties) {
+            aux.setDoc(doc);
+        }
+    }
+    
+    
+    @Override
     public void setId(String id) throws XMLException {
         if(id == null)
             throw new XMLException("Null id string");

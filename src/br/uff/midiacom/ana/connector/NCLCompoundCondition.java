@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.util.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -111,6 +112,18 @@ public class NCLCompoundCondition<T extends NCLElement,
         super();
         conditions = new ElementList<Ec>();
         statements = new ElementList<Es>();
+    }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ec aux : conditions) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
+        for (Es aux : statements) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
     }
 
 

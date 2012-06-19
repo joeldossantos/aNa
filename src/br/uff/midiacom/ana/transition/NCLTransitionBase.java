@@ -102,6 +102,15 @@ public class NCLTransitionBase<T extends NCLElement,
         super();
         transitions = new ElementList<Et>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Et aux : transitions) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

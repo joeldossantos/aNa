@@ -119,6 +119,15 @@ public class NCLBind<T extends NCLElement,
         super();
         bindParams = new ElementList<Ep>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ep aux : bindParams) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

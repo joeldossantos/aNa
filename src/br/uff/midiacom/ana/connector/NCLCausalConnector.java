@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -119,6 +120,17 @@ public class NCLCausalConnector<T extends NCLElement,
         conn_params = new ElementList<Ep>();
         references = new ElementList<El>();
         setId(id);
+    }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        if(condition != null) ((NCLElementPrototype) condition).setDoc(doc);
+        if(action != null) ((NCLElementPrototype) action).setDoc(doc);
+        for (Ep aux : conn_params) {
+            aux.setDoc(doc);
+        }
     }
     
     

@@ -127,6 +127,30 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
         metadatas = new ElementList<Emt>();
         references = new ElementList<T>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ept aux : ports) {
+            aux.setDoc(doc);
+        }
+        for (Epp aux : properties) {
+            aux.setDoc(doc);
+        }
+        for (En aux : nodes) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
+        for (El aux : links) {
+            aux.setDoc(doc);
+        }
+        for (Em aux : metas) {
+            aux.setDoc(doc);
+        }
+        for (Emt aux : metadatas) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

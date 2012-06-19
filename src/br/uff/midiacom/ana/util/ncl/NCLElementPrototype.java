@@ -78,10 +78,16 @@ public abstract class NCLElementPrototype<T extends NCLElement>
         if(parent == null)
             this.doc = null;
         else
-            this.doc = (T) parent.getDoc();
+            setDoc((T) parent.getDoc());
+        
         try {
             notifyAltered(NCLElementAttributes.PARENT, aux, parent);
         } catch (Exception ex) {}
+    }
+    
+    
+    public void setDoc(T doc) {
+        this.doc = doc;
     }
 
 

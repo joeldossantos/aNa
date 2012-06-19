@@ -108,6 +108,15 @@ public class NCLAssessmentStatement<T extends NCLElement,
         super();
         attributeAssessments = new ElementList<Ea>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ea aux : attributeAssessments) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**

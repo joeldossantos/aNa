@@ -111,6 +111,15 @@ public class NCLSwitchPort<T extends NCLElement,
     
     
     @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Em aux : mappings) {
+            aux.setDoc(doc);
+        }
+    }
+    
+    
+    @Override
     public void setId(String id) throws XMLException {
         if(id == null)
             throw new XMLException("Null id string");

@@ -122,6 +122,26 @@ public class NCLHead<T extends NCLElement,
         metas = new ElementList<Em>();
         metadatas = new ElementList<Emt>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        if(importedDocumentBase != null) importedDocumentBase.setDoc(doc);
+        if(ruleBase != null) ruleBase.setDoc(doc);
+        if(transitionBase != null) transitionBase.setDoc(doc);
+        if(descriptorBase != null) descriptorBase.setDoc(doc);
+        if(connectorBase != null) connectorBase.setDoc(doc);
+        for (Erb aux : regionBases) {
+            aux.setDoc(doc);
+        }
+        for (Em aux : metas) {
+            aux.setDoc(doc);
+        }
+        for (Emt aux : metadatas) {
+            aux.setDoc(doc);
+        }
+    }
 
     
     /**

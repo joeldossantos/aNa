@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.util.enums.NCLActionOperator;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -101,6 +102,15 @@ public class NCLCompoundAction<T extends NCLElement,
     public NCLCompoundAction() {
         super();
         actions = new ElementList<Ea>();
+    }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Ea aux : actions) {
+            ((NCLElementPrototype) aux).setDoc(doc);
+        }
     }
     
     

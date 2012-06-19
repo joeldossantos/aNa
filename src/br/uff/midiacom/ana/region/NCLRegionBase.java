@@ -109,6 +109,15 @@ public class NCLRegionBase<T extends NCLElement,
         super();
         regions = new ElementList<Er>();
     }
+    
+    
+    @Override
+    public void setDoc(T doc) {
+        super.setDoc(doc);
+        for (Er aux : regions) {
+            aux.setDoc(doc);
+        }
+    }
 
 
     /**
