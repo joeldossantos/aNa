@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util.xml;
 
+import br.uff.midiacom.ana.util.exception.XMLException;
+
 
 /**
  * Class that implements the XMLElement interface.
@@ -54,14 +56,13 @@ public abstract class XMLElementPrototype<T extends XMLElement>
     
 
     @Override
-    public boolean setParent(T parent) {
+    public void setParent(T parent) throws XMLException {
         T aux = getParent();
         if(this.parent != null && parent != null)
-            return false;
+            throw new XMLException("This element already has a parent element.");
 
         this.parent = parent;
         this.doc = (T) parent.getDoc();
-        return true;
     }
 
 

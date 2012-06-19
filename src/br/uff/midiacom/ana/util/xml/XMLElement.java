@@ -55,11 +55,10 @@ public interface XMLElement<T extends XMLElement> {
      *
      * @param parent
      *          element representing the element parent.
-     * @return
-     *          true if the parent element was defined. If the element already
-     *          has a parent element it returns false.
+     * @throws XMLException
+     *          f the element already has a parent element.
      */
-    public boolean setParent(T parent);
+    public void setParent(T parent) throws XMLException;
 
 
     /**

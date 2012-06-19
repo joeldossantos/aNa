@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLModificationException;
 import br.uff.midiacom.ana.util.xml.*;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.modification.NCLModificationNotifier;
 import br.uff.midiacom.ana.util.modification.NCLNotification;
 import java.util.regex.Matcher;
@@ -68,17 +69,16 @@ public abstract class NCLElementPrototype<T extends NCLElement>
 
 
     @Override
-    public boolean setParent(T parent) {
+    public void setParent(T parent) throws XMLException {
         T aux = getParent();
         if(this.parent != null && parent != null)
-            return false;
+            throw new XMLException("This element already has a parent element.");
 
         this.parent = parent;
         this.doc = (T) parent.getDoc();
         try {
             notifyAltered(NCLElementAttributes.PARENT, aux, parent);
         } catch (Exception ex) {}
-        return true;
     }
 
 
