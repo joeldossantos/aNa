@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.reuse;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.util.SrcType;
-import br.uff.midiacom.ana.datatype.enums.NCLImportType;
+import br.uff.midiacom.ana.util.enums.NCLImportType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

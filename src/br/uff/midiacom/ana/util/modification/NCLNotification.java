@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.util.modification;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.NCLModificationException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -49,7 +49,7 @@ import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.ncl.NCLCompositeNodeElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.util.exception.XMLException;

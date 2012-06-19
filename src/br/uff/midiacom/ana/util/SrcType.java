@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util;
 
-import br.uff.midiacom.ana.datatype.enums.NCLUriType;
+import br.uff.midiacom.ana.util.enums.NCLUriType;
 import br.uff.midiacom.ana.util.exception.XMLException;
 
 

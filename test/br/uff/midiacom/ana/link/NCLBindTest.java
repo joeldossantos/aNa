@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.connector.NCLSimpleAction;
 import br.uff.midiacom.ana.connector.NCLSimpleCondition;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.interfaces.NCLArea;
 import br.uff.midiacom.ana.node.NCLMedia;

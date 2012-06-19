@@ -38,15 +38,15 @@
 package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.datatype.enums.NCLActionOperator;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributeType;
-import br.uff.midiacom.ana.datatype.enums.NCLComparator;
-import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
-import br.uff.midiacom.ana.datatype.enums.NCLDefaultActionRole;
-import br.uff.midiacom.ana.datatype.enums.NCLEventAction;
-import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
-import br.uff.midiacom.ana.datatype.enums.NCLEventType;
-import br.uff.midiacom.ana.datatype.enums.NCLKey;
+import br.uff.midiacom.ana.util.enums.NCLActionOperator;
+import br.uff.midiacom.ana.util.enums.NCLAttributeType;
+import br.uff.midiacom.ana.util.enums.NCLComparator;
+import br.uff.midiacom.ana.util.enums.NCLConditionOperator;
+import br.uff.midiacom.ana.util.enums.NCLDefaultActionRole;
+import br.uff.midiacom.ana.util.enums.NCLEventAction;
+import br.uff.midiacom.ana.util.enums.NCLEventTransition;
+import br.uff.midiacom.ana.util.enums.NCLEventType;
+import br.uff.midiacom.ana.util.enums.NCLKey;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -39,12 +39,12 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.datatype.enums.NCLConditionOperator;
-import br.uff.midiacom.ana.datatype.enums.NCLDefaultConditionRole;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLEventTransition;
-import br.uff.midiacom.ana.datatype.enums.NCLEventType;
-import br.uff.midiacom.ana.datatype.enums.NCLKey;
+import br.uff.midiacom.ana.util.enums.NCLConditionOperator;
+import br.uff.midiacom.ana.util.enums.NCLDefaultConditionRole;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLEventTransition;
+import br.uff.midiacom.ana.util.enums.NCLEventType;
+import br.uff.midiacom.ana.util.enums.NCLKey;
 import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;

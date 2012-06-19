@@ -38,14 +38,14 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLColor;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLFit;
-import br.uff.midiacom.ana.datatype.enums.NCLFontVariant;
-import br.uff.midiacom.ana.datatype.enums.NCLFontWeight;
-import br.uff.midiacom.ana.datatype.enums.NCLPlayerLife;
-import br.uff.midiacom.ana.datatype.enums.NCLScroll;
+import br.uff.midiacom.ana.util.enums.NCLAttributes;
+import br.uff.midiacom.ana.util.enums.NCLColor;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLFit;
+import br.uff.midiacom.ana.util.enums.NCLFontVariant;
+import br.uff.midiacom.ana.util.enums.NCLFontWeight;
+import br.uff.midiacom.ana.util.enums.NCLPlayerLife;
+import br.uff.midiacom.ana.util.enums.NCLScroll;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;

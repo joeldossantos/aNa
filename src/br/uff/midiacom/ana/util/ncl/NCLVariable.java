@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.util.ncl;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
+import br.uff.midiacom.ana.util.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.rule.NCLRule;

@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.ncl.NCLCompositeNodeElement;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.interfaces.NCLPort;

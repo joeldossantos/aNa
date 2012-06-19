@@ -39,9 +39,9 @@ package br.uff.midiacom.ana.connector;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.datatype.enums.NCLComparator;
-import br.uff.midiacom.ana.datatype.enums.NCLDefaultValueAssessment;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLComparator;
+import br.uff.midiacom.ana.util.enums.NCLDefaultValueAssessment;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
 import java.util.Iterator;

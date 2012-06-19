@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.node.NCLMedia;
 import br.uff.midiacom.ana.node.NCLSwitch;

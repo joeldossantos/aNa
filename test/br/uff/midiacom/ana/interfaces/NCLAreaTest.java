@@ -41,7 +41,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.util.SampleType;
 import br.uff.midiacom.ana.util.TimeType;
-import br.uff.midiacom.ana.datatype.enums.NCLSampleType;
+import br.uff.midiacom.ana.util.enums.NCLSampleType;
 import br.uff.midiacom.ana.util.ArrayType;
 import org.junit.Test;
 import static org.junit.Assert.*;

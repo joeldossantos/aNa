@@ -37,7 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util;
 
-import br.uff.midiacom.ana.datatype.enums.NCLSampleType;
+import br.uff.midiacom.ana.util.enums.NCLSampleType;
 
 
 /**

@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.ana.util.exception.XMLException;

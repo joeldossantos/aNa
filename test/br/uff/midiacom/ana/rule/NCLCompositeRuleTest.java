@@ -39,9 +39,9 @@ package br.uff.midiacom.ana.rule;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.enums.NCLComparator;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLOperator;
+import br.uff.midiacom.ana.util.enums.NCLComparator;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLOperator;
 import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import org.junit.Test;

@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.node;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.rule.NCLBindRule;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.rule.NCLRule;
 import org.junit.Test;

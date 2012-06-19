@@ -40,10 +40,10 @@ package br.uff.midiacom.ana.transition;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.util.TimeType;
-import br.uff.midiacom.ana.datatype.enums.NCLColor;
-import br.uff.midiacom.ana.datatype.enums.NCLTransitionDirection;
-import br.uff.midiacom.ana.datatype.enums.NCLTransitionSubtype;
-import br.uff.midiacom.ana.datatype.enums.NCLTransitionType;
+import br.uff.midiacom.ana.util.enums.NCLColor;
+import br.uff.midiacom.ana.util.enums.NCLTransitionDirection;
+import br.uff.midiacom.ana.util.enums.NCLTransitionSubtype;
+import br.uff.midiacom.ana.util.enums.NCLTransitionType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

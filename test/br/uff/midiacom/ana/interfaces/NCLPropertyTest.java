@@ -39,8 +39,8 @@ package br.uff.midiacom.ana.interfaces;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.XMLLoader;
-import br.uff.midiacom.ana.datatype.enums.NCLNodeAttributes;
-import br.uff.midiacom.ana.datatype.enums.NCLSystemVariable;
+import br.uff.midiacom.ana.util.enums.NCLNodeAttributes;
+import br.uff.midiacom.ana.util.enums.NCLSystemVariable;
 import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import org.junit.BeforeClass;
 import org.junit.Test;

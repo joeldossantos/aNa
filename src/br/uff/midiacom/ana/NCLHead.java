@@ -39,7 +39,7 @@ package br.uff.midiacom.ana;
 
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.connector.NCLConnectorBase;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;

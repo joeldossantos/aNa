@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.util.ncl;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLModificationException;
 import br.uff.midiacom.ana.util.xml.*;
-import br.uff.midiacom.ana.datatype.enums.NCLElementAttributes;
+import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.modification.NCLModificationNotifier;
 import br.uff.midiacom.ana.util.modification.NCLNotification;
 import java.util.regex.Matcher;
