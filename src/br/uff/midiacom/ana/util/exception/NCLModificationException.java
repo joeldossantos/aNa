@@ -37,8 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util.exception;
 
-import br.uff.midiacom.ana.datatype.ncl.*;
-
 
 /**
  * Class representing an exception when parsing an NCL document.
