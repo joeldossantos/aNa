@@ -70,6 +70,9 @@ public class NCLModificationNotifier extends Thread {
     
     
     public synchronized void addNotification(NCLNotification notification) {
+        if(listeners.isEmpty())
+            return;
+        
         index++;
         notification.setOrderNumber(index);
         notifications.add(notification);
