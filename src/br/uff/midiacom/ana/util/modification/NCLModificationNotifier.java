@@ -112,7 +112,10 @@ public class NCLModificationNotifier extends Thread {
             notifications.remove(0);
             
             for (NCLModificationListener listener : listeners) {
-                listener.modifiedElement(notification);
+                // Avoiding user errors
+                try{
+                    listener.modifiedElement(notification);
+                }catch(Exception e){}
             }
         }
         else
