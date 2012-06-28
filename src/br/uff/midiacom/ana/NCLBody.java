@@ -126,6 +126,15 @@ public class NCLBody<T extends NCLElement,
     
     
     @Override
+    public void setDoc(T doc) {
+        if(doc == null)
+            doc = getParent(); // doc is the parent of body
+        
+        super.setDoc(doc);
+    }
+    
+    
+    @Override
     public boolean compare(T other) {
         if(other == null || !(other instanceof NCLBody))
             return false;

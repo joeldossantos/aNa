@@ -159,7 +159,7 @@ public class NCLDescriptorParam<T extends NCLElement, V>
         
         Object aux = this.value;
         
-        if(percentSign){
+        if(percentSign != null && percentSign){
             if(!(newvalue instanceof Double))
                 throw new XMLException("A relative value must have type Double.");
             

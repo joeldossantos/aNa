@@ -126,6 +126,9 @@ public class NCLHead<T extends NCLElement,
     
     @Override
     public void setDoc(T doc) {
+        if(doc == null)
+            doc = getParent(); // doc is the parent of head
+        
         super.setDoc(doc);
         if(importedDocumentBase != null) importedDocumentBase.setDoc(doc);
         if(ruleBase != null) ruleBase.setDoc(doc);

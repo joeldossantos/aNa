@@ -104,6 +104,7 @@ public class NCLSimpleCondition<T extends NCLElement,
      */
     public NCLSimpleCondition() {
         super();
+        references = new ElementList<Eb>();
     }
 
 

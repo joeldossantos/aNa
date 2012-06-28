@@ -114,6 +114,7 @@ public class NCLSimpleAction<T extends NCLElement,
      */
     public NCLSimpleAction() {
         super();
+        references = new ElementList<Eb>();
     }
 
 
