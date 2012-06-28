@@ -37,10 +37,12 @@
  *******************************************************************************/
 package br.uff.midiacom.ana;
 
+import java.net.URI;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.io.File;
 import br.uff.midiacom.ana.util.enums.NCLNamespace;
+import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -78,14 +80,13 @@ public class NCLDocTest {
     }
     
     @Test
-    public void test3() throws XMLException {
-        String path = "/Users/joel/Desktop/TESTES/testeBases/VivaMais.ncl";
+    public void testLoadFile() throws XMLException, URISyntaxException {
+        URI path = getClass().getResource("../../../../doc.ncl").toURI();
         File f = new File(path);
         NCLDoc instance = new NCLDoc();
         instance.loadXML(f);
         
-        System.out.println(instance.parse(0));
-//        System.out.println("\n\n ======== outro doc ========\n\n");
-//        System.out.println(((NCLImport) instance.getHead().getConnectorBase().getImportBases().get(0)).getImportedDoc().parse(0));
+        assertTrue(true);
+        //System.out.println(instance.parse(0));
     }
 }
