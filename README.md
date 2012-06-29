@@ -7,7 +7,6 @@ Cada elemento contém um conjunto de funções que permitem a criação de um do
 
 Além da representação dos elementos, a aNa também provê a possibilidade de verificação da integridade do documento NCL através de funções de validação.
 
-OBS.: A API aNa usa como referência o projeto XML 
 
 Criadores
 ---------
