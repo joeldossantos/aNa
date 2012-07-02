@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.enums.NCLDevice;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -95,7 +96,7 @@ public class NCLRegionBase<T extends NCLElement,
                            R extends ExternalReferenceType>
         extends NCLBase<T, Ei> {
 
-    protected String device;
+    protected NCLDevice device;
     protected Object parent_region;
     protected ElementList<Er> regions;
 
@@ -125,17 +126,19 @@ public class NCLRegionBase<T extends NCLElement,
      * Sets the class of devices that use the base of regions. This attribute is
      * optional. Set the device to <i>null</i> to erase a device already defined.
      * 
+     * <br/>
+     * 
+     * The possible device values are defined in the enumeration <i>NCLDevice</i>.
+     * 
      * @param device
-     *          string representing the class of devices that use the base of
-     *          regions or <i>null</i> to erase the device already defined.
+     *          element from enumeration <i>NCLDevice</i> representing the class
+     *          of devices that use the base of regions or <i>null</i> to erase
+     *          the device already defined.
      * @throws XMLException 
-     *          if the string is empty.
+     *          if an error occur while notifying the modification.
      */
-    public void setDevice(String device) throws XMLException {
-        if(device != null && "".equals(device.trim()))
-            throw new XMLException("Empty device string");
-        
-        String aux = this.device;
+    public void setDevice(NCLDevice device) throws XMLException {
+        NCLDevice aux = this.device;
         this.device = device;
         notifyAltered(NCLElementAttributes.DEVICE, aux, device);
     }
@@ -146,10 +149,11 @@ public class NCLRegionBase<T extends NCLElement,
      * if the attribute is not defined.
      * 
      * @return 
-     *          string representing the class of devices that use the base of
-     *          regions or <i>null</i> if the attribute is not defined.
+     *          element from enumeration <i>NCLDevice</i> representing the class
+     *          of devices that use the base of regions or <i>null</i> if the
+     *          attribute is not defined.
      */
-    public String getDevice() {
+    public NCLDevice getDevice() {
         return device;
     }    
 
@@ -477,7 +481,7 @@ public class NCLRegionBase<T extends NCLElement,
     
     
     protected String parseDevice() {
-        String aux = getDevice();
+        NCLDevice aux = getDevice();
         if(aux != null)
             return " device='" + aux + "'";
         else
@@ -491,7 +495,7 @@ public class NCLRegionBase<T extends NCLElement,
         // set the device (optional)
         att_name = NCLElementAttributes.DEVICE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDevice(att_var);
+            setDevice(NCLDevice.getEnumType(att_var));
     }
     
     
