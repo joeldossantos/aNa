@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
+import br.uff.midiacom.ana.util.enums.NCLDevice;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -55,7 +56,9 @@ public class NCLRegionBaseTest {
     public void test1() throws XMLException {
         NCLRegionBase base = new NCLRegionBase();
         base.setId("rgb");
-        base.setDevice("systemScreen(0)");
+        NCLDevice dev = NCLDevice.SYSTEM_SCREEN;
+        dev.setParamenter(0);
+        base.setDevice(dev);
 
         String expResult = "<regionBase id='rgb' device='systemScreen(0)'/>\n";
         String result = base.parse(0);
