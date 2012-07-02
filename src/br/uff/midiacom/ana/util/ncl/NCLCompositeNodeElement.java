@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 
 
 /**
@@ -187,7 +188,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removePort(Ept port) throws XMLException {
         if(!port.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(ports.remove(port)){
@@ -324,7 +325,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removeProperty(Epp property) throws XMLException {
         if(!property.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(properties.remove(property)){
@@ -459,7 +460,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
      */
     public boolean removeNode(En node) throws XMLException {
         if(!node.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(nodes.remove(node)){

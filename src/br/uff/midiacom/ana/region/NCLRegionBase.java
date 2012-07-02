@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -239,7 +240,7 @@ public class NCLRegionBase<T extends NCLElement,
      */
     public boolean removeRegion(Er region) throws XMLException {
         if(!region.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(regions.remove(region)){

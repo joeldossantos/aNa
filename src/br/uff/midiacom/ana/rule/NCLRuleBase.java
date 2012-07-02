@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -154,7 +155,7 @@ public class NCLRuleBase<T extends NCLElement,
      */
     public boolean removeRule(Et rule) throws XMLException {
         if(!rule.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(rules.remove(rule)){

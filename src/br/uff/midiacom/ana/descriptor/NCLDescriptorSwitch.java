@@ -46,6 +46,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -179,7 +180,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
      */
     public boolean removeDescriptor(Ed descriptor) throws XMLException {
         if(!descriptor.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(descriptors.remove(descriptor)){

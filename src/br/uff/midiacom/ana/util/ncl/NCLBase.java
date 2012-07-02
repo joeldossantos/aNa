@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
 
 
@@ -111,7 +112,7 @@ public abstract class NCLBase<T extends NCLElement,
      */
     public boolean removeImportBase(Ei importBase) throws XMLException {
         if(!importBase.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(imports.remove(importBase)){

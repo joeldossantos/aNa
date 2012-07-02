@@ -52,6 +52,7 @@ import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -308,7 +309,7 @@ public class NCLSwitch<T extends NCLElement,
      */
     public boolean removePort(Ep port) throws XMLException {
         if(!port.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(ports.remove(port)){
@@ -569,7 +570,7 @@ public class NCLSwitch<T extends NCLElement,
      */
     public boolean removeNode(En node) throws XMLException {
         if(!node.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(nodes.remove(node)){

@@ -39,27 +39,27 @@ package br.uff.midiacom.ana.util.exception;
 
 
 /**
- * Class representing an exception when parsing an NCL document.
+ * Class representing an exception when removing an NCL element.
  */
-public class NCLParsingException extends XMLException {
+public class NCLRemovalException extends XMLException {
 
 
-    public NCLParsingException() {
+    public NCLRemovalException() {
         super();
     }
 
 
-    public NCLParsingException(String msg) {
+    public NCLRemovalException(String msg) {
         super(msg);
     }
 
 
-    public NCLParsingException(Throwable ex) {
+    public NCLRemovalException(Throwable ex) {
         super(ex);
     }
 
 
-    public NCLParsingException(String msg, Throwable ex) {
+    public NCLRemovalException(String msg, Throwable ex) {
         super(msg,ex);
     }
 }

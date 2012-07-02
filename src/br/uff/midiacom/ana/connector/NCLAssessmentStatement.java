@@ -44,6 +44,7 @@ import br.uff.midiacom.ana.util.enums.NCLDefaultValueAssessment;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import java.util.Iterator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -259,7 +260,7 @@ public class NCLAssessmentStatement<T extends NCLElement,
      */
     public boolean removeAttributeAssessment(Ea attribute) throws XMLException {
         if(!attribute.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(attributeAssessments.remove(attribute)){

@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.util.enums.NCLConditionOperator;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
 import org.w3c.dom.Element;
@@ -220,7 +221,7 @@ public class NCLCompoundCondition<T extends NCLElement,
      */
     public boolean removeCondition(Ec condition) throws XMLException {
         if(condition instanceof ReferredElement && !((ReferredElement) condition).getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(conditions.remove(condition)){

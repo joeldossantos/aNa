@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -145,7 +146,7 @@ public class NCLConnectorBase<T extends NCLElement,
      */
     public boolean removeCausalConnector(Ec connector) throws XMLException {
         if(!connector.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(connectors.remove(connector)){

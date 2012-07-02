@@ -54,6 +54,7 @@ import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -618,7 +619,7 @@ public class NCLMedia<T extends NCLElement,
      */
     public boolean removeArea(Ea area) throws XMLException {
         if(!area.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(areas.remove(area)){
@@ -756,7 +757,7 @@ public class NCLMedia<T extends NCLElement,
      */
     public boolean removeProperty(Ep property) throws XMLException {
         if(!property.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(properties.remove(property)){

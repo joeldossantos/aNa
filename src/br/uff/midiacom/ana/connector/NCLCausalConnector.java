@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.link.NCLLink;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -159,7 +160,7 @@ public class NCLCausalConnector<T extends NCLElement,
         //Removes the parent of the actual condition
         if(this.condition != null){
             if(this.condition instanceof ReferredElement && !((ReferredElement) this.condition).getReferences().isEmpty())
-                throw new XMLException("This element has a reference to it."
+                throw new NCLRemovalException("This element has a reference to it."
                         + " The reference must be undone before erasing this element.");
         
             this.condition.setParent(null);
@@ -209,7 +210,7 @@ public class NCLCausalConnector<T extends NCLElement,
         //Removes the parent of the actual action
         if(this.action != null){
             if(this.action instanceof ReferredElement && !((ReferredElement) this.action).getReferences().isEmpty())
-                throw new XMLException("This element has a reference to it."
+                throw new NCLRemovalException("This element has a reference to it."
                         + " The reference must be undone before erasing this element.");
             
             this.action.setParent(null);
@@ -277,7 +278,7 @@ public class NCLCausalConnector<T extends NCLElement,
      */
     public boolean removeConnectorParam(Ep param) throws XMLException {
         if(!param.getReferences().isEmpty())
-            throw new XMLException("This element has a reference to it."
+            throw new NCLRemovalException("This element has a reference to it."
                     + " The reference must be undone before erasing this element.");
         
         if(conn_params.remove(param)){
