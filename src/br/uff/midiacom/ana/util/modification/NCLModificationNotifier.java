@@ -58,6 +58,7 @@ public class NCLModificationNotifier extends Thread {
         run = true;
         notifications = new ArrayList<NCLNotification>();
         listeners = new ArrayList<NCLModificationListener>();
+        start();
     }
     
     
