@@ -88,15 +88,15 @@ public class NCLTransitionBaseTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test4() throws XMLException {
-        String expResult = "<transitionBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<transition id='tr1' type='fade'/>\n</transitionBase>\n";
-
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLTransitionBase instance = new NCLTransitionBase();
-        instance.load(loader.getElement());
-
-        String result = instance.parse(0);
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test4() throws XMLException {
+//        String expResult = "<transitionBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<transition id='tr1' type='fade'/>\n</transitionBase>\n";
+//
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLTransitionBase instance = new NCLTransitionBase();
+//        instance.load(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//    }
 }

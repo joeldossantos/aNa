@@ -60,8 +60,10 @@ public class NCLImportTest {
         instance.load(loader.getElement());
         
         String expResult = "teste";
-        String result = ((NCLRegion) ((NCLImportBase) ((NCLRegionBase) instance.getHead().getRegionBases().iterator().next()).getImportBases().iterator().next()).getRegion()).getTitle();
+        
+        NCLRegionBase reg = (NCLRegionBase) instance.getHead().getRegionBases().get(0);
+        NCLImportBase imp = (NCLImportBase) reg.getImportBases().get(0);
+        String result = ((NCLRegion) imp.getRegion()).getTitle();
         assertEquals(expResult, result);
-
     }
 }

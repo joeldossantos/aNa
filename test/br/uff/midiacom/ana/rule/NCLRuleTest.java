@@ -62,17 +62,17 @@ public class NCLRuleTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test2() throws XMLException {
-        String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
-
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLRule instance = new NCLRule();
-        instance.load(loader.getElement());
-
-        String result = instance.parse(0);
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test2() throws XMLException {
+//        String expResult = "<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n";
+//
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLRule instance = new NCLRule();
+//        instance.load(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//    }
 
 //    @Test
 //    public void test3() throws XMLException {

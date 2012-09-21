@@ -531,8 +531,11 @@ public class NCLSimpleCondition<T extends NCLElement,
             if("".equals(value.trim()))
                 throw new XMLException("Empty delay String");
             
-            if(!value.contains("$"))
+            if(!value.contains("$")){
+                if(value.contains("s"))
+                    value = value.substring(0, value.length() - 1);
                 this.delay = new Double(value);
+            }
             else{
                 this.delay = findConnectorParam(value.substring(1));
                 ((Ep) this.delay).addReference(this);

@@ -37,14 +37,13 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.region;
 
+import br.uff.midiacom.ana.util.enums.NCLDevice.DeviceName;
+import br.uff.midiacom.ana.NCLHead;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.util.SrcType;
-import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.util.enums.NCLImportType;
-import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.ana.util.enums.NCLDevice;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -56,7 +55,7 @@ public class NCLRegionBaseTest {
     public void test1() throws XMLException {
         NCLRegionBase base = new NCLRegionBase();
         base.setId("rgb");
-        NCLDevice dev = NCLDevice.SYSTEM_SCREEN;
+        NCLDevice dev = new NCLDevice(DeviceName.SYSTEM_SCREEN);
         dev.setParamenter(0);
         base.setDevice(dev);
 
@@ -107,5 +106,26 @@ public class NCLRegionBaseTest {
         String result = ((NCLRegion) ((NCLRegionBase) instance.getHead().getRegionBases().get(0)).getParentRegion()).getTitle();
         assertEquals(expResult, result);
 
+    }
+    
+    @Test
+    public void testDevice() throws XMLException {
+        NCLHead h = new NCLHead();
+        NCLRegionBase b1, b2;
+        
+        b1 = new NCLRegionBase();
+        NCLDevice d1 = new NCLDevice(DeviceName.SYSTEM_AUDIO, 0);
+        b1.setDevice(d1);
+        
+        b2 = new NCLRegionBase();
+        NCLDevice d2 = new NCLDevice(DeviceName.SYSTEM_AUDIO, 1);
+        b2.setDevice(d2);
+        
+        h.addRegionBase(b1);
+        h.addRegionBase(b2);
+        
+        String expResult = "<head>\n\t<regionBase device='systemAudio(0)'/>\n\t<regionBase device='systemAudio(1)'/>\n</head>\n";
+        String result = h.parse(0);
+        assertEquals(expResult, result);
     }
 }

@@ -61,6 +61,7 @@ public class NCLVariable<T extends NCLElement>
         extends NCLNamedElementPrototype<T, Object>
         implements ReferredElement<T> {
 
+    protected Integer param;
     protected ElementList<T> references;
     
     
@@ -111,11 +112,10 @@ public class NCLVariable<T extends NCLElement>
             }
             
             NCLSystemVariable v = NCLSystemVariable.getEnumType(n);
-            if(v != null){
-                if(p != null)
-                    v.setParamenter(p);
+            if(v != null)
                 this.name = v;
-            }
+            if(p != null)
+                setParamenter(p);
             
             this.name = name;
         }
@@ -128,8 +128,26 @@ public class NCLVariable<T extends NCLElement>
     }
     
     
+    public boolean hasParameter() {
+        return param != null;
+    }
+    
+    
+    public void setParamenter(int param) throws XMLException {
+        if(param < 0)
+            throw new XMLException("Parameter can not be negative.");
+        
+        this.param = param;
+    }
+    
+    
     @Override
     public String parse(int ident) {
+        if(name instanceof NCLSystemVariable &&
+                ((NCLSystemVariable) name).isParameterized() && hasParameter())
+            return name + "(" + param + ")";
+        
+        
         return name.toString();
     }
     

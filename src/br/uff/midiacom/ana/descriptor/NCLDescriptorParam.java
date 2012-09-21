@@ -77,7 +77,7 @@ public class NCLDescriptorParam<T extends NCLElement, V>
 
     protected NCLAttributes name;
     protected Object value;
-    protected Boolean percentSign;
+    protected boolean percentSign;
 
 
     /**
@@ -88,6 +88,7 @@ public class NCLDescriptorParam<T extends NCLElement, V>
      */
     public NCLDescriptorParam() {
         super();
+        percentSign = false;
     }
 
 
@@ -159,7 +160,7 @@ public class NCLDescriptorParam<T extends NCLElement, V>
         
         Object aux = this.value;
         
-        if(percentSign != null && percentSign){
+        if(percentSign){
             if(!(newvalue instanceof Double))
                 throw new XMLException("A relative value must have type Double.");
             
@@ -205,7 +206,7 @@ public class NCLDescriptorParam<T extends NCLElement, V>
      * @param percentSign 
      *          boolean determining if the value has a percent sign.
      */
-    public void setPercentSign(Boolean percentSign) {
+    public void setPercentSign(boolean percentSign) {
         this.percentSign = percentSign;
     }
     
@@ -217,7 +218,7 @@ public class NCLDescriptorParam<T extends NCLElement, V>
      * @return
      *          boolean determining if the value has a percent sign.
      */
-    public Boolean getPercentSign() {
+    public boolean getPercentSign() {
         return percentSign;
     }
 
@@ -338,7 +339,10 @@ public class NCLDescriptorParam<T extends NCLElement, V>
             return name.equals(NCLAttributes.ZINDEX) || name.equals(NCLAttributes.TOP) ||
                    name.equals(NCLAttributes.LEFT) || name.equals(NCLAttributes.BOTTOM) ||
                    name.equals(NCLAttributes.RIGHT) || name.equals(NCLAttributes.WIDTH) ||
-                   name.equals(NCLAttributes.HEIGHT);
+                   name.equals(NCLAttributes.HEIGHT) || name.equals(NCLAttributes.FONT_SIZE) ||
+                   name.equals(NCLAttributes.TRANSPARENCY) || name.equals(NCLAttributes.SOUND_LEVEL) ||
+                   name.equals(NCLAttributes.BALANCE_LEVEL) || name.equals(NCLAttributes.TREBLE_LEVEL) ||
+                   name.equals(NCLAttributes.BASS_LEVEL);
         
         if(value instanceof Double)
             return name.equals(NCLAttributes.FONT_SIZE) || name.equals(NCLAttributes.TRANSPARENCY) ||

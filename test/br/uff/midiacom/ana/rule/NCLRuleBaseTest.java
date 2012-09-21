@@ -93,15 +93,15 @@ public class NCLRuleBaseTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test4() throws XMLException {
-        String expResult = "<ruleBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n</ruleBase>\n";
-
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLRuleBase instance = new NCLRuleBase();
-        instance.load(loader.getElement());
-
-        String result = instance.parse(0);
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test4() throws XMLException {
+//        String expResult = "<ruleBase>\n\t<importBase alias='base' documentURI='base.ncl'/>\n\t<rule id='r1' var='legenda' comparator='eq' value='ligada'/>\n</ruleBase>\n";
+//
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLRuleBase instance = new NCLRuleBase();
+//        instance.load(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//    }
 }

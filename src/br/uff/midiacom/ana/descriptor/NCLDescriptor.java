@@ -1077,13 +1077,13 @@ public class NCLDescriptor<T extends NCLElement,
         
         T el;
         if((el = (T) getMoveLeft()) != null)
-            result &= el.compare(((NCLDescriptor) other).getMoveLeft());
+            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveLeft().getFocusIndex());
         if((el = (T) getMoveRight()) != null)
-            result &= el.compare(((NCLDescriptor) other).getMoveRight());
+            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveRight().getFocusIndex());
         if((el = (T) getMoveUp()) != null)
-            result &= el.compare(((NCLDescriptor) other).getMoveUp());
+            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveUp().getFocusIndex());
         if((el = (T) getMoveDown()) != null)
-            result &= el.compare(((NCLDescriptor) other).getMoveDown());
+            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveDown().getFocusIndex());
         
         Object oaux;
         aux = getTransIn();
@@ -1350,7 +1350,7 @@ public class NCLDescriptor<T extends NCLElement,
     protected String parseMoveLeft() {
         Ed aux = getMoveLeft();
         if(aux != null)
-            return " moveLeft='" + aux.getId() + "'";
+            return " moveLeft='" + aux.getFocusIndex() + "'";
         else
             return "";
     }
@@ -1374,7 +1374,7 @@ public class NCLDescriptor<T extends NCLElement,
     protected String parseMoveRight() {
         Ed aux = getMoveRight();
         if(aux != null)
-            return " moveRight='" + aux.getId() + "'";
+            return " moveRight='" + aux.getFocusIndex() + "'";
         else
             return "";
     }
@@ -1398,7 +1398,7 @@ public class NCLDescriptor<T extends NCLElement,
     protected String parseMoveDown() {
         Ed aux = getMoveDown();
         if(aux != null)
-            return " moveDown='" + aux.getId() + "'";
+            return " moveDown='" + aux.getFocusIndex() + "'";
         else
             return "";
     }
@@ -1422,7 +1422,7 @@ public class NCLDescriptor<T extends NCLElement,
     protected String parseMoveUp() {
         Ed aux = getMoveUp();
         if(aux != null)
-            return " moveUp='" + aux.getId() + "'";
+            return " moveUp='" + aux.getFocusIndex() + "'";
         else
             return "";
     }

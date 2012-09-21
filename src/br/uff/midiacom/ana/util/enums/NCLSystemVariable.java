@@ -90,7 +90,6 @@ public enum NCLSystemVariable {
 
 
     private String name;
-    private Integer param;
     
     private NCLSystemVariable(String name) {
         this.name = name;
@@ -101,7 +100,7 @@ public enum NCLSystemVariable {
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
     
     
@@ -119,24 +118,8 @@ public enum NCLSystemVariable {
     }
     
     
-    public boolean hasParameter() {
-        return param != null;
-    }
-    
-    
-    public void setParamenter(int param) throws XMLException {
-        if(param < 0)
-            throw new XMLException("Parameter can not be negative.");
-        
-        this.param = param;
-    }
-    
-    
     @Override
     public String toString() {
-        if(isParameterized() && hasParameter())
-            return name + "(" + param + ")";
-        
         return name;
     }
     

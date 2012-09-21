@@ -362,6 +362,9 @@ public class NCLRegionBase<T extends NCLElement,
                 break;
         }
         
+        if(device != null)
+            result &= getDevice().compare(((NCLRegionBase) other).getDevice());
+        
         return result;
     }
 
@@ -495,7 +498,7 @@ public class NCLRegionBase<T extends NCLElement,
         // set the device (optional)
         att_name = NCLElementAttributes.DEVICE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setDevice(NCLDevice.getEnumType(att_var));
+            setDevice(new NCLDevice(att_var));
     }
     
     

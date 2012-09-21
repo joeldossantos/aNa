@@ -37,6 +37,8 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.util.enums.NCLConditionOperator;
+import br.uff.midiacom.ana.util.enums.NCLDefaultConditionRole;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -87,5 +89,41 @@ public class NCLCompoundConditionTest {
         result &= ccon.hasCondition(nclel4);
 
         assertTrue(result);
+    }
+    
+    @Test
+    public void Test_CompCond_Child_Parent() throws XMLException {
+        NCLCausalConnector conn = new NCLCausalConnector("my_conn");
+        System.out.println("conn = " + conn);
+        
+        NCLSimpleCondition sconB = new NCLSimpleCondition();
+        sconB.setRole(NCLDefaultConditionRole.ONBEGIN);
+        conn.setCondition(sconB);
+        System.out.println("sconB = " + sconB);
+        System.out.println("sconB.getParent() = " + sconB.getParent());
+        
+        NCLSimpleCondition sconE = new NCLSimpleCondition();
+        sconE.setRole(NCLDefaultConditionRole.ONEND);
+        conn.setCondition(sconE);
+        System.out.println("sconE = " + sconE);
+        System.out.println("sconE.getParent() = " + sconE.getParent());
+        System.out.println("sconB.getParent() = " + sconB.getParent());
+        
+        NCLCompoundCondition ccon = new NCLCompoundCondition();
+        ccon.setOperator(NCLConditionOperator.AND);
+        System.out.println("ccon = " + ccon);
+        System.out.println("ccon.getParent() = " + ccon.getParent());
+        if(sconB.getParent() != null)
+            sconB.setParent(null);
+        if(sconE.getParent() != null)
+            sconE.setParent(null);
+        ccon.addCondition(sconB);
+        ccon.addCondition(sconE);
+        System.out.println("sconB.getParent() = " + sconB.getParent());
+        System.out.println("sconE.getParent() = " + sconE.getParent());
+        
+        
+        conn.setCondition(ccon);
+        System.out.println("ccon.getParent() = " + ccon.getParent());
     }
 }

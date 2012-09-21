@@ -44,24 +44,52 @@ import br.uff.midiacom.ana.util.exception.XMLException;
  * Enumeration of the region base device types. A device type receives an
  * argument.
  */
-public enum NCLDevice {
+public class NCLDevice {
     
-    SYSTEM_SCREEN("“systemScreen"),
-    SYSTEM_AUDIO("systemAudio");
+    public enum DeviceName { SYSTEM_SCREEN, SYSTEM_AUDIO };
     
-    private String name;
-    private Integer param;
+    protected DeviceName name;
+    protected Integer param;
     
-    private NCLDevice(String name) {
+    
+    public NCLDevice(DeviceName name) {
         this.name = name;
     }
     
-    public static NCLDevice getEnumType(String name) {
-        for(NCLDevice opt : values()){
-            if(name.equals(opt.name))
-                return opt;
+    
+    public NCLDevice(DeviceName name, Integer param) throws XMLException {
+        this.name = name;
+        setParamenter(param);
+    }
+    
+    
+    public NCLDevice(String name) throws XMLException {
+        if(name == null)
+            throw new XMLException("Null name.");
+        
+        String n,a;
+        Integer i, p = null;
+
+        n = name;
+        if("".equals(n.trim()))
+            throw new XMLException("Empty name String");
+
+        i = n.indexOf("(");
+        if(i > 0){
+            a = n.substring(i+1, n.length()-1);
+            n = n.substring(0, i);
+            p = new Integer(a);
         }
-        return null;
+
+        if(n.equals("systemScreen"))
+            this.name = DeviceName.SYSTEM_SCREEN;
+        else if(n.equals("systemAudio"))
+            this.name = DeviceName.SYSTEM_AUDIO;
+        else
+            throw new XMLException("Wrong device name");
+        
+        if(p != null)
+            setParamenter(p);
     }
     
     
@@ -80,10 +108,16 @@ public enum NCLDevice {
     
     @Override
     public String toString() {
-        if(hasParameter())
-            return name + "(" + param + ")";
+        String result = "";
+        switch(name){
+            case SYSTEM_SCREEN: result += "systemScreen"; break;
+            case SYSTEM_AUDIO: result += "systemAudio";
+        }
         
-        return name;
+        if(hasParameter())
+            result += "(" + param + ")";
+        
+        return result;
     }
     
     

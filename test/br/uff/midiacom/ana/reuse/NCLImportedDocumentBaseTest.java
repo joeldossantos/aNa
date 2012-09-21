@@ -82,15 +82,15 @@ public class NCLImportedDocumentBaseTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void test4() throws XMLException {
-        String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
-
-        XMLLoader loader = new XMLLoader(expResult);
-        NCLImportedDocumentBase instance = new NCLImportedDocumentBase();
-        instance.load(loader.getElement());
-
-        String result = instance.parse(0);
-        assertEquals(expResult, result);
-    }
+//    @Test
+//    public void test4() throws XMLException {
+//        String expResult = "<importedDocumentBase>\n\t<importNCL alias='base' documentURI='base.ncl'/>\n</importedDocumentBase>\n";
+//
+//        XMLLoader loader = new XMLLoader(expResult);
+//        NCLImportedDocumentBase instance = new NCLImportedDocumentBase();
+//        instance.load(loader.getElement());
+//
+//        String result = instance.parse(0);
+//        assertEquals(expResult, result);
+//    }
 }

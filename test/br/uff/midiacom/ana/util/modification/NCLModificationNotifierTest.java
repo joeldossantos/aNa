@@ -23,7 +23,7 @@ public class NCLModificationNotifierTest {
         
         notifier.clearListeners();
         notifier.addListener(foo);
-        notifier.start();
+//        notifier.start();
         
         notifier.addNotification(new NCLNotification(element));
         notifier.addNotification(new NCLNotification(element));
@@ -44,7 +44,7 @@ public class NCLModificationNotifierTest {
         
         notifier.clearListeners();
         notifier.addListener(foo1);
-        notifier.start();
+//        notifier.start();
         
         notifier.addNotification(new NCLNotification(element));
         Thread.sleep(1000);

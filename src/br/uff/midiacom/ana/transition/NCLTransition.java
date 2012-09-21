@@ -125,6 +125,8 @@ public class NCLTransition<T extends NCLElement,
     public void setId(String id) throws XMLException {
         if(id == null)
             throw new XMLException("Null id String");
+        
+        this.id = id;
     }
 
 

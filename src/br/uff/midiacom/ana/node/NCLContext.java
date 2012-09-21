@@ -671,7 +671,7 @@ public class NCLContext<T extends NCLElement,
         
         try{
             // set the refer (optional)
-            if((aux = ((NCLCompositeNodeElement) getRefer()).getId()) != null){
+            if( getRefer() != null && (aux = ((NCLCompositeNodeElement) getRefer()).getId()) != null){
                 En ref = (En) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findNode(aux);
                 setRefer(ref);
             }

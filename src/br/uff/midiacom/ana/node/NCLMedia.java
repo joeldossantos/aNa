@@ -1276,7 +1276,7 @@ public class NCLMedia<T extends NCLElement,
         
         try{
             // set the refer (optional)
-            if((aux = ((En) getRefer()).getId()) != null){
+            if(getRefer() != null && (aux = ((En) getRefer()).getId()) != null){
                 En ref = (En) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findNode(aux);
                 setRefer(ref);
             }
