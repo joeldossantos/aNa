@@ -48,7 +48,7 @@ import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.interfaces.NCLInterface;
 import br.uff.midiacom.ana.rule.NCLBindRule;
-import br.uff.midiacom.ana.rule.NCLRule;
+import br.uff.midiacom.ana.rule.NCLTestRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
@@ -103,7 +103,7 @@ public class NCLSwitch<T extends NCLElement,
                        En extends NCLNode,
                        Ei extends NCLInterface,
                        Ep extends NCLSwitchPort,
-                       Er extends NCLRule,
+                       Er extends NCLTestRule,
                        R extends ExternalReferenceType,
                        Eb extends NCLBindRule<T, En, Er, R>>
         extends NCLIdentifiableElementPrototype<T>
