@@ -58,7 +58,7 @@ public class NCLDocTest {
         d.setHead(new NCLHead());
         d.setBody(new NCLBody());
 
-        String expResult = "<?xml version='1.0' encoding='ISO-8859-1'?>\n<!-- Generated with NCL API -->\n\n"+
+        String expResult = "<?xml version='1.0' encoding='ISO-8859-1'?>\n<!-- Generated with aNa - API for NCL Authoring -->\n\n"+
                 "<ncl id='meudoc' title='documento de teste' xmlns='http://www.ncl.org.br/NCL3.0/EDTVProfile'>\n\t"+
                 "<head>\n\t</head>\n\t<body>\n\t</body>\n</ncl>\n";
         String result = d.parse(0);
@@ -67,7 +67,7 @@ public class NCLDocTest {
 
     @Test
     public void test2() throws XMLException {
-        String expResult = "<?xml version='1.0' encoding='ISO-8859-1'?>\n<!-- Generated with NCL API -->\n\n"+
+        String expResult = "<?xml version='1.0' encoding='ISO-8859-1'?>\n<!-- Generated with aNa - API for NCL Authoring -->\n\n"+
                 "<ncl id='meudoc' title='documento de teste' xmlns='http://www.ncl.org.br/NCL3.0/EDTVProfile'>\n\t"+
                 "<head>\n\t</head>\n\t<body>\n\t</body>\n</ncl>\n";
 
@@ -87,6 +87,6 @@ public class NCLDocTest {
         instance.loadXML(f);
         
         assertTrue(true);
-        //System.out.println(instance.parse(0));
+        System.out.println(instance.parse(0));
     }
 }

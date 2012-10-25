@@ -49,6 +49,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -314,8 +315,16 @@ public class NCLConnectorBase<T extends NCLElement,
         }
         
         try{
-            loadImportBases(element);
-            loadCausalConnectors(element);
+            // create the child elements
+            nl = element.getChildNodes();
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element) {
+                    Element el = (Element) nl.item(i);
+                    loadImportBases(el);
+                    loadCausalConnectors(el);
+                }
+            }
         }
         catch(XMLException ex){
             throw new NCLParsingException("ConnectorBase > " + ex.getMessage());
@@ -374,17 +383,11 @@ public class NCLConnectorBase<T extends NCLElement,
     
     
     protected void loadCausalConnectors(Element element) throws XMLException {
-        String ch_name;
-        NodeList nl;
-        
-        // create the region child nodes
-        ch_name = NCLElementAttributes.CAUSALCONNECTOR.toString();
-        nl = element.getElementsByTagName(ch_name);
-        for(int i=0; i < nl.getLength(); i++){
-            Element el = (Element) nl.item(i);
+        //create the connectors
+        if(element.getTagName().equals(NCLElementAttributes.CAUSALCONNECTOR.toString())){
             Ec inst = createCausalConnector();
             addCausalConnector(inst);
-            inst.load(el);
+            inst.load(element);
         }
     }
     

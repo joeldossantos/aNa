@@ -237,7 +237,12 @@ public abstract class NCLImport<T extends NCLElement,
             // load the imported document or base depending on the element type
             try{
                 Ed aux = createDoc();
-                URI base = new URI(((Ed) getDoc()).getLocation() + File.separator);
+                String sep = File.separator;
+                String loc = ((Ed) getDoc()).getLocation() + sep;
+                if(sep.equals("\\"))
+                    loc.replace('\\', '/');
+                
+                URI base = new URI(loc);
                 URI path = base.resolve(getDocumentURI().toString());
                 aux.loadXML(new File(path.getPath()));
                 setImportedDoc(aux);

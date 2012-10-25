@@ -325,9 +325,9 @@ public class NCLBindRule<T extends NCLElement,
                 throw new NCLParsingException("Could not find element " + att_var);
 
             Ec comp = null;
-            if(comp instanceof NCLDescriptor)
+            if(aux instanceof NCLDescriptor)
                 comp = (Ec) ((NCLDescriptorSwitch) aux).getDescriptors().get(att_var);
-            else if(comp instanceof NCLNode)
+            else if(aux instanceof NCLNode)
                 comp = (Ec) ((NCLNode) aux).findNode(att_var);
             
             if(comp == null)

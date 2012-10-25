@@ -473,7 +473,7 @@ public class NCLDoc<T extends NCLElement,
         // XML document start declaration
         content = space + "<?xml version='1.0' encoding='ISO-8859-1'?>\n";
 
-        content += space + "<!-- Generated with NCL API -->\n\n";
+        content += space + "<!-- Generated with aNa - API for NCL Authoring -->\n\n";
 
         // <ncl> element and attributes declaration
         content += space + "<ncl";

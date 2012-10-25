@@ -23,7 +23,9 @@
 			<descriptor id='dpBot' region='rgBot' focusIndex='1'/>
 			<descriptor id='dpAudio'/>
 		</descriptorBase>
-		<connectorBase/>
+		<connectorBase>
+                    <importBase alias='foo' documentURI='base.ncl'/>
+                </connectorBase>
 	</head>
 	<body>
 	</body>
