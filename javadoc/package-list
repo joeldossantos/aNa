@@ -9,3 +9,10 @@ br.uff.midiacom.ana.region
 br.uff.midiacom.ana.reuse
 br.uff.midiacom.ana.rule
 br.uff.midiacom.ana.transition
+br.uff.midiacom.ana.util
+br.uff.midiacom.ana.util.enums
+br.uff.midiacom.ana.util.exception
+br.uff.midiacom.ana.util.modification
+br.uff.midiacom.ana.util.ncl
+br.uff.midiacom.ana.util.reference
+br.uff.midiacom.ana.util.xml
