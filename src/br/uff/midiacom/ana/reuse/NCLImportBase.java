@@ -94,6 +94,7 @@ public class NCLImportBase<T extends NCLElement,
         implements NCLElement<T> {
 
     protected Er region;
+    protected String baseId;
 
 
     /**
@@ -147,6 +148,38 @@ public class NCLImportBase<T extends NCLElement,
     public Er getRegion() {
         return region;
     }
+    
+    
+    /**
+     * Sets the id of the base in the document to be imported. The baseId is
+     * optional, set the baseId to <i>null</i> to erase a baseId already
+     * defined.
+     * 
+     * @param baseId
+     *          string representing the id of the base to be imported or <i>null</i>
+     *          to erase a baseId already defined.
+     * @throws XMLException 
+     *          if the string is empty.
+     */
+    public void setBaseId(String baseId) throws XMLException {
+        if(baseId != null && "".equals(baseId.trim()))
+            throw new XMLException("Empty baseId String.");
+        
+        this.baseId = baseId;
+    }
+    
+    
+    /**
+     * Returns the id of the base in the document to be imported or <i>null</i>
+     * if the attribute is not defined.
+     * 
+     * @return
+     *          string representing the id of the base to be imported or <i>null</i>
+     *          if the attribute is not defined.
+     */
+    public String getBaseId() {
+        return baseId;
+    }
 
 
     @Override
@@ -183,6 +216,28 @@ public class NCLImportBase<T extends NCLElement,
         att_name = NCLElementAttributes.REGION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             setRegion((Er) NCLReferenceManager.getInstance().findRegionReference((Ed) getDoc(), att_var));
+        }
+    }
+    
+    
+    @Override
+    protected String parseBaseId() {
+        String aux = getBaseId();
+        if(aux != null)
+            return " baseId='" + aux + "'";
+        else
+            return "";
+    }
+    
+    
+    @Override
+    protected void loadBaseId(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the region (optional)
+        att_name = NCLElementAttributes.BASEID.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            setBaseId(att_var);
         }
     }
     

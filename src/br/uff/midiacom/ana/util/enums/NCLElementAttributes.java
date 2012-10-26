@@ -50,6 +50,7 @@ public enum NCLElementAttributes {
     ATTRIBUTETYPE("attributeType"),
     ATTRIBUTEASSESSMENT("attributeAssessment"),
     AREA("area"),
+    BASEID("baseId"),
     BEGIN("begin"),
     BIND("bind"),
     BINDRULE("bindRule"),

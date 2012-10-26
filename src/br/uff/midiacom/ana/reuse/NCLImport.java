@@ -233,6 +233,7 @@ public abstract class NCLImport<T extends NCLElement,
             loadAlias(element);
             loadDocumentURI(element);
             loadRegion(element);
+            loadBaseId(element);
             
             // load the imported document or base depending on the element type
             try{
@@ -269,6 +270,7 @@ public abstract class NCLImport<T extends NCLElement,
         content += parseAlias();
         content += parseDocumentURI();
         content += parseRegion();
+        content += parseBaseId();
         
         return content;
     }
@@ -320,6 +322,11 @@ public abstract class NCLImport<T extends NCLElement,
     
     
     protected abstract void loadRegion(Element element) throws XMLException;
+    
+    
+    protected abstract String parseBaseId();
+    
+    protected abstract void loadBaseId(Element element) throws XMLException;
     
     
     @Override

@@ -97,6 +97,16 @@ public class NCLImportNCL<T extends NCLElement,
     
     
     @Override
+    protected String parseBaseId() {
+        return "";
+    }
+    
+    
+    @Override
+    protected void loadBaseId(Element element) throws XMLException {}
+    
+    
+    @Override
     protected String getType() {
         return "importNCL";
     }
