@@ -49,6 +49,7 @@ import br.uff.midiacom.ana.util.enums.NCLScroll;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -309,6 +310,24 @@ public class NCLDescriptorParam<T extends NCLElement, V>
         if(aux == null)
             return "";
         
+        if(aux instanceof Integer[]){
+            String value = "";
+            for (Integer v : (Integer[]) aux) {
+                value += v.toString() + ",";
+            }
+            value = value.substring(0,value.length()-1);
+            return " value='" + value + "'";
+        }
+        
+        if(aux instanceof Double[]){
+            String value = "";
+            for (Double v : (Double[]) aux) {
+                value += v.toString() + "%,";
+            }
+            value = value.substring(0,value.length()-1);
+            return " value='" + value + "'";
+        }
+        
         if(percentSign)
             return " value='" + aux.toString() + "%'";
         else
@@ -331,6 +350,12 @@ public class NCLDescriptorParam<T extends NCLElement, V>
     protected boolean matchNameAndType(NCLAttributes name, Object value){
         if(name == null || value == null)
             return true;
+        
+        if(value instanceof Integer[])
+            return name.equals(NCLAttributes.BOUNDS) || name.equals(NCLAttributes.SIZE);
+        
+        if(value instanceof Double[])
+            return name.equals(NCLAttributes.BOUNDS) || name.equals(NCLAttributes.SIZE);
         
         if(value instanceof Boolean)
             return name.equals(NCLAttributes.REUSE_PLAYER) || name.equals(NCLAttributes.VISIBLE);
@@ -394,6 +419,35 @@ public class NCLDescriptorParam<T extends NCLElement, V>
         
         if(value.equals("transparent"))
             return value;
+        
+        if(value.contains(",")){
+            if(value.contains("%")){
+                ArrayList<Double> array = new ArrayList<Double>();
+                int i,e;
+                
+                e = value.indexOf(",");
+                while(e >= 0){
+                    array.add(new Double(value.substring(0, e-1)));
+                    value = value.substring(e+1, value.length());
+                    e = value.indexOf(",");
+                }
+                array.add(new Double(value.substring(0, value.length()-1)));
+                return array.toArray(new Double[1]);
+            }
+            else{
+                ArrayList<Integer> array = new ArrayList<Integer>();
+                int e;
+                
+                e = value.indexOf(",");
+                do{
+                    array.add(new Integer(value.substring(0, e)));
+                    value = value.substring(e+1, value.length());
+                    e = value.indexOf(",");
+                }while(e >= 0);
+                array.add(new Integer(value));
+                return array.toArray(new Integer[1]);
+            }
+        }
         
         int index = value.indexOf("%");
         if(index > 0){
