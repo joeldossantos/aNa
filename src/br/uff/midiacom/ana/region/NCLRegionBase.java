@@ -51,6 +51,7 @@ import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.enums.NCLDevice;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -400,6 +401,8 @@ public class NCLRegionBase<T extends NCLElement,
 
     @Override
     public void load(Element element) throws NCLParsingException {
+        NodeList nl;
+        
         try{
             loadId(element);
             loadDevice(element);
@@ -416,7 +419,17 @@ public class NCLRegionBase<T extends NCLElement,
         
         try{
             loadRegions(element);
-            loadImportBases(element);
+            
+            // create the importBases
+            nl = element.getElementsByTagName(NCLElementAttributes.IMPORTBASE.toString());
+            for(int i=0; i < nl.getLength(); i++){
+                Node nd = nl.item(i);
+                if(nd instanceof Element){
+                    Element el = (Element) nl.item(i);
+                    
+                    loadImportBases(el);
+                }
+            }
         }
         catch(XMLException ex){
             String aux = getId();
@@ -581,7 +594,7 @@ public class NCLRegionBase<T extends NCLElement,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findRegionReference(d, id);
+                    Object ref = findRegionReference(d, imp.getBaseId(), id);
                     if(ref instanceof NCLRegion)
                         return createExternalRef(imp, (Er) ref);
                     else
@@ -593,7 +606,7 @@ public class NCLRegionBase<T extends NCLElement,
             for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findRegionReference(d, id);
+                    Object ref = findRegionReference(d, null, id);
                     if(ref instanceof NCLRegion)
                         return createExternalRef(imp, (Er) ref);
                     else
@@ -607,7 +620,7 @@ public class NCLRegionBase<T extends NCLElement,
     }
     
     
-    protected Object findRegionReference(NCLDoc doc, String id) throws XMLException {
+    protected Object findRegionReference(NCLDoc doc, String baseId, String id) throws XMLException {
         Object result = null;
         NCLHead head = (NCLHead) doc.getHead();
         
@@ -617,12 +630,19 @@ public class NCLRegionBase<T extends NCLElement,
         if(!head.hasRegionBase())
             throw new NCLParsingException("Could not find regionBase element");
         
-        ElementList<NCLRegionBase> list = head.getRegionBases();
+        if(baseId == null){
+            ElementList<NCLRegionBase> list = head.getRegionBases();
 
-        for(NCLRegionBase base : list){
+            for(NCLRegionBase base : list){
+                result = base.findRegion(id);
+                if(result != null)
+                    break;
+            }
+        }
+        else{
+            NCLRegionBase base = (NCLRegionBase) head.getRegionBases().get(baseId);
+
             result = base.findRegion(id);
-            if(result != null)
-                break;
         }
 
         if(result == null)
