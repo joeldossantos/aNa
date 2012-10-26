@@ -304,7 +304,6 @@ public class NCLConnectorBase<T extends NCLElement,
 
     @Override
     public void load(Element element) throws NCLParsingException {
-        String att_name, att_var;
         NodeList nl;
 
         try{

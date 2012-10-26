@@ -228,7 +228,7 @@ public class NCLSimpleAction<T extends NCLElement,
         if(value instanceof String){
             String v = (String) value;
             if("".equals(v.trim()))
-                throw new XMLException("Empty key String");
+                throw new XMLException("Empty value String");
             
             if(!v.contains("$"))
                 this.value = v;
@@ -242,7 +242,7 @@ public class NCLSimpleAction<T extends NCLElement,
             ((Ep) this.value).addReference(this);
         }
         else
-            throw new XMLException("Wrong key type.");
+            throw new XMLException("Wrong value type.");
         
         notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
