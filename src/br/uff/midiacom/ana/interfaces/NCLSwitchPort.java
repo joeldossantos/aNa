@@ -43,6 +43,7 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -86,7 +87,7 @@ public class NCLSwitchPort<T extends NCLElement,
 
     protected ElementList<Em> mappings;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -98,14 +99,14 @@ public class NCLSwitchPort<T extends NCLElement,
     public NCLSwitchPort() {
         super();
         mappings = new ElementList<Em>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
     public NCLSwitchPort(String id) throws XMLException {
         super();
         mappings = new ElementList<Em>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -374,7 +375,7 @@ public class NCLSwitchPort<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 

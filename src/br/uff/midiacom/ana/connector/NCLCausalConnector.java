@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -100,7 +101,7 @@ public class NCLCausalConnector<T extends NCLElement,
     protected Ea action;
     protected ElementList<Ep> conn_params;
     
-    protected ElementList<El> references;
+    protected ArrayList<El> references;
 
 
     /**
@@ -112,14 +113,14 @@ public class NCLCausalConnector<T extends NCLElement,
     public NCLCausalConnector() {
         super();
         conn_params = new ElementList<Ep>();
-        references = new ElementList<El>();
+        references = new ArrayList<El>();
     }
     
     
     public NCLCausalConnector(String id) throws XMLException {
         super();
         conn_params = new ElementList<Ep>();
-        references = new ElementList<El>();
+        references = new ArrayList<El>();
         setId(id);
     }
     
@@ -705,7 +706,7 @@ public class NCLCausalConnector<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

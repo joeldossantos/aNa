@@ -46,6 +46,7 @@ import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -81,7 +82,7 @@ public class NCLRule<T extends NCLElement,
     protected NCLComparator comparator;
     protected String value;
     
-    protected ElementList<Eb> references;
+    protected ArrayList<Eb> references;
 
 
     /**
@@ -92,13 +93,13 @@ public class NCLRule<T extends NCLElement,
      */
     public NCLRule() {
         super();
-        references = new ElementList<Eb>();
+        references = new ArrayList<Eb>();
     }
     
     
     public NCLRule(String id) throws XMLException {
         super();
-        references = new ElementList<Eb>();
+        references = new ArrayList<Eb>();
         setId(id);
     }
 
@@ -426,7 +427,7 @@ public class NCLRule<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
     

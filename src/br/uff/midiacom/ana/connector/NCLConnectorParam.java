@@ -43,7 +43,7 @@ import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -70,7 +70,7 @@ public class NCLConnectorParam<T extends NCLElement,
     
     protected String type;
     
-    protected ElementList<Ep> references;
+    protected ArrayList<Ep> references;
     
     
     /**
@@ -81,13 +81,13 @@ public class NCLConnectorParam<T extends NCLElement,
      */
     public NCLConnectorParam() {
         super();
-        references = new ElementList<Ep>();
+        references = new ArrayList<Ep>();
     }
     
     
     public NCLConnectorParam(String name) throws XMLException {
         super();
-        references = new ElementList<Ep>();
+        references = new ArrayList<Ep>();
         setName(name);
     }
     
@@ -281,7 +281,7 @@ public class NCLConnectorParam<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

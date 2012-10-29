@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.util.TimeType;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
@@ -53,6 +52,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.PercentageType;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -149,7 +149,8 @@ public class NCLDescriptor<T extends NCLElement,
     protected Object region;
     protected ElementList<Ep> params;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
+    protected boolean waiting;
 
 
     /**
@@ -161,14 +162,16 @@ public class NCLDescriptor<T extends NCLElement,
     public NCLDescriptor() {
         super();
         params = new ElementList<Ep>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
+        waiting = false;
     }
     
     
     public NCLDescriptor(String id) throws XMLException {
         super();
         params = new ElementList<Ep>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
+        waiting = false;
         setId(id);
     }
     
@@ -1075,15 +1078,31 @@ public class NCLDescriptor<T extends NCLElement,
             result &= aux.equals(((NCLDescriptor) other).getSelBorderColor());
         
         
-        T el;
-        if((el = (T) getMoveLeft()) != null)
-            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveLeft().getFocusIndex());
-        if((el = (T) getMoveRight()) != null)
-            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveRight().getFocusIndex());
-        if((el = (T) getMoveUp()) != null)
-            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveUp().getFocusIndex());
-        if((el = (T) getMoveDown()) != null)
-            result &= ((NCLDescriptor) el).getFocusIndex().equals(((NCLDescriptor) other).getMoveDown().getFocusIndex());
+        Ed elThis, elOther;
+        if((elThis = (Ed) getMoveLeft()) != null){
+            if((elOther = (Ed) ((NCLDescriptor) other).getMoveLeft()) != null)
+                result &= elThis.getFocusIndex().equals(elOther.getFocusIndex());
+            else
+                result &= false;
+        }
+        if((elThis = (Ed) getMoveRight()) != null){
+            if((elOther = (Ed) ((NCLDescriptor) other).getMoveRight()) != null)
+                result &= elThis.getFocusIndex().equals(elOther.getFocusIndex());
+            else
+                result &= false;
+        }
+        if((elThis = (Ed) getMoveUp()) != null){
+            if((elOther = (Ed) ((NCLDescriptor) other).getMoveUp()) != null)
+                result &= elThis.getFocusIndex().equals(elOther.getFocusIndex());
+            else
+                result &= false;
+        }
+        if((elThis = (Ed) getMoveDown()) != null){
+            if((elOther = (Ed) ((NCLDescriptor) other).getMoveDown()) != null)
+                result &= elThis.getFocusIndex().equals(elOther.getFocusIndex());
+            else
+                result &= false;
+        }
         
         Object oaux;
         aux = getTransIn();
@@ -1285,7 +1304,8 @@ public class NCLDescriptor<T extends NCLElement,
         // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setRegion(NCLReferenceManager.getInstance().findRegionReference((NCLDoc) getDoc(), att_var));
+            NCLDoc d = (NCLDoc) getDoc();
+            setRegion(d.getReferenceManager().findRegionReference(d, att_var));
         }
     }
     
@@ -1366,7 +1386,10 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setId("aux" + att_var);
             desc.setFocusIndex(att_var);
             setMoveLeft((Ed) desc);
-            NCLReferenceManager.getInstance().waitReference(this);
+            if(!waiting){
+                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                waiting = true;
+            }
         }
     }
     
@@ -1390,7 +1413,10 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setId("aux" + att_var);
             desc.setFocusIndex(att_var);
             setMoveRight((Ed) desc);
-            NCLReferenceManager.getInstance().waitReference(this);
+            if(!waiting){
+                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                waiting = true;
+            }
         }
     }
     
@@ -1414,7 +1440,10 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setId("aux" + att_var);
             desc.setFocusIndex(att_var);
             setMoveDown((Ed) desc);
-            NCLReferenceManager.getInstance().waitReference(this);
+            if(!waiting){
+                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                waiting = true;
+            }
         }
     }
     
@@ -1438,7 +1467,10 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setId("aux" + att_var);
             desc.setFocusIndex(att_var);
             setMoveUp((Ed) desc);
-            NCLReferenceManager.getInstance().waitReference(this);
+            if(!waiting){
+                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                waiting = true;
+            }
         }
     }
     
@@ -1600,7 +1632,8 @@ public class NCLDescriptor<T extends NCLElement,
         // set the transIn (optional)
         att_name = NCLElementAttributes.TRANSIN.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setTransIn(NCLReferenceManager.getInstance().findTransitionReference((NCLDoc) getDoc(), att_var));
+            NCLDoc d = (NCLDoc) getDoc();
+            setTransIn(d.getReferenceManager().findTransitionReference(d, att_var));
         }
     }
     
@@ -1623,7 +1656,8 @@ public class NCLDescriptor<T extends NCLElement,
         // set the transOut (optional)
         att_name = NCLElementAttributes.TRANSOUT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setTransOut(NCLReferenceManager.getInstance().findTransitionReference((NCLDoc) getDoc(), att_var));
+            NCLDoc d = (NCLDoc) getDoc();
+            setTransOut(d.getReferenceManager().findTransitionReference(d, att_var));
         }
     }
     
@@ -1680,33 +1714,33 @@ public class NCLDescriptor<T extends NCLElement,
         T base = getParent();
 
         while(!(base instanceof NCLDescriptorBase)){
-            base = (T) base.getParent();
             if(base == null){
                 throw new NCLParsingException("Could not find descriptor base element.");
             }
+            base = (T) base.getParent();
         }
         
         try{
             // set the moveUp (optional)
-            if((aux = getMoveUp().getFocusIndex()) != null){
+            if((aux = getMoveUp()) != null && (aux = getMoveUp().getFocusIndex()) != null){
                 Ed desc = (Ed) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveUp(desc);
             }
 
             // set the moveRight (optional)
-            if((aux = getMoveRight().getFocusIndex()) != null){
+            if((aux = getMoveRight()) != null && (aux = getMoveRight().getFocusIndex()) != null){
                 Ed desc = (Ed) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveRight(desc);
             }
 
             // set the moveLeft (optional)
-            if((aux = getMoveLeft().getFocusIndex()) != null){
+            if((aux = getMoveLeft()) != null && (aux = getMoveLeft().getFocusIndex()) != null){
                 Ed desc = (Ed) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveLeft(desc);
             }
 
             // set the moveDown (optional)
-            if((aux = getMoveDown().getFocusIndex()) != null){
+            if((aux = getMoveDown()) != null && (aux = getMoveDown().getFocusIndex()) != null){
                 Ed desc = (Ed) ((NCLDescriptorBase) base).findDescriptor(aux);
                 setMoveDown(desc);
             }
@@ -1736,7 +1770,7 @@ public class NCLDescriptor<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
     

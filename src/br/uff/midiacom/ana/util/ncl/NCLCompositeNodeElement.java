@@ -48,6 +48,7 @@ import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
+import java.util.ArrayList;
 
 
 /**
@@ -109,7 +110,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
     protected ElementList<Em> metas;
     protected ElementList<Emt> metadatas;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -126,7 +127,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
         links = new ElementList<El>();
         metas = new ElementList<Em>();
         metadatas = new ElementList<Emt>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
@@ -140,7 +141,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
             aux.setDoc(doc);
         }
         for (En aux : nodes) {
-            ((NCLElementPrototype) aux).setDoc(doc);
+            aux.setDoc(doc);
         }
         for (El aux : links) {
             aux.setDoc(doc);
@@ -946,7 +947,7 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

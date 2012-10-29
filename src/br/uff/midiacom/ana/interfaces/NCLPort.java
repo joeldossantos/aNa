@@ -45,7 +45,7 @@ import br.uff.midiacom.ana.node.NCLNode;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -88,7 +88,7 @@ public class NCLPort<T extends NCLElement,
     protected En component;
     protected Ei interfac;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -99,13 +99,13 @@ public class NCLPort<T extends NCLElement,
      */
     public NCLPort() {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
     public NCLPort(String id) throws XMLException {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -389,7 +389,7 @@ public class NCLPort<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

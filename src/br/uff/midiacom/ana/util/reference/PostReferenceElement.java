@@ -54,13 +54,4 @@ public interface PostReferenceElement {
      *          is any error occurs while fixing the element references.
      */
     public void fixReference() throws XMLException;
-    
-    
-    /**
-     * Returns the id of the element whose references must be fixed.
-     * 
-     * @return 
-     *          string representing the id of the element.
-     */
-    public String getId();
 }

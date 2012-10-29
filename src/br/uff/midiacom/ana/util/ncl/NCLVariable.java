@@ -43,7 +43,7 @@ import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.rule.NCLRule;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -62,7 +62,7 @@ public class NCLVariable<T extends NCLElement>
         implements ReferredElement<T> {
 
     protected Integer param;
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
     
     
     /**
@@ -77,7 +77,7 @@ public class NCLVariable<T extends NCLElement>
     public NCLVariable(Object name) throws XMLException {
         super();
         setName(name);
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
@@ -162,7 +162,7 @@ public class NCLVariable<T extends NCLElement>
     
     
     public void mergeVariables(NCLVariable old_var) throws XMLException {
-        ElementList<T> old_refs = old_var.getReferences();
+        ArrayList<T> old_refs = old_var.getReferences();
         
         for(T ref : old_refs){
             if(ref instanceof NCLProperty)
@@ -186,7 +186,7 @@ public class NCLVariable<T extends NCLElement>
     
     
     @Override
-    public ElementList<T> getReferences() {
+    public ArrayList<T> getReferences() {
         return references;
     }
     

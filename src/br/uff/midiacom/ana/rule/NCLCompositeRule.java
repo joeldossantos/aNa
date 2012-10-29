@@ -46,6 +46,7 @@ import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -91,7 +92,7 @@ public class NCLCompositeRule<T extends NCLElement,
     protected NCLOperator operator;
     protected ElementList<Et> rules;
     
-    protected ElementList<Eb> references;
+    protected ArrayList<Eb> references;
 
 
     /**
@@ -103,14 +104,14 @@ public class NCLCompositeRule<T extends NCLElement,
     public NCLCompositeRule() {
         super();
         rules = new ElementList<Et>();
-        references = new ElementList<Eb>();
+        references = new ArrayList<Eb>();
     }
     
     
     public NCLCompositeRule(String id) throws XMLException {
         super();
         rules = new ElementList<Et>();
-        references = new ElementList<Eb>();
+        references = new ArrayList<Eb>();
         setId(id);
     }
     
@@ -531,7 +532,7 @@ public class NCLCompositeRule<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 

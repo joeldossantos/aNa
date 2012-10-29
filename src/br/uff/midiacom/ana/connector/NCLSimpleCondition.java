@@ -47,7 +47,7 @@ import br.uff.midiacom.ana.util.enums.NCLEventType;
 import br.uff.midiacom.ana.util.enums.NCLKey;
 import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -93,7 +93,7 @@ public class NCLSimpleCondition<T extends NCLElement,
     protected Object role;
     protected Object delay;
     
-    protected ElementList<Eb> references;
+    protected ArrayList<Eb> references;
     
 
     /**
@@ -104,7 +104,7 @@ public class NCLSimpleCondition<T extends NCLElement,
      */
     public NCLSimpleCondition() {
         super();
-        references = new ElementList<Eb>();
+        references = new ArrayList<Eb>();
     }
 
 
@@ -855,7 +855,7 @@ public class NCLSimpleCondition<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

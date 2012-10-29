@@ -45,7 +45,7 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ArrayType;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -90,7 +90,7 @@ public class NCLArea<T extends NCLElement>
     protected SampleType last;
     protected String label;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
     
     
     /**
@@ -101,13 +101,13 @@ public class NCLArea<T extends NCLElement>
      */
     public NCLArea() {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
     public NCLArea(String id) throws XMLException {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -874,7 +874,7 @@ public class NCLArea<T extends NCLElement>
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

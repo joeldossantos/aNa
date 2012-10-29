@@ -53,6 +53,7 @@ import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -100,7 +101,7 @@ public class NCLBind<T extends NCLElement,
                      Ep extends NCLBindParam,
                      R extends ExternalReferenceType>
         extends NCLElementPrototype<T>
-        implements NCLElement<T>{
+        implements NCLElement<T>, PostReferenceElement {
 
     protected Er role;
     protected En component;
@@ -652,9 +653,11 @@ public class NCLBind<T extends NCLElement,
         att_name = NCLElementAttributes.INTERFACE.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             Ei refEl = (Ei) getComponent().findInterface(att_var);
-            if(refEl == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-
+            if(refEl == null){
+                refEl = (Ei) new NCLArea(att_var);
+                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+            }
+//            throw new NCLParsingException("Could not find element " + att_var);
             setInterface(refEl);
         }
     }
@@ -678,7 +681,8 @@ public class NCLBind<T extends NCLElement,
         // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setDescriptor((El) NCLReferenceManager.getInstance().findDescriptorReference((NCLDoc) getDoc(), att_var));
+            NCLDoc d = (NCLDoc) getDoc();
+            setDescriptor((El) d.getReferenceManager().findDescriptorReference(d, att_var));
         }
     }
     
@@ -710,6 +714,29 @@ public class NCLBind<T extends NCLElement,
         }
     }
 
+    
+    @Override
+    public void fixReference() throws NCLParsingException {
+        String aux;
+        
+        try{
+            // fix the interface reference
+            if(getInterface() != null && (aux = ((NCLArea) getInterface()).getId()) != null){
+                Ei ref = (Ei) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findInterface(aux);
+                setInterface(ref);
+            }
+        }
+        catch(XMLException ex){
+            aux = getRole().getRole().toString();
+            if(aux != null)
+                aux = "(" + aux + ")";
+            else
+                aux = "";
+            
+            throw new NCLParsingException("Bind" + aux + ". Fixing reference:\n" + ex.getMessage());
+        }
+    }
+    
 
     /**
      * Function to create the child element <i>bindParam</i>.

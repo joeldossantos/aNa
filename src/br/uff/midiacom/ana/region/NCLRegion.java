@@ -45,6 +45,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -120,7 +121,7 @@ public class NCLRegion<T extends NCLElement,
     protected Integer zIndex;
     protected ElementList<Er> regions;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -132,14 +133,14 @@ public class NCLRegion<T extends NCLElement,
     public NCLRegion() {
         super();
         regions = new ElementList<Er>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
     public NCLRegion(String id) throws XMLException {
         super();
         regions = new ElementList<Er>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -1282,7 +1283,7 @@ public class NCLRegion<T extends NCLElement,
     
     
     @Override
-    public ElementList<T> getReferences() {
+    public ArrayList<T> getReferences() {
         return references;
     }
 

@@ -43,7 +43,6 @@ import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
@@ -55,6 +54,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -117,7 +117,7 @@ public class NCLMedia<T extends NCLElement,
     protected ElementList<Ea> areas;
     protected ElementList<Ep> properties;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
     
     
     /**
@@ -130,7 +130,7 @@ public class NCLMedia<T extends NCLElement,
         super();
         areas = new ElementList<Ea>();
         properties = new ElementList<Ep>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
@@ -138,7 +138,7 @@ public class NCLMedia<T extends NCLElement,
         super();
         areas = new ElementList<Ea>();
         properties = new ElementList<Ep>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -1141,7 +1141,8 @@ public class NCLMedia<T extends NCLElement,
         // set the descriptor (optional)
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setDescriptor((El) NCLReferenceManager.getInstance().findDescriptorReference((NCLDoc) getDoc(), att_var));
+            NCLDoc d = (NCLDoc) getDoc();
+            setDescriptor((El) d.getReferenceManager().findDescriptorReference(d, att_var));
         }
     }
     
@@ -1166,7 +1167,7 @@ public class NCLMedia<T extends NCLElement,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             En ref = (En) new NCLMedia(att_var);
             setRefer(ref);
-            NCLReferenceManager.getInstance().waitReference(this);
+            ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
         }
     }
     
@@ -1241,16 +1242,17 @@ public class NCLMedia<T extends NCLElement,
         // first search in the reused media
         Object aux;
         if((aux = getRefer()) != null){
-            if(aux instanceof NCLSwitch)
+            if(aux instanceof NCLMedia)
                 return (Ei) ((En) aux).findInterface(id);
             else
                 return (Ei) ((En) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
         }
         
         // search as a property
-        result = (Ei) properties.get(id);
-        if(result != null)
-            return result;
+        for (Ep p : properties) {
+            if(p.getName().toString().equals(id))
+                return (Ei) p;
+        }
         
         // search as an area
         result = (Ei) areas.get(id);
@@ -1275,7 +1277,7 @@ public class NCLMedia<T extends NCLElement,
         String aux;
         
         try{
-            // set the refer (optional)
+            // fix the refer
             if(getRefer() != null && (aux = ((En) getRefer()).getId()) != null){
                 En ref = (En) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findNode(aux);
                 setRefer(ref);
@@ -1306,7 +1308,7 @@ public class NCLMedia<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 

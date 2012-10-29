@@ -42,7 +42,6 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
@@ -54,6 +53,7 @@ import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -115,7 +115,7 @@ public class NCLSwitch<T extends NCLElement,
     protected ElementList<Eb> binds;
     protected ElementList<En> nodes;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -129,7 +129,7 @@ public class NCLSwitch<T extends NCLElement,
         ports = new ElementList<Ep>();
         binds = new ElementList<Eb>();
         nodes = new ElementList<En>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
@@ -138,7 +138,7 @@ public class NCLSwitch<T extends NCLElement,
         ports = new ElementList<Ep>();
         binds = new ElementList<Eb>();
         nodes = new ElementList<En>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -896,7 +896,7 @@ public class NCLSwitch<T extends NCLElement,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             En ref = (En) new NCLSwitch(att_var);
             setRefer(ref);
-            NCLReferenceManager.getInstance().waitReference(this);
+            ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
         }
     }
     
@@ -1106,7 +1106,7 @@ public class NCLSwitch<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 

@@ -416,7 +416,7 @@ public class NCLConnectorBase<T extends NCLElement,
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = NCLReferenceManager.getInstance().findConnectorReference(d, id);
+                    Object ref = ((NCLDoc) getDoc()).getReferenceManager().findConnectorReference(d, id);
                     if(ref instanceof NCLCausalConnector)
                         return createExternalRef(imp, (Ec) ref);
                     else

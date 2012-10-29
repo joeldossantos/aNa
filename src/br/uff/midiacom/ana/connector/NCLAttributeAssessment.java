@@ -45,7 +45,7 @@ import br.uff.midiacom.ana.util.enums.NCLEventType;
 import br.uff.midiacom.ana.util.enums.NCLKey;
 import br.uff.midiacom.ana.link.NCLBind;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -86,7 +86,7 @@ public class NCLAttributeAssessment<T extends NCLElement,
     protected NCLAttributeType attributeType;
     protected Object offset;
     
-    protected ElementList<Eb> references;
+    protected ArrayList<Eb> references;
     
 
     /**
@@ -97,6 +97,7 @@ public class NCLAttributeAssessment<T extends NCLElement,
      */
     public NCLAttributeAssessment() {
         super();
+        references = new ArrayList<Eb>();
     }
 
 
@@ -587,7 +588,7 @@ public class NCLAttributeAssessment<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

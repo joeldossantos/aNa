@@ -49,7 +49,7 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -99,7 +99,7 @@ public class NCLTransition<T extends NCLElement,
     protected Integer borderWidth;
     protected Object borderColor;
     
-    protected ElementList<Ed> references;
+    protected ArrayList<Ed> references;
 
 
     /**
@@ -110,13 +110,13 @@ public class NCLTransition<T extends NCLElement,
      */
     public NCLTransition() {
         super();
-        references = new ElementList<Ed>();
+        references = new ArrayList<Ed>();
     }
     
     
     public NCLTransition(String id) throws XMLException {
         super();
-        references = new ElementList<Ed>();
+        references = new ArrayList<Ed>();
         setId(id);
     }
     
@@ -1033,7 +1033,7 @@ public class NCLTransition<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

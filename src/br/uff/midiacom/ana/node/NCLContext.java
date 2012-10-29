@@ -448,7 +448,7 @@ public class NCLContext<T extends NCLElement,
 //            T ref = (T) new NCLContext(att_var);
 //            setRefer(createContextRef((En) ref));
             refer_id = att_var;
-            NCLReferenceManager.getInstance().waitReference(this);
+            ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
         }
     }
     

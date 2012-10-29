@@ -98,6 +98,7 @@ public class NCLDoc<T extends NCLElement,
     protected String location;
     protected String fileName;
     protected ElementList<Ev> globalVariables;
+    protected NCLReferenceManager referenceManager;
 
 
     /**
@@ -109,6 +110,7 @@ public class NCLDoc<T extends NCLElement,
     public NCLDoc() {
         super();
         globalVariables = new ElementList<Ev>();
+        referenceManager = new NCLReferenceManager();
     }
     
     
@@ -431,6 +433,18 @@ public class NCLDoc<T extends NCLElement,
     public void addGlobalVariableLists(ElementList<Ev> list) {
         globalVariables.addAll(list);
     }
+    
+    
+    /**
+     * Returns the element that maintains the elements that must have its
+     * reference fixed after the document parsing.
+     * 
+     * @return 
+     *          element to manager the references to be fixed after parsing.
+     */
+    public NCLReferenceManager getReferenceManager() {
+        return referenceManager;
+    }
 
 
     @Override
@@ -509,7 +523,7 @@ public class NCLDoc<T extends NCLElement,
             loadBody(element);
 
             // fix the references needed
-            NCLReferenceManager.getInstance().fixReferences();
+            referenceManager.fixReferences();
         }
         catch(XMLException ex){
             throw new NCLParsingException("Error pasring " + ex.getMessage());

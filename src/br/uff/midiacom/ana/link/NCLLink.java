@@ -537,7 +537,8 @@ public class NCLLink<T extends NCLElement,
         // set the xconnector (required)
         att_name = NCLElementAttributes.XCONNECTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setXconnector(NCLReferenceManager.getInstance().findConnectorReference((NCLDoc) getDoc(), att_var));
+            NCLDoc d = (NCLDoc) getDoc();
+            setXconnector(d.getReferenceManager().findConnectorReference(d, att_var));
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");

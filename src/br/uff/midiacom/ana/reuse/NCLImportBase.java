@@ -215,7 +215,8 @@ public class NCLImportBase<T extends NCLElement,
         // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            setRegion((Er) NCLReferenceManager.getInstance().findRegionReference((Ed) getDoc(), att_var));
+            Ed d = (Ed) getDoc();
+            setRegion((Er) d.getReferenceManager().findRegionReference(d, att_var));
         }
     }
     

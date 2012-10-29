@@ -47,6 +47,7 @@ import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -99,7 +100,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     protected ElementList<Eb> binds;
     protected Ed defaultDescriptor;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -112,7 +113,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
         super();
         descriptors = new ElementList<Ed>();
         binds = new ElementList<Eb>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
@@ -120,7 +121,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
         super();
         descriptors = new ElementList<Ed>();
         binds = new ElementList<Eb>();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setId(id);
     }
     
@@ -681,7 +682,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 

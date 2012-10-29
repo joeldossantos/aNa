@@ -80,4 +80,7 @@ public interface NCLNode<T extends NCLElement,
      *          node or null if no node was found.
      */
     public En findNode(String id) throws XMLException;
+    
+    
+    public void setDoc(T doc);
 }

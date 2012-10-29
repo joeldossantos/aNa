@@ -39,7 +39,7 @@ package br.uff.midiacom.ana.util.reference;
 
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 
 
 public interface ReferredElement<T extends NCLElement> {
@@ -51,5 +51,5 @@ public interface ReferredElement<T extends NCLElement> {
     public boolean removeReference(T reference) throws XMLException;
     
     
-    public ElementList<T> getReferences();
+    public ArrayList<T> getReferences();
 }

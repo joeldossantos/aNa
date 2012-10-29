@@ -50,7 +50,7 @@ import br.uff.midiacom.ana.util.enums.NCLScroll;
 import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
-import br.uff.midiacom.ana.util.ElementList;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -79,7 +79,7 @@ public class NCLProperty<T extends NCLElement,
 
     protected Object value;
     
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
     
     
     /**
@@ -90,13 +90,13 @@ public class NCLProperty<T extends NCLElement,
      */
     public NCLProperty() {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
     
     
     public NCLProperty(Object name) throws XMLException {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
         setName(name);
     }
     
@@ -381,7 +381,7 @@ public class NCLProperty<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
 }

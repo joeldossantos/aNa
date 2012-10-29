@@ -50,15 +50,11 @@ import java.util.ArrayList;
 
 public class NCLReferenceManager {
 
-    private static NCLReferenceManager instance = new NCLReferenceManager();
-    private ArrayList<PostReferenceElement> references = new ArrayList<PostReferenceElement>();
+    private ArrayList<PostReferenceElement> references;
     
     
-    private NCLReferenceManager() {}
-    
-    
-    public static NCLReferenceManager getInstance() {
-        return instance;
+    protected NCLReferenceManager() {
+        references = new ArrayList<PostReferenceElement>();
     }
     
     

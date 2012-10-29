@@ -45,9 +45,10 @@ import br.uff.midiacom.ana.util.reference.ReferredElement;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
-import br.uff.midiacom.ana.util.ElementList;
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 
@@ -82,7 +83,7 @@ public abstract class NCLImport<T extends NCLElement,
     protected SrcType documentURI;
 
     protected Ed importedDoc;
-    protected ElementList<T> references;
+    protected ArrayList<T> references;
 
 
     /**
@@ -93,7 +94,7 @@ public abstract class NCLImport<T extends NCLElement,
      */
     public NCLImport() {
         super();
-        references = new ElementList<T>();
+        references = new ArrayList<T>();
     }
 
 
@@ -236,6 +237,7 @@ public abstract class NCLImport<T extends NCLElement,
             loadBaseId(element);
             
             // load the imported document or base depending on the element type
+            URI path = null;
             try{
                 Ed aux = createDoc();
                 String sep = File.separator;
@@ -244,12 +246,14 @@ public abstract class NCLImport<T extends NCLElement,
                     loc.replace('\\', '/');
                 
                 URI base = new URI(loc);
-                URI path = base.resolve(getDocumentURI().toString());
+                path = base.resolve(getDocumentURI().toString());
                 aux.loadXML(new File(path.getPath()));
                 setImportedDoc(aux);
                 ((Ed) getDoc()).mergeGlobalVariables(aux);
-            }catch(Exception e){
-                throw new NCLParsingException("Could not find document in location: " + getDocumentURI().toString());
+            }catch(XMLException e){
+                throw new NCLParsingException("Error loading document: " + e.getMessage());
+            }catch(URISyntaxException e){
+                throw new NCLParsingException("Could not find document in location: " + path.getPath() + e.getMessage());
             }
         }
         catch(XMLException ex){
@@ -342,7 +346,7 @@ public abstract class NCLImport<T extends NCLElement,
     
     
     @Override
-    public ElementList getReferences() {
+    public ArrayList getReferences() {
         return references;
     }
     
