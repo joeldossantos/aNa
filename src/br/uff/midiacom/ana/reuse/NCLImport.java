@@ -243,7 +243,7 @@ public abstract class NCLImport<T extends NCLElement,
                 String sep = File.separator;
                 String loc = ((Ed) getDoc()).getLocation() + sep;
                 if(sep.equals("\\"))
-                    loc.replace('\\', '/');
+                    loc = loc.replace('\\', '/');
                 
                 URI base = new URI(loc);
                 path = base.resolve(getDocumentURI().toString());
