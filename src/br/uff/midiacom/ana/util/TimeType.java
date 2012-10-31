@@ -396,6 +396,20 @@ public class TimeType {
     }
     
     
+    public Double getTimeInSeconds() {
+        Double result = 0.0;
+        
+        if(second != null) result += second;
+        if(minute != null) result += minute * 60;
+        if(hour != null) result += hour * 3600;
+        if(day != null) result += day * 86400;
+        if(month != null) result += month * 2592000;
+        if(year != null) result += year * 31536000;
+        
+        return result;
+    }
+    
+    
     @Override
     public String toString() {
         if(getSecond() == null)
