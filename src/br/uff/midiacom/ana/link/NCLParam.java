@@ -209,14 +209,11 @@ public abstract class NCLParam<T extends NCLElement,
      * if the attribute is not defined.
      * 
      * @return
-     *          string representing the value to be set to the connector parameter
-     *          or <i>null</i> if the attribute is not defined.
+     *          value to be set to the connector parameter or <i>null</i> if the
+     *          attribute is not defined.
      */
-    public String getValue() {
-        if(value != null)
-            return value.toString();
-        else
-            return null;
+    public Object getValue() {
+        return value;
     }
     
     
@@ -308,9 +305,9 @@ public abstract class NCLParam<T extends NCLElement,
     
     
     protected String parseValue() {
-        String aux = getValue();
+        Object aux = getValue();
         if(aux != null)
-            return " value='" + aux + "'";
+            return " value='" + aux.toString() + "'";
         else
             return "";
     }

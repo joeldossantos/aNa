@@ -1249,10 +1249,9 @@ public class NCLMedia<T extends NCLElement,
         }
         
         // search as a property
-        for (Ep p : properties) {
-            if(p.getName().toString().equals(id))
-                return (Ei) p;
-        }
+        result = (Ei) properties.get(id);
+        if(result != null)
+            return result;
         
         // search as an area
         result = (Ei) areas.get(id);
