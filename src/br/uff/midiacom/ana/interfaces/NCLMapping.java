@@ -268,7 +268,7 @@ public class NCLMapping<T extends NCLElement,
             T aux;
             if((aux = (T) getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
-            if((aux = (T) getParent()) == null)
+            if((aux = (T) aux.getParent()) == null)
                 throw new NCLParsingException("Could not find element " + att_var);
 
             En refEl = (En) ((NCLSwitch) aux).findNode(att_var);
