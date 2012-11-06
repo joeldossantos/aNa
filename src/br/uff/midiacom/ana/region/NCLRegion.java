@@ -333,7 +333,7 @@ public class NCLRegion<T extends NCLElement,
                 else
                     this.right = new Integer(value);
             }catch (java.lang.NumberFormatException ex){
-                throw new XMLException("Wrong left type.");
+                throw new XMLException("Wrong right type.");
             }
             
         }
@@ -421,7 +421,7 @@ public class NCLRegion<T extends NCLElement,
                 else
                     this.top = new Integer(value);
             }catch (java.lang.NumberFormatException ex){
-                throw new XMLException("Wrong left type.");
+                throw new XMLException("Wrong top type.");
             }
             
         }
@@ -509,7 +509,7 @@ public class NCLRegion<T extends NCLElement,
                 else
                     this.bottom = new Integer(value);
             }catch (java.lang.NumberFormatException ex){
-                throw new XMLException("Wrong left type.");
+                throw new XMLException("Wrong bottom type.");
             }
             
         }
@@ -581,7 +581,7 @@ public class NCLRegion<T extends NCLElement,
         if(height instanceof String){
             String value = (String) height;
             if("".equals(value.trim()))
-                throw new XMLException("Empty bottom String");
+                throw new XMLException("Empty height String");
 
             boolean relative = false;
             int index = value.indexOf("%");
@@ -596,14 +596,14 @@ public class NCLRegion<T extends NCLElement,
                 else
                     this.height = new Integer(value);
             }catch (java.lang.NumberFormatException ex){
-                throw new XMLException("Wrong left type.");
+                throw new XMLException("Wrong height type.");
             }
             
         }
         else if(height instanceof Integer || height instanceof Double)
             this.height = height;
         else
-            throw new XMLException("Wrong bottom type.");
+            throw new XMLException("Wrong height type.");
         
         notifyAltered(NCLElementAttributes.HEIGHT, aux, height);
     }
@@ -668,7 +668,7 @@ public class NCLRegion<T extends NCLElement,
         if(width instanceof String){
             String value = (String) width;
             if("".equals(value.trim()))
-                throw new XMLException("Empty bottom String");
+                throw new XMLException("Empty width String");
 
             boolean relative = false;
             int index = value.indexOf("%");
@@ -683,14 +683,14 @@ public class NCLRegion<T extends NCLElement,
                 else
                     this.width = new Integer(value);
             }catch (java.lang.NumberFormatException ex){
-                throw new XMLException("Wrong left type.");
+                throw new XMLException("Wrong width type.");
             }
             
         }
         else if(width instanceof Integer || width instanceof Double)
             this.width = width;
         else
-            throw new XMLException("Wrong bottom type.");
+            throw new XMLException("Wrong width type.");
         
         notifyAltered(NCLElementAttributes.WIDTH, aux, width);
     }
