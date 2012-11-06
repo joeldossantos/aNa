@@ -239,10 +239,15 @@ public class NCLRegion<T extends NCLElement,
                 relative = true;
             }
 
-            if(relative)
-                this.left = new Double(value);
-            else
-                this.left = new Integer(value);
+            try{
+                if(relative)
+                    this.left = new Double(value);
+                else
+                    this.left = new Integer(value);
+            }catch (java.lang.NumberFormatException ex){
+                throw new XMLException("Wrong left type.");
+            }
+            
         }
         else if(left instanceof Integer || left instanceof Double)
             this.left = left;
@@ -322,10 +327,15 @@ public class NCLRegion<T extends NCLElement,
                 relative = true;
             }
 
-            if(relative)
-                this.right = new Double(value);
-            else
-                this.right = new Integer(value);
+            try{
+                if(relative)
+                    this.right = new Double(value);
+                else
+                    this.right = new Integer(value);
+            }catch (java.lang.NumberFormatException ex){
+                throw new XMLException("Wrong left type.");
+            }
+            
         }
         else if(right instanceof Integer || right instanceof Double)
             this.right = right;
@@ -405,10 +415,15 @@ public class NCLRegion<T extends NCLElement,
                 relative = true;
             }
 
-            if(relative)
-                this.top = new Double(value);
-            else
-                this.top = new Integer(value);
+            try{
+                if(relative)
+                    this.top = new Double(value);
+                else
+                    this.top = new Integer(value);
+            }catch (java.lang.NumberFormatException ex){
+                throw new XMLException("Wrong left type.");
+            }
+            
         }
         else if(top instanceof Integer || top instanceof Double)
             this.top = top;
@@ -488,10 +503,15 @@ public class NCLRegion<T extends NCLElement,
                 relative = true;
             }
 
-            if(relative)
-                this.bottom = new Double(value);
-            else
-                this.bottom = new Integer(value);
+            try{
+                if(relative)
+                    this.bottom = new Double(value);
+                else
+                    this.bottom = new Integer(value);
+            }catch (java.lang.NumberFormatException ex){
+                throw new XMLException("Wrong left type.");
+            }
+            
         }
         else if(bottom instanceof Integer || bottom instanceof Double)
             this.bottom = bottom;
@@ -570,10 +590,15 @@ public class NCLRegion<T extends NCLElement,
                 relative = true;
             }
 
-            if(relative)
-                this.height = new Double(value);
-            else
-                this.height = new Integer(value);
+            try{
+                if(relative)
+                    this.height = new Double(value);
+                else
+                    this.height = new Integer(value);
+            }catch (java.lang.NumberFormatException ex){
+                throw new XMLException("Wrong left type.");
+            }
+            
         }
         else if(height instanceof Integer || height instanceof Double)
             this.height = height;
@@ -652,10 +677,15 @@ public class NCLRegion<T extends NCLElement,
                 relative = true;
             }
 
-            if(relative)
-                this.width = new Double(value);
-            else
-                this.width = new Integer(value);
+            try{
+                if(relative)
+                    this.width = new Double(value);
+                else
+                    this.width = new Integer(value);
+            }catch (java.lang.NumberFormatException ex){
+                throw new XMLException("Wrong left type.");
+            }
+            
         }
         else if(width instanceof Integer || width instanceof Double)
             this.width = width;
