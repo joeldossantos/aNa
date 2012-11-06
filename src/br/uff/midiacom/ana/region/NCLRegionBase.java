@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.region;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLHead;
+import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
@@ -604,6 +605,18 @@ public class NCLRegionBase<T extends NCLElement,
             
             NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
             for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
+                if(imp.getAlias().equals(alias)){
+                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                    Object ref = findRegionReference(d, null, id);
+                    if(ref instanceof NCLRegion)
+                        return createExternalRef(imp, (Er) ref);
+                    else
+                        return createExternalRef(imp, (Er) ((R) ref).getTarget());
+                }
+            }
+            
+            NCLDescriptorBase db = (NCLDescriptorBase) ((NCLHead) getParent()).getDescriptorBase();
+            for(Ei imp : (ElementList<Ei>) db.getImportBases()){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
                     Object ref = findRegionReference(d, null, id);
