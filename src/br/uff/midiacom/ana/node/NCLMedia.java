@@ -1142,7 +1142,7 @@ public class NCLMedia<T extends NCLElement,
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setDescriptor((El) d.getReferenceManager().findDescriptorReference(d, att_var));
+            setDescriptor(d.getReferenceManager().findDescriptorReference(d, att_var));
         }
     }
     
