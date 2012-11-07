@@ -58,12 +58,12 @@ public enum NCLAttributeType {
         this.name = name;
     }
 
-    public static NCLAttributeType getEnumType(String name) throws NCLParsingException {
+    public static NCLAttributeType getEnumType(String name){
         for(NCLAttributeType opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" value");
+        return null;
     }
 
     @Override

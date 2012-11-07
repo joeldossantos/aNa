@@ -56,12 +56,12 @@ public enum NCLEventType {
         this.name = name;
     }
 
-    public static NCLEventType getEnumType(String name) throws NCLParsingException {
+    public static NCLEventType getEnumType(String name){
         for(NCLEventType opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" value");
+        return null;
     }
 
     @Override

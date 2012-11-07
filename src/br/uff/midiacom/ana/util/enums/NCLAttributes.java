@@ -81,12 +81,12 @@ public enum NCLAttributes {
         this.name = name;
     }
     
-    public static NCLAttributes getEnumType(String name) throws NCLParsingException{
+    public static NCLAttributes getEnumType(String name){
         for(NCLAttributes opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
     
     @Override

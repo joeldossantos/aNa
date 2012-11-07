@@ -78,12 +78,12 @@ public enum NCLTransitionSubtype {
     }
 
 
-    public static NCLTransitionSubtype getEnumType(String name) throws NCLParsingException {
+    public static NCLTransitionSubtype getEnumType(String name){
         for(NCLTransitionSubtype opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" value");
+        return null;
     }
 
 

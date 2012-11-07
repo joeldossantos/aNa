@@ -95,7 +95,7 @@ public enum NCLSystemVariable {
         this.name = name;
     }
     
-    public static NCLSystemVariable getEnumType(String name) throws NCLParsingException{
+    public static NCLSystemVariable getEnumType(String name){
         for(NCLSystemVariable opt : values()){
             if(name.equals(opt.name))
                 return opt;

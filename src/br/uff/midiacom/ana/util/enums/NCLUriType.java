@@ -61,12 +61,12 @@ public enum NCLUriType {
         this.name = name;
     }
     
-    public static NCLUriType getEnumType(String name) throws NCLParsingException{
+    public static NCLUriType getEnumType(String name){
         for(NCLUriType opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
     
     @Override

@@ -55,12 +55,12 @@ public enum NCLTransitionDirection {
         this.name = name;
     }
     
-    public static NCLTransitionDirection getEnumType(String name) throws NCLParsingException{
+    public static NCLTransitionDirection getEnumType(String name){
         for(NCLTransitionDirection opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

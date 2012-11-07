@@ -58,12 +58,12 @@ public enum NCLNamespace {
     }
 
 
-    public static NCLNamespace getEnumType(String name) throws NCLParsingException{
+    public static NCLNamespace getEnumType(String name){
         for(NCLNamespace opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
 

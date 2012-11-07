@@ -40,7 +40,7 @@ package br.uff.midiacom.ana.connector;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.util.SrcType;
-import br.uff.midiacom.ana.util.enums.NCLImportType;
+//import br.uff.midiacom.ana.util.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import java.io.IOException;
 import java.io.StringReader;

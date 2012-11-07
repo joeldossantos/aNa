@@ -41,7 +41,6 @@ import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.util.SrcType;
-import br.uff.midiacom.ana.util.enums.NCLImportType;
 import br.uff.midiacom.ana.util.enums.NCLTransitionType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import org.junit.Test;

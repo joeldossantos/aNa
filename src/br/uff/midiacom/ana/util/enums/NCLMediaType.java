@@ -108,9 +108,9 @@ public enum NCLMediaType {
     }
     
     
-    public static NCLMediaType getEnumType(NCLMimeType type) throws NCLParsingException {
+    public static NCLMediaType getEnumType(NCLMimeType type){
         if(type == null)
-            throw new NCLParsingException("Null type");
+            return null;
 
         boolean status = false;
 

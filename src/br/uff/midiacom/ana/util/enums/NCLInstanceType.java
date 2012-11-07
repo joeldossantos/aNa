@@ -45,8 +45,20 @@ import br.uff.midiacom.ana.util.exception.NCLParsingException;
  */
 public enum NCLInstanceType {
 
+    /**
+     * Create an instance that it is independent to the referred element, that is, this new element instance
+     * shall not be scheduled for presenting when the referred element starts presenting.
+     */
     NEW("new"),
+    /**
+     * Create an instance that it is dependent to the referred element, that is, this new element instance
+     * shall be immediately presented through a unique instance when the referred element starts presenting.
+     */
     INST_SAME("instSame"),
+    /**
+     * Create an instance that it is dependent to the referred element, that is, this new element instance
+     * shall be gradually presented through a unique instance when the referred element starts presenting.
+     */
     GRAD_SAME("gradSame");
 
 
@@ -56,12 +68,12 @@ public enum NCLInstanceType {
         this.name = name;
     }
 
-    public static NCLInstanceType getEnumType(String name) throws NCLParsingException{
+    public static NCLInstanceType getEnumType(String name){
         for(NCLInstanceType opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

@@ -44,7 +44,6 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.XMLLoader;
 import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.util.enums.NCLComparator;
-import br.uff.midiacom.ana.util.enums.NCLImportType;
 import br.uff.midiacom.ana.interfaces.NCLProperty;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import org.junit.Test;

@@ -59,12 +59,12 @@ public enum NCLDefaultActionRole {
         this.name = name;
     }
     
-    public static NCLDefaultActionRole getEnumType(String name) throws NCLParsingException{
+    public static NCLDefaultActionRole getEnumType(String name){
         for(NCLDefaultActionRole opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
     
     @Override

@@ -72,12 +72,12 @@ public enum NCLMimeType {
         this.name = name;
     }
 
-    public static NCLMimeType getEnumType(String name) throws NCLParsingException{
+    public static NCLMimeType getEnumType(String name){
         for(NCLMimeType opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
 
     @Override

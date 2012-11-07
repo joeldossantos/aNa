@@ -56,14 +56,14 @@ public enum NCLActionOperator {
         this.name = name;
     }
 
-    public static NCLActionOperator getEnumType(String name) throws NCLParsingException{
+    public static NCLActionOperator getEnumType(String name){
         for(NCLActionOperator opt : values()){
             if(name.equals(opt.name))
                 return opt;
         }
-        throw new NCLParsingException("Could not find " + name +" type");
+        return null;
     }
-
+    
     @Override
     public String toString() {
         return name;

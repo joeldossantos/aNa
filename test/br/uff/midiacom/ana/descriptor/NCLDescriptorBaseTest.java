@@ -38,7 +38,7 @@
 package br.uff.midiacom.ana.descriptor;
 
 import br.uff.midiacom.ana.util.SrcType;
-import br.uff.midiacom.ana.util.enums.NCLImportType;
+//import br.uff.midiacom.ana.util.enums.NCLImportType;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
