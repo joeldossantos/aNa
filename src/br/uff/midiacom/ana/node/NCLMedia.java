@@ -868,12 +868,8 @@ public class NCLMedia<T extends NCLElement,
      *          media type from the enumeration <i>NCLMediaType</i>.
      */
     public NCLMediaType getMediaType() {
-        if(getType() != null){
-            try{
-                return NCLMediaType.getEnumType(getType());
-            }
-            catch(NCLParsingException e){}
-        }
+        if(getType() != null)
+            return NCLMediaType.getEnumType(getType());
 
         if(getSrc() != null){
             try{
