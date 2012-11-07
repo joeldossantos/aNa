@@ -17,7 +17,7 @@
  *  * All advertising materials mentioning features or use of this software must
  *    display the following acknowledgment:
  *        This product includes the API for NCL Authoring - aNa
- *        (http://joeldossantos.github.com/aNa).
+ *        (http:joeldossantos.github.com/aNa).
  *
  *  * Neither the name of the lab nor the names of its contributors may be used
  *    to endorse or promote products derived from this software without specific
@@ -65,12 +65,32 @@ public enum NCLNodeAttributes {
     FONT_SIZE("fontSize"),
     FONT_VARIANT("fontVariant"),
     FONT_WEIGHT("fontWeight"),
+    PLAYER("player"),
     REUSE_PLAYER("reusePlayer"),
     PLAYER_LIFE("playerLife"),
     LOCATION("location"),
     SIZE("size"),
     BOUNDS("bounds"),
-    DEFAULT("");
+    TEXT_ALIGN("textAlign"),
+    RGB_CHROMAKEY("rgbChromakey"),
+    Z_INDEX("zIndex"),
+    PLAN("plan"),
+    MOVE_LEFT("moveLeft"),
+    MOVE_RIGHT("moveRight"),
+    MOVE_UP("moveUp"),
+    MOVE_DOWN("moveDown"),
+    FOCUS_INDEX("focusIndex"),
+    FOCUS_BORDER_COLOR("focusBorderColor"),
+    SEL_BORDER_COLOR("selBorderColor"),
+    FOCUS_BORDER_WIDTH("focusBorderWidth"),
+    FOCUS_BORDER_TRANSPARENCY("focusBorderTransparency"),
+    FOCUS_SRC("focusSrc"),
+    FOCUS_SEL_SRC("focusSelSrc"),
+    TRANS_IN("transIn"),
+    TRANS_OUT("transOut"),
+    FREEZE("freeze"),
+    BASE_DEVICE_REGION("baseDeviceRegion"),
+    DEVICE_CLASS("deviceClass");
     
     private String name;
 
