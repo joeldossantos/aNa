@@ -64,6 +64,10 @@ public enum NCLActionOperator {
         return null;
     }
     
+    public NCLActionOperator getDefaultValue(){
+        return PAR;
+    }
+    
     @Override
     public String toString() {
         return name;

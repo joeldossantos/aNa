@@ -61,6 +61,10 @@ public enum NCLFontVariant {
         }
         return null;
     }
+    
+    public NCLFontVariant getDefaultValue(){
+        return NORMAL;
+    }
 
     @Override
     public String toString() {

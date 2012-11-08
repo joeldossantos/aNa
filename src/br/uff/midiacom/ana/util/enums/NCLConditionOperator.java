@@ -63,6 +63,10 @@ public enum NCLConditionOperator {
         }
         return null;
     }
+    
+    public NCLConditionOperator getDefaultValue(){
+        return OR;
+    }
 
     @Override
     public String toString() {

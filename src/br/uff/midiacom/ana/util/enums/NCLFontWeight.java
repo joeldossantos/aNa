@@ -61,6 +61,10 @@ public enum NCLFontWeight {
         }
         return null;
     }
+    
+    public NCLFontWeight getDefaultValue(){
+        return NORMAL;
+    }
 
     @Override
     public String toString() {

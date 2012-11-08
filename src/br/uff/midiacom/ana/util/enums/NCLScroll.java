@@ -64,6 +64,10 @@ public enum NCLScroll {
         }
         return null;
     }
+    
+    public NCLScroll getDefaultValue(){
+        return NONE;
+    }
 
     @Override
     public String toString() {

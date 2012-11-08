@@ -65,6 +65,10 @@ public enum NCLAttributeType {
         }
         return null;
     }
+    
+    public NCLAttributeType getDefaultValue(){
+        return OCCURRENCES;
+    }
 
     @Override
     public String toString() {

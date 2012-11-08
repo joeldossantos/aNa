@@ -106,6 +106,13 @@ public class NCLDevice {
     }
     
     
+    public NCLDevice getDefaultValue(){
+        NCLDevice def = new NCLDevice(DeviceName.SYSTEM_SCREEN);
+        param = 0;
+        return def;
+    }
+    
+    
     @Override
     public String toString() {
         String result = "";

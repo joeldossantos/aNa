@@ -61,6 +61,10 @@ public enum NCLPlayerLife {
         }
         return null;
     }
+    
+    public NCLPlayerLife getDefaultValue(){
+        return CLOSE;
+    }
 
     @Override
     public String toString() {
