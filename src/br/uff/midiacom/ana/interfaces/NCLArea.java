@@ -877,4 +877,19 @@ public class NCLArea<T extends NCLElement>
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        coords = null;
+        begin = null;
+        end = null;
+        text = null;
+        position = null;
+        first = null;
+        last = null;
+        label = null;
+    }
 }

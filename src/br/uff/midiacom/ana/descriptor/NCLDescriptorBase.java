@@ -548,6 +548,16 @@ public class NCLDescriptorBase<T extends NCLElement,
         return result;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(El d : descriptors)
+            d.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>descriptor</i>.

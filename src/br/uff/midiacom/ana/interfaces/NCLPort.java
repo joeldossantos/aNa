@@ -392,4 +392,16 @@ public class NCLPort<T extends NCLElement,
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        component.removeReference(this);
+        interfac.removeReference(this);
+        
+        component = null;
+        interfac = null;
+    }
 }

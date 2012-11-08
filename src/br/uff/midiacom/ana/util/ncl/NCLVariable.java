@@ -194,4 +194,12 @@ public class NCLVariable<T extends NCLElement>
     @Deprecated
     @Override
     public void load(Element element) throws XMLException {}
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        param = null;
+    }
 }

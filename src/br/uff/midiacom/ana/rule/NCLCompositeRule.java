@@ -536,6 +536,18 @@ public class NCLCompositeRule<T extends NCLElement,
         return references;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        operator = null;
+        
+        for(Et r : rules)
+            r.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>compositeRule</i>.

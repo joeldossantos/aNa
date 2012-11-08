@@ -504,6 +504,22 @@ public class NCLCompoundAction<T extends NCLElement,
         return null;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(delay instanceof NCLConnectorParam)
+            ((Ep)delay).removeReference(this);
+        
+        operator = null;
+        delay = null;
+        
+        for(Ea a : actions)
+            a.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>simpleAction</i>.

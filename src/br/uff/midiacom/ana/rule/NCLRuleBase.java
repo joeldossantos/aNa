@@ -499,6 +499,16 @@ public class NCLRuleBase<T extends NCLElement,
         return result;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(Et r : rules)
+            r.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>rule</i>.

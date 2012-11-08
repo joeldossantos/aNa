@@ -162,4 +162,11 @@ public class NCLMetadata<T extends NCLElement>
             throw new NCLParsingException("Metadata:\n" + ex.getMessage());
         }
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        rdfTree = null;
+    }
 }

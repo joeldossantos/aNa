@@ -484,6 +484,18 @@ public class NCLCompoundStatement<T extends NCLElement,
         return null;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        operator = null;
+        
+        for(Es s : statements)
+            s.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>assessmentStatement</i>.

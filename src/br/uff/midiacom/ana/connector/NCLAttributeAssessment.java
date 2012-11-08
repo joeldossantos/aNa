@@ -591,4 +591,22 @@ public class NCLAttributeAssessment<T extends NCLElement,
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(key instanceof NCLConnectorParam)
+            ((Ep)key).removeReference(this);
+        
+        if(offset instanceof NCLConnectorParam)
+            ((Ep)offset).removeReference(this);
+        
+        role = null;
+        eventType = null;
+        key = null;
+        attributeType = null;
+        offset = null;
+    }
 }

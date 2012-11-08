@@ -430,6 +430,16 @@ public class NCLConnectorBase<T extends NCLElement,
     }
 
 
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(Ec c : connectors)
+            c.clean();
+    }
+    
+    
     /**
      * Function to create the child element <i>causalConnector</i>.
      * This function must be overwritten in classes that extends this one.

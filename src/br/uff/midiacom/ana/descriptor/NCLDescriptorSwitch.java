@@ -686,6 +686,23 @@ public class NCLDescriptorSwitch<T extends NCLElement,
         return references;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        defaultDescriptor.removeReference(this);
+        
+        defaultDescriptor = null;
+        
+        for(Ed d : descriptors)
+            d.clean();
+        
+        for(Eb b : binds)
+            b.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>bindRule</i>.

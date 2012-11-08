@@ -379,6 +379,16 @@ public class NCLSwitchPort<T extends NCLElement,
         return references;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(Em m : mappings)
+            m.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>mapping</i>.

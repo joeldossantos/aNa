@@ -858,4 +858,34 @@ public class NCLSimpleCondition<T extends NCLElement,
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(key instanceof NCLConnectorParam)
+            ((Ep)key).removeReference(this);
+        
+        if(delay instanceof NCLConnectorParam)
+            ((Ep)delay).removeReference(this);
+        
+        if(key instanceof NCLConnectorParam)
+            ((Ep)key).removeReference(this);
+        
+        if(key instanceof NCLConnectorParam)
+            ((Ep)key).removeReference(this);
+        
+        if(key instanceof NCLConnectorParam)
+            ((Ep)key).removeReference(this);
+        
+        key = null;
+        min = null;
+        max = null;
+        qualifier = null;
+        eventType = null;
+        transition = null;
+        role = null;
+        delay = null;
+    }
 }

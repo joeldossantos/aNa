@@ -1316,4 +1316,41 @@ public class NCLSimpleAction<T extends NCLElement,
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(value instanceof NCLConnectorParam)
+            ((Ep)value).removeReference(this);
+        
+        if(repeat instanceof NCLConnectorParam)
+            ((Ep)repeat).removeReference(this);
+        
+        if(repeatDelay instanceof NCLConnectorParam)
+            ((Ep)repeatDelay).removeReference(this);
+        
+        if(duration instanceof NCLConnectorParam)
+            ((Ep)duration).removeReference(this);
+        
+        if(by instanceof NCLConnectorParam)
+            ((Ep)by).removeReference(this);
+        
+        if(delay instanceof NCLConnectorParam)
+            ((Ep)delay).removeReference(this);
+        
+        value = null;
+        min = null;
+        max = null;
+        qualifier = null;
+        eventType = null;
+        actionType = null;
+        repeat = null;
+        repeatDelay = null;
+        duration = null;
+        by = null;
+        role = null;
+        delay = null;
+    }
 }

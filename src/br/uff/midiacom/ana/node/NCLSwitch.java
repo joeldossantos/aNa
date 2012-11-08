@@ -1110,6 +1110,34 @@ public class NCLSwitch<T extends NCLElement,
         return references;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(refer instanceof NCLSwitch)
+            ((NCLSwitch)refer).removeReference(this);
+        else if(refer instanceof ExternalReferenceType){
+            ((R) refer).getTarget().removeReference(this);
+            ((R) refer).getAlias().removeReference(this);
+        }
+        
+        defaultComponent.removeReference(this);
+        
+        refer = null;
+        defaultComponent = null;
+        
+        for(Ep p : ports)
+            p.clean();
+        
+        for(Eb b : binds)
+            b.clean();
+        
+        for(En n : nodes)
+            n.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>bindRule</i>.

@@ -651,6 +651,25 @@ public class NCLCompoundCondition<T extends NCLElement,
         return null;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(delay instanceof NCLConnectorParam)
+            ((Ep)delay).removeReference(this);
+        
+        operator = null;
+        delay = null;
+        
+        for(Ec c : conditions)
+            c.clean();
+        
+        for(Es s : statements)
+            s.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>simpleCondition</i>.

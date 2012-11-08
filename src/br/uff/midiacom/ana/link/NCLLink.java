@@ -314,7 +314,7 @@ public class NCLLink<T extends NCLElement,
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
             notifyRemoved((T) bind);
-            bind.setParent(null);
+            bind.clean();
             return true;
         }
         return false;
@@ -588,6 +588,28 @@ public class NCLLink<T extends NCLElement,
         }
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(xconnector instanceof NCLCausalConnector)
+            ((Ec)xconnector).removeReference(this);
+        else{
+            ((R) xconnector).getTarget().removeReference(this);
+            ((R) xconnector).getAlias().removeReference(this);
+        }
+        
+        xconnector = null;
+        
+        for(Ep ep : linkParams)
+            ep.clean();
+        
+        for(Eb eb : binds)
+            eb.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>linkParam</i>.

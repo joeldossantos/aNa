@@ -529,6 +529,26 @@ public class NCLAssessmentStatement<T extends NCLElement,
         return null;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(valueAssessment instanceof NCLConnectorParam)
+            ((Ep)valueAssessment).removeReference(this);
+        
+        comparator = null;
+        valueAssessment = null;
+        
+        for(Ea a : attributeAssessments)
+            a.clean();
+        
+//        protected NCLComparator comparator;
+//        protected Object valueAssessment;
+//        protected ElementList<Ea> attributeAssessments;
+    }
+    
 
     /**
      * Function to create the child element <i>attributeAssessment</i>.

@@ -504,6 +504,31 @@ public class NCLBody<T extends NCLElement,
         
         return result;
     }
+
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(Ept p : ports)
+            p.clean();
+        
+        for(Epp p : properties)
+            p.clean();
+        
+        for(En n : nodes)
+            n.clean();
+        
+        for(El l : links)
+            l.clean();
+        
+        for(Em m : metas)
+            m.clean();
+        
+        for(Emt m : metadatas)
+            m.clean();
+    }
     
 
     /**

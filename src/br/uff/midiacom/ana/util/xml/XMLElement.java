@@ -111,4 +111,10 @@ public interface XMLElement<T extends XMLElement> {
      *          true if the elements are equal and false otherwise.
      */
     public boolean compare(T other);
+    
+    
+    /**
+     * Cleans the elements references when removed.
+     */
+    public void clean() throws XMLException;
 }

@@ -336,6 +336,16 @@ public class NCLImportedDocumentBase<T extends NCLElement,
         }
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(Ei i : imports)
+            i.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>importNCL</i>.

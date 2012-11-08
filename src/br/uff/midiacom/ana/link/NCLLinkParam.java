@@ -122,4 +122,15 @@ public class NCLLinkParam<T extends NCLElement,
         
         return super.compare(other);
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        name.removeReference(this);
+        
+        name = null;
+        value = null;
+    }
 }

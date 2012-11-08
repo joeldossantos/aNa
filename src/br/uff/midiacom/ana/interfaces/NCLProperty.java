@@ -384,4 +384,11 @@ public class NCLProperty<T extends NCLElement,
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        value = null;
+    }
 }

@@ -941,6 +941,28 @@ public class NCLHead<T extends NCLElement,
         }
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        importedDocumentBase = null;
+        ruleBase = null;
+        transitionBase = null;
+        descriptorBase = null;
+        connectorBase = null;
+        
+        for(Erb rb : regionBases)
+            rb.clean();
+        
+        for(Em m : metas)
+            m.clean();
+        
+        for(Emt m : metadatas)
+            m.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>importedDocumentBase</i>.

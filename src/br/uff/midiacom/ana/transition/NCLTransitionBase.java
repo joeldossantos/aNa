@@ -461,6 +461,16 @@ public class NCLTransitionBase<T extends NCLElement,
         return result;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        for(Et t : transitions)
+            t.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>transition</i>.

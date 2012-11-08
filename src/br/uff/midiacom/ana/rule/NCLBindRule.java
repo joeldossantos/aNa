@@ -338,4 +338,21 @@ public class NCLBindRule<T extends NCLElement,
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        constituent.removeReference(this);
+        
+        ((R) rule).getTarget().removeReference(this);
+        ((R) rule).getAlias().removeReference(this);
+        
+        constituent = null;
+        rule = null;
+        
+//        protected Ec constituent;
+//    protected Object rule;
+    }
 }

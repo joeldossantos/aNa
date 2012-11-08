@@ -1317,6 +1317,25 @@ public class NCLRegion<T extends NCLElement,
         return references;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        title = null;
+        left = null;
+        right = null;
+        top = null;
+        bottom = null;
+        height = null;
+        width = null;
+        zIndex = null;
+        
+        for(Er r : regions)
+            r.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>region</i>.

@@ -42,6 +42,7 @@ import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.util.SrcType;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.descriptor.NCLDescriptor;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
@@ -1308,6 +1309,39 @@ public class NCLMedia<T extends NCLElement,
     }
 
 
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(descriptor instanceof NCLLayoutDescriptor)
+            ((El)descriptor).removeReference(this);
+        else if(descriptor instanceof ExternalReferenceType){
+            ((R) descriptor).getTarget().removeReference(this);
+            ((R) descriptor).getAlias().removeReference(this);
+        }
+        
+        if(refer instanceof NCLMedia)
+            ((NCLMedia)refer).removeReference(this);
+        else if(refer instanceof ExternalReferenceType){
+            ((R) refer).getTarget().removeReference(this);
+            ((R) refer).getAlias().removeReference(this);
+        }
+        
+        src = null;
+        type = null;
+        descriptor = null;
+        refer = null;
+        instance = null;
+        
+        for(Ea a : areas)
+            a.clean();
+        
+        for(Ep p : properties)
+            p.clean();
+    }
+    
+    
     /**
      * Function to create the child element <i>area</i>.
      * This function must be overwritten in classes that extends this one.

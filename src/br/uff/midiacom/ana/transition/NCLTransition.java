@@ -1036,4 +1036,22 @@ public class NCLTransition<T extends NCLElement,
     public ArrayList getReferences() {
         return references;
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        type = null;
+        subtype = null;
+        dur = null;
+        startProgress = null;
+        endProgress = null;
+        direction = null;
+        fadeColor = null;
+        horRepeat = null;
+        vertRepeat = null;
+        borderWidth = null;
+        borderColor = null;
+    }
 }

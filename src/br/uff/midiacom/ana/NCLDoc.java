@@ -704,6 +704,13 @@ public class NCLDoc<T extends NCLElement,
             addGlobalVariableLists(other_vars);
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        
+    }
+    
 
     /**
      * Function to create the child element <i>head</i>.

@@ -1774,6 +1774,46 @@ public class NCLDescriptor<T extends NCLElement,
         return references;
     }
     
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        
+        moveLeft.removeReference(this);
+        moveRight.removeReference(this);
+        moveUp.removeReference(this);
+        moveDown.removeReference(this);
+        
+        if(region instanceof NCLRegion)
+            ((Er)region).removeReference(this);
+        
+        else if(region instanceof ExternalReferenceType){
+            ((R) region).getTarget().removeReference(this);
+            ((R) region).getAlias().removeReference(this);
+        }
+        
+        player = null;
+        explicitDur = null;
+        freeze = null;
+        moveLeft = null;
+        moveRight = null;
+        moveUp = null;
+        moveDown = null;
+        focusIndex = null;
+        focusBorderColor = null;
+        focusBorderWidth = null;
+        focusBorderTransparency = null;
+        focusSrc = null;
+        focusSelSrc = null;
+        selBorderColor = null;
+        transIn = null;
+        transOut = null;
+        region = null;
+        
+        for(Ep p : params)
+            p.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>descriptorParam</i>.

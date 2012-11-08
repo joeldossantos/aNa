@@ -632,6 +632,19 @@ public class NCLCausalConnector<T extends NCLElement,
         return null;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        condition = null;
+        action = null;
+        
+        for(Ep p : conn_params)
+            p.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>connectorParam</i>.

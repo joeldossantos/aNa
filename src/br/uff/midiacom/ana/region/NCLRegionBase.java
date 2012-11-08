@@ -664,6 +664,25 @@ public class NCLRegionBase<T extends NCLElement,
         return result;
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        ((NCLRegion)parent_region).removeReference(this);
+        
+        device = null;
+        parent_region = null;
+        
+        for(Er r : regions)
+            r.clean();
+        
+//        protected NCLDevice device;
+//        protected Object parent_region;
+//        protected ElementList<Er> regions;
+    }
+    
 
     /**
      * Function to create the child element <i>region</i>.

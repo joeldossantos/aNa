@@ -737,6 +737,29 @@ public class NCLBind<T extends NCLElement,
         }
     }
     
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        role.removeReference(this);
+        component.removeReference(this);
+        interfac.removeReference(this);
+        if(descriptor instanceof NCLLayoutDescriptor)
+            ((El) descriptor).removeReference(this);
+        else{
+            ((R) descriptor).getTarget().removeReference(this);
+            ((R) descriptor).getAlias().removeReference(this);
+        }
+        
+        role = null;
+        component = null;
+        interfac = null;
+        descriptor = null;
+        
+        for (Ep b : bindParams)
+            b.clean();
+    }
+    
 
     /**
      * Function to create the child element <i>bindParam</i>.

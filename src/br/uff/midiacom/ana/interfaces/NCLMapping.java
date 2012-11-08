@@ -308,4 +308,16 @@ public class NCLMapping<T extends NCLElement,
             setInterface(refEl);
         }
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        component.removeReference(this);
+        interfac.removeReference(this);
+        
+        component = null;
+        interfac = null;
+    }
 }

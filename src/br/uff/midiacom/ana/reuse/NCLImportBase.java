@@ -247,4 +247,15 @@ public class NCLImportBase<T extends NCLElement,
     protected String getType() {
         return "importBase";
     }
+
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        region.removeReference(this);
+        
+        region = null;
+        baseId = null;
+    }
 }

@@ -432,6 +432,19 @@ public class NCLRule<T extends NCLElement,
     }
     
     
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        var.removeReference(this);
+        
+        var = null;
+        comparator = null;
+        value = null;
+    }
+    
+    
     /**
      * Function to create a reference to a interface.
      * This function must be overwritten in classes that extends this one.

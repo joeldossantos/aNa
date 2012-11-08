@@ -691,6 +691,25 @@ public class NCLContext<T extends NCLElement,
         }
     }
 
+    
+    @Deprecated
+    @Override
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        if(refer instanceof NCLContext)
+            ((NCLContext)refer).removeReference(this);
+        else if(refer instanceof NCLBody)
+            ((NCLBody)refer).removeReference(this);
+        else{
+            ((R) refer).getTarget().removeReference(this);
+            ((R) refer).getAlias().removeReference(this);
+        }
+        
+        refer = null;
+        refer_id = null;
+    }
+    
 
     /**
      * Function to create the child element <i>meta</i>.
