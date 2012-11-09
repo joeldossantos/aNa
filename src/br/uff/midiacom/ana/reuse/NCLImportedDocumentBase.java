@@ -153,7 +153,7 @@ public class NCLImportedDocumentBase<T extends NCLElement,
         
         if(imports.remove(importNCL)){
             notifyRemoved((T) importNCL);
-            importNCL.setParent(null);
+            importNCL.clean();
             return true;
         }
         return false;

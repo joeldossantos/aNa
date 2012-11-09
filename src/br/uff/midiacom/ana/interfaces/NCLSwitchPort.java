@@ -164,7 +164,7 @@ public class NCLSwitchPort<T extends NCLElement,
     public boolean removeMapping(Em mapping) throws XMLException {
         if(mappings.remove(mapping)){
             notifyRemoved((T) mapping);
-            mapping.setParent(null);
+            mapping.clean();
             return true;
         }
         return false;

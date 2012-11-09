@@ -153,7 +153,7 @@ public class NCLTransitionBase<T extends NCLElement,
         
         if(transitions.remove(transition)){
             notifyRemoved((T) transition);
-            transition.setParent(null);
+            transition.clean();
             return true;
         }
         return false;

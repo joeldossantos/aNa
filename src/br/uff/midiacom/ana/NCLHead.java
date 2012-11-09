@@ -159,7 +159,7 @@ public class NCLHead<T extends NCLElement,
     public void setImportedDocumentBase(Eib importedDocumentBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.importedDocumentBase != null){
-            this.importedDocumentBase.setParent(null);
+            this.importedDocumentBase.clean();
             notifyRemoved((T) this.importedDocumentBase);
         }
         // Add the new base element
@@ -197,7 +197,7 @@ public class NCLHead<T extends NCLElement,
     public void setRuleBase(Erl ruleBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.ruleBase != null){
-            this.ruleBase.setParent(null);
+            this.ruleBase.clean();
             notifyRemoved((T) this.ruleBase);
         }
         // Add the new base element
@@ -235,7 +235,7 @@ public class NCLHead<T extends NCLElement,
     public void setTransitionBase(Etb transitionBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.transitionBase != null){
-            this.transitionBase.setParent(null);
+            this.transitionBase.clean();
             notifyRemoved((T) this.transitionBase);
         }
         // Add the new base element
@@ -297,7 +297,6 @@ public class NCLHead<T extends NCLElement,
     public boolean removeRegionBase(Erb regionBase) throws XMLException {
         if(regionBases.remove(regionBase)){
             notifyRemoved((T) regionBase);
-            regionBase.setParent(null);
             return true;
         }
         return false;
@@ -402,7 +401,7 @@ public class NCLHead<T extends NCLElement,
     public void setDescriptorBase(Edb descriptorBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.descriptorBase != null){
-            this.descriptorBase.setParent(null);
+            this.descriptorBase.clean();
             notifyRemoved((T) this.descriptorBase);
         }
         // Add the new base element
@@ -439,7 +438,7 @@ public class NCLHead<T extends NCLElement,
     public void setConnectorBase(Ecb connectorBase) throws XMLException {
         // Remove the parent of the actual base, if exists
         if(this.connectorBase != null){
-            this.connectorBase.setParent(null);
+            this.connectorBase.clean();
             notifyRemoved((T) this.connectorBase);
         }
         // Add the new base element
@@ -500,7 +499,6 @@ public class NCLHead<T extends NCLElement,
     public boolean removeMeta(Em meta) throws XMLException {
         if(metas.remove(meta)){
             notifyRemoved((T) meta);
-            meta.setParent(null);
             return true;
         }
         return false;
@@ -582,7 +580,6 @@ public class NCLHead<T extends NCLElement,
     public boolean removeMetadata(Emt metadata) throws XMLException {
         if(metadatas.remove(metadata)){
             notifyRemoved((T) metadata);
-            metadata.setParent(null);
             return true;
         }
         return false;

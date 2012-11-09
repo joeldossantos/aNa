@@ -351,8 +351,5 @@ public class NCLBindRule<T extends NCLElement,
         
         constituent = null;
         rule = null;
-        
-//        protected Ec constituent;
-//    protected Object rule;
     }
 }

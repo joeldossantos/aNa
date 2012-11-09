@@ -204,7 +204,7 @@ public class NCLDoc<T extends NCLElement,
     public void setHead(Eh head) throws XMLException {
         // Remove the parent of the actual head, if it exists
         if(this.head != null){
-            this.head.setParent(null);
+            this.head.clean();
             notifyRemoved((T) this.head);
         }
         // Add the new head element
@@ -241,7 +241,7 @@ public class NCLDoc<T extends NCLElement,
     public void setBody(Eb body) throws XMLException {
         // Remove the parent of the actual body, if it exists
         if(this.body != null){
-            this.body.setParent(null);
+            this.body.clean();
             notifyRemoved((T) this.body);
         }
         // Add the new body element
@@ -709,6 +709,22 @@ public class NCLDoc<T extends NCLElement,
     @Override
     public void clean() throws XMLException {
         
+        if(head != null)
+            head.clean();
+        
+        if(body != null)
+            body.clean();
+        
+        title = null;
+        xmlns = null;
+        head = null;
+        body = null;
+        location = null;
+        fileName = null;
+        referenceManager = null;
+        
+        for(Ev g : globalVariables)
+            g.clean();
     }
     
 

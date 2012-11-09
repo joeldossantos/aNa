@@ -1322,22 +1322,22 @@ public class NCLSimpleAction<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(value instanceof NCLConnectorParam)
+        if(value != null && value instanceof NCLConnectorParam)
             ((Ep)value).removeReference(this);
         
-        if(repeat instanceof NCLConnectorParam)
+        if(repeat != null && repeat instanceof NCLConnectorParam)
             ((Ep)repeat).removeReference(this);
         
-        if(repeatDelay instanceof NCLConnectorParam)
+        if(repeatDelay != null && repeatDelay instanceof NCLConnectorParam)
             ((Ep)repeatDelay).removeReference(this);
         
-        if(duration instanceof NCLConnectorParam)
+        if(duration != null && duration instanceof NCLConnectorParam)
             ((Ep)duration).removeReference(this);
         
-        if(by instanceof NCLConnectorParam)
+        if(by != null && by instanceof NCLConnectorParam)
             ((Ep)by).removeReference(this);
         
-        if(delay instanceof NCLConnectorParam)
+        if(delay != null && delay instanceof NCLConnectorParam)
             ((Ep)delay).removeReference(this);
         
         value = null;

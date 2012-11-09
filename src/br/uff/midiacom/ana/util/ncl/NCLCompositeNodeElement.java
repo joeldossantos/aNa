@@ -194,7 +194,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
         
         if(ports.remove(port)){
             notifyRemoved((T) port);
-            port.setParent(null);
             return true;
         }
         return false;
@@ -331,7 +330,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
         
         if(properties.remove(property)){
             notifyRemoved((T) property);
-            property.setParent(null);
             return true;
         }
         return false;
@@ -466,7 +464,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
         
         if(nodes.remove(node)){
             notifyRemoved((T) node);
-            node.setParent(null);
             return true;
         }
         return false;
@@ -601,7 +598,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
     public boolean removeLink(El link) throws XMLException {
         if(links.remove(link)){
             notifyRemoved((T) link);
-            link.setParent(null);
             return true;
         }
         return false;
@@ -733,7 +729,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
     public boolean removeMeta(Em meta) throws XMLException {
         if(metas.remove(meta)){
             notifyRemoved((T) meta);
-            meta.setParent(null);
             return true;
         }
         return false;
@@ -815,7 +810,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
     public boolean removeMetadata(Emt metadata) throws XMLException {
         if(metadatas.remove(metadata)){
             notifyRemoved((T) metadata);
-            metadata.setParent(null);
             return true;
         }
         return false;

@@ -251,7 +251,7 @@ public class NCLRegionBase<T extends NCLElement,
         
         if(regions.remove(region)){
             notifyRemoved((T) region);
-            region.setParent(null);
+            region.clean();
             return true;
         }
         return false;
@@ -670,7 +670,8 @@ public class NCLRegionBase<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        ((NCLRegion)parent_region).removeReference(this);
+        if(parent_region != null)
+            ((NCLRegion)parent_region).removeReference(this);
         
         device = null;
         parent_region = null;

@@ -264,8 +264,8 @@ public class NCLAssessmentStatement<T extends NCLElement,
                     + " The reference must be undone before erasing this element.");
         
         if(attributeAssessments.remove(attribute)){
+            attribute.clean();
             notifyRemoved((T) attribute);
-            attribute.setParent(null);
             return true;
         }
         return false;
@@ -535,7 +535,7 @@ public class NCLAssessmentStatement<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(valueAssessment instanceof NCLConnectorParam)
+        if(valueAssessment != null && valueAssessment instanceof NCLConnectorParam)
             ((Ep)valueAssessment).removeReference(this);
         
         comparator = null;

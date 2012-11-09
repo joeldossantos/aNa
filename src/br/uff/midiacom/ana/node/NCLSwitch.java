@@ -314,7 +314,7 @@ public class NCLSwitch<T extends NCLElement,
         
         if(ports.remove(port)){
             notifyRemoved((T) port);
-            port.setParent(null);
+            port.clean();
             return true;
         }
         return false;
@@ -485,7 +485,7 @@ public class NCLSwitch<T extends NCLElement,
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
             notifyRemoved((T) bind);
-            bind.setParent(null);
+            bind.clean();
             return true;
         }
         return false;
@@ -575,7 +575,7 @@ public class NCLSwitch<T extends NCLElement,
         
         if(nodes.remove(node)){
             notifyRemoved((T) node);
-            node.setParent(null);
+            node.clean();
             return true;
         }
         return false;
@@ -1116,14 +1116,17 @@ public class NCLSwitch<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(refer instanceof NCLSwitch)
-            ((NCLSwitch)refer).removeReference(this);
-        else if(refer instanceof ExternalReferenceType){
-            ((R) refer).getTarget().removeReference(this);
-            ((R) refer).getAlias().removeReference(this);
+        if(refer != null){
+            if(refer instanceof NCLSwitch)
+                ((NCLSwitch)refer).removeReference(this);
+            else if(refer instanceof ExternalReferenceType){
+                ((R) refer).getTarget().removeReference(this);
+                ((R) refer).getAlias().removeReference(this);
+            }
         }
         
-        defaultComponent.removeReference(this);
+        if(defaultComponent != null)
+            defaultComponent.removeReference(this);
         
         refer = null;
         defaultComponent = null;

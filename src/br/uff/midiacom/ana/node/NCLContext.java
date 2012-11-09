@@ -697,13 +697,15 @@ public class NCLContext<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(refer instanceof NCLContext)
-            ((NCLContext)refer).removeReference(this);
-        else if(refer instanceof NCLBody)
-            ((NCLBody)refer).removeReference(this);
-        else{
-            ((R) refer).getTarget().removeReference(this);
-            ((R) refer).getAlias().removeReference(this);
+        if(refer != null){
+            if(refer instanceof NCLContext)
+                ((NCLContext)refer).removeReference(this);
+            else if(refer instanceof NCLBody)
+                ((NCLBody)refer).removeReference(this);
+            else{
+                ((R) refer).getTarget().removeReference(this);
+                ((R) refer).getAlias().removeReference(this);
+            }
         }
         
         refer = null;

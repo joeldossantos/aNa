@@ -625,7 +625,7 @@ public class NCLMedia<T extends NCLElement,
         
         if(areas.remove(area)){
             notifyRemoved((T) area);
-            area.setParent(null);
+            area.clean();
             return true;
         }
         return false;
@@ -763,7 +763,7 @@ public class NCLMedia<T extends NCLElement,
         
         if(properties.remove(property)){
             notifyRemoved((T) property);
-            property.setParent(null);
+            property.clean();
             return true;
         }
         return false;
@@ -1314,18 +1314,22 @@ public class NCLMedia<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(descriptor instanceof NCLLayoutDescriptor)
-            ((El)descriptor).removeReference(this);
-        else if(descriptor instanceof ExternalReferenceType){
-            ((R) descriptor).getTarget().removeReference(this);
-            ((R) descriptor).getAlias().removeReference(this);
+        if(descriptor != null){
+            if(descriptor instanceof NCLLayoutDescriptor)
+                ((El)descriptor).removeReference(this);
+            else if(descriptor instanceof ExternalReferenceType){
+                ((R) descriptor).getTarget().removeReference(this);
+                ((R) descriptor).getAlias().removeReference(this);
+            }
         }
         
-        if(refer instanceof NCLMedia)
-            ((NCLMedia)refer).removeReference(this);
-        else if(refer instanceof ExternalReferenceType){
-            ((R) refer).getTarget().removeReference(this);
-            ((R) refer).getAlias().removeReference(this);
+        if(refer != null){
+            if(refer instanceof NCLMedia)
+                ((NCLMedia)refer).removeReference(this);
+            else if(refer instanceof ExternalReferenceType){
+                ((R) refer).getTarget().removeReference(this);
+                ((R) refer).getAlias().removeReference(this);
+            }
         }
         
         src = null;

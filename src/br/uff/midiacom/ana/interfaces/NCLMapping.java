@@ -315,7 +315,8 @@ public class NCLMapping<T extends NCLElement,
         setParent(null);
         
         component.removeReference(this);
-        interfac.removeReference(this);
+        if(interfac != null)
+            interfac.removeReference(this);
         
         component = null;
         interfac = null;

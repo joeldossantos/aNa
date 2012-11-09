@@ -164,7 +164,7 @@ public class NCLCausalConnector<T extends NCLElement,
                 throw new NCLRemovalException("This element has a reference to it."
                         + " The reference must be undone before erasing this element.");
         
-            this.condition.setParent(null);
+            this.condition.clean();
             notifyRemoved((T) this.condition);
         }
 
@@ -214,7 +214,7 @@ public class NCLCausalConnector<T extends NCLElement,
                 throw new NCLRemovalException("This element has a reference to it."
                         + " The reference must be undone before erasing this element.");
             
-            this.action.setParent(null);
+            this.action.clean();
             notifyRemoved((T) this.action);
         }
 
@@ -284,7 +284,6 @@ public class NCLCausalConnector<T extends NCLElement,
         
         if(conn_params.remove(param)){
             notifyRemoved((T) param);
-            param.setParent(null);
             return true;
         }
         return false;

@@ -253,7 +253,8 @@ public class NCLImportBase<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        region.removeReference(this);
+        if(region != null)
+            region.removeReference(this);
         
         region = null;
         baseId = null;

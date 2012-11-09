@@ -225,8 +225,8 @@ public class NCLCompoundCondition<T extends NCLElement,
                     + " The reference must be undone before erasing this element.");
         
         if(conditions.remove(condition)){
+            condition.clean();
             notifyRemoved((T) condition);
-            condition.setParent(null);
             return true;
         }
         return false;
@@ -657,7 +657,7 @@ public class NCLCompoundCondition<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(delay instanceof NCLConnectorParam)
+        if(delay != null && delay instanceof NCLConnectorParam)
             ((Ep)delay).removeReference(this);
         
         operator = null;

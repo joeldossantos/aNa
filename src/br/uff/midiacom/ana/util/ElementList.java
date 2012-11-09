@@ -161,7 +161,7 @@ public class ElementList<T extends XMLElement>
             throw new XMLException("Null element.");
 
         if(elements.remove(element)){
-            element.setParent(null);
+            element.clean();
             return true;
         }
         return false;

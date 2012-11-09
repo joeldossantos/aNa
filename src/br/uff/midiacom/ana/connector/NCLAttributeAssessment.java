@@ -597,10 +597,10 @@ public class NCLAttributeAssessment<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(key instanceof NCLConnectorParam)
+        if(key != null && key instanceof NCLConnectorParam)
             ((Ep)key).removeReference(this);
         
-        if(offset instanceof NCLConnectorParam)
+        if(offset != null && offset instanceof NCLConnectorParam)
             ((Ep)offset).removeReference(this);
         
         role = null;

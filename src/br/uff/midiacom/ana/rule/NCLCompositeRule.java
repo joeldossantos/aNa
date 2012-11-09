@@ -211,7 +211,7 @@ public class NCLCompositeRule<T extends NCLElement,
         
         if(rules.remove(rule)){
             notifyRemoved((T) rule);
-            rule.setParent(null);
+            rule.clean();
             return true;
         }
         return false;

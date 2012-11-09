@@ -383,7 +383,7 @@ public class NCLBind<T extends NCLElement,
     public boolean removeBindParam(Ep param) throws XMLException {
         if(bindParams.remove(param)){
             notifyRemoved((T) param);
-            param.setParent(null);
+            param.clean();
             return true;
         }
         return false;
@@ -741,14 +741,19 @@ public class NCLBind<T extends NCLElement,
     @Override
     public void clean() throws XMLException {
         setParent(null);
+        
         role.removeReference(this);
         component.removeReference(this);
-        interfac.removeReference(this);
-        if(descriptor instanceof NCLLayoutDescriptor)
-            ((El) descriptor).removeReference(this);
-        else{
-            ((R) descriptor).getTarget().removeReference(this);
-            ((R) descriptor).getAlias().removeReference(this);
+        if(interfac != null)
+            interfac.removeReference(this);
+        
+        if(descriptor != null){
+            if(descriptor instanceof NCLLayoutDescriptor)
+                ((El) descriptor).removeReference(this);
+            else{
+                ((R) descriptor).getTarget().removeReference(this);
+                ((R) descriptor).getAlias().removeReference(this);
+            }
         }
         
         role = null;

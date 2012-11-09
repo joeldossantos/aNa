@@ -152,7 +152,7 @@ public class NCLConnectorBase<T extends NCLElement,
         
         if(connectors.remove(connector)){
             notifyRemoved((T) connector);
-            connector.setParent(null);
+            connector.clean();
             return true;
         }
         return false;

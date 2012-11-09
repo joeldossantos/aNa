@@ -186,7 +186,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
         
         if(descriptors.remove(descriptor)){
             notifyRemoved((T) descriptor);
-            descriptor.setParent(null);
+            descriptor.clean();
             return true;
         }
         return false;
@@ -319,7 +319,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
             notifyRemoved((T) bind);
-            bind.setParent(null);
+            bind.clean();
             return true;
         }
         return false;
@@ -692,7 +692,8 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        defaultDescriptor.removeReference(this);
+        if(defaultDescriptor != null)
+            defaultDescriptor.removeReference(this);
         
         defaultDescriptor = null;
         

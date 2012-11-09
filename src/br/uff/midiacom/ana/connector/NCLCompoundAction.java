@@ -212,8 +212,8 @@ public class NCLCompoundAction<T extends NCLElement,
                     + " The reference must be undone before erasing this element.");
         
         if(actions.remove(action)){
+            action.clean();
             notifyRemoved((T) action);
-            action.setParent(null);
             return true;
         }
         return false;
@@ -510,7 +510,7 @@ public class NCLCompoundAction<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(delay instanceof NCLConnectorParam)
+        if(delay != null && delay instanceof NCLConnectorParam)
             ((Ep)delay).removeReference(this);
         
         operator = null;

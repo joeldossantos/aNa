@@ -864,20 +864,11 @@ public class NCLSimpleCondition<T extends NCLElement,
     public void clean() throws XMLException {
         setParent(null);
         
-        if(key instanceof NCLConnectorParam)
+        if(key != null && key instanceof NCLConnectorParam)
             ((Ep)key).removeReference(this);
         
-        if(delay instanceof NCLConnectorParam)
+        if(delay != null && delay instanceof NCLConnectorParam)
             ((Ep)delay).removeReference(this);
-        
-        if(key instanceof NCLConnectorParam)
-            ((Ep)key).removeReference(this);
-        
-        if(key instanceof NCLConnectorParam)
-            ((Ep)key).removeReference(this);
-        
-        if(key instanceof NCLConnectorParam)
-            ((Ep)key).removeReference(this);
         
         key = null;
         min = null;

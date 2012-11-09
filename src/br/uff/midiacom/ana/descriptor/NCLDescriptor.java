@@ -981,7 +981,7 @@ public class NCLDescriptor<T extends NCLElement,
     public boolean removeDescriptorParam(Ep descriptorParam) throws XMLException {
         if(params.remove(descriptorParam)){
             notifyRemoved((T) descriptorParam);
-            descriptorParam.setParent(null);
+            descriptorParam.clean();
             return true;
         }
         return false;
@@ -1784,12 +1784,14 @@ public class NCLDescriptor<T extends NCLElement,
         moveUp.removeReference(this);
         moveDown.removeReference(this);
         
-        if(region instanceof NCLRegion)
-            ((Er)region).removeReference(this);
-        
-        else if(region instanceof ExternalReferenceType){
-            ((R) region).getTarget().removeReference(this);
-            ((R) region).getAlias().removeReference(this);
+        if(region != null){
+            if(region instanceof NCLRegion)
+                ((Er)region).removeReference(this);
+
+            else if(region instanceof ExternalReferenceType){
+                ((R) region).getTarget().removeReference(this);
+                ((R) region).getAlias().removeReference(this);
+            }
         }
         
         player = null;
