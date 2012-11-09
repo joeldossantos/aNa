@@ -314,7 +314,6 @@ public class NCLSwitch<T extends NCLElement,
         
         if(ports.remove(port)){
             notifyRemoved((T) port);
-            port.clean();
             return true;
         }
         return false;
@@ -485,7 +484,6 @@ public class NCLSwitch<T extends NCLElement,
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
             notifyRemoved((T) bind);
-            bind.clean();
             return true;
         }
         return false;
@@ -575,7 +573,6 @@ public class NCLSwitch<T extends NCLElement,
         
         if(nodes.remove(node)){
             notifyRemoved((T) node);
-            node.clean();
             return true;
         }
         return false;

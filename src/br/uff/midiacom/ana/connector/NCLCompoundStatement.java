@@ -244,7 +244,6 @@ public class NCLCompoundStatement<T extends NCLElement,
     public boolean removeStatement(Es statement) throws XMLException {
         if(statements.remove(statement)){
             notifyRemoved((T) statement);
-            statement.clean();
             return true;
         }
         return false;

@@ -163,7 +163,6 @@ public class NCLDescriptorBase<T extends NCLElement,
         
         if(descriptors.remove(descriptor)){
             notifyRemoved((T) descriptor);
-            descriptor.clean();
             return true;
         }
         return false;

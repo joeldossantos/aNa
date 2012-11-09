@@ -212,7 +212,6 @@ public class NCLCompoundAction<T extends NCLElement,
                     + " The reference must be undone before erasing this element.");
         
         if(actions.remove(action)){
-            action.clean();
             notifyRemoved((T) action);
             return true;
         }

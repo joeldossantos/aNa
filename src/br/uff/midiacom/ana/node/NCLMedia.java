@@ -625,7 +625,6 @@ public class NCLMedia<T extends NCLElement,
         
         if(areas.remove(area)){
             notifyRemoved((T) area);
-            area.clean();
             return true;
         }
         return false;
@@ -763,7 +762,6 @@ public class NCLMedia<T extends NCLElement,
         
         if(properties.remove(property)){
             notifyRemoved((T) property);
-            property.clean();
             return true;
         }
         return false;

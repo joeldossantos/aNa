@@ -819,7 +819,6 @@ public class NCLRegion<T extends NCLElement,
         
         if(regions.remove(region)){
             notifyRemoved((T) region);
-            region.clean();
             return true;
         }
         return false;

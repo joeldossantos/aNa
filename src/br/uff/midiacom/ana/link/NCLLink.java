@@ -229,7 +229,6 @@ public class NCLLink<T extends NCLElement,
     public boolean removeLinkParam(Ep param) throws XMLException {
         if(linkParams.remove(param)){
             notifyRemoved((T) param);
-            param.clean();
             return true;
         }
         return false;
@@ -314,7 +313,6 @@ public class NCLLink<T extends NCLElement,
     public boolean removeBind(Eb bind) throws XMLException {
         if(binds.remove(bind)){
             notifyRemoved((T) bind);
-            bind.clean();
             return true;
         }
         return false;

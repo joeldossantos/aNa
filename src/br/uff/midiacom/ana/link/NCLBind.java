@@ -383,7 +383,6 @@ public class NCLBind<T extends NCLElement,
     public boolean removeBindParam(Ep param) throws XMLException {
         if(bindParams.remove(param)){
             notifyRemoved((T) param);
-            param.clean();
             return true;
         }
         return false;

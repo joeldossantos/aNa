@@ -981,7 +981,6 @@ public class NCLDescriptor<T extends NCLElement,
     public boolean removeDescriptorParam(Ep descriptorParam) throws XMLException {
         if(params.remove(descriptorParam)){
             notifyRemoved((T) descriptorParam);
-            descriptorParam.clean();
             return true;
         }
         return false;

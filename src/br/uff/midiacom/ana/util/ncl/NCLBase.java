@@ -116,7 +116,6 @@ public abstract class NCLBase<T extends NCLElement,
                     + " The reference must be undone before erasing this element.");
         
         if(imports.remove(importBase)){
-            importBase.clean();
             notifyRemoved((T) importBase);
             return true;
         }

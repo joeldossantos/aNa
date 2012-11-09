@@ -264,7 +264,6 @@ public class NCLAssessmentStatement<T extends NCLElement,
                     + " The reference must be undone before erasing this element.");
         
         if(attributeAssessments.remove(attribute)){
-            attribute.clean();
             notifyRemoved((T) attribute);
             return true;
         }
