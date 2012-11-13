@@ -352,10 +352,12 @@ public class NCLDescriptorParam<T extends NCLElement, V>
             return true;
         
         if(value instanceof Integer[])
-            return name.equals(NCLAttributes.BOUNDS) || name.equals(NCLAttributes.SIZE);
+            return name.equals(NCLAttributes.BOUNDS) || name.equals(NCLAttributes.SIZE) ||
+                    name.equals(NCLAttributes.LOCATION);
         
         if(value instanceof Double[])
-            return name.equals(NCLAttributes.BOUNDS) || name.equals(NCLAttributes.SIZE);
+            return name.equals(NCLAttributes.BOUNDS) || name.equals(NCLAttributes.SIZE) ||
+                    name.equals(NCLAttributes.LOCATION);
         
         if(value instanceof Boolean)
             return name.equals(NCLAttributes.REUSE_PLAYER) || name.equals(NCLAttributes.VISIBLE);

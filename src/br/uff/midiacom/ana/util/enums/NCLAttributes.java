@@ -37,8 +37,6 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util.enums;
 
-import br.uff.midiacom.ana.util.exception.NCLParsingException;
-
 
 /**
  * Atributos de uma mídia (podem ser parametrizados pelo descritor) da <i>Nested Context Language</i> (NCL).
