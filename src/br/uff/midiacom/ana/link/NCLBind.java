@@ -724,7 +724,10 @@ public class NCLBind<T extends NCLElement,
             // fix the interface reference
             if(getInterface() != null && (aux = ((NCLArea) getInterface()).getId()) != null){
                 Ei ref = (Ei) ((NCLBody) ((NCLDoc) getDoc()).getBody()).findInterface(aux);
-                setInterface(ref);
+                if(ref == null)
+                    throw new NCLParsingException("Could not find bind interface.");
+                else
+                    setInterface(ref);
             }
         }
         catch(XMLException ex){
