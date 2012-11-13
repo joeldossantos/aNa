@@ -146,6 +146,7 @@ public class NCLRegion<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public void setDoc(T doc) {
         super.setDoc(doc);
         for (Er aux : regions) {
@@ -1300,25 +1301,28 @@ public class NCLRegion<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public boolean addReference(T reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
+    @Deprecated
     public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
+    @Deprecated
     public ArrayList<T> getReferences() {
         return references;
     }
 
     
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

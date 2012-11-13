@@ -69,6 +69,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
 
 
     @Override
+    @Deprecated
     public void setParent(T parent) throws XMLException {
         T aux = getParent();
         if(this.parent != null && parent != null)
@@ -86,6 +87,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
     }
     
     
+    @Deprecated
     public void setDoc(T doc) {
         this.doc = doc;
     }
@@ -105,6 +107,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
      * @param inserted
      *          element inserted.
      */
+    @Deprecated
     public void notifyInserted(T inserted) throws NCLModificationException {
         notifier.addNotification(new NCLNotification(inserted));
     }
@@ -116,6 +119,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
      * @param removed
      *          element removed.
      */
+    @Deprecated
     public void notifyRemoved(T removed) throws NCLModificationException {
         notifier.addNotification(new NCLNotification(this, removed));
     }
@@ -131,6 +135,7 @@ public abstract class NCLElementPrototype<T extends NCLElement>
      * @param newValue
      *          the attribute new value.
      */
+    @Deprecated
     public void notifyAltered(NCLElementAttributes attributeName, Object oldValue, Object newValue) throws NCLModificationException {
         notifier.addNotification(new NCLNotification(this, attributeName, oldValue, newValue));
     }

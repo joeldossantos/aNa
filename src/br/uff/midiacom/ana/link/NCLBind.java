@@ -123,6 +123,7 @@ public class NCLBind<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public void setDoc(T doc) {
         super.setDoc(doc);
         for (Ep aux : bindParams) {
@@ -715,6 +716,7 @@ public class NCLBind<T extends NCLElement,
 
     
     @Override
+    @Deprecated
     public void fixReference() throws NCLParsingException {
         String aux;
         
@@ -736,8 +738,9 @@ public class NCLBind<T extends NCLElement,
         }
     }
     
-    @Deprecated
+    
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

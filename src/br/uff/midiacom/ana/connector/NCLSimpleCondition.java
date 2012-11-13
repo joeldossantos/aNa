@@ -834,6 +834,7 @@ public class NCLSimpleCondition<T extends NCLElement,
     }
     
     
+    @Override
     public Er findRole(String name) {
         if(role.toString().equals(name))
             return (Er) this;
@@ -843,24 +844,28 @@ public class NCLSimpleCondition<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public boolean addReference(Eb reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
+    @Deprecated
     public boolean removeReference(Eb reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
+    @Deprecated
     public ArrayList getReferences() {
         return references;
     }
-
-    @Deprecated
+    
+    
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

@@ -442,6 +442,7 @@ public class NCLDoc<T extends NCLElement,
      * @return 
      *          element to manager the references to be fixed after parsing.
      */
+    @Deprecated
     public NCLReferenceManager getReferenceManager() {
         return referenceManager;
     }
@@ -705,8 +706,8 @@ public class NCLDoc<T extends NCLElement,
     }
 
     
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         
         if(head != null)

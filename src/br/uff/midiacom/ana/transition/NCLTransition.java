@@ -1021,24 +1021,27 @@ public class NCLTransition<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public boolean addReference(Ed reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
+    @Deprecated
     public boolean removeReference(Ed reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
+    @Deprecated
     public ArrayList getReferences() {
         return references;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

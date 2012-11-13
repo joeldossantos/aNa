@@ -339,8 +339,8 @@ public class NCLBindRule<T extends NCLElement,
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

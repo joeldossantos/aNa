@@ -308,9 +308,10 @@ public class NCLMapping<T extends NCLElement,
             setInterface(refEl);
         }
     }
-
-    @Deprecated
+    
+    
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

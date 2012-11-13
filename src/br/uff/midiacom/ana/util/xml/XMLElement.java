@@ -58,6 +58,7 @@ public interface XMLElement<T extends XMLElement> {
      * @throws XMLException
      *          f the element already has a parent element.
      */
+    @Deprecated
     public void setParent(T parent) throws XMLException;
 
 
@@ -116,5 +117,6 @@ public interface XMLElement<T extends XMLElement> {
     /**
      * Cleans the elements references when removed.
      */
+    @Deprecated
     public void clean() throws XMLException;
 }

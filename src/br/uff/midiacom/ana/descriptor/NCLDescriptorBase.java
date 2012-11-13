@@ -110,6 +110,7 @@ public class NCLDescriptorBase<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public void setDoc(T doc) {
         super.setDoc(doc);
         for (El aux : descriptors) {
@@ -548,8 +549,8 @@ public class NCLDescriptorBase<T extends NCLElement,
     }
 
     
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

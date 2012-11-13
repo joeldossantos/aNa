@@ -334,18 +334,21 @@ public abstract class NCLImport<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public boolean addReference(T reference) throws XMLException {
         return references.add(reference);
     }
     
     
     @Override
+    @Deprecated
     public boolean removeReference(T reference) throws XMLException {
         return references.remove(reference);
     }
     
     
     @Override
+    @Deprecated
     public ArrayList getReferences() {
         return references;
     }

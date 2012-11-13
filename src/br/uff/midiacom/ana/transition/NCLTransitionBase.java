@@ -461,8 +461,8 @@ public class NCLTransitionBase<T extends NCLElement,
     }
 
     
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

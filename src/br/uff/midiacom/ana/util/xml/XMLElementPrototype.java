@@ -56,6 +56,7 @@ public abstract class XMLElementPrototype<T extends XMLElement>
     
 
     @Override
+    @Deprecated
     public void setParent(T parent) throws XMLException {
         T aux = getParent();
         if(this.parent != null && parent != null)

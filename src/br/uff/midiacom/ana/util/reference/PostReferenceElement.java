@@ -53,5 +53,6 @@ public interface PostReferenceElement {
      * @throws XMLException 
      *          is any error occurs while fixing the element references.
      */
+    @Deprecated
     public void fixReference() throws XMLException;
 }

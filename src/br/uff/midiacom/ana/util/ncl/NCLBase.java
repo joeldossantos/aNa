@@ -66,6 +66,7 @@ public abstract class NCLBase<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public void setDoc(T doc) {
         super.setDoc(doc);
         for (Ei aux : imports) {

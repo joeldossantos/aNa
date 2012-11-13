@@ -126,6 +126,7 @@ public class NCLBody<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public void setDoc(T doc) {
         if(doc == null)
             doc = getParent(); // doc is the parent of body
@@ -506,8 +507,8 @@ public class NCLBody<T extends NCLElement,
     }
 
     
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

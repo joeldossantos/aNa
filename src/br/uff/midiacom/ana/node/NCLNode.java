@@ -82,5 +82,6 @@ public interface NCLNode<T extends NCLElement,
     public En findNode(String id) throws XMLException;
     
     
+    @Deprecated
     public void setDoc(T doc);
 }

@@ -125,8 +125,9 @@ public class NCLBindParam<T extends NCLElement,
         return super.compare(other);
     }
 
-    @Deprecated
+    
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

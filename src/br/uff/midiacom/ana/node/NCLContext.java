@@ -666,6 +666,7 @@ public class NCLContext<T extends NCLElement,
     
     
     @Override
+    @Deprecated
     public void fixReference() throws NCLParsingException {
         String aux;
         
@@ -692,8 +693,8 @@ public class NCLContext<T extends NCLElement,
     }
 
     
-    @Deprecated
     @Override
+    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         
