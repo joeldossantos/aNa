@@ -1305,7 +1305,8 @@ public class NCLDescriptor<T extends NCLElement,
         att_name = NCLElementAttributes.REGION.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setRegion(d.getReferenceManager().findRegionReference(d, att_var));
+            String[] reg = adjustReference(att_var);
+            setRegion(d.getHead().findRegion(null, reg[0], reg[1]));
         }
     }
     

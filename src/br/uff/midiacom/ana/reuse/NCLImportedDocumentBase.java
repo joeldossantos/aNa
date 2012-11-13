@@ -37,13 +37,16 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.reuse;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
+import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -86,7 +89,8 @@ import org.w3c.dom.NodeList;
  * @param <Ei> 
  */
 public class NCLImportedDocumentBase<T extends NCLElement,
-                                     Ei extends NCLImportNCL>
+                                     Ei extends NCLImportNCL,
+                                     R extends ExternalReferenceType>
         extends NCLIdentifiableElementPrototype<T>
         implements NCLElement<T> {
 
@@ -335,6 +339,32 @@ public class NCLImportedDocumentBase<T extends NCLElement,
             inst.load(el);
         }
     }
+    
+    
+    /**
+     * Searches for a region inside the descriptorBase imported documents.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the region.
+     * @param id
+     *          id of the region to be found.
+     * @return 
+     *          region or null if no region was found.
+     */
+    public Object findRegion(String alias, String id) throws XMLException {
+        for(Ei imp : imports){
+            if(imp.getAlias().equals(alias)){
+                NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                Object ref = d.getHead().findRegion(null, null, id);
+                if(ref instanceof NCLRegion)
+                    return createExternalRef(imp, (NCLRegion) ref);
+                else
+                    return createExternalRef(imp, (NCLRegion) ((R) ref).getTarget());
+            }
+        }
+        
+        return null;
+    }
 
     
     @Override
@@ -356,5 +386,17 @@ public class NCLImportedDocumentBase<T extends NCLElement,
      */
     protected Ei createImportNCL() throws XMLException {
         return (Ei) new NCLImportNCL();
+    }
+
+
+    /**
+     * Function to create a reference to a region.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected R createExternalRef(Ei imp, NCLRegion ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
     }
 }

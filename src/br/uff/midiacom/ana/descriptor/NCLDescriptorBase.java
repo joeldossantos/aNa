@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.descriptor;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.NCLHead;
+import br.uff.midiacom.ana.region.NCLRegion;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
@@ -423,6 +424,32 @@ public class NCLDescriptorBase<T extends NCLElement,
     
     
     /**
+     * Searches for a region inside the descriptorBase imported documents.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the region.
+     * @param id
+     *          id of the region to be found.
+     * @return 
+     *          region or null if no region was found.
+     */
+    public Object findRegion(String alias, String id) throws XMLException {
+        for(Ei imp : imports){
+            if(imp.getAlias().equals(alias)){
+                NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                Object ref = d.getHead().findRegion(imp.getBaseId(), null, id);
+                if(ref instanceof NCLRegion)
+                    return createExternalRef(imp, (NCLRegion) ref);
+                else
+                    return createExternalRef(imp, (NCLRegion) ((R) ref).getTarget());
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    /**
      * Searches for a descriptor inside the descriptorBase and its descendants.
      * The descriptor can be a descriptor or a descriptorSwitch.
      * 
@@ -591,6 +618,18 @@ public class NCLDescriptorBase<T extends NCLElement,
      *          element representing a reference to a descriptor.
      */
     protected R createExternalRef(Ei imp, El ref) throws XMLException {
+        return (R) new ExternalReferenceType(imp, ref);
+    }
+
+
+    /**
+     * Function to create a reference to a region.
+     * This function must be overwritten in classes that extends this one.
+     *
+     * @return
+     *          element representing a reference to a descriptor.
+     */
+    protected R createExternalRef(Ei imp, NCLRegion ref) throws XMLException {
         return (R) new ExternalReferenceType(imp, ref);
     }
 }

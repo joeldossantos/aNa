@@ -99,6 +99,23 @@ public abstract class NCLElementPrototype<T extends NCLElement>
 
         return matcher.matches();
     }
+    
+    
+    protected String[] adjustReference(String element_id) {
+        String[] result = new String[2];
+        
+        if(!element_id.contains("#")){
+            int index = element_id.indexOf("#");
+            result[0] = element_id.substring(0, index);
+            result[1] = element_id.substring(index + 1);
+        }
+        else{
+            result[0] = null;
+            result[1] = element_id;
+        }
+        
+        return result;
+    }
 
 
     /**

@@ -940,6 +940,53 @@ public class NCLHead<T extends NCLElement,
     }
 
     
+    /**
+     * Searches for a region inside a regionBase and its descendants.
+     * 
+     * @param id
+     *          id of the region to be found.
+     * @return 
+     *          region or null if no region was found.
+     */
+    public Object findRegion(String baseId, String alias, String id) throws XMLException {
+        Object result;
+        
+        if(baseId == null){
+            for(Erb aux : regionBases){
+                result = aux.findRegion(alias, id);
+                if(result != null)
+                    return result;
+            }
+        }
+        else{
+            result = regionBases.get(baseId).findRegion(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the base imported by a descriptor base
+        Edb db;
+        if((db = getDescriptorBase()) != null){
+            result = db.findRegion(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the region base of the imported documents
+        Eib ib;
+        if((ib = getImportedDocumentBase()) != null){
+            result = ib.findRegion(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+
+        throw new NCLParsingException("Could not find region with id: " + alias + "#" + id);
+    }
+    
+    
     @Override
     @Deprecated
     public void clean() throws XMLException {

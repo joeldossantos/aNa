@@ -39,14 +39,11 @@ package br.uff.midiacom.ana.region;
 
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.NCLHead;
-import br.uff.midiacom.ana.descriptor.NCLDescriptorBase;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
-import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.enums.NCLDevice;
@@ -533,8 +530,10 @@ public class NCLRegionBase<T extends NCLElement,
         
         // set the region (optional)
         att_name = NCLElementAttributes.REGION.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty())
-            setParentRegion(findRegion(att_var));
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            String[] reg = adjustReference(att_var);
+            setParentRegion(findRegion(reg[0], reg[1]));
+        }
     }
     
     
@@ -572,15 +571,17 @@ public class NCLRegionBase<T extends NCLElement,
     /**
      * Searches for a region inside a regionBase and its descendants.
      * 
+     * @param alias
+     *          alias of the importBase the imports the region.
      * @param id
      *          id of the region to be found.
      * @return 
      *          region or null if no region was found.
      */
-    public Object findRegion(String id) throws XMLException {
+    public Object findRegion(String alias, String id) throws XMLException {
         Object result;
         
-        if(!id.contains("#")){
+        if(alias == null){
             for(Er region : regions){
                 result = region.findRegion(id);
                 if(result != null)
@@ -588,38 +589,10 @@ public class NCLRegionBase<T extends NCLElement,
             }   
         }
         else{
-            int index = id.indexOf("#");
-            String alias = id.substring(0, index);
-            id = id.substring(index + 1);
-            
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findRegionReference(d, imp.getBaseId(), id);
-                    if(ref instanceof NCLRegion)
-                        return createExternalRef(imp, (Er) ref);
-                    else
-                        return createExternalRef(imp, (Er) ((R) ref).getTarget());
-                }
-            }
-            
-            NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
-                if(imp.getAlias().equals(alias)){
-                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findRegionReference(d, null, id);
-                    if(ref instanceof NCLRegion)
-                        return createExternalRef(imp, (Er) ref);
-                    else
-                        return createExternalRef(imp, (Er) ((R) ref).getTarget());
-                }
-            }
-            
-            NCLDescriptorBase db = (NCLDescriptorBase) ((NCLHead) getParent()).getDescriptorBase();
-            for(Ei imp : (ElementList<Ei>) db.getImportBases()){
-                if(imp.getAlias().equals(alias)){
-                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findRegionReference(d, null, id);
+                    Object ref = d.getHead().findRegion(imp.getBaseId(), null, id);
                     if(ref instanceof NCLRegion)
                         return createExternalRef(imp, (Er) ref);
                     else
@@ -627,42 +600,41 @@ public class NCLRegionBase<T extends NCLElement,
                 }
             }
         }
-        
         
         return null;
     }
     
     
-    protected Object findRegionReference(NCLDoc doc, String baseId, String id) throws XMLException {
-        Object result = null;
-        NCLHead head = (NCLHead) doc.getHead();
-        
-        if(head == null)
-            throw new NCLParsingException("Could not find document head element");
-
-        if(!head.hasRegionBase())
-            throw new NCLParsingException("Could not find regionBase element");
-        
-        if(baseId == null){
-            ElementList<NCLRegionBase> list = head.getRegionBases();
-
-            for(NCLRegionBase base : list){
-                result = base.findRegion(id);
-                if(result != null)
-                    break;
-            }
-        }
-        else{
-            NCLRegionBase base = (NCLRegionBase) head.getRegionBases().get(baseId);
-
-            result = base.findRegion(id);
-        }
-
-        if(result == null)
-            throw new NCLParsingException("Could not find region in regionBase with id: " + id);
-        
-        return result;
-    }
+//    protected Object findRegionReference(NCLDoc doc, String baseId, String id) throws XMLException {
+//        Object result = null;
+//        NCLHead head = (NCLHead) doc.getHead();
+//        
+//        if(head == null)
+//            throw new NCLParsingException("Could not find document head element");
+//
+//        if(!head.hasRegionBase())
+//            throw new NCLParsingException("Could not find regionBase element");
+//        
+//        if(baseId == null){
+//            ElementList<NCLRegionBase> list = head.getRegionBases();
+//
+//            for(NCLRegionBase base : list){
+//                result = base.findRegion(id);
+//                if(result != null)
+//                    break;
+//            }
+//        }
+//        else{
+//            NCLRegionBase base = (NCLRegionBase) head.getRegionBases().get(baseId);
+//
+//            result = base.findRegion(id);
+//        }
+//
+//        if(result == null)
+//            throw new NCLParsingException("Could not find region in regionBase with id: " + id);
+//        
+//        return result;
+//    }
 
     
     @Override
