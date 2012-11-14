@@ -346,8 +346,12 @@ public class NCLBindRule<T extends NCLElement,
         
         constituent.removeReference(this);
         
-        ((R) rule).getTarget().removeReference(this);
-        ((R) rule).getAlias().removeReference(this);
+        if(rule instanceof NCLTestRule)
+            ((Er) rule).removeReference(this);
+        else if(rule instanceof ExternalReferenceType){
+            ((R) rule).getTarget().removeReference(this);
+            ((R) rule).getAlias().removeReference(this);
+        }
         
         constituent = null;
         rule = null;
