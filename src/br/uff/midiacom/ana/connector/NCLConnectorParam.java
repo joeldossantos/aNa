@@ -283,7 +283,6 @@ public class NCLConnectorParam<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public ArrayList getReferences() {
         return references;
     }

@@ -944,7 +944,6 @@ public abstract class NCLCompositeNodeElement<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public ArrayList getReferences() {
         return references;
     }

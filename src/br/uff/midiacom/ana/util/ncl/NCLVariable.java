@@ -188,7 +188,6 @@ public class NCLVariable<T extends NCLElement>
     
     
     @Override
-    @Deprecated
     public ArrayList<T> getReferences() {
         return references;
     }

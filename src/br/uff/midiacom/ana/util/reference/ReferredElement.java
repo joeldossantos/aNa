@@ -53,6 +53,5 @@ public interface ReferredElement<T extends NCLElement> {
     public boolean removeReference(T reference) throws XMLException;
     
     
-    @Deprecated
     public ArrayList<T> getReferences();
 }

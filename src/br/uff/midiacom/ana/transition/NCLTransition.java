@@ -1035,7 +1035,6 @@ public class NCLTransition<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public ArrayList getReferences() {
         return references;
     }
