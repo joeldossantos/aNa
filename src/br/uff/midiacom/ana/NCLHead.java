@@ -941,8 +941,126 @@ public class NCLHead<T extends NCLElement,
 
     
     /**
-     * Searches for a region inside a regionBase and its descendants.
+     * Searches for a connector inside a connectorBase or in an imported
+     * document.
      * 
+     * @param alias
+     *          alias of the importBase the imports the connector.
+     * @param id
+     *          id of the connector to be found.
+     * @return 
+     *          connector or null if no connector was found.
+     */
+    public Object findConnector(String alias, String id) throws XMLException {
+        Object result;
+        
+        Ecb cb = getConnectorBase();
+        if(cb != null){
+            result = cb.findConnector(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the connector base of the imported documents
+        Eib ib;
+        if((ib = getImportedDocumentBase()) != null){
+            result = ib.findConnector(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+
+        String msg = "Could not find connector with id: ";
+        if(alias != null)
+            msg += alias + "#";
+        msg += id;
+        throw new NCLParsingException(msg);
+    }
+    
+    
+    /**
+     * Searches for a descriptor inside a descriptorBase or in an imported
+     * document.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the descriptor.
+     * @param id
+     *          id of the descriptor to be found.
+     * @return 
+     *          descriptor or null if no descriptor was found.
+     */
+    public Object findDescriptor(String alias, String id) throws XMLException {
+        Object result;
+        
+        Edb db = getDescriptorBase();
+        if(db != null){
+            result = db.findDescriptor(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the descriptor base of the imported documents
+        Eib ib;
+        if((ib = getImportedDocumentBase()) != null){
+            result = ib.findDescriptor(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+
+        String msg = "Could not find descriptor with id: ";
+        if(alias != null)
+            msg += alias + "#";
+        msg += id;
+        throw new NCLParsingException(msg);
+    }
+    
+    
+    /**
+     * Searches for a descriptor inside a descriptorBase or in an imported
+     * document.
+     * 
+     * @param focusIndex
+     *          focusIndex of the descriptor to be found.
+     * @return 
+     *          descriptor or null if no descriptor was found.
+     */
+    public Object findDescriptor(Object focusIndex) throws XMLException {
+        Object result;
+        
+        Edb db = getDescriptorBase();
+        if(db != null){
+            result = db.findDescriptor(focusIndex);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the descriptor base of the imported documents
+        Eib ib;
+        if((ib = getImportedDocumentBase()) != null){
+            result = ib.findDescriptor(focusIndex);
+            if(result != null)
+                return result;
+        }
+        
+
+        String msg = "Could not find descriptor with focusIndex: " + focusIndex;
+        throw new NCLParsingException(msg);
+    }
+    
+    
+    /**
+     * Searches for a region inside a regionBase and its descendants or in a
+     * region base imported together with a descriptorBase or in an imported
+     * document.
+     * 
+     * @param baseId
+     *          id of the base where the region is in.
+     * @param alias
+     *          alias of the importBase the imports the region.
      * @param id
      *          id of the region to be found.
      * @return 
@@ -966,8 +1084,8 @@ public class NCLHead<T extends NCLElement,
         
         
         // search in the base imported by a descriptor base
-        Edb db;
-        if((db = getDescriptorBase()) != null){
+        Edb db = getDescriptorBase();
+        if(db != null){
             result = db.findRegion(alias, id);
             if(result != null)
                 return result;
@@ -975,15 +1093,115 @@ public class NCLHead<T extends NCLElement,
         
         
         // search in the region base of the imported documents
-        Eib ib;
-        if((ib = getImportedDocumentBase()) != null){
+        Eib ib = getImportedDocumentBase();
+        if(ib != null){
             result = ib.findRegion(alias, id);
             if(result != null)
                 return result;
         }
         
 
-        throw new NCLParsingException("Could not find region with id: " + alias + "#" + id);
+        String msg = "Could not find region with id: ";
+        if(alias != null)
+            msg += alias + "#";
+        msg += id;
+        throw new NCLParsingException(msg);
+    }
+    
+    
+    /**
+     * Searches for a rule inside a regionBase or in a rule base imported
+     * together with a descriptorBase or in an imported document.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the rule.
+     * @param id
+     *          id of the rule to be found.
+     * @return 
+     *          rule or null if no rule was found.
+     */
+    public Object findRule(String alias, String id) throws XMLException {
+        Object result;
+        
+        Erl rl = getRuleBase();
+        if(rl != null){
+            result = rl.findRule(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the base imported by a descriptor base
+        Edb db = getDescriptorBase();
+        if(db != null){
+            result = db.findRule(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the rule base of the imported documents
+        Eib ib = getImportedDocumentBase();
+        if(ib != null){
+            result = ib.findRule(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+
+        String msg = "Could not find rule with id: ";
+        if(alias != null)
+            msg += alias + "#";
+        msg += id;
+        throw new NCLParsingException(msg);
+    }
+    
+    
+    /**
+     * Searches for a transition inside a transitionBase or in a transition base
+     * imported together with a descriptorBase or in an imported document.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the transition.
+     * @param id
+     *          id of the transition to be found.
+     * @return 
+     *          transition or null if no transition was found.
+     */
+    public Object findTransition(String alias, String id) throws XMLException {
+        Object result;
+        
+        Etb tb = getTransitionBase();
+        if(tb != null){
+            result = tb.findTransition(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the base imported by a descriptor base
+        Edb db = getDescriptorBase();
+        if(db != null){
+            result = db.findTransition(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+        
+        // search in the transition base of the imported documents
+        Eib ib = getImportedDocumentBase();
+        if(ib != null){
+            result = ib.findTransition(alias, id);
+            if(result != null)
+                return result;
+        }
+        
+
+        String msg = "Could not find transition with id: ";
+        if(alias != null)
+            msg += alias + "#";
+        msg += id;
+        throw new NCLParsingException(msg);
     }
     
     

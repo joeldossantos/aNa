@@ -47,10 +47,13 @@ import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.util.ncl.NCLBase;
 import br.uff.midiacom.ana.reuse.NCLImportBase;
 import br.uff.midiacom.ana.reuse.NCLImportedDocumentBase;
+import br.uff.midiacom.ana.rule.NCLTestRule;
+import br.uff.midiacom.ana.transition.NCLTransition;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.exception.NCLRemovalException;
 import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -450,18 +453,72 @@ public class NCLDescriptorBase<T extends NCLElement,
     
     
     /**
+     * Searches for a rule inside the descriptorBase imported documents.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the rule.
+     * @param id
+     *          id of the rule to be found.
+     * @return 
+     *          rule or null if no rule was found.
+     */
+    public Object findRule(String alias, String id) throws XMLException {
+        for(Ei imp : imports){
+            if(imp.getAlias().equals(alias)){
+                NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                Object ref = d.getHead().findRule(null, id);
+                if(ref instanceof NCLTestRule)
+                    return createExternalRef(imp, (NCLTestRule) ref);
+                else
+                    return createExternalRef(imp, (NCLTestRule) ((R) ref).getTarget());
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    /**
+     * Searches for a transition inside the descriptorBase imported documents.
+     * 
+     * @param alias
+     *          alias of the importBase the imports the transition.
+     * @param id
+     *          id of the transition to be found.
+     * @return 
+     *          transition or null if no transition was found.
+     */
+    public Object findTransition(String alias, String id) throws XMLException {
+        for(Ei imp : imports){
+            if(imp.getAlias().equals(alias)){
+                NCLDoc d = (NCLDoc) imp.getImportedDoc();
+                Object ref = d.getHead().findTransition(null, id);
+                if(ref instanceof NCLTransition)
+                    return createExternalRef(imp, (NCLTransition) ref);
+                else
+                    return createExternalRef(imp, (NCLTransition) ((R) ref).getTarget());
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    /**
      * Searches for a descriptor inside the descriptorBase and its descendants.
      * The descriptor can be a descriptor or a descriptorSwitch.
      * 
+     * @param alias
+     *          alias of the importBase the imports the descriptor.
      * @param id
      *          id of the descriptor to be found.
      * @return 
      *          interface or null if no descriptor was found.
      */
-    public Object findDescriptor(String id) throws XMLException {
+    public Object findDescriptor(String alias, String id) throws XMLException {
         Object result;
         
-        if(!id.contains("#")){
+        if(alias == null){
             for(El desc : descriptors){
                 result = (El) desc.findDescriptor(id);
                 if(result != null)
@@ -469,26 +526,10 @@ public class NCLDescriptorBase<T extends NCLElement,
             }   
         }
         else{
-            int index = id.indexOf("#");
-            String alias = id.substring(0, index);
-            id = id.substring(index + 1);
-            
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findDescriptorReference(d, id);
-                    if(ref instanceof NCLLayoutDescriptor)
-                        return createExternalRef(imp, (El) ref);
-                    else
-                        return createExternalRef(imp, (El) ((R) ref).getTarget());
-                }
-            }
-            
-            NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
-                if(imp.getAlias().equals(alias)){
-                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findDescriptorReference(d, id);
+                    Object ref = d.getHead().findDescriptor(null, id);
                     if(ref instanceof NCLLayoutDescriptor)
                         return createExternalRef(imp, (El) ref);
                     else
@@ -521,58 +562,12 @@ public class NCLDescriptorBase<T extends NCLElement,
         
         for(Ei imp : imports){
             NCLDoc d = (NCLDoc) imp.getImportedDoc();
-            result = (El) findDescriptorReference(d, focusIndex);
-            if(result != null)
-                return result;
-        }
-
-        NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-        for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
-            NCLDoc d = (NCLDoc) imp.getImportedDoc();
-            result = (El) findDescriptorReference(d, focusIndex);
+            result = (El) d.getHead().findDescriptor(focusIndex);
             if(result != null)
                 return result;
         }
         
         return null;
-    }
-    
-    
-    public Object findDescriptorReference(NCLDoc doc, String id) throws XMLException {
-        NCLHead head = (NCLHead) doc.getHead();
-        
-        if(head == null)
-            throw new NCLParsingException("Could not find document head element");
-        
-        NCLDescriptorBase base = (NCLDescriptorBase) head.getDescriptorBase();
-        if(base == null)
-            throw new NCLParsingException("Could not find document descriptorBase element");
-
-        Object result = base.findDescriptor(id);
-
-        if(result == null)
-            throw new NCLParsingException("Could not find descriptor in descriptorBase with id: " + id);
-        
-        return result;
-    }
-    
-    
-    protected El findDescriptorReference(NCLDoc doc, Object focusIndex) throws XMLException {
-        NCLHead head = (NCLHead) doc.getHead();
-        
-        if(head == null)
-            throw new NCLParsingException("Could not find document head element");
-        
-        NCLDescriptorBase base = (NCLDescriptorBase) head.getDescriptorBase();
-        if(base == null)
-            throw new NCLParsingException("Could not find document descriptorBase element");
-
-        El result = (El) base.findDescriptor(focusIndex);
-
-        if(result == null)
-            throw new NCLParsingException("Could not find descriptor in descriptorBase with focusIndex: " + focusIndex);
-        
-        return result;
     }
 
     
@@ -611,25 +606,13 @@ public class NCLDescriptorBase<T extends NCLElement,
 
 
     /**
-     * Function to create a reference to a descriptor.
+     * Function to create a reference to an NCL element.
      * This function must be overwritten in classes that extends this one.
      *
      * @return
-     *          element representing a reference to a descriptor.
+     *          element representing a reference to an NCL element.
      */
-    protected R createExternalRef(Ei imp, El ref) throws XMLException {
-        return (R) new ExternalReferenceType(imp, ref);
-    }
-
-
-    /**
-     * Function to create a reference to a region.
-     * This function must be overwritten in classes that extends this one.
-     *
-     * @return
-     *          element representing a reference to a descriptor.
-     */
-    protected R createExternalRef(Ei imp, NCLRegion ref) throws XMLException {
+    protected R createExternalRef(Ei imp, ReferredElement ref) throws XMLException {
         return (R) new ExternalReferenceType(imp, ref);
     }
 }

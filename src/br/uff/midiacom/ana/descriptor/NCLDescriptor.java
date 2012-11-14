@@ -1388,7 +1388,7 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setFocusIndex(att_var);
             setMoveLeft((Ed) desc);
             if(!waiting){
-                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                ((NCLDoc) getDoc()).waitReference(this);
                 waiting = true;
             }
         }
@@ -1415,7 +1415,7 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setFocusIndex(att_var);
             setMoveRight((Ed) desc);
             if(!waiting){
-                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                ((NCLDoc) getDoc()).waitReference(this);
                 waiting = true;
             }
         }
@@ -1442,7 +1442,7 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setFocusIndex(att_var);
             setMoveDown((Ed) desc);
             if(!waiting){
-                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                ((NCLDoc) getDoc()).waitReference(this);
                 waiting = true;
             }
         }
@@ -1469,7 +1469,7 @@ public class NCLDescriptor<T extends NCLElement,
             desc.setFocusIndex(att_var);
             setMoveUp((Ed) desc);
             if(!waiting){
-                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                ((NCLDoc) getDoc()).waitReference(this);
                 waiting = true;
             }
         }
@@ -1634,7 +1634,8 @@ public class NCLDescriptor<T extends NCLElement,
         att_name = NCLElementAttributes.TRANSIN.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setTransIn(d.getReferenceManager().findTransitionReference(d, att_var));
+            String[] tra = adjustReference(att_var);
+            setTransIn(d.getHead().findTransition(tra[0], tra[1]));
         }
     }
     
@@ -1658,7 +1659,8 @@ public class NCLDescriptor<T extends NCLElement,
         att_name = NCLElementAttributes.TRANSOUT.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setTransOut(d.getReferenceManager().findTransitionReference(d, att_var));
+            String[] tra = adjustReference(att_var);
+            setTransOut(d.getHead().findTransition(tra[0], tra[1]));
         }
     }
     

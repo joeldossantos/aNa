@@ -1138,7 +1138,8 @@ public class NCLMedia<T extends NCLElement,
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setDescriptor(d.getReferenceManager().findDescriptorReference(d, att_var));
+            String[] des = adjustReference(att_var);
+            setDescriptor(d.getHead().findDescriptor(des[0], des[1]));
         }
     }
     
@@ -1163,7 +1164,7 @@ public class NCLMedia<T extends NCLElement,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             En ref = (En) new NCLMedia(att_var);
             setRefer(ref);
-            ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+            ((NCLDoc) getDoc()).waitReference(this);
         }
     }
     

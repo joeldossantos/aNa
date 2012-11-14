@@ -43,7 +43,6 @@ import br.uff.midiacom.ana.connector.*;
 import br.uff.midiacom.ana.interfaces.*;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.descriptor.NCLLayoutDescriptor;
@@ -655,7 +654,7 @@ public class NCLBind<T extends NCLElement,
             Ei refEl = (Ei) getComponent().findInterface(att_var);
             if(refEl == null){
                 refEl = (Ei) new NCLArea(att_var);
-                ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+                ((NCLDoc) getDoc()).waitReference(this);
             }
 //            throw new NCLParsingException("Could not find element " + att_var);
             setInterface(refEl);
@@ -682,7 +681,8 @@ public class NCLBind<T extends NCLElement,
         att_name = NCLElementAttributes.DESCRIPTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setDescriptor((El) d.getReferenceManager().findDescriptorReference(d, att_var));
+            String[] des = adjustReference(att_var);
+            setDescriptor(d.getHead().findDescriptor(des[0], des[1]));
         }
     }
     

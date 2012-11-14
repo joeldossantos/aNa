@@ -605,38 +605,6 @@ public class NCLRegionBase<T extends NCLElement,
     }
     
     
-//    protected Object findRegionReference(NCLDoc doc, String baseId, String id) throws XMLException {
-//        Object result = null;
-//        NCLHead head = (NCLHead) doc.getHead();
-//        
-//        if(head == null)
-//            throw new NCLParsingException("Could not find document head element");
-//
-//        if(!head.hasRegionBase())
-//            throw new NCLParsingException("Could not find regionBase element");
-//        
-//        if(baseId == null){
-//            ElementList<NCLRegionBase> list = head.getRegionBases();
-//
-//            for(NCLRegionBase base : list){
-//                result = base.findRegion(id);
-//                if(result != null)
-//                    break;
-//            }
-//        }
-//        else{
-//            NCLRegionBase base = (NCLRegionBase) head.getRegionBases().get(baseId);
-//
-//            result = base.findRegion(id);
-//        }
-//
-//        if(result == null)
-//            throw new NCLParsingException("Could not find region in regionBase with id: " + id);
-//        
-//        return result;
-//    }
-
-    
     @Override
     @Deprecated
     public void clean() throws XMLException {

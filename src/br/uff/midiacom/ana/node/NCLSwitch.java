@@ -894,7 +894,7 @@ public class NCLSwitch<T extends NCLElement,
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             En ref = (En) new NCLSwitch(att_var);
             setRefer(ref);
-            ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+            ((NCLDoc) getDoc()).waitReference(this);
         }
     }
     

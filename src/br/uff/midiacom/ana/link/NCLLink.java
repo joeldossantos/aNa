@@ -40,7 +40,6 @@ package br.uff.midiacom.ana.link;
 import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
@@ -537,7 +536,8 @@ public class NCLLink<T extends NCLElement,
         att_name = NCLElementAttributes.XCONNECTOR.toString();
         if(!(att_var = element.getAttribute(att_name)).isEmpty()){
             NCLDoc d = (NCLDoc) getDoc();
-            setXconnector(d.getReferenceManager().findConnectorReference(d, att_var));
+            String[] con = adjustReference(att_var);
+            setXconnector(d.getHead().findConnector(con[0], con[1]));
         }
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");

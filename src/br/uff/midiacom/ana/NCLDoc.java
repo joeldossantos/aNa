@@ -44,8 +44,10 @@ import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -98,7 +100,7 @@ public class NCLDoc<T extends NCLElement,
     protected String location;
     protected String fileName;
     protected ElementList<Ev> globalVariables;
-    protected NCLReferenceManager referenceManager;
+    protected ArrayList<PostReferenceElement> references;
 
 
     /**
@@ -110,7 +112,7 @@ public class NCLDoc<T extends NCLElement,
     public NCLDoc() {
         super();
         globalVariables = new ElementList<Ev>();
-        referenceManager = new NCLReferenceManager();
+        references = new ArrayList<PostReferenceElement>();
     }
     
     
@@ -434,19 +436,6 @@ public class NCLDoc<T extends NCLElement,
         globalVariables.addAll(list);
     }
     
-    
-    /**
-     * Returns the element that maintains the elements that must have its
-     * reference fixed after the document parsing.
-     * 
-     * @return 
-     *          element to manager the references to be fixed after parsing.
-     */
-    @Deprecated
-    public NCLReferenceManager getReferenceManager() {
-        return referenceManager;
-    }
-
 
     @Override
     public boolean compare(T other) {
@@ -524,7 +513,7 @@ public class NCLDoc<T extends NCLElement,
             loadBody(element);
 
             // fix the references needed
-            referenceManager.fixReferences();
+            fixReferences();
         }
         catch(XMLException ex){
             throw new NCLParsingException("Error pasring " + ex.getMessage());
@@ -704,6 +693,17 @@ public class NCLDoc<T extends NCLElement,
         if(!other_vars.isEmpty())
             addGlobalVariableLists(other_vars);
     }
+    
+    
+    public void waitReference(PostReferenceElement element) {
+        references.add(element);
+    }
+    
+    
+    public void fixReferences() throws XMLException {
+        for(PostReferenceElement el : references)
+            el.fixReference();
+    }
 
     
     @Override
@@ -722,7 +722,9 @@ public class NCLDoc<T extends NCLElement,
         body = null;
         location = null;
         fileName = null;
-        referenceManager = null;
+        
+        references.clear();
+        references = null;
         
         for(Ev g : globalVariables)
             g.clean();

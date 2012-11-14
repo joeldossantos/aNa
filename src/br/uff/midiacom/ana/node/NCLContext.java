@@ -46,7 +46,6 @@ import br.uff.midiacom.ana.meta.NCLMeta;
 import br.uff.midiacom.ana.meta.NCLMetadata;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
-import br.uff.midiacom.ana.NCLReferenceManager;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
@@ -448,7 +447,7 @@ public class NCLContext<T extends NCLElement,
 //            T ref = (T) new NCLContext(att_var);
 //            setRefer(createContextRef((En) ref));
             refer_id = att_var;
-            ((NCLDoc) getDoc()).getReferenceManager().waitReference(this);
+            ((NCLDoc) getDoc()).waitReference(this);
         }
     }
     

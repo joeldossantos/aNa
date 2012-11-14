@@ -395,40 +395,26 @@ public class NCLTransitionBase<T extends NCLElement,
     /**
      * Searches for a transition inside a transitionBase and its imported bases.
      * 
+     * @param alias
+     *          alias of the importBase the imports the transition.
      * @param id
      *          id of the transition to be found.
      * @return 
      *          transition or null if no transition was found.
      */
-    public Object findTransition(String id) throws XMLException {
+    public Object findTransition(String alias, String id) throws XMLException {
         Object result;
         
-        if(!id.contains("#")){
+        if(alias == null){
             result = getTransitions().get(id);
             if(result != null)
                 return result;
         }
         else{
-            int index = id.indexOf("#");
-            String alias = id.substring(0, index);
-            id = id.substring(index + 1);
-            
             for(Ei imp : imports){
                 if(imp.getAlias().equals(alias)){
                     NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findTransitionReference(d, id);
-                    if(ref instanceof NCLTransition)
-                        return createExternalRef(imp, (Et) ref);
-                    else
-                        return createExternalRef(imp, (Et) ((R) ref).getTarget());
-                }
-            }
-            
-            NCLImportedDocumentBase ib = (NCLImportedDocumentBase) ((NCLHead) getParent()).getImportedDocumentBase();
-            for(Ei imp : (ElementList<Ei>) ib.getImportNCLs()){
-                if(imp.getAlias().equals(alias)){
-                    NCLDoc d = (NCLDoc) imp.getImportedDoc();
-                    Object ref = findTransitionReference(d, id);
+                    Object ref = d.getHead().findTransition(null, id);
                     if(ref instanceof NCLTransition)
                         return createExternalRef(imp, (Et) ref);
                     else
@@ -440,26 +426,7 @@ public class NCLTransitionBase<T extends NCLElement,
         
         return null;
     }
-
-
-    protected Object findTransitionReference(NCLDoc doc, String id) throws XMLException {
-        NCLHead head = (NCLHead) doc.getHead();
-        
-        if(head == null)
-            throw new NCLParsingException("Could not find document head element");
-        
-        NCLTransitionBase base = (NCLTransitionBase) head.getTransitionBase();
-        if(base == null)
-            throw new NCLParsingException("Could not find document transitionBase element");
-
-        Object result = base.findTransition(id);
-
-        if(result == null)
-            throw new NCLParsingException("Could not find transition in transitionBase with id: " + id);
-        
-        return result;
-    }
-
+    
     
     @Override
     @Deprecated
