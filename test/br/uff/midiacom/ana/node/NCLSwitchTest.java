@@ -37,10 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.node;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.rule.NCLBindRule;
 import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
 import br.uff.midiacom.ana.XMLLoader;
+import br.uff.midiacom.ana.interfaces.NCLMapping;
+import br.uff.midiacom.ana.interfaces.NCLPort;
+import br.uff.midiacom.ana.interfaces.NCLSwitchPort;
 import br.uff.midiacom.ana.rule.NCLRule;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -58,10 +62,65 @@ public class NCLSwitchTest {
         s.addBind(bind);
         s.addNode(med);
         s.setDefaultComponent(med);
-
+        
         String expResult = "<switch id='escolhe'>\n\t<bindRule constituent='m1' rule='rpt'/>\n\t<defaultComponent component='m1'/>\n\t<media id='m1'/>\n</switch>\n";
         String result = s.parse(0);
         assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void test2() throws XMLException {
+        NCLDoc doc = new NCLDoc();
+        
+        NCLSwitch s = new NCLSwitch("escolhe");
+        s.setDoc(doc);
+        
+        NCLContext ctx = new NCLContext("m1");
+        NCLPort p = new NCLPort("p1");
+        ctx.addPort(p);
+        s.addNode(ctx);
+        
+        NCLBindRule bind = new NCLBindRule();
+            bind.setRule(new NCLRule("rpt"));
+            bind.setConstituent(ctx);
+        s.addBind(bind);
+        
+        NCLSwitchPort sp = new NCLSwitchPort("sp");
+        NCLMapping map = new NCLMapping();
+        map.setComponent(ctx);
+        map.setInterface(p);
+        sp.addMapping(map);
+        s.addPort(sp);
+        
+        System.out.println(s.parse(0));
+    }
+    
+    @Test
+    public void test3() throws XMLException {
+        NCLDoc doc = new NCLDoc();
+        
+        NCLSwitch s = new NCLSwitch("escolhe");
+        s.setDoc(doc);
+        
+        NCLSwitch ctx = new NCLSwitch("m1");
+        NCLSwitchPort p = new NCLSwitchPort("p1");
+        ctx.addPort(p);
+        s.addNode(ctx);
+        
+        NCLBindRule bind = new NCLBindRule();
+            bind.setRule(new NCLRule("rpt"));
+            bind.setConstituent(ctx);
+        s.addBind(bind);
+        
+        NCLSwitchPort sp = new NCLSwitchPort("sp");
+        NCLMapping map = new NCLMapping();
+        map.setComponent(ctx);
+        map.setInterface(p);
+        sp.addMapping(map);
+        s.addPort(sp);
+        
+        System.out.println(doc + "---" + ctx.getDoc());
+        System.out.println(s.parse(0));
     }
 
 //    @Test
