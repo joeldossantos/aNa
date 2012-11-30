@@ -405,12 +405,15 @@ public class NCLRule<T extends NCLElement,
         if(doc == null)
             throw new NCLParsingException("Could not find document doc element");
 
-        for(Ev docVar : (ElementList<Ev>) doc.getGlobalVariables()){
-            if(docVar.getName().equals(name))
-                return docVar;
-        }
+        Ev result;
         
-        return createVariableRef(name);
+        result = (Ev) doc.getGlobalVariable(name);
+        if (result != null)
+            return result;
+        
+        result = createVariableRef(name);
+        doc.addGlobalVariable(result);
+        return result;
     }
     
     

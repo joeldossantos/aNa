@@ -305,7 +305,10 @@ public class NCLDoc<T extends NCLElement,
      *          if the element representing the variable is null.
      */
     public boolean addGlobalVariable(Ev variable) throws XMLException {
-        return globalVariables.add(variable);
+        boolean result = globalVariables.add(variable);
+        if(result)
+            variable.setDoc(this);
+        return result;
     }
 
 
@@ -418,7 +421,7 @@ public class NCLDoc<T extends NCLElement,
      */
     public Ev getGlobalVariable(String name) {
         for(Ev aux : globalVariables){
-            if(aux.parse(0).equals(name))
+            if(aux.getName().equals(name))
                 return aux;
         }
         return null;

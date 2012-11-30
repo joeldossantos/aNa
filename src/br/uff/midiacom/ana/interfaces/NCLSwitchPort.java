@@ -259,7 +259,7 @@ public class NCLSwitchPort<T extends NCLElement,
 
         content += parseElements(ident + 1);
 
-        content += "</switchPort>\n";
+        content += space + "</switchPort>\n";
 
         return content;
     }

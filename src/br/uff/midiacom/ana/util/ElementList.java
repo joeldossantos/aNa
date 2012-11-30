@@ -287,7 +287,11 @@ public class ElementList<T extends XMLElement>
         }
         else if(aux instanceof NCLNamedElementPrototype){
             for(T el : elements){
-                if(((NCLNamedElementPrototype) el).getName().toString().equals(ident))
+                Object name = ((NCLNamedElementPrototype) el).getName();
+                if(name instanceof NCLNamedElementPrototype)
+                    name = ((NCLNamedElementPrototype) name).getName();
+                
+                if(name.toString().equals(ident))
                     return el;
             }
         }

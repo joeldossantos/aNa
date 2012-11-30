@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.interfaces;
 
+import br.uff.midiacom.ana.NCLDoc;
 import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.enums.NCLColor;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
@@ -135,7 +136,8 @@ public class NCLProperty<T extends NCLElement,
             if((aux = NCLNodeAttributes.getEnumType(var)) != null)
                 name = aux;
             
-            //@todo: buscar no doc as globais
+            if((aux = ((NCLDoc) getDoc()).getGlobalVariable((String) name)) != null)
+                name = aux;
             
             aux = this.name;
             this.name = name;
