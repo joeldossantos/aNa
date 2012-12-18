@@ -719,8 +719,12 @@ public class NCLSimpleAction<T extends NCLElement,
             if("".equals(value.trim()))
                 throw new XMLException("Empty delay String");
             
-            if(!value.contains("$"))
+            if(!value.contains("$")){
+                // Take out the s for the seconds
+                if(value.endsWith("s"))
+                    value = value.substring(0, value.length() - 1);
                 this.duration = new Double(value);
+            }
             else{
                 this.duration = findConnectorParam(value.substring(1));
                 ((Ep) this.duration).addReference(this);
