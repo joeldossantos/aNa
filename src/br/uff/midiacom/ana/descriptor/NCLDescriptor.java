@@ -1782,7 +1782,6 @@ public class NCLDescriptor<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         
         moveLeft.removeReference(this);

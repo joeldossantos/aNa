@@ -539,7 +539,6 @@ public class NCLCompositeRule<T extends NCLElement,
     }
 
     
-    @Deprecated
     @Override
     public void clean() throws XMLException {
         setParent(null);

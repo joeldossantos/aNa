@@ -493,7 +493,6 @@ public class NCLDescriptorParam<T extends NCLElement, V>
     
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

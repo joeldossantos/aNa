@@ -117,6 +117,5 @@ public interface XMLElement<T extends XMLElement> {
     /**
      * Cleans the elements references when removed.
      */
-    @Deprecated
     public void clean() throws XMLException;
 }

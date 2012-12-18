@@ -390,7 +390,6 @@ public class NCLProperty<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         value = null;

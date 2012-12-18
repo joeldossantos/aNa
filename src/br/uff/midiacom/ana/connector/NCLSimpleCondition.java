@@ -865,7 +865,6 @@ public class NCLSimpleCondition<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

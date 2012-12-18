@@ -206,7 +206,7 @@ public class NCLDoc<T extends NCLElement,
     public void setHead(Eh head) throws XMLException {
         // Remove the parent of the actual head, if it exists
         if(this.head != null){
-            this.head.clean();
+            this.head.setParent(null);
             notifyRemoved((T) this.head);
         }
         // Add the new head element
@@ -243,7 +243,7 @@ public class NCLDoc<T extends NCLElement,
     public void setBody(Eb body) throws XMLException {
         // Remove the parent of the actual body, if it exists
         if(this.body != null){
-            this.body.clean();
+            this.body.setParent(null);
             notifyRemoved((T) this.body);
         }
         // Add the new body element
@@ -710,7 +710,6 @@ public class NCLDoc<T extends NCLElement,
 
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         
         if(head != null)

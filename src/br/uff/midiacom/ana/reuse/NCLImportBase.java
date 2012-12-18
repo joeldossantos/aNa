@@ -249,7 +249,6 @@ public class NCLImportBase<T extends NCLElement,
     }
 
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         

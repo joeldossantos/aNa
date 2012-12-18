@@ -165,7 +165,6 @@ public class NCLMetadata<T extends NCLElement>
 
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         rdfTree = null;

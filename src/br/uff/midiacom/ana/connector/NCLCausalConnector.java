@@ -165,7 +165,7 @@ public class NCLCausalConnector<T extends NCLElement,
                 throw new NCLRemovalException("This element has a reference to it."
                         + " The reference must be undone before erasing this element.");
         
-            this.condition.clean();
+            this.condition.setParent(null);
             notifyRemoved((T) this.condition);
         }
 
@@ -215,7 +215,7 @@ public class NCLCausalConnector<T extends NCLElement,
                 throw new NCLRemovalException("This element has a reference to it."
                         + " The reference must be undone before erasing this element.");
             
-            this.action.clean();
+            this.action.setParent(null);
             notifyRemoved((T) this.action);
         }
 
@@ -634,7 +634,6 @@ public class NCLCausalConnector<T extends NCLElement,
 
     
     @Override
-    @Deprecated
     public void clean() throws XMLException {
         setParent(null);
         
