@@ -38,13 +38,9 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLElement;
-import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.util.reference.ExternalReferenceType;
-import br.uff.midiacom.ana.util.enums.NCLElementAttributes;
-import br.uff.midiacom.ana.util.exception.NCLParsingException;
 import br.uff.midiacom.ana.util.exception.XMLException;
-import org.w3c.dom.Element;
 
 
 /**
@@ -90,50 +86,10 @@ public class NCLBindParam<T extends NCLElement,
     
     
     @Override
-    protected void loadName(Element element) throws XMLException {
-        String att_name, att_var;
-        
-        // set the name (required)
-        att_name = NCLElementAttributes.NAME.toString();
-        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
-            T aux;
-            if((aux = (T) getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-            if((aux = (T) aux.getParent()) == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-
-            Object con = ((NCLLink) aux).getXconnector();
-            if(con instanceof ExternalReferenceType)
-                con = ((ExternalReferenceType) con).getTarget();
-            
-            Ec par = (Ec) ((NCLCausalConnector) con).getConnectorParams().get(att_var);
-            if(par == null)
-                throw new NCLParsingException("Could not find element " + att_var);
-
-            setName(par);
-        }
-        else
-            throw new NCLParsingException("Could not find " + att_name + " attribute.");
-    }
-    
-    
-    @Override
     public boolean compare(T other) {
         if(other == null || !(other instanceof NCLBindParam))
             return false;
         
         return super.compare(other);
-    }
-
-    
-    @Override
-    @Deprecated
-    public void clean() throws XMLException {
-        setParent(null);
-        
-        name.removeReference(this);
-        
-        name = null;
-        value = null;
     }
 }

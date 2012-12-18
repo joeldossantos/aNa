@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.link;
 
 import br.uff.midiacom.ana.NCLElement;
+import br.uff.midiacom.ana.connector.NCLCausalConnector;
 import br.uff.midiacom.ana.connector.NCLConnectorParam;
 import br.uff.midiacom.ana.util.enums.NCLDefaultValueAssessment;
 import br.uff.midiacom.ana.util.exception.NCLParsingException;
@@ -157,6 +158,8 @@ public abstract class NCLParam<T extends NCLElement,
             value = convertValue((String) value);
         
         this.value = value;
+        if(value instanceof GetSetRole)
+            ((GetSetRole) value).addReference(this);
         notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
@@ -166,6 +169,23 @@ public abstract class NCLParam<T extends NCLElement,
             throw new XMLException("Empty value String");
         
         Object var;
+        
+        if(value.contains("$")){
+            Object aux;
+            if((aux = getParent()) == null)
+                throw new NCLParsingException("Could not find element " + value.substring(1));
+            
+            if(!(aux instanceof NCLLink)){
+                if((aux = getParent()) == null)
+                    throw new NCLParsingException("Could not find element " + value.substring(1));
+            }
+            
+            for (Object bind : ((NCLLink) aux).getBinds()) {
+                aux = ((NCLBind) bind).getRole();
+                if(aux instanceof GetSetRole && value.equals(aux.toString()))
+                    return aux;
+            }
+        }
         
         String aux = value.substring(value.length() - 1);
         if(aux.equals("s")){
@@ -301,7 +321,34 @@ public abstract class NCLParam<T extends NCLElement,
     }
     
     
-    protected abstract void loadName(Element element) throws XMLException;
+    protected void loadName(Element element) throws XMLException {
+        String att_name, att_var;
+        
+        // set the name (required)
+        att_name = NCLElementAttributes.NAME.toString();
+        if(!(att_var = element.getAttribute(att_name)).isEmpty()){
+            T aux;
+            if((aux = (T) getParent()) == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+            
+            if(!(aux instanceof NCLLink)){
+                if((aux = (T) aux.getParent()) == null)
+                    throw new NCLParsingException("Could not find element " + att_var);
+            }
+
+            Object con = ((NCLLink) aux).getXconnector();
+            if(con instanceof ExternalReferenceType)
+                con = ((ExternalReferenceType) con).getTarget();
+            
+            Ec par = (Ec) ((NCLCausalConnector) con).getConnectorParams().get(att_var);
+            if(par == null)
+                throw new NCLParsingException("Could not find element " + att_var);
+
+            setName(par);
+        }
+        else
+            throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
     
     
     protected String parseValue() {
@@ -322,6 +369,18 @@ public abstract class NCLParam<T extends NCLElement,
             setValue(att_var);
         else
             throw new NCLParsingException("Could not find " + att_name + " attribute.");
+    }
+
+    
+    @Override
+    @Deprecated
+    public void clean() throws XMLException {
+        setParent(null);
+        
+        name.removeReference(this);
+        
+        name = null;
+        value = null;
     }
     
     

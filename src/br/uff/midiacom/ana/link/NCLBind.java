@@ -53,6 +53,8 @@ import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
+import br.uff.midiacom.ana.util.reference.ReferredElement;
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -98,15 +100,18 @@ public class NCLBind<T extends NCLElement,
                      Ei extends NCLInterface,
                      El extends NCLLayoutDescriptor,
                      Ep extends NCLBindParam,
+                     Epr extends NCLParam,
                      R extends ExternalReferenceType>
         extends NCLElementPrototype<T>
-        implements NCLElement<T>, PostReferenceElement {
+        implements NCLElement<T>, ReferredElement<Epr>, PostReferenceElement {
 
     protected Er role;
     protected En component;
     protected Ei interfac;
     protected Object descriptor;
     protected ElementList<Ep> bindParams;
+    
+    protected ArrayList<Epr> references;
     
 
     /**
@@ -153,7 +158,10 @@ public class NCLBind<T extends NCLElement,
         Er aux = this.role;
         
         this.role = role;
-        this.role.addReference(this);
+        if(role instanceof GetSetRole)
+            ((GetSetRole) this.role).setBind(this);
+        else
+            this.role.addReference(this);
         
         notifyAltered(NCLElementAttributes.ROLE, aux, role);
         if(aux != null)
@@ -589,8 +597,13 @@ public class NCLBind<T extends NCLElement,
                 throw new NCLParsingException("Could not find element " + att_var);
 
             Er rol = (Er) ((NCLCausalConnector) conn).findRole(att_var);
-            if(rol == null)
-                throw new NCLParsingException("Could not find element " + att_var);
+            if(rol == null){
+                att_name = NCLElementAttributes.INTERFACE.toString();
+                if(element.getAttribute(att_name).isEmpty())
+                    throw new NCLParsingException("Could not find element " + att_var);
+                else
+                    rol = (Er) new GetSetRole(att_var);
+            }
             setRole(rol);
         }
         else
@@ -739,6 +752,27 @@ public class NCLBind<T extends NCLElement,
             
             throw new NCLParsingException("Bind" + aux + ". Fixing reference:\n" + ex.getMessage());
         }
+    }
+    
+    
+    @Override
+    @Deprecated
+    public boolean addReference(Epr reference) throws XMLException {
+        return references.add(reference);
+    }
+    
+    
+    @Override
+    @Deprecated
+    public boolean removeReference(Epr reference) throws XMLException {
+        return references.remove(reference);
+    }
+    
+    
+    @Override
+    @Deprecated
+    public ArrayList<Epr> getReferences() {
+        return references;
     }
     
     

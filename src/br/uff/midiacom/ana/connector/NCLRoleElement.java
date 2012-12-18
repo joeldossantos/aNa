@@ -37,14 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.connector;
 
+import br.uff.midiacom.ana.NCLElement;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
-import br.uff.midiacom.ana.link.NCLBind;
 
 /**
  * Interface that represents an element that has a role attribute.
  */
-public interface NCLRoleElement<Eb extends NCLBind>
-            extends ReferredElement<Eb> {
+public interface NCLRoleElement<T extends NCLElement>
+            extends ReferredElement<T> {
     
     
     public Object getRole();
