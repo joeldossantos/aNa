@@ -235,6 +235,9 @@ public class NCLAttributeAssessment<T extends NCLElement,
         else
             throw new XMLException("Wrong key type.");
         
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+        
         notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
     
@@ -346,6 +349,9 @@ public class NCLAttributeAssessment<T extends NCLElement,
         }
         else
             throw new XMLException("Wrong repeat type.");
+        
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
         
         notifyAltered(NCLElementAttributes.OFFSET, aux, offset);
     }

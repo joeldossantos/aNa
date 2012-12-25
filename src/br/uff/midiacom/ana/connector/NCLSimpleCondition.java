@@ -409,6 +409,9 @@ public class NCLSimpleCondition<T extends NCLElement,
         else
             throw new XMLException("Wrong key type.");
         
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+        
         notifyAltered(NCLElementAttributes.KEY, aux, key);
     }
 
@@ -549,6 +552,9 @@ public class NCLSimpleCondition<T extends NCLElement,
         }
         else
             throw new XMLException("Wrong delay type.");
+        
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
         
         notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }

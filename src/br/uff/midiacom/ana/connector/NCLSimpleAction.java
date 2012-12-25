@@ -244,6 +244,9 @@ public class NCLSimpleAction<T extends NCLElement,
         else
             throw new XMLException("Wrong value type.");
         
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+        
         notifyAltered(NCLElementAttributes.VALUE, aux, value);
     }
     
@@ -572,6 +575,9 @@ public class NCLSimpleAction<T extends NCLElement,
         else
             throw new XMLException("Wrong repeat type.");
         
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+        
         notifyAltered(NCLElementAttributes.REPEAT, aux, repeat);
     }
 
@@ -653,6 +659,9 @@ public class NCLSimpleAction<T extends NCLElement,
         }
         else
             throw new XMLException("Wrong delay type.");
+        
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
         
         notifyAltered(NCLElementAttributes.REPEATDELAY, aux, repeatDelay);
     }
@@ -738,6 +747,9 @@ public class NCLSimpleAction<T extends NCLElement,
         }
         else
             throw new XMLException("Wrong delay type.");
+        
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
         
         notifyAltered(NCLElementAttributes.DURATION, aux, duration);
     }
@@ -825,6 +837,9 @@ public class NCLSimpleAction<T extends NCLElement,
         else
             throw new XMLException("Wrong delay type.");
         
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
+        
         notifyAltered(NCLElementAttributes.BY, aux, by);
     }
 
@@ -888,6 +903,9 @@ public class NCLSimpleAction<T extends NCLElement,
         }
         else
             throw new XMLException("Wrong delay type.");
+        
+        if(aux != null && aux instanceof NCLConnectorParam)
+                ((Ep) aux).removeReference(this);
         
         notifyAltered(NCLElementAttributes.DELAY, aux, delay);
     }
