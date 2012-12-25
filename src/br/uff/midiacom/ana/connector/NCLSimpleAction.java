@@ -1337,7 +1337,6 @@ public class NCLSimpleAction<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public ArrayList getReferences() {
         return references;
     }
