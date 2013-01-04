@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.util.xml;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
+import java.io.Serializable;
 import org.w3c.dom.Element;
 
 
@@ -47,7 +48,7 @@ import org.w3c.dom.Element;
  * @param <T>
  *          XML element type.
  */
-public interface XMLElement<T extends XMLElement> {
+public interface XMLElement<T extends XMLElement> extends Serializable {
 
 
     /**

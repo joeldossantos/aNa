@@ -37,13 +37,14 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util.modification;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
 /**
  * Class that implements a notifier for modifications in the elements.
  */
-public class NCLModificationNotifier extends Thread {
+public class NCLModificationNotifier extends Thread implements Serializable {
     
     private int index;
     private boolean run;

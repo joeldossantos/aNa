@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.util;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -45,7 +46,7 @@ import java.util.Vector;
 /**
  * This class represents an value represented as an array (ex.: 99,99,99).
  */
-public class ArrayType {
+public class ArrayType implements Serializable {
 
     private double[] values;
     

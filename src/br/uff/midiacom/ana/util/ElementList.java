@@ -41,6 +41,7 @@ import br.uff.midiacom.ana.util.xml.XMLElement;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -55,7 +56,7 @@ import java.util.List;
  *          the type of element stored in the list.
  */
 public class ElementList<T extends XMLElement>
-        implements Iterable<T> {
+        implements Iterable<T>, Serializable {
 
     protected List<T> elements;
 

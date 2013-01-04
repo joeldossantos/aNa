@@ -39,6 +39,7 @@ package br.uff.midiacom.ana.util;
 
 import br.uff.midiacom.ana.util.enums.NCLUriType;
 import br.uff.midiacom.ana.util.exception.XMLException;
+import java.io.Serializable;
 
 
 /**
@@ -49,7 +50,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
  *   <li>time locator (ex.: 2011:01:01:12:10:10.500)</li>
  * </ul>
  */
-public class SrcType {
+public class SrcType implements Serializable {
 
     private NCLUriType type;
     private String src;

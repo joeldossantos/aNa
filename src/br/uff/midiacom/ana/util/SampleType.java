@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.util;
 
 import br.uff.midiacom.ana.util.enums.NCLSampleType;
+import java.io.Serializable;
 
 
 /**
@@ -46,7 +47,7 @@ import br.uff.midiacom.ana.util.enums.NCLSampleType;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class SampleType {
+public class SampleType implements Serializable {
 
     private int value;
     private NCLSampleType type;

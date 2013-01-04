@@ -37,6 +37,7 @@
  *******************************************************************************/
 package br.uff.midiacom.ana.util;
 
+import java.io.Serializable;
 import java.util.Vector;
 
 
@@ -51,7 +52,7 @@ import java.util.Vector;
  * @see <a href="http://www.dtv.org.br/download/pt-br/ABNTNBR15606-2_2007Vc3_2008.pdf">
  *          ABNT NBR 15606-2:2007</a>
  */
-public class TimeType {
+public class TimeType implements Serializable {
 
     private Integer year;
     private Integer month;

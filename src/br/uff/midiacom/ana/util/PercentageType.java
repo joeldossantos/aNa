@@ -38,6 +38,7 @@
 package br.uff.midiacom.ana.util;
 
 import br.uff.midiacom.ana.util.exception.XMLException;
+import java.io.Serializable;
 
 
 /**
@@ -47,7 +48,7 @@ import br.uff.midiacom.ana.util.exception.XMLException;
  *   <li>with the percentage sign as a number between 0 and 100 (ex.: 99.99%)</li>
  * </ul>
  */
-public class PercentageType {
+public class PercentageType implements Serializable {
 
     private double value;
     private boolean signed;

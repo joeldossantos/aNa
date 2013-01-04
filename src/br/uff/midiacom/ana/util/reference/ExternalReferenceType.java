@@ -40,6 +40,7 @@ package br.uff.midiacom.ana.util.reference;
 import br.uff.midiacom.ana.reuse.NCLImport;
 import br.uff.midiacom.ana.util.exception.XMLException;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
+import java.io.Serializable;
 
 
 /**
@@ -53,7 +54,8 @@ import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
  *          referred element is.
  */
 public class ExternalReferenceType<T extends ReferredElement,
-                                   I extends NCLImport> {
+                                   I extends NCLImport>
+            implements Serializable {
 
     protected T target;
     protected I alias;
