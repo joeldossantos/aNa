@@ -1030,7 +1030,7 @@ public class NCLHead<T extends NCLElement,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public Object findDescriptor(Object focusIndex) throws XMLException {
+    public Object findDescriptor(Integer focusIndex) throws XMLException {
         Object result;
         
         Edb db = getDescriptorBase();

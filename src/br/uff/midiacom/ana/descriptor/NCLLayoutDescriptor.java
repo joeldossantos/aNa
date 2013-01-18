@@ -74,5 +74,5 @@ public interface NCLLayoutDescriptor<T extends NCLElement,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public El findDescriptor(Object focusIndex) throws XMLException;
+    public El findDescriptor(Integer focusIndex) throws XMLException;
 }

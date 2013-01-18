@@ -656,7 +656,7 @@ public class NCLDescriptorSwitch<T extends NCLElement,
     
     
     @Override
-    public El findDescriptor(Object focusIndex) throws XMLException {
+    public El findDescriptor(Integer focusIndex) throws XMLException {
         El result;
         
         for(Ed desc : descriptors){

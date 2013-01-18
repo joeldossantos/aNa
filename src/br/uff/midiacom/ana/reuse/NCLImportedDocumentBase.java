@@ -406,7 +406,7 @@ public class NCLImportedDocumentBase<T extends NCLElement,
      * @return 
      *          descriptor or null if no descriptor was found.
      */
-    public Object findDescriptor(Object focusIndex) throws XMLException {
+    public Object findDescriptor(Integer focusIndex) throws XMLException {
         for(Ei imp : imports){
             NCLDoc d = (NCLDoc) imp.getImportedDoc();
             Object ref = d.getHead().findDescriptor(focusIndex);
