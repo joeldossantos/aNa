@@ -135,7 +135,7 @@ public class NCLProperty<T extends NCLElement,
             
             if((aux = NCLNodeAttributes.getEnumType(var)) != null)
                 name = aux;
-            else if((aux = ((NCLDoc) getDoc()).getGlobalVariable((String) name)) != null)
+            else if((getDoc() != null) && (aux = ((NCLDoc) getDoc()).getGlobalVariable((String) name)) != null)
                 name = aux;
             
             aux = this.name;
