@@ -462,6 +462,9 @@ public class NCLBody<T extends NCLElement,
     public En findNode(String id) throws XMLException {
         En result;
         
+        if(getId() != null && getId().equals(id))
+            return (En) this;
+        
         for(En node : nodes){
             result = (En) node.findNode(id);
             if(result != null)

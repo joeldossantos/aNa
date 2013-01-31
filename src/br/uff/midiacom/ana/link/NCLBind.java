@@ -123,6 +123,7 @@ public class NCLBind<T extends NCLElement,
     public NCLBind() throws XMLException {
         super();
         bindParams = new ElementList<Ep>();
+        references = new ArrayList<Epr>();
     }
     
     
