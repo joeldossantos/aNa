@@ -52,6 +52,7 @@ import br.uff.midiacom.ana.util.ncl.NCLElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLIdentifiableElementPrototype;
 import br.uff.midiacom.ana.util.ncl.NCLNamedElementPrototype;
 import br.uff.midiacom.ana.util.ElementList;
+import br.uff.midiacom.ana.util.ncl.NCLVariable;
 import br.uff.midiacom.ana.util.reference.PostReferenceElement;
 import br.uff.midiacom.ana.util.reference.ReferredElement;
 import java.util.ArrayList;
@@ -651,8 +652,13 @@ public class NCLBind<T extends NCLElement,
         if(aux != null){
             if(aux instanceof NCLIdentifiableElementPrototype)
                 return " interface='" + ((NCLIdentifiableElementPrototype) aux).getId() + "'";
-            else
-                return " interface='" + ((NCLNamedElementPrototype) aux).getName() + "'";
+            else{
+                Object name = ((NCLNamedElementPrototype) aux).getName();
+                if(name instanceof NCLVariable)
+                    return " interface='" + ((NCLVariable) name).parse(0) + "'";
+                else
+                    return " interface='" + name.toString() + "'";
+            }
         }
         else
             return "";

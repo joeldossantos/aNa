@@ -135,8 +135,10 @@ public class NCLProperty<T extends NCLElement,
             
             if((aux = NCLNodeAttributes.getEnumType(var)) != null)
                 name = aux;
-            else if((getDoc() != null) && (aux = ((NCLDoc) getDoc()).getGlobalVariable((String) name)) != null)
+            else if((getDoc() != null) && (aux = ((NCLDoc) getDoc()).getGlobalVariable((String) name)) != null){
                 name = aux;
+                ((Ev) name).addReference(this);
+            }
             
             aux = this.name;
             this.name = name;
@@ -331,8 +333,12 @@ public class NCLProperty<T extends NCLElement,
     
     protected String parseName() {
         Object aux = getName();
-        if(aux != null)
-            return " name='" + aux.toString() + "'";
+        if(aux != null){
+            if(name instanceof NCLVariable)
+                return " name='" + ((NCLVariable) aux).parse(0) + "'";
+            else
+                return " name='" + aux.toString() + "'";
+        }
         else
             return "";
     }
