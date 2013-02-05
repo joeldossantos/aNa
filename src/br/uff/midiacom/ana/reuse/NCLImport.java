@@ -176,8 +176,9 @@ public abstract class NCLImport<T extends NCLElement,
      * @throws XMLException 
      *          if the import element does not import a document.
      */
-    public void setImportedDoc(Ed importedDoc) {
+    public void setImportedDoc(Ed importedDoc) throws XMLException {
         this.importedDoc = importedDoc;
+        importedDoc.setParent(getDoc());
     }
     
     
