@@ -777,7 +777,6 @@ public class NCLBind<T extends NCLElement,
     
     
     @Override
-    @Deprecated
     public ArrayList<Epr> getReferences() {
         return references;
     }
