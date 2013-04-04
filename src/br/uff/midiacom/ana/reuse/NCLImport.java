@@ -248,13 +248,13 @@ public abstract class NCLImport<T extends NCLElement,
                 
                 URI base = new URI(loc);
                 path = base.resolve(getDocumentURI().toString());
-                aux.loadXML(new File(path.getPath()));
+                aux.loadXML(new File(path.toString()));
                 setImportedDoc(aux);
                 ((Ed) getDoc()).mergeGlobalVariables(aux);
             }catch(XMLException e){
                 throw new NCLParsingException("Error loading document: " + e.getMessage());
             }catch(URISyntaxException e){
-                throw new NCLParsingException("Could not find document in location: " + path.getPath() + e.getMessage());
+                throw new NCLParsingException("Could not find document in location: " + path.toString() + e.getMessage());
             }
         }
         catch(XMLException ex){
