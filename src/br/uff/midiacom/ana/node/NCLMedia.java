@@ -1240,9 +1240,12 @@ public class NCLMedia<T extends NCLElement,
         Object aux;
         if((aux = getRefer()) != null){
             if(aux instanceof NCLMedia)
-                return (Ei) ((En) aux).findInterface(id);
+                result = (Ei) ((En) aux).findInterface(id);
             else
-                return (Ei) ((En) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
+                result = (Ei) ((En) ((ExternalReferenceType) aux).getTarget()).findInterface(id);
+            
+            if(result != null)
+                return result;
         }
         
         // search as a property

@@ -176,7 +176,7 @@ public abstract class NCLParam<T extends NCLElement,
                 throw new NCLParsingException("Could not find element " + value.substring(1));
             
             if(!(aux instanceof NCLLink)){
-                if((aux = getParent()) == null)
+                if((aux = ((NCLElement) aux).getParent()) == null)
                     throw new NCLParsingException("Could not find element " + value.substring(1));
             }
             
