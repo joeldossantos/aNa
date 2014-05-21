@@ -1,7 +1,10 @@
 .project
+.settings
+.classpath
 .DS_Store
 build.xml
 manifest.mf
 /nbproject/
 /dist/
 /build/
+/bin/
