@@ -304,7 +304,7 @@ public class TimeType implements Serializable {
      *          se o valor não estiver no formato definido pela norma.
      */
     public void setSecond(Integer second) throws IllegalArgumentException {
-        if(second != null && !(second >= 0 && (absoluteSecond() || second <= 59)))
+        if(second == null && !(second >= 0 && (absoluteSecond() || second <= 59)))
             throw new IllegalArgumentException("Invalid second");
 
         this.second = second.doubleValue();
